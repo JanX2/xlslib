@@ -143,7 +143,7 @@ typedef enum
 		~colors_t();
 
 		bool setColor(unsigned8_t r, unsigned8_t g, unsigned8_t b, unsigned8_t idx); // 8 <= idx <= 64
-		CUnit* colors_t::GetData() const;
+		CUnit* GetData() const;
 
 	  private:
 		colors_t(const colors_t &that);
