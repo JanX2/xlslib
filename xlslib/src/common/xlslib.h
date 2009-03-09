@@ -47,7 +47,9 @@ using namespace xlslib_core;
 
 #else // defined(__cplusplus)
 
+#ifndef __OBJC__    // framework needs a more qualified path
 #include <xlstypes.h>
+#endif
 
 // Summary options
 typedef enum {
