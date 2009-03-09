@@ -1,0 +1,18 @@
+#! /bin/sh 
+
+echo "libtoolize may issue a warning on the need to run aclocal - rest assured that aclocal will be run!"
+
+sys=`uname`
+
+if [ $sys = "Darwin" ]
+then 
+	glibtoolize --force \
+	&& aclocal --force \
+	&& autoconf --force  \
+	&& automake -a --force
+else
+	libtoolize --force \
+	&& aclocal --force \
+	&& autoconf --force  \
+	&& automake -a --force
+fi

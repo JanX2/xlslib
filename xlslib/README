@@ -1,0 +1,66 @@
+==========================================================
+xlslib - utility to create .xls files
+==========================================================
+
+$Id: README,v 1.3 2008/10/25 18:48:48 dhoerl Exp $
+
+== HOME ==
+The home for smartmontools is located at:
+    
+    http://xlslib.sourceforge.net/
+
+Please see this web site for updates, documentation, and for submitting
+patches and bug reports.
+
+Until we get the documentation sorted out, this archive contains
+"xlslibRefGuide.pdf", a PHP guide that can be used as well for the 
+C/C++ version.
+
+== COPYING ==
+Copyright (C) 2004-6 Ruben D. Gonzále
+Copyright (C) 2008 David Hoerl 
+
+This program is free software; you can redistribute it and/or modify it
+under the terms of the GNU Lesser General Public License as published
+by the Free Software Foundation; either version 2.1, or (at your option)
+any later version.
+
+You should have received a copy of the GNU Lesser General Public License
+(for example COPYING and COPYING.LESSER); if not, write to the Free
+Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+
+== CREDITS ==
+This code was originally developed at Yeico S.A. de C.V. by
+Ruben D. Gonzalez and others. 0.2.5 and later developed by David Hoerl.
+
+
+== OVERVIEW ==
+xlslib permits programmatic creation of multi-sheet .xls files, which
+are then directly openable by MS Excel. This capability is useful when
+you need to save large data sets, perhaps with summary information, in
+a form that is easily viewable by others. The .xls format is as of
+Release 1.2 BIFF8. This format is documented in both the "Microsoft Excel97 
+Developer's Kit" [currently out of print but used copies can be obtained 
+on Amazon], and the OpenOffice.org's "Microsoft Excel File Format".
+
+== CONTENTS ==
+The suite contains the xlslib library, and a test application (easily
+modifiable) that demonstrates various modes of creating spreadsheets.
+
+There are three types of documentation: the source manual Manual.xls, 
+which can be printed or just used for referece. Secondlu a pdf version
+of this name xlslibRefGuide.pdf. Finally, refer to the main.cpp file in
+the targets/test folder to see how to use the library. If you want to 
+use this with a C app, then link in the library and include xlslib/xlslib.h.
+
+The C interfaces are documented in that file. Essentially you create a worksheet,
+then use that object as the first parameter of subsequent calls. When done, you
+would then call the delete function. An example file is included in the test
+folder: main.c There is also a test file that uses the "C" interface.
+
+== NOTES ==
+With the conversion to BIFF8 in Release 1.2, addition formatting capabilies become
+available. Unfortunately, these are not listed in the existing pdf document
+so to find them you will need to look at the xlslib.h header file.
+
