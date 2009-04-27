@@ -731,7 +731,7 @@ void  CGlobalRecords::wide2str16(const ustring& str1, u16string& str2)
 	cd = iconv_open("UCS-2-INTERNAL", iconv_code.c_str());
 	// no need to test return code as we ALREADY did this when setting iconv_code in workbook
 	
-	inbytesleft		= str1.size() * sizeof(uchar_t);
+	inbytesleft		= str1.size() * sizeof(unichar_t);
 	outbytesleft	= inbytesleft * 4 * sizeof(unsigned16_t); // Unicode expansion 4 to 2 ???
 
 	inbuf		= str1.c_str();
@@ -755,7 +755,7 @@ void  CGlobalRecords::wide2str16(const ustring& str1, u16string& str2)
 	size_t	len;
 
 	// if character size of both strings the same, well, we should be able to just assign them
-	if(sizeof(uchar_t) == sizeof(unsigned16_t)) {
+	if(sizeof(unichar_t) == sizeof(unsigned16_t)) {
 		str2 = str1;
 		return;
 	}

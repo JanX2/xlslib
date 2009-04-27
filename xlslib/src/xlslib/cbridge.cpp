@@ -50,7 +50,7 @@ extern "C" {
 																	std::string str = sheetname;
 																	return w->sheet(str);
 																}
-	worksheet *xlsWorkbookSheetW(workbook *w, const uchar_t *sheetname)
+	worksheet *xlsWorkbookSheetW(workbook *w, const unichar_t *sheetname)
 																{
 																	std::ustring str = sheetname;
 																	return w->sheet(str);
@@ -66,7 +66,7 @@ extern "C" {
 																	std::string str = name;
 																	return w->format(str);
 																}
-	format_t *xlsWorkbookFormatW(workbook *w, const uchar_t *name) {
+	format_t *xlsWorkbookFormatW(workbook *w, const unichar_t *name) {
 																	std::ustring str = name;
 																	return w->format(str);
 																}
@@ -118,7 +118,7 @@ extern "C" {
 																	std::string str = strlabel;
 																	return w->label(row, col, strlabel, pxformat);
 																}
-	cell_t *xlsWorksheetLabelW(worksheet *w, unsigned16_t row, unsigned16_t col, const uchar_t *strlabel, xf_t *pxformat)
+	cell_t *xlsWorksheetLabelW(worksheet *w, unsigned16_t row, unsigned16_t col, const unichar_t *strlabel, xf_t *pxformat)
 																{ 
 																	std::ustring str = strlabel;
 																	return w->label(row, col, strlabel, pxformat);

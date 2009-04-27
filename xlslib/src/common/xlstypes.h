@@ -81,7 +81,7 @@ typedef unsigned long long unsigned64_t;
 
 #if defined(_MSC_VER) && defined(WIN32)		// Windows
 
-typedef wchar_t uchar_t;
+typedef wchar_t unichar_t;
 #define ustring wstring
 //typedef wstring ustring;
 typedef std::basic_string<unsigned16_t> u16string;
@@ -90,8 +90,8 @@ typedef std::basic_string<unsigned16_t> u16string;
 
 #undef HAVE_ICONV
 
-//typedef unichar uchar_t;
-#define uchar_t unsigned16_t
+//typedef unichar unichar_t;
+#define unichar_t unsigned16_t
 
 //typedef std::basic_string<unsigned16_t> ustring;
 #define ustring basic_string<unsigned16_t>
@@ -100,7 +100,7 @@ typedef std::basic_string<unsigned16_t> u16string;
 
 #else										// All other C++
 
-typedef wchar_t uchar_t;
+typedef wchar_t unichar_t;
 #define ustring wstring
 typedef std::basic_string<unsigned16_t> u16string;
 

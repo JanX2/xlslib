@@ -301,7 +301,7 @@ using namespace xlslib_core;
 
 #define EXTERN_TYPE extern
 
-typedef wchar_t uchar_t;
+typedef wchar_t unichar_t;
 
 typedef struct _workbook workbook;
 typedef struct _worksheet worksheet;
@@ -318,11 +318,11 @@ EXTERN_TYPE workbook *xlsNewWorkbook(void);
 EXTERN_TYPE void xlsDeleteWorkbook(workbook *w);
 
 EXTERN_TYPE worksheet *xlsWorkbookSheet(workbook *w, const char *sheetname);
-EXTERN_TYPE worksheet *xlsWorkbookSheetW(workbook *w, const uchar_t *sheetname);
+EXTERN_TYPE worksheet *xlsWorkbookSheetW(workbook *w, const unichar_t *sheetname);
 EXTERN_TYPE worksheet *xlsWorkbookGetSheet(workbook *w, unsigned16_t sheetnum);
 EXTERN_TYPE font_t *xlsWorkbookFont(workbook *w, const char *name);
 EXTERN_TYPE format_t *xlsWorkbookFormat(workbook *w, const char *name);
-EXTERN_TYPE format_t *xlsWorkbookFormatW(workbook *w, const uchar_t *name);
+EXTERN_TYPE format_t *xlsWorkbookFormatW(workbook *w, const unichar_t *name);
 EXTERN_TYPE xf_t *xlsWorkbookxFormat(workbook *w);
 EXTERN_TYPE xf_t *xlsWorkbookxFormatFont(workbook *w, font_t *font);
 #ifdef HAVE_ICONV
@@ -345,7 +345,7 @@ EXTERN_TYPE void xlsWorksheetRowheight(worksheet *w, unsigned16_t row, unsigned1
 EXTERN_TYPE range *xlsWorksheetRangegroup(worksheet *w, unsigned16_t row1, unsigned16_t col1, unsigned16_t row2, unsigned16_t col2);
 #endif
 EXTERN_TYPE cell_t *xlsWorksheetLabel(worksheet *w, unsigned16_t row, unsigned16_t col, const char *strlabel, xf_t *pxformat);
-EXTERN_TYPE cell_t *xlsWorksheetLabelW(worksheet *w, unsigned16_t row, unsigned16_t col, const uchar_t *strlabel, xf_t *pxformat);
+EXTERN_TYPE cell_t *xlsWorksheetLabelW(worksheet *w, unsigned16_t row, unsigned16_t col, const unichar_t *strlabel, xf_t *pxformat);
 EXTERN_TYPE cell_t *xlsWorksheetBlank(worksheet *w, unsigned16_t row, unsigned16_t col, xf_t *pxformat);
 EXTERN_TYPE cell_t *xlsWorksheetNumberDbl(worksheet *w, unsigned16_t row, unsigned16_t col, double numval, xf_t *pxformat);
 // 536870911 >= numval >= -536870912
