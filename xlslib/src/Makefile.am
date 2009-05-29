@@ -21,6 +21,7 @@ xlslib/blank.cpp		      \
 xlslib/cbridge.cpp		      \
 xlslib/cell.cpp			      \
 xlslib/colinfo.cpp		      \
+xlslib/colors.cpp		      \
 xlslib/continue.cpp		      \
 xlslib/datast.cpp		      \
 xlslib/docsumminfo.cpp		  \
