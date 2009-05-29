@@ -4,6 +4,7 @@ echo "libtoolize may issue a warning on the need to run aclocal - rest assured t
 
 sys=`uname`
 
+
 if [ $sys = "Darwin" ]
 then 
 	glibtoolize --force \
