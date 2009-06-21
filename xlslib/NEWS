@@ -36,3 +36,9 @@ Summary: xlslib release 1.2.0
 - support for ASCII and UNICODE strings in labels and sheet names
 - compliance with mandatory items specified in OpenOffice.org's Excel Spec
 
+Date 2009-6-20
+Summary: xlslib release 1.5.0
+-----------------------------------------------------------
+- Significant bug fixes and performance improvements
+- Possible now to create "Properties" objects
+
