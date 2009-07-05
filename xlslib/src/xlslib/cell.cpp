@@ -210,13 +210,11 @@ void cell_t::wrap(bool wrap_opt)
 	if(currentfont == NULL)	{										\
 		currentfont = m_GlobalRecords.GetDefaultFont();				\
 		font_t* fntnew = font_t::fontDup(currentfont);				\
-		m_GlobalRecords.AddFont(fntnew);							\
 		pxf->SetFont(fntnew);										\
 	} else															\
 	if(currentfont->Usage() > 1)									\
 	{																\
 		font_t* fntnew = font_t::fontDup(currentfont);				\
-		m_GlobalRecords.AddFont(fntnew);							\
 		pxf->SetFont(fntnew);										\
 	}																\
 	pxf->GetFont()->function(value);								\
