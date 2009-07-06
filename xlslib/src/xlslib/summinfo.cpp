@@ -69,15 +69,15 @@ CSummaryInfo::CSummaryInfo() :
 	msTime =  hpsf->unix2mstime(time(NULL));
 
 	hpsf->addItem(SumInfo_Unknown, (unsigned16_t)1200);					// Excel 2004 on Mac writes this	// 0xfde9
-	hpsf->addItem(SumInfo_CreateTime_Date, msTime);							// should be "right now"
-	hpsf->addItem(SumInfo_LastSavedTime_Date, msTime);						// should be "right now"
-	hpsf->addItem(SumInfo_Security, (unsigned32_t)0);						// Default
-	hpsf->addItem(SumInfo_NameofCreatingApplication, s = "xlsLib");				// Default
+	hpsf->addItem(SumInfo_CreateTime_Date, msTime);						// should be "right now"
+	hpsf->addItem(SumInfo_LastSavedTime_Date, msTime);					// should be "right now"
+	hpsf->addItem(SumInfo_Security, (unsigned32_t)0);					// Default
+	hpsf->addItem(SumInfo_NameofCreatingApplication, s = "xlsLib");		// Default
 }
 
 CSummaryInfo::~CSummaryInfo()
 {
-	if(hpsf) delete hpsf;
+	delete hpsf;
 }
 
 /*

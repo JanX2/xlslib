@@ -133,14 +133,20 @@ unsigned32_t HPSFitem::GetSize()
 }
 
 HPSFdoc::HPSFdoc(docType_t dt) :
-	docType(dt)
+	docType(dt),
+    itemList()
 {
 
 }
 
 HPSFdoc::~HPSFdoc()
 {
-
+	HPSF_Set_Itor_t		hBegin, hEnd, hIter;
+	
+	hBegin		= itemList.begin();
+	hEnd		= itemList.end();
+	for(hIter=hBegin; hIter != hEnd; ++hIter)
+		delete *hIter;
 }
 
 void HPSFdoc::insert(HPSFitem *item)
