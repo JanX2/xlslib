@@ -700,7 +700,7 @@ bool xf_t::operator==(const xf_t& right)
 {
 	return this->xfi == right.xfi;
 	
-#if 0
+#if 0   // here for historical reference...
 	// used by "range" in doing mass changes. Try to arrange so most
 	// likely failures occurr early
 
@@ -728,9 +728,10 @@ bool xf_t::operator==(const xf_t& right)
 	if(wrap != right.wrap)				return false;
 	if(is_cell != right.is_cell)		return false;
 	if(is_userXF != right.is_userXF)	return false;
-#endif
-
+ 	if(is_userXF != right.is_userXF)	return false;
+ 
 	return true;
+#endif
 }
 
 /* Horizontal Align option wrappers*/
