@@ -55,9 +55,9 @@ CIndex::CIndex(unsigned32_t firstrow,
 	AddValue32(lastrow+1);
 
 	AddValue32(INDEX_DFLT_RESERVED);
-// NOTE: This record is created with an empty array. It should work if the rest
-// of the record is not completed later, since the record's size reflects the
-// lack of such array
+    // NOTE: This record is created with an empty array. It should work if the rest
+    // of the record is not completed later, since the record's size reflects the
+    // lack of such array
 	SetRecordLength(GetDataSize()-4);
 }
 
@@ -84,8 +84,8 @@ void CIndex::AddDBCellOffset(unsigned32_t dboffset)
 void CIndex::SetRows(unsigned32_t firstrow,
                      unsigned32_t lastrow)
 {
-	SetValueAt((unsigned32_t)firstrow, INDEX_OFFSET_B7FIRSTROW);
-	SetValueAt((unsigned32_t)lastrow, INDEX_OFFSET_B7LASTROW);
+	SetValueAt32((unsigned32_t)firstrow, INDEX_OFFSET_B8FIRSTROW);
+	SetValueAt32((unsigned32_t)(lastrow+1), INDEX_OFFSET_B8LASTROW);
 }
 
 /* 
@@ -95,11 +95,10 @@ void CIndex::SetRows(unsigned32_t firstrow,
 
 unsigned32_t CIndex::GetFirstRow(void)
 {
-
 	unsigned32_t retval;
 
 	signed32_t firstrow;
-	GetValue32From(&firstrow, INDEX_OFFSET_B7FIRSTROW);
+	GetValue32From(&firstrow, INDEX_OFFSET_B8FIRSTROW);
 	retval = firstrow;
    
 	return retval;
@@ -112,11 +111,10 @@ unsigned32_t CIndex::GetFirstRow(void)
 
 unsigned32_t CIndex::GetLastRow(void)
 {
-
 	unsigned32_t retval;
 	
 	signed32_t lastrow;
-	GetValue32From(&lastrow, INDEX_OFFSET_B7LASTROW);
+	GetValue32From(&lastrow, INDEX_OFFSET_B8LASTROW);
 	retval = lastrow;
 
 	return retval;
