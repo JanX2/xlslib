@@ -132,11 +132,12 @@ typedef enum
 } color_name_t;
 #define ORIG_COLOR_BLACK	(color_name_t)0		// Well, to get the default fonts etc to use same value as Excel outputs
 
-	typedef struct {
-		unsigned8_t r, g, b, nuttin;
-	} color_entry_t;
-
-	class colors_t : public CRecord
+	struct color_entry_t
+	{
+ 		unsigned8_t r, g, b, nuttin;
+	};
+ 
+	class colors_t // : public CRecord
 	{
 	  public:
 		colors_t();
@@ -150,7 +151,7 @@ typedef enum
 		colors_t& operator=(const colors_t& right);
 
 	  private:
-		color_entry_t	*colors;
+		color_entry_t *colors;
 	};
 
 /*
