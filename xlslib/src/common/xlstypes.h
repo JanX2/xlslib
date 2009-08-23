@@ -60,7 +60,7 @@ typedef int                signed32_t;
 
 #if defined(_MSC_VER) && defined(WIN32)		// Windows
 
-typedef __int64 unsigned64_t;
+typedef _unsigned _int64 unsigned64_t;
 
 #else										// not windows
 
