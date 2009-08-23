@@ -56,7 +56,7 @@ namespace xlslib_core
 
     private:
       label_t(CGlobalRecords& gRecords, unsigned16_t rowval, unsigned16_t colval, const u16string& labelstrval, xf_t* pxfval = NULL);
-      ~label_t(){};
+      virtual ~label_t(){};
 
     private:
 	  u16string	strLabel;

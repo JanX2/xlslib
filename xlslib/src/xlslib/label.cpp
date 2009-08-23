@@ -46,7 +46,7 @@ xlslib_core::label_t::label_t(CGlobalRecords& gRecords,
 		unsigned16_t rowval, unsigned16_t colval, const u16string& labelstrval, xf_t* pxfval) :
 	cell_t(gRecords, rowval, colval),
 	strLabel(),
-	isASCII(false)
+	isASCII(true)
 {
 	u16string::const_iterator cBegin, cEnd;
 	size_t	len;
@@ -67,6 +67,10 @@ xlslib_core::label_t::label_t(CGlobalRecords& gRecords,
 
 		strLabel.push_back(c);		
 	}
+}
+
+xlslib_core::label_t::~label_t()
+{
 }
 
 /*
