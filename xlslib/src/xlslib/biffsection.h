@@ -43,15 +43,19 @@ CBiffSection class declaration
 ******************************
 */
 
-
-class CBiffSection
+namespace xlslib_core
 {
- protected:
 
- public:
-  CBiffSection() {};
-  virtual ~CBiffSection() {};
-};
+ class CBiffSection
+ {
+  protected:
+ 
+  public:
+   CBiffSection() {};
+   virtual ~CBiffSection() {};
+ };
+
+}
 
 #endif //BIFFSECTION_H
 
