@@ -52,8 +52,9 @@
 #endif
 #include <cstring>
 #include <string>
-#include <string.h>	// DFH 10-2-08
+#include <string.h>	
 #include <iostream>
+#include <fstream> 
 #include <list>
 #include <set>
 #include <algorithm>
