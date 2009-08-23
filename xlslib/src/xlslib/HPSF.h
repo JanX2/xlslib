@@ -93,7 +93,7 @@ namespace xlslib_core
 			void SetOffset(unsigned32_t of) { offset=of;};
 			unsigned32_t GetOffset() const { return offset;};
 			
-			unsigned32_t GetSize();	// actual length rounded up to 4 bytes
+			size_t GetSize();	// actual length rounded up to 4 bytes
 
 			bool operator< (const HPSFitem& rhs) const { return variant < rhs.variant ? true : false; };
 	};

@@ -49,7 +49,7 @@ namespace xlslib_core
   // Error codes
 #define ERR_DATASTORAGE_EMPTY (-2)
 #define ERR_INVALID_INDEX     (-3)
-#define ERR_UNNABLE_TOALLOCATE_MEMORY     (-3)
+#define ERR_UNABLE_TOALLOCATE_MEMORY     (-3)
 
   //Block definitions
 #define BIG_BLOCK_SIZE     (0x200)

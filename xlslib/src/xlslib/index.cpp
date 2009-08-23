@@ -84,8 +84,8 @@ void CIndex::AddDBCellOffset(unsigned32_t dboffset)
 void CIndex::SetRows(unsigned32_t firstrow,
                      unsigned32_t lastrow)
 {
-	SetValueAt32((unsigned32_t)firstrow, INDEX_OFFSET_B8FIRSTROW);
-	SetValueAt32((unsigned32_t)(lastrow+1), INDEX_OFFSET_B8LASTROW);
+	SetValueAt((unsigned32_t)firstrow, INDEX_OFFSET_B8FIRSTROW);
+	SetValueAt((unsigned32_t)(lastrow+1), INDEX_OFFSET_B8LASTROW);
 }
 
 /* 

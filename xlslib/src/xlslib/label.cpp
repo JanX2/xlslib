@@ -69,9 +69,11 @@ xlslib_core::label_t::label_t(CGlobalRecords& gRecords,
 	}
 }
 
+#if 0 // GCC won't let me do this since it's virtual
 xlslib_core::label_t::~label_t()
 {
 }
+#endif
 
 /*
 ******************************
