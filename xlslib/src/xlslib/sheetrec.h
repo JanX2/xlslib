@@ -146,7 +146,7 @@ worksheet class declaration
 		cell_t*					cellHint;
 
     private:
-		worksheet(CGlobalRecords& gRecords, unsigned32_t idx);
+		worksheet(CGlobalRecords& gRecords, unsigned16_t idx);
 		~worksheet();
 
 		void					GetFirstLastRows(unsigned32_t* first_row, unsigned32_t* last_row);

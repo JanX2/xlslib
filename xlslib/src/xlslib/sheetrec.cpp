@@ -45,24 +45,25 @@ using namespace xlslib_core;
 #if 1
 
 #define MARK_CELLS_UNSORTED() {                 \
-   m_SizesCalculated = false,                   \
+   m_SizesCalculated = false;                   \
    m_RBSizes.clear();                           \
 }
 
 #else
 
 #define MARK_CELLS_UNSORTED() {                 \
-   /*m_CellsSorted = false, */                      \
-   m_SizesCalculated = false,                   \
+   /*m_CellsSorted = false, */                  \
+   m_SizesCalculated = false;                   \
    m_RBSizes.clear();                           \
 }
 #endif
 
-#define MAX_ROWBLOCK_SIZE (32)
+#define MAX_ROWBLOCK_SIZE (16)                          // was: 32, but CONTINUE-d DBCELLs are not liked by Excel 2003 ???
 
-#define RB_DBCELL_MINSIZE          (unsigned8_t(8))
-#define RB_DBCELL_CELLSIZEOFFSET   (unsigned8_t(2))
+#define RB_DBCELL_MINSIZE          /*(unsigned8_t*/(8)
+#define RB_DBCELL_CELLSIZEOFFSET   /*(unsigned8_t*/(2)
 
+#define MAX_COLUMNS_PER_ROW 256 // Excel 2003 limit: 256 columns per row. (Update this when we upgrade this lib to support BIFF12 !)
 
 using namespace std;
 
@@ -71,7 +72,7 @@ using namespace std;
 worksheet class implementation
 **********************************************************************
 */
-worksheet::worksheet(CGlobalRecords& gRecords, unsigned32_t idx) :
+worksheet::worksheet(CGlobalRecords& gRecords, unsigned16_t idx) :
 	m_GlobalRecords(gRecords),
 	m_DumpState(SHEET_INIT),
 	m_pCurrentData(NULL),
@@ -81,7 +82,7 @@ worksheet::worksheet(CGlobalRecords& gRecords, unsigned32_t idx) :
 	m_Current_Colinfo(),
 	m_RowHeights(),
 	m_Current_RowHeight(),
-	minRow(0xFFFF), minCol(0xFFFF),
+	minRow((unsigned32_t)(-1)), minCol((unsigned32_t)(-1)),
 	maxRow(0), maxCol(0),
 	sheetIndex(idx),
 	m_Cells(),
