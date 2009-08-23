@@ -50,8 +50,6 @@ CIndex class declaration
 */
 #define INDEX_DFLT_RESERVED ((unsigned32_t)0x00000000)
 
-#define INDEX_OFFSET_B7FIRSTROW ((unsigned32_t)8)
-#define INDEX_OFFSET_B7LASTROW  ((unsigned32_t)10)
 #define INDEX_OFFSET_B8FIRSTROW ((unsigned32_t)8)
 #define INDEX_OFFSET_B8LASTROW  ((unsigned32_t)12)
 
