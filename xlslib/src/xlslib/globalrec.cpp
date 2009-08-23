@@ -754,12 +754,14 @@ void  CGlobalRecords::wide2str16(const ustring& str1, u16string& str2)
 	ustring::const_iterator	cBegin, cEnd;
 	size_t	len;
 
-	// if character size of both strings the same, well, we should be able to just assign them
-	if(sizeof(unichar_t) == sizeof(unsigned16_t)) {
-		str2 = str1;
-		return;
-	}
-	
+#if !defined(_MSC_VER) /*  MSVC2005 doesn't accept this for ANSI builds at least! */
+    // if character size of both strings is the same, well, we should be able to just assign them
+ 	if(sizeof(unichar_t) == sizeof(unsigned16_t)) {
+ 		str2 = str1;
+ 		return;
+ 	}
+#endif
+
 	len = str1.length();
 	str2.reserve(len);
 
