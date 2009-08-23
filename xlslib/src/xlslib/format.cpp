@@ -157,7 +157,7 @@ unsigned16_t CFormat::GetIndex(void) const
 format_t::format_t(u16string fmtstr) :
 	index(0),
 	formatstr(),
-	isASCII(false)
+	isASCII(true)
 {
 	u16string::const_iterator	cBegin, cEnd;
 	size_t	len;
