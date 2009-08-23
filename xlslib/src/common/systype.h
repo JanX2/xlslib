@@ -254,22 +254,32 @@ typedef StringList_t::const_iterator StringListItor_t;
 ****************************************
 */
 #ifdef __DEBUG__
+
 #define XTRACE(str) {                           \
-  cout<<"DEBUG: "<<str<<endl;                   \
+  std::cout<<"DEBUG: "<<str<<endl;              \
+}
+#define XTRACE2(str, arg) {                     \
+  std::cerr<<"DEBUG: "<<str<<arg<<std::endl;    \
 }
 
 #else
+
 #define XTRACE(str)
+#define XTRACE2(str, arg)
+
 #endif
 
 
 #ifdef __PHP_DEBUG__
+
 #define PHPTRACE(str) {                         \
-  cout<<"PHPDEBUG: "<<str<<endl;                \
+  std::cout<<"PHPDEBUG: "<<str<<endl;           \
 }
 
 #else
+
 #define PHPTRACE(str)
+
 #endif
 
 
