@@ -66,7 +66,7 @@ HPSFitem::HPSFitem(unsigned16_t v, const string& str) :
 }
 HPSFitem::HPSFitem(unsigned16_t v, bool val) :
 	propID(v),
-	variant(HPSF_STRING),
+	variant(HPSF_BOOL),
 	value(),
 	offset(0)
 {
@@ -103,31 +103,34 @@ HPSFitem::~HPSFitem()
 		delete value.str;
 }
 
-unsigned32_t HPSFitem::GetSize()
+size_t HPSFitem::GetSize()
 {
-	unsigned32_t	size;
+	size_t	size;
 	
 	switch(variant) {
 	case HPSF_STRING:
-		size = static_cast<unsigned32_t>(value.str->length() + 1 + 4);	// 1 for null terminator, 4 for length field
+		size = value.str->length() + 1 + 4;         // 1 for null terminator, 4 for length field
+		// round up to the next 4-byte boundary:
+		size = (size + 4 - 1) & ~3;
+		assert(size >= 4);
+		assert((size % 4) == 0);
 		break;
 	case HPSF_BOOL:
-		size = 2;
+		size = 2 + 2;   // final 2 is padding
 		break;
 	case HPSF_INT16:
-		size = 2;
+		size = 2 + 2;   // final 2 is padding
 		break;
 	case HPSF_INT32:
-		size = 4;
+		size = 4;       // 0 padding
 		break;
 	case HPSF_INT64:
-		size = 8;
+		size = 8;       // 0 padding
 		break;
 	default:
-		size = 0;
+		size = 0;       // 0 padding
 		break;
 	}
-	size += size % 4;
 	
 	return size + 4;	// variant at the start
 }
@@ -248,10 +251,13 @@ void HPSFdoc::DumpData()
 		AddValue32(hpsfValues[variant]);
 		
 		switch(variant) {
-		case HPSF_STRING:
-			len = static_cast<unsigned32_t>(value.str->length() + 1);	// length of string plus null terminator
-			padding = (len % 4) + 1;		// string terminator is the "1"
-			AddValue32(len);
+		case HPSF_STRING:            
+			len = value.str->length() + 1;	// length of string plus null terminator
+			// take the mandatory NUL sentinel into account as well:
+			padding = 1 + ((4 - len) & 3);
+			assert(padding + len - 1 >= 4);
+			assert((padding + len - 1) % 4 == 0);
+			AddValue32((unsigned32_t)len);
 			AddDataArray((const unsigned8_t *)value.str->c_str(), len-1);
 			break;
 		case HPSF_BOOL:
