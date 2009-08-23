@@ -693,8 +693,8 @@ void worksheet::AddCell(cell_t* pcell)
 
 			// means we got a duplicate - the user is overwriting an existing cell
 			existing_cell = *(ret);
+			m_Cells.erase(existing_cell);   // Bugs item #2840227:  prevent crash: first erase, then delete
 			delete existing_cell;
-			m_Cells.erase(existing_cell);
 			
 			cellHint = NULL;
 		} else {
