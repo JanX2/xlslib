@@ -54,7 +54,7 @@ namespace xlslib_core
 
     protected:
 		cell_t(CGlobalRecords& gRecord, unsigned16_t row, unsigned16_t col);
-		~cell_t();	// "C++ Coding Standards" rule 50 (protected and non-virtual)
+		virtual ~cell_t();	// "C++ Coding Standards" rule 50 (protected and non-virtual) 
 
     private:
 		cell_t(const cell_t& that);
