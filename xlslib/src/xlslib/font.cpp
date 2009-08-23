@@ -205,6 +205,40 @@ font_t::font_t(CGlobalRecords& gRecords,
    SetCharset(charset_);
 }
 
+font_t &font_t::operator =(const font_t &src)
+{
+	throw string("Should never have invoked the font_t copy operator!");
+
+#if 0   // historical interest
+	this->m_GlobalRecords = src.m_GlobalRecords;
+	this->index = src.index;
+	this->name = src.name;
+	this->height = src.height;
+	this->boldstyle = src.boldstyle;
+	this->script = src.script;
+	this->attributes = src.attributes;
+	this->color = src.color;
+	this->underline = src.underline;
+	this->family = src.family;
+	this->charset = src.charset;
+	this->m_usage_counter = src.m_usage_counter;
+#endif
+
+#if 0   // historical interest
+	SetIndex(src.index);
+	SetName(src.name);
+	SetHeight(src.height);
+	SetBoldStyle(src.boldstyle);
+	SetUnderlineStyle(src.underline);
+	SetScriptStyle(src.script);
+	SetColor(src.color);
+	SetAttributes(src.attributes);
+	SetFamily(src.family);
+	SetCharset(src.charset);
+#endif
+}
+
+
 /* 
 **********************************
 **********************************

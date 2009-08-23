@@ -181,6 +181,8 @@ CFont class declaration
 		color_name_t color, unsigned16_t attributes,
 		unsigned8_t family, unsigned8_t charset);
       ~font_t() {};
+	  /* MSVC2005: C4512: 'xlslib_core::font_t' : assignment operator could not be generated */
+	  font_t &operator =(const font_t &src);
 
       /* FONT Index wrappers*/
       void		SetIndex(unsigned16_t fntidx);
