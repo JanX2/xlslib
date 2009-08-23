@@ -371,7 +371,6 @@ signed8_t CUnit::SetArrayAt(const unsigned8_t* newdata, size_t size, unsigned32_
 
 signed8_t CUnit::AddValue8(unsigned8_t newdata)
 {
-  
    if(m_nDataSize >= m_nSize) 
    {
       Inflate();
@@ -468,36 +467,34 @@ signed8_t CUnit::AddUnicodeString (const u16string* str16, size_t size, bool is_
 
 signed8_t CUnit::Inflate(size_t increase)
 {
-   signed8_t errcode = NO_ERRORS;
+    signed8_t errcode = NO_ERRORS;
 
-   if (increase == 0)
-      increase = CUnit::DefaultInflateSize;
-  
-   // Create the new storage with increased size
-   // and initialize it to 0.
-   unsigned8_t* temp_storage = new unsigned8_t[m_nSize + increase];
+    if (increase == 0)
+        increase = CUnit::DefaultInflateSize;
 
-   if(temp_storage != NULL)
-   {
+    // Create the new storage with increased size
+    // and initialize it to 0.
+    unsigned8_t* temp_storage = new unsigned8_t[m_nSize + increase];
 
-      memset(temp_storage, 0, (m_nSize+increase)*(sizeof(unsigned8_t)));
-      // Copy data to the new storage
-      memcpy(temp_storage, m_pData, m_nSize*sizeof(unsigned8_t));
-  
-      // Update the size
-      m_nSize += static_cast<unsigned32_t>(increase);
-  
-      if (m_pData != NULL)
-         delete []m_pData;
+    if(temp_storage != NULL)
+    {
+        memset(temp_storage, 0, (m_nSize+increase)*(sizeof(unsigned8_t)));
+        // Copy data to the new storage
+        memcpy(temp_storage, m_pData, m_nSize*sizeof(unsigned8_t));
 
-      m_pData = temp_storage;
-     
-      errcode = ERR_UNNABLE_TOALLOCATE_MEMORY;
-   } else {
-      // No errors... errcode already clean
-   }
-  
-   return errcode;
+        // Update the size
+        m_nSize += static_cast<unsigned32_t>(increase);
+
+        if (m_pData != NULL)
+            delete []m_pData;
+
+        m_pData = temp_storage;
+        // No errors... errcode already clean     
+    } else {
+        errcode = ERR_UNABLE_TOALLOCATE_MEMORY;
+    }
+
+    return errcode;
 }
 
 /************************************************
