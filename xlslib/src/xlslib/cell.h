@@ -47,7 +47,7 @@ namespace xlslib_core
   class insertsort;
   class xf_t;
   
-  class cell_t : public xf_i , public font_i
+  class cell_t  // : public xf_i , public font_i // Bugs item #2840335 - appears not required (this was here when I got the project :-)
   {
 		friend class insertsort;
 		friend class worksheet;
