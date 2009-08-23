@@ -53,7 +53,7 @@ CRow::CRow(unsigned16_t rownum,
 	SetRecordType(RECTYPE_ROW);
 	AddValue16(rownum);
 	AddValue16(firstcol);
-	AddValue16((lastcol+1));
+	AddValue16(lastcol+1);
 	AddValue16(rowheight);
 
 	// A field used by MS for "optimizing" (?) the loading of a file.
@@ -63,7 +63,8 @@ CRow::CRow(unsigned16_t rownum,
 	AddValue16(0);
 
 	// TODO: The following flag-word can be used for outline cells.
-	// As a defaule the GhostDirty flag is is set, so the row has a default
+	// As a default the GhostDirty flag is set, so the row has a default
+
 	// format (set by the index of byte 18).
 	if(rowheight == ROW_DFLT_HEIGHT)
 	{
@@ -87,7 +88,7 @@ CRow::CRow(row_t& rowdef)
 	SetRecordType(RECTYPE_ROW);
 	AddValue16(rowdef.rownum);
 	AddValue16(rowdef.firstcol);
-	AddValue16((rowdef.lastcol+1));
+	AddValue16(rowdef.lastcol+1);
 	AddValue16(ROW_DFLT_HEIGHT);
 
 	// A field used by MS for "optimizing" (?) the loading of a file.
@@ -97,7 +98,7 @@ CRow::CRow(row_t& rowdef)
 	AddValue16((unsigned16_t)0);
 
 	// TODO: The following flag-word can be used for outline cells.
-	// As a defaule the GhostDirty flag is is set, so the row has a default
+	// As a default the GhostDirty flag is set, so the row has a default
 	// format (set by the index of byte 18).
 	AddValue16((unsigned16_t)(ROW_DFLT_GRBIT|ROW_GRBIT_UNSYNC));
 	if(rowdef.xformat == NULL) {
