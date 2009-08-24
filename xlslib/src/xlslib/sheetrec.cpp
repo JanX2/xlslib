@@ -82,7 +82,7 @@ worksheet::worksheet(CGlobalRecords& gRecords, unsigned16_t idx) :
 	m_Current_Colinfo(),
 	m_RowHeights(),
 	m_Current_RowHeight(),
-	minRow((unsigned32_t)(-1)), minCol((unsigned32_t)(-1)),
+	minRow(0xFFFF), minCol(0xFFFF),
 	maxRow(0), maxCol(0),
 	sheetIndex(idx),
 	m_Cells(),
