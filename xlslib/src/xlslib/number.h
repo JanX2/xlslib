@@ -70,8 +70,17 @@ namespace xlslib_core
       } num;
 
     public:
-      double GetNumber(double unused) const {return isDouble ? num.dblNum : (double)num.intNum;};
-      signed32_t GetNumber(signed32_t unused) const {return isDouble ? (signed32_t)num.dblNum : num.intNum;};
+      // idea is by passing either an int or a double, can get the proper conversion (which might be none)
+      double GetNumber(double unused
+#ifdef __GNUC__
+__attribute__((unused))
+#endif
+									) const {return isDouble ? num.dblNum : (double)num.intNum;};
+      signed32_t GetNumber(signed32_t unused
+#ifdef __GNUC__
+__attribute__((unused))
+#endif
+									) const {return isDouble ? (signed32_t)num.dblNum : num.intNum;};
     };
 
   class number_t;

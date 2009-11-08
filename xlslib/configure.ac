@@ -83,6 +83,9 @@ AC_SUBST(WITH_ICONV)
 XLSLIB_LIBS="$ICONV_LIBS $LIBS"
 
 AC_SUBST(XLSLIB_LIBS)
+
+LT_INIT
+
 ###########################################################
 
 
