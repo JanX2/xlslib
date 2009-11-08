@@ -64,3 +64,6 @@ With the conversion to BIFF8 in Release 1.2, addition formatting capabilies beco
 available. Unfortunately, these are not listed in the existing pdf document
 so to find them you will need to look at the xlslib.h header file.
 
+Important: the latest configure script does not seem to run using the Bash shell.
+If it appears to hang, then I suggest you run it with ksh (ie, "ksh ./configure").
+This noticed on Apple's 10.6.1 (Snow Leopard).

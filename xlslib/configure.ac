@@ -7,6 +7,7 @@ AC_CONFIG_SRCDIR([src/common/systype.h])
 AC_CONFIG_AUX_DIR(config)
 AM_INIT_AUTOMAKE(xlslib, 1.5.0)
 AM_CONFIG_HEADER(src/common/xlconfig.h)
+AC_CONFIG_MACRO_DIR([m4])
 
 # Checks for programs.
 AC_PROG_CXX
@@ -82,15 +83,14 @@ AC_SUBST(WITH_ICONV)
 
 XLSLIB_LIBS="$ICONV_LIBS $LIBS"
 
+LT_INIT
 AC_SUBST(XLSLIB_LIBS)
 
-LT_INIT
-
 ###########################################################
-
 
 AC_CONFIG_FILES([Makefile
 		 src/Makefile
 		 targets/Makefile
 		 targets/test/Makefile])
 AC_OUTPUT
+
