@@ -1,4 +1,4 @@
-auxdir					= @ac_aux_dir@
+auxdir					= @AC_AUX_DIR@
 AUX_DIST				= $(auxdir)/install-sh $(auxdir)/missing \
 							$(auxdir)/mkinstalldirs
 AUX_DIST_EXTRA			= $(auxdir)/readline.m4 $(auxdir)/sys_errlist.m4 \
