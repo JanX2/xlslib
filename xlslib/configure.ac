@@ -2,11 +2,11 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.57)
-AC_INIT(xlslib, 1.5.0, dhoerl@mac.com)
+AC_INIT([xlslib], [1.5.0], [dhoerl@mac.com])
 AC_CONFIG_SRCDIR([src/common/systype.h])
 AC_CONFIG_AUX_DIR(config)
 AM_INIT_AUTOMAKE(xlslib, 1.5.0)
-AM_CONFIG_HEADER(src/common/xlconfig.h)
+AM_CONFIG_HEADER([src/common/xlconfig.h])
 AC_CONFIG_MACRO_DIR([m4])
 
 # Checks for programs.
@@ -20,7 +20,7 @@ AC_PROG_LIBTOOL
 # Checks for header files.
 
 # Taken from libxml - DFH
-AC_CHECK_HEADERS([wchar.h])
+AC_CHECK_HEADERS([wchar.h stdint.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_HEADER_STDBOOL
@@ -91,6 +91,9 @@ AC_SUBST(XLSLIB_LIBS)
 AC_CONFIG_FILES([Makefile
 		 src/Makefile
 		 targets/Makefile
-		 targets/test/Makefile])
+		 targets/test/Makefile
+         build/msvc2005/ac-config.win32.h
+         build/msvc2008/ac-config.win32.h
+         ])
 AC_OUTPUT
 

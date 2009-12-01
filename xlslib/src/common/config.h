@@ -60,10 +60,27 @@
 
 #if defined(_MSC_VER) && defined(WIN32)
 
-#if _MSC_VER >= 1500
+#if _MSC_VER >= 1400
+
 
 // Studio 2008 (and maybe earlier versions too?)
+#define _CRTDBG_MAP_ALLOC
+
 #include "crtdbg.h"
+
+#if defined(_DEBUG) && defined(__cplusplus)
+
+#include <xdebug>
+
+#include <xlocale>
+#include <xiosbase>
+#include <xlocnum>
+#include <xtree>
+
+#define new_dbg		new(_CLIENT_BLOCK, __FILE__, __LINE__)
+#define new			new_dbg
+
+#endif
 
 #else
 
@@ -72,7 +89,11 @@
 // of (inlined) new() and delete() operators
 #define _INC_CRTDBG
 
-#endif // _MSC_VER >= 1500
+#endif // _MSC_VER >= 1400
+
+#include "ac-config.win32.h"
+
+#define HAVE_PRAGMA_PACK_PUSH_POP  1
 
 #endif // defined(_MSC_VER) && defined(WIN32)
 
