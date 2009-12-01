@@ -34,7 +34,7 @@
 #ifndef XLSTYPES_H
 #define XLSTYPES_H
 
-// Setup our typedefs now - would like to get them from from systype.h
+// Setup our typedefs now - would like to get them from systype.h
 #ifdef uint8_t				// if we have this one we will have all the others too
 
 typedef uint8_t				unsigned8_t;
@@ -60,7 +60,7 @@ typedef int                signed32_t;
 
 #if defined(_MSC_VER) && defined(WIN32)		// Windows
 
-typedef _unsigned _int64 unsigned64_t;
+typedef unsigned _int64 unsigned64_t;
 
 #else										// not windows
 

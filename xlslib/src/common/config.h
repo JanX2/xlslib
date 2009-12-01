@@ -33,8 +33,8 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 
-#ifndef CONFIG_H
-#define CONFIG_H
+#ifndef XLSLIB_CONFIG_H
+#define XLSLIB_CONFIG_H
 
 #ifdef HAVE_CONFIG_H
 #include <xlconfig.h>
@@ -94,7 +94,7 @@
 
 #endif // HAVE_CONFIG_H
 
-#endif //CONFIG_H
+#endif //XLSLIB_CONFIG_H
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * $Log: config.h,v $
  * Revision 1.4  2008/12/20 15:49:05  dhoerl

@@ -32,8 +32,9 @@
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-#ifndef TIMESPAN_H
-#define TIMESPAN_H
+#ifndef XLSLIB_TIMESPAN_H
+#define XLSLIB_TIMESPAN_H
+
 #include <config.h>
 #include <time.h>
 
@@ -98,7 +99,7 @@ class CCpuClockTimespan
   clock_t m_nUsedClockTicks;
 };
 
-#endif //TIMESPAN_H
+#endif //XLSLIB_TIMESPAN_H
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * $Log: timespan.h,v $

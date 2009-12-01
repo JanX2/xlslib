@@ -105,7 +105,8 @@ typedef enum
   FMT_SCIENTIFIC2,				// ##0.0E+0
   FMT_TEXT          			// @
 } format_number_t;
-// Good explanation ofcustom formats: http://www.ozgrid.com/Excel/CustomFormats.htm
+// good resource for format strings: http://www.mvps.org/dmcritchie/excel/formula.htm
+// Good explanation of custom formats: http://www.ozgrid.com/Excel/CustomFormats.htm
 // MS examples (need Windows): http://download.microsoft.com/download/excel97win/sample/1.0/WIN98Me/EN-US/Nmbrfrmt.exe
 // Google this for MS help: "Create or delete a custom number format"
 

@@ -64,19 +64,19 @@
 
 //#define NULL ((void*)(0))
 
-#define NO_ERRORS        0
-#define FILE_ERROR      -1
-#define GENERAL_ERROR     ((signed8_t)-100)
+#define NO_ERRORS         0
+#define FILE_ERROR        (-1)
+#define GENERAL_ERROR     (-100)
 
-#define PTYPE_DIRECTORY   ((unsigned8_t)(0x01))
-#define PTYPE_FILE        ((unsigned8_t)(0x02))
-#define PTYPE_ROOT        ((unsigned8_t)(0x05))
+#define PTYPE_DIRECTORY   (0x01)
+#define PTYPE_FILE        (0x02)
+#define PTYPE_ROOT        (0x05)
 
-#define PCOLOR_BLACK      ((unsigned8_t)(0x01))
-#define PCOLOR_RED		  ((unsigned8_t)(0x00))
+#define PCOLOR_BLACK      (0x01)
+#define PCOLOR_RED		  (0x00)
 
-#define PLINK_EMPTY       ((signed32_t)(-1))
-#define PBLOCK_END        ((signed32_t)(-2))
+#define PLINK_EMPTY       (-1)
+#define PBLOCK_END        (-2)
 
 
 #if USE_ALLOCATOR==ALLOCATOR_STL
@@ -182,7 +182,7 @@ typedef StringList_t::const_iterator StringListItor_t;
 # define MASK_BYTE4 (unsigned64_t)0x000000ff00000000LL
 # define MASK_BYTE5 (unsigned64_t)0x0000ff0000000000LL
 # define MASK_BYTE6 (unsigned64_t)0x00ff000000000000LL
-# define MASK_BYTE7 (unsigned64_t)0xff00000000000000LL
+# define MASK_BYTE7 (unsigned64_t)0xff00000000000000ULL
 
 #endif
 
@@ -198,40 +198,40 @@ typedef StringList_t::const_iterator StringListItor_t;
 
 
 
-#define PROPERTY_DFLT_NOTUSED		((unsigned8_t)(0x00))
-#define PROPERTY_MAX_NAME_LENGTH	((unsigned8_t)(32))
+#define PROPERTY_DFLT_NOTUSED		(0x00)
+#define PROPERTY_MAX_NAME_LENGTH	(32)
 
-#define PROPERTY_TYPE_DIR			((unsigned8_t)(0x01))
-#define PROPERTY_TYPE_FILE			((unsigned8_t)(0x02))
-#define PROPERTY_TYPE_ROOT			((unsigned8_t)(0x05))
+#define PROPERTY_TYPE_DIR			(0x01)
+#define PROPERTY_TYPE_FILE			(0x02)
+#define PROPERTY_TYPE_ROOT			(0x05)
 
-#define PROPERTY_COLOR_NODE_RED		((unsigned8_t)(0x00))
-#define PROPERTY_COLOR_NODE_BLACK	((unsigned8_t)(0x01))
-#define PROPERTY_LINK_EMPTY			((signed32_t)(-1))
+#define PROPERTY_COLOR_NODE_RED		(0x00)
+#define PROPERTY_COLOR_NODE_BLACK	(0x01)
+#define PROPERTY_LINK_EMPTY			(-1)
 
-#define PPTPOS_NAME					((unsigned8_t)(0x00))
-#define PPTPOS_NAMELENGTH			((unsigned8_t)(0x40))
-#define PPTPOS_TYPE					((unsigned8_t)(0x42))
-#define PPTPOS_NODECOLOR			((unsigned8_t)(0x43))
-#define PPTPOS_PREVIOUS				((unsigned8_t)(0x44))
-#define PPTPOS_NEXT					((unsigned8_t)(0x48))
-#define PPTPOS_CHILD				((unsigned8_t)(0x4C))
-#define PPTPOS_UNUSED_EMPTY0		((unsigned8_t)(0x50))
-
-
-#define PPTPOS_SECS1				((unsigned32_t)(0x64))
-#define PPTPOS_SECS2				((unsigned32_t)(0x68))
-#define PPTPOS_DAYS1				((unsigned32_t)(0x6c))
-#define PPTPOS_DAYS2				((unsigned32_t)(0x70))
-
-#define PPTPOS_STARTBLOCK			((unsigned8_t)(0x74))
-#define PPTPOS_SIZE					((unsigned8_t)(0x78))
+#define PPTPOS_NAME					(0x00)
+#define PPTPOS_NAMELENGTH			(0x40)
+#define PPTPOS_TYPE					(0x42)
+#define PPTPOS_NODECOLOR			(0x43)
+#define PPTPOS_PREVIOUS				(0x44)
+#define PPTPOS_NEXT					(0x48)
+#define PPTPOS_CHILD				(0x4C)
+#define PPTPOS_UNUSED_EMPTY0		(0x50)
 
 
-#define PPT_DFLT_SECS1				((signed32_t)(0))
-#define PPT_DFLT_SECS2				((signed32_t)(0))
-#define PPT_DFLT_DAYS1				((signed32_t)(0))
-#define PPT_DFLT_DAYS2				((signed32_t)(0))
+#define PPTPOS_SECS1				(0x64)
+#define PPTPOS_SECS2				(0x68)
+#define PPTPOS_DAYS1				(0x6c)
+#define PPTPOS_DAYS2				(0x70)
+
+#define PPTPOS_STARTBLOCK			(0x74)
+#define PPTPOS_SIZE					(0x78)
+
+
+#define PPT_DFLT_SECS1				(0)
+#define PPT_DFLT_SECS2				(0)
+#define PPT_DFLT_DAYS1				(0)
+#define PPT_DFLT_DAYS2				(0)
 
 
 // More macros
@@ -256,7 +256,7 @@ typedef StringList_t::const_iterator StringListItor_t;
 #ifdef __DEBUG__
 
 #define XTRACE(str) {                           \
-  std::cout<<"DEBUG: "<<str<<endl;              \
+  std::cerr<<"DEBUG: "<<str<<std::endl;         \
 }
 #define XTRACE2(str, arg) {                     \
   std::cerr<<"DEBUG: "<<str<<arg<<std::endl;    \
@@ -273,7 +273,7 @@ typedef StringList_t::const_iterator StringListItor_t;
 #ifdef __PHP_DEBUG__
 
 #define PHPTRACE(str) {                         \
-  std::cout<<"PHPDEBUG: "<<str<<endl;           \
+	std::cerr<<"PHPDEBUG: "<<str<<std::endl;    \
 }
 
 #else
