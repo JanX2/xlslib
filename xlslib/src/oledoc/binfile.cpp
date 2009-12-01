@@ -33,6 +33,8 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 
+#include <config.h>
+
 #include <binfile.h>
 
 using namespace std;
@@ -103,7 +105,7 @@ unsigned32_t CBinFile::Position (  )
 ******************************
 ******************************
 */
-int CBinFile::Write(unsigned8_t * data, unsigned32_t size )
+int CBinFile::Write(unsigned8_t * data, size_t size )
 {
    int errcode = NO_ERRORS;
 
@@ -207,11 +209,11 @@ int CBinFile::WriteByteArray(const unsigned8_t *data, size_t size)
 ******************************
 */
 
-int CBinFile::SerializeFixedArray(const unsigned8_t data, unsigned32_t size)
+int CBinFile::SerializeFixedArray(const unsigned8_t data, size_t size)
 {
    int errcode = NO_ERRORS;
    
-   for (unsigned32_t i = 0; i<size; i++)
+   for (size_t i = 0; i<size; i++)
       WriteByte(data);
 
    return errcode;
@@ -224,10 +226,8 @@ int CBinFile::SerializeFixedArray(const unsigned8_t data, unsigned32_t size)
 
 int CBinFile::write_service(const char *buffer, size_t size)
 {
-
 //   if(!is_stroke)
    {
-
       if(m_File.is_open())
       {
          if(size > 1)

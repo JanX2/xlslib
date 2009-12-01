@@ -43,6 +43,9 @@
 #include <HPSF.h>
 
 
+
+#include <xls_pshpack2.h>
+
 // all of these defined, not all used
 #define SumInfo_Unknown						 1
 #define SumInfo_Title						 2
@@ -63,8 +66,8 @@
 #define SumInfo_Thumbnail					17
 #define SumInfo_NameofCreatingApplication	18
 #define SumInfo_Security					19
-#define		READONLY_RECOMMENDED			(unsigned32_t)0x02
-#define		READONLY_ENFORCED				(unsigned32_t)0x04
+#define		READONLY_RECOMMENDED			0x02
+#define		READONLY_ENFORCED				0x04
 #define SumInfo_Max							SumInfo_Security
 
 namespace xlslib_core
@@ -109,6 +112,9 @@ CSummaryInfo class declaration
 		CSummaryInfo& operator=(const CSummaryInfo& right);
     };
 }
+
+#include <xls_poppack.h>
+
 #endif
 
 

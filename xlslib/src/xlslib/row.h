@@ -47,28 +47,35 @@ CRow class declaration
 ******************************
 */
 
+
+#include <xls_pshpack2.h>
+
 namespace xlslib_core
 {
 
-#define ROW_DFLT_HEIGHT        ((unsigned16_t)0x0108)
-#define ROW_DFLT_GRBIT         ((unsigned16_t)0x0080)
-#define ROW_GRBIT_UNSYNC       ((unsigned16_t)0x0040)
+#define ROW_DFLT_HEIGHT        0x0108
+#define ROW_DFLT_GRBIT         0x0080
+#define ROW_GRBIT_UNSYNC       0x0040
 #define ROW_DFLT_IXFE          XF_PROP_XF_DEFAULT_CELL
-#define ROW_OFFSET_FIRSTCOL    ((unsigned32_t)6)
-#define ROW_OFFSET_LASTCOL     ((unsigned32_t)8)
-#define ROW_MASK_STDHEIGHT     ((unsigned16_t)0x0108)
+#define ROW_OFFSET_FIRSTCOL    6
+#define ROW_OFFSET_LASTCOL     8
+#define ROW_MASK_STDHEIGHT     0x0108
 #define ROW_RECORD_SIZE        (20)
+
+
+	// forward ref
+	class CDataStorage;
 
   class rowheight_t
     {
     public:
       rowheight_t() : num(0), height(0), xformat(NULL) {};
-      rowheight_t(unsigned16_t rownum, unsigned16_t rowheight, xf_t *pxformat) 
+      rowheight_t(unsigned32_t rownum, unsigned16_t rowheight, xf_t *pxformat) 
         : num(rownum), height(rowheight), xformat(pxformat) {}
       ~rowheight_t() {} // TODO: ?? {if(xformat)xformat->UnMarkUsed();};
 
-      unsigned16_t GetRowNum() {return num;};
-      void SetRowNum(unsigned16_t rownum) {num = rownum;};
+      unsigned32_t GetRowNum() {return num;};
+      void SetRowNum(unsigned32_t rownum) {num = rownum;};
 
       unsigned16_t GetRowHeight() {return height;};
       void SetRowHeight(unsigned16_t rowheight) {height = rowheight;};
@@ -96,7 +103,7 @@ namespace xlslib_core
 		rowheight_t& operator=(const rowheight_t& right);
 
     private:
-		unsigned16_t num;
+		unsigned32_t num;
 		unsigned16_t height;
 		xf_t* xformat;
     };
@@ -117,9 +124,9 @@ namespace xlslib_core
   // NOTE: row_t has no height field
   typedef struct
   {
-    unsigned16_t rownum;
-    unsigned16_t firstcol;
-    unsigned16_t lastcol;
+    unsigned32_t rownum;
+    unsigned32_t firstcol;
+    unsigned32_t lastcol;
 	xf_t		 *xformat;
   } row_t;
   typedef std::vector<xlslib_core::row_t* XLSLIB_DFLT_ALLOCATOR> Row_Vect_t;
@@ -128,23 +135,30 @@ namespace xlslib_core
 
   class CRow: public CRecord
     {
-    private:
+#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+	friend class CDataStorage;
+#endif
+
+    protected:
+      CRow(CDataStorage &datastore, 
+		   unsigned32_t rownum,
+           unsigned32_t firstcol,
+           unsigned32_t lastcol,
+           unsigned16_t rowheight  = ROW_DFLT_HEIGHT,
+		   const xf_t* xformat = NULL);
+      //CRow(row_t& rowdef);
+	private:
+      virtual ~CRow();
 
     public:
-      CRow(unsigned16_t rownum,
-           unsigned16_t firstcol,
-           unsigned16_t lastcol,
-           unsigned16_t rowheight  = ROW_DFLT_HEIGHT,
-		   xf_t* xformat = NULL);
-      //CRow(row_t& rowdef);
 
-      ~CRow();
-
-      void SetFirstCol(unsigned16_t firstrow);
-      void SetLastCol(unsigned16_t lastrow);
-      unsigned16_t GetFirstCol(void);
-      unsigned16_t GetLastCol(void);
-    };
+#if 0
+	  void SetFirstCol(unsigned32_t firstrow);
+      void SetLastCol(unsigned32_t lastrow);
+      unsigned32_t GetFirstCol(void);
+      unsigned32_t GetLastCol(void);
+#endif
+  };
 
 
   /*
@@ -153,22 +167,27 @@ CDBCell class declaration
 ******************************
 */
 
-#define DBC_DFLT_STARTBLOCK  ((unsigned32_t)(0x00000000))
+#define DBC_DFLT_STARTBLOCK  (0x00000000)
 
   class CDBCell: public CRecord
     {
-    private:
+#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+	friend class CDataStorage;
+#endif
 
-    public:
-      CDBCell(unsigned32_t startblock = DBC_DFLT_STARTBLOCK);
-      ~CDBCell();
+    protected:
+      CDBCell(CDataStorage &datastore, size_t startblock = DBC_DFLT_STARTBLOCK);
+	private:
+      virtual ~CDBCell();
 
-      void AddRowOffset(unsigned16_t rowoffset );
-
+	public:
+      void AddRowOffset(size_t rowoffset);
     };
 
-
 }
+
+
+#include <xls_poppack.h>
 
 #endif //ROW_H
 

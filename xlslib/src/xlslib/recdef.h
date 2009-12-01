@@ -36,10 +36,12 @@
 #ifndef RECDEF_H
 #define RECDEF_H
 
-#include <config.h>
+//#include <config.h>
 #include <common.h>
 #include <rectypes.h>
 #include <record.h>
+
+#include <xls_pshpack2.h>
 
 namespace xlslib_core
 {
@@ -51,36 +53,41 @@ CBof class declaration
 */
 #define  VERSION_BIFF				0x0600	// BIFF8, the last one!
 
-#define BOF_TYPE_WBGLOBALS           ((unsigned16_t)0x0005)
-#define BOF_TYPE_VBMODULE            ((unsigned16_t)0x0006)
-#define BOF_TYPE_WORKSHEET           ((unsigned16_t)0x0010)
-#define BOF_TYPE_CHART               ((unsigned16_t)0x0020)
-#define BOF_TYPE_EXCEL4_MACROSH      ((unsigned16_t)0x0040)
-#define BOF_TYPE_WSFILE              ((unsigned16_t)0x0100)
+#define BOF_TYPE_WBGLOBALS           0x0005
+#define BOF_TYPE_VBMODULE            0x0006
+#define BOF_TYPE_WORKSHEET           0x0010
+#define BOF_TYPE_CHART               0x0020
+#define BOF_TYPE_EXCEL4_MACROSH      0x0040
+#define BOF_TYPE_WSFILE              0x0100
 
-#define BOF_BUILD_DFLT               ((unsigned16_t)0x1d5f)	// from some old file???
-#define BOF_YEAR_DFLT                ((unsigned16_t)0x07cd)	// 1997
+#define BOF_BUILD_DFLT               0x1d5f	// from some old file???
+#define BOF_YEAR_DFLT                0x07cd	// 1997
 
 #define TWIP						 20
 
 
 #if 0
-#define CODEPAGE_IBMPC               ((unsigned16_t)0x01b5)
-#define CODEPAGE_APPLE               ((unsigned16_t)0x8000)
-#define CODEPAGE_ANSI                ((unsigned16_t)0x04e4)
+#define CODEPAGE_IBMPC               0x01b5
+#define CODEPAGE_APPLE               0x8000
+#define CODEPAGE_ANSI                0x04e4
 #endif
 
 
 #define BOF_RECORD_SIZE  (12)								// used when computing blocks during output stage
 
+	// forward ref
+	class CDataStorage;
+
   class CBof: public CRecord
     {
+#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+	friend class CDataStorage;
+#endif
+
     protected:
-
-    public:
-
-      CBof(unsigned16_t boftype);
-      ~CBof();
+      CBof(CDataStorage &datastore, unsigned16_t boftype);
+	private:
+      virtual ~CBof();
     };
 
 /*
@@ -90,12 +97,14 @@ CEof class declaration
 */
   class CEof: public CRecord
     {
+#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+	friend class CDataStorage;
+#endif
+
     protected:
-
-    public:
-
-      CEof();
-      ~CEof();
+      CEof(CDataStorage &datastore);
+	private:
+      virtual ~CEof();
     };
 
 /*
@@ -105,12 +114,14 @@ CCodePage class declaration
 */
   class CCodePage: public CRecord
     {
+#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+	friend class CDataStorage;
+#endif
+
     protected:
-
-    public:
-
-      CCodePage(unsigned16_t boftype);
-      ~CCodePage();
+      CCodePage(CDataStorage &datastore, unsigned16_t boftype);
+	private:
+      virtual ~CCodePage();
     };
 
 /*
@@ -148,9 +159,14 @@ CWindow1 class declaration
 
   class CWindow1 : public CRecord
     {
-    public:
-		CWindow1(const window1& wind1);
-		~CWindow1();
+#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+	friend class CDataStorage;
+#endif
+
+    protected:
+		CWindow1(CDataStorage &datastore, const window1& wind1);
+	private:
+		virtual ~CWindow1();
     };
 /*
 ******************************
@@ -159,12 +175,17 @@ CDateMode class declaration
 */
   class CDateMode: public CRecord
     {
+#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+	friend class CDataStorage;
+#endif
+
     protected:
+      CDateMode(CDataStorage &datastore);
+	private:
+      virtual ~CDateMode();
 
-    public:
-
-      CDateMode();
-      ~CDateMode();
+	public:
+	  static bool Is_In_1904_Mode(void);
     };
 
 
@@ -175,37 +196,37 @@ CWindow2 class declaration
 ******************************
 */
 
-#define W2_OFFSET_GRBIT          ((unsigned32_t)4)
-#define W2_OFFSET_TOPROW         ((unsigned32_t)6)
-#define W2_OFFSET_LEFTCOL        ((unsigned32_t)8)
-#define W2_OFFSET_COLOR          ((unsigned32_t)10)
-#define W2_OFFSET_ZOOMPREVIEW    ((unsigned32_t)14)
-#define W2_OFFSET_ZOOMNORMAL     ((unsigned32_t)16)
-#define W2_OFFSET_RESERVED       ((unsigned32_t)18)
+#define W2_OFFSET_GRBIT          4
+#define W2_OFFSET_TOPROW         6
+#define W2_OFFSET_LEFTCOL        8
+#define W2_OFFSET_COLOR          10
+#define W2_OFFSET_ZOOMPREVIEW    14
+#define W2_OFFSET_ZOOMNORMAL     16
+#define W2_OFFSET_RESERVED       18
 
 
-#define W2_DFLT_TOPROW     ((unsigned16_t)0x0000)
-#define W2_DFLT_LEFTCOL    ((unsigned16_t)0x0000)
-#define W2_DFLT_COLOR      ((unsigned32_t)0x00000000)
+#define W2_DFLT_TOPROW     0x0000
+#define W2_DFLT_LEFTCOL    0x0000
+#define W2_DFLT_COLOR      0x00000000
   // NOTE: Check a BIFF8 example to verify the units of the two following values
-#define W2_DFLT_ZOOMPBPREV ((unsigned16_t)0x0100)
-#define W2_DFLT_ZOOMNORMAL ((unsigned16_t)0x0100)
-#define W2_DFLT_RESERVED   ((unsigned32_t)0x00000000)
+#define W2_DFLT_ZOOMPBPREV 0x0100
+#define W2_DFLT_ZOOMNORMAL 0x0100
+#define W2_DFLT_RESERVED   0x00000000
 
   // GRBIT mask-flags:
-#define W2_GRBITMASK_FMLA          ((unsigned16_t)0x0001)
-#define W2_GRBITMASK_GRIDS         ((unsigned16_t)0x0002)
-#define W2_GRBITMASK_HROWCOL       ((unsigned16_t)0x0004)
-#define W2_GRBITMASK_FROZEN        ((unsigned16_t)0x0008)
-#define W2_GRBITMASK_ZEROS         ((unsigned16_t)0x0010)
-#define W2_GRBITMASK_DFLTHDRCOLOR  ((unsigned16_t)0x0020)
-#define W2_GRBITMASK_ARABIC        ((unsigned16_t)0x0040)
-#define W2_GRBITMASK_GUTS          ((unsigned16_t)0x0080)
-#define W2_GRBITMASK_FRZNOSPLIT    ((unsigned16_t)0x0100)
-#define W2_GRBITMASK_SELECTED      ((unsigned16_t)0x0200)
-#define W2_GRBITMASK_ACTIVE        ((unsigned16_t)0x0400)
-#define W2_GRBITMASK_PAGEBRK       ((unsigned16_t)0x0800)
-#define W2_GRBITMASK_RESERVED      ((unsigned16_t)0xf000)
+#define W2_GRBITMASK_FMLA          0x0001
+#define W2_GRBITMASK_GRIDS         0x0002
+#define W2_GRBITMASK_HROWCOL       0x0004
+#define W2_GRBITMASK_FROZEN        0x0008
+#define W2_GRBITMASK_ZEROS         0x0010
+#define W2_GRBITMASK_DFLTHDRCOLOR  0x0020
+#define W2_GRBITMASK_ARABIC        0x0040
+#define W2_GRBITMASK_GUTS          0x0080
+#define W2_GRBITMASK_FRZNOSPLIT    0x0100
+#define W2_GRBITMASK_SELECTED      0x0200
+#define W2_GRBITMASK_ACTIVE        0x0400
+#define W2_GRBITMASK_PAGEBRK       0x0800
+#define W2_GRBITMASK_RESERVED      0xf000
 
   /*
 	NOTE: Hardcoded from an excel example
@@ -215,14 +236,18 @@ CWindow2 class declaration
   */
   class CWindow2: public CRecord
     {
-    private:
+#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+	friend class CDataStorage;
+#endif
 
-    public:
+    protected:
       // TODO: Create a constructor that gets user-defined arguments that specify the appearence
       // The following constructor establishes default values.
-      CWindow2(bool isActive);
-      ~CWindow2();
+      CWindow2(CDataStorage &datastore, bool isActive);
+	private:
+      virtual ~CWindow2();
 
+	public:
       void SetSelected();
       void SetPaged();
       void ClearSelected();
@@ -236,12 +261,18 @@ CDimension class declaration
 */
   class CDimension: public CRecord
     {
+#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+	friend class CDataStorage;
+#endif
+
     protected:
-
-    public:
-
-      CDimension(unsigned32_t minRow, unsigned32_t maxRow, unsigned32_t minCol, unsigned32_t maxCol);
-      ~CDimension();
+      CDimension(CDataStorage &datastore, 
+		  unsigned32_t minRow, 
+		  unsigned32_t maxRow, 
+		  unsigned32_t minCol, 
+		  unsigned32_t maxCol);
+	private:
+      virtual ~CDimension();
     };
 
 /*
@@ -250,21 +281,29 @@ CStyle class declaration
 ******************************
 */
 
-  typedef struct
+  struct style_t
   {
     unsigned16_t xfindex;
     unsigned8_t builtintype;
     unsigned8_t level;
-  } style_t;
+  };
+
   typedef std::vector<xlslib_core::style_t* XLSLIB_DFLT_ALLOCATOR> Style_Vect_t;
   typedef Style_Vect_t::iterator Style_Vect_Itor_t;
 
   class CStyle: public CRecord
     {
-    public:
-      CStyle(unsigned16_t xfindex, unsigned8_t builtintype, unsigned8_t level);
-      CStyle(style_t* styledef);
-      ~CStyle();
+#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+	friend class CDataStorage;
+#endif
+
+    protected:
+#if 0
+		CStyle(CDataStorage &datastore, unsigned16_t xfindex, unsigned8_t builtintype, unsigned8_t level);
+#endif
+		CStyle(CDataStorage &datastore, const style_t* styledef);
+	private:
+      virtual ~CStyle();
     };
 
 
@@ -274,22 +313,23 @@ CBSheet class declaration
 ******************************
 */
 
-#define BSHEET_OFFSET_POSITION    ((unsigned32_t)4)
-#define BSHEET_OFFSET_FLAGS       ((unsigned32_t)8)
-#define BSHEET_OFFSET_NAMELENGHT  ((unsigned32_t)10)
-#define BSHEET_OFFSET_B7NAME      ((unsigned32_t)11)
-#define BSHEET_OFFSET_B8NAME      ((unsigned32_t)12)
+#define BSHEET_OFFSET_POSITION    4
+#define BSHEET_OFFSET_FLAGS       8
+#define BSHEET_OFFSET_NAMELENGHT  10
+#define BSHEET_OFFSET_B7NAME      11
+#define BSHEET_OFFSET_B8NAME      12
 
-#define BSHEET_ATTR_WORKSHEET  ((unsigned16_t)0x0000)
-#define BSHEET_ATTR_EX4MACRO   ((unsigned16_t)0x0001)
-#define BSHEET_ATTR_CHART      ((unsigned16_t)0x0002)
-#define BSHEET_ATTR_VBMODULE   ((unsigned16_t)0x0006)
+#define BSHEET_ATTR_WORKSHEET  0x0000
+#define BSHEET_ATTR_EX4MACRO   0x0001
+#define BSHEET_ATTR_CHART      0x0002
+#define BSHEET_ATTR_VBMODULE   0x0006
 
-#define BSHEET_ATTR_VISIBLE     ((unsigned16_t)0x0000)
-#define BSHEET_ATTR_HIDDEN      ((unsigned16_t)0x0100)
-#define BSHEET_ATTR_VERYHIDDEN  ((unsigned16_t)0x0200)
+#define BSHEET_ATTR_VISIBLE     0x0000
+#define BSHEET_ATTR_HIDDEN      0x0100
+#define BSHEET_ATTR_VERYHIDDEN  0x0200
 
   class CBSheet;
+
   class boundsheet_t
   {
   public:
@@ -320,23 +360,30 @@ CBSheet class declaration
 
   class CBSheet: public CRecord
     {
-    private:
+#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+	friend class CDataStorage;
+#endif
 
-    public:
+    protected:
 #if 0
-      CBSheet(unsigned32_t streampos,
+      CBSheet(CDataStorage &datastore, 
+			  unsigned32_t streampos,
               unsigned16_t attributes,
               u16string& sheetname,
 			  bool is_ascii
 		);
 #endif
-      CBSheet(boundsheet_t* bsheetdef);
+      CBSheet(CDataStorage &datastore, const boundsheet_t* bsheetdef);
+	private:
+      virtual ~CBSheet();
 
-      ~CBSheet();
-
-      void SetStreamPosition(unsigned32_t pos);
+	public:
+      void SetStreamPosition(size_t pos);
     };
 }
+
+#include <xls_poppack.h>
+
 #endif //RECDEF_H
 
 

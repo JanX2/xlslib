@@ -66,7 +66,7 @@ CBinFile class declaration
 
       int Open(const std::string& name);
       int Close(void);   
-      int Write ( unsigned8_t * data, unsigned32_t size );
+      int Write ( unsigned8_t * data, size_t size );
       int Write (CUnit& data_unit );
     
       int WriteByte(unsigned8_t byte);
@@ -75,7 +75,7 @@ CBinFile class declaration
       int WriteSigned16(signed16_t data);
       int WriteSigned32(signed32_t data);
       int WriteByteArray(const unsigned8_t *data, size_t size);
-      int SerializeFixedArray(const unsigned8_t data, unsigned32_t size);
+      int SerializeFixedArray(const unsigned8_t data, size_t size);
 	  
 	  unsigned32_t Position();	// debugging, position of stream
     

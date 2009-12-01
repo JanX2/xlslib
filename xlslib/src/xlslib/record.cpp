@@ -33,6 +33,8 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 
+#include <config.h>
+
 #include <record.h>
 
 using namespace std;
@@ -43,9 +45,9 @@ using namespace xlslib_core;
 CRecord class implementation
 ******************************
 */
-CRecord::CRecord() :
+CRecord::CRecord(CDataStorage &datastore) :
+	CUnit(datastore),
    m_Num(RECTYPE_NULL)
-
 {
    static const unsigned8_t array[] = {0,0,0,0} ; 
    // Initialize (and create) the space for record type
@@ -63,8 +65,7 @@ CRecord::~CRecord()
 */
 void CRecord::SetRecordType(unsigned16_t rtype)
 {
-   SetValueAt((unsigned16_t)rtype, 0);
-
+   SetValueAt16((unsigned16_t)rtype, 0);
 }
 
 
@@ -74,8 +75,8 @@ void CRecord::SetRecordType(unsigned16_t rtype)
 */
 unsigned16_t CRecord::GetRecordType()
 {
-   unsigned16_t value;
-   GetValue16From((signed16_t*)&value, 0);
+   signed16_t value;
+   GetValue16From(&value, 0);
 
    return value;
 }
@@ -84,10 +85,9 @@ unsigned16_t CRecord::GetRecordType()
 ******************************
 ******************************
 */
-void CRecord::SetRecordLength(unsigned32_t rlength)
+void CRecord::SetRecordLength(size_t rlength)
 {
-   SetValueAt((unsigned16_t)rlength, 2);
-
+   SetValueAt16((unsigned16_t)rlength, 2);
 }
 
 
@@ -96,7 +96,7 @@ void CRecord::SetRecordLength(unsigned32_t rlength)
 ******************************
 */
 
-unsigned16_t CRecord::GetRecordLength()
+size_t CRecord::GetRecordLength()
 {
    unsigned16_t value;
    GetValue16From((signed16_t*)&value, 2);
@@ -112,7 +112,6 @@ unsigned16_t CRecord::GetRecordLength()
 unsigned8_t* CRecord::GetRecordDataBuffer()
 {
    return GetBuffer() + 4;
-
 }
 
 
@@ -120,9 +119,10 @@ unsigned8_t* CRecord::GetRecordDataBuffer()
 ******************************
 ******************************
 */
-unsigned32_t CRecord::GetRecordDataSize()
+size_t CRecord::GetRecordDataSize()
 {
-   return GetDataSize() - 4;
+   size_t len = GetDataSize() - 4;
+   return len;
 }
 
 /* 

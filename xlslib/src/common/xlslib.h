@@ -338,19 +338,19 @@ EXTERN_TYPE	int xlsWorkbookDump(workbook *w, const char *filename);
 
 // Worksheet
 EXTERN_TYPE void xlsWorksheetMakeActive(worksheet *w);	// Make this sheet the selected sheet
-EXTERN_TYPE cell_t *xlsWorksheetFindCell(worksheet *w, unsigned16_t row, unsigned16_t col);
-EXTERN_TYPE void xlsWorksheetMerge(worksheet *w, unsigned16_t first_row, unsigned16_t first_col, unsigned16_t last_row, unsigned16_t last_col);
-EXTERN_TYPE void xlsWorksheetColwidth(worksheet *w, unsigned16_t col, unsigned16_t width, xf_t* pxformat);
-EXTERN_TYPE void xlsWorksheetRowheight(worksheet *w, unsigned16_t row, unsigned16_t height, xf_t* pxformat);
+EXTERN_TYPE cell_t *xlsWorksheetFindCell(worksheet *w, unsigned32_t row, unsigned32_t col);
+EXTERN_TYPE void xlsWorksheetMerge(worksheet *w, unsigned32_t first_row, unsigned32_t first_col, unsigned32_t last_row, unsigned32_t last_col);
+EXTERN_TYPE void xlsWorksheetColwidth(worksheet *w, unsigned32_t col, unsigned16_t width, xf_t* pxformat);
+EXTERN_TYPE void xlsWorksheetRowheight(worksheet *w, unsigned32_t row, unsigned16_t height, xf_t* pxformat);
 #ifdef RANGE_FEATURE
-EXTERN_TYPE range *xlsWorksheetRangegroup(worksheet *w, unsigned16_t row1, unsigned16_t col1, unsigned16_t row2, unsigned16_t col2);
+EXTERN_TYPE range *xlsWorksheetRangegroup(worksheet *w, unsigned32_t row1, unsigned32_t col1, unsigned32_t row2, unsigned32_t col2);
 #endif
-EXTERN_TYPE cell_t *xlsWorksheetLabel(worksheet *w, unsigned16_t row, unsigned16_t col, const char *strlabel, xf_t *pxformat);
-EXTERN_TYPE cell_t *xlsWorksheetLabelW(worksheet *w, unsigned16_t row, unsigned16_t col, const unichar_t *strlabel, xf_t *pxformat);
-EXTERN_TYPE cell_t *xlsWorksheetBlank(worksheet *w, unsigned16_t row, unsigned16_t col, xf_t *pxformat);
-EXTERN_TYPE cell_t *xlsWorksheetNumberDbl(worksheet *w, unsigned16_t row, unsigned16_t col, double numval, xf_t *pxformat);
+EXTERN_TYPE cell_t *xlsWorksheetLabel(worksheet *w, unsigned32_t row, unsigned32_t col, const char *strlabel, xf_t *pxformat);
+EXTERN_TYPE cell_t *xlsWorksheetLabelW(worksheet *w, unsigned32_t row, unsigned32_t col, const unichar_t *strlabel, xf_t *pxformat);
+EXTERN_TYPE cell_t *xlsWorksheetBlank(worksheet *w, unsigned32_t row, unsigned32_t col, xf_t *pxformat);
+EXTERN_TYPE cell_t *xlsWorksheetNumberDbl(worksheet *w, unsigned32_t row, unsigned32_t col, double numval, xf_t *pxformat);
 // 536870911 >= numval >= -536870912
-EXTERN_TYPE cell_t *xlsWorksheetNumberInt(worksheet *w, unsigned16_t row, unsigned16_t col, signed32_t numval, xf_t *pxformat);
+EXTERN_TYPE cell_t *xlsWorksheetNumberInt(worksheet *w, unsigned32_t row, unsigned32_t col, signed32_t numval, xf_t *pxformat);
 
 // cell: xfi
 EXTERN_TYPE void xlsCellFont(cell_t *c, font_t *fontidx);
@@ -375,13 +375,13 @@ EXTERN_TYPE void xlsCellFontbold(cell_t *c, boldness_option_t fntboldness);
 EXTERN_TYPE void xlsCellFontunderline(cell_t *c, underline_option_t fntunderline);
 EXTERN_TYPE void xlsCellFontscript(cell_t *c, script_option_t fntscript);
 EXTERN_TYPE void xlsCellFontcolor(cell_t *c, color_name_t fntcolor);
-EXTERN_TYPE void xlsCellFontattr(cell_t *c, unsigned16_t attr);
+//EXTERN_TYPE void xlsCellFontattr(cell_t *c, unsigned16_t attr);
 EXTERN_TYPE void xlsCellFontitalic(cell_t *c, bool italic);
 EXTERN_TYPE void xlsCellFontstrikeout(cell_t *c, bool so);
 EXTERN_TYPE void xlsCellFontoutline(cell_t *c, bool ol);
 EXTERN_TYPE void xlsCellFontshadow(cell_t *c, bool sh);
-EXTERN_TYPE unsigned16_t xlsCellGetRow(cell_t *c);
-EXTERN_TYPE unsigned16_t xlsCellGetCol(cell_t *c);
+EXTERN_TYPE unsigned32_t xlsCellGetRow(cell_t *c);
+EXTERN_TYPE unsigned32_t xlsCellGetCol(cell_t *c);
 EXTERN_TYPE unsigned16_t xlsCellGetXFIndex(cell_t *c);
 EXTERN_TYPE void xlsCellSetXF(cell_t *c, xf_t *pxfval);
 // xformat
@@ -417,7 +417,7 @@ EXTERN_TYPE void xlsXformatSetBorderColor(xf_t *x, border_side_t side, color_nam
 EXTERN_TYPE void xlsXformatSetBorderColorIdx(xf_t *x, border_side_t side, unsigned8_t color);
 EXTERN_TYPE unsigned8_t xlsXformatGetBorderStyle(xf_t *x, border_side_t side);
 EXTERN_TYPE unsigned16_t xlsXformatGetBorderColorIdx(xf_t *x, border_side_t side);
-EXTERN_TYPE unsigned32_t xlsXformatGetSignature(xf_t *x);
+//EXTERN_TYPE unsigned32_t xlsXformatGetSignature(xf_t *x);
 // Font
 EXTERN_TYPE void xlsFontSetName(font_t *f, const char *name);
 EXTERN_TYPE char *xlsFontGetName(font_t *f, char *name);

@@ -32,6 +32,8 @@
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
+#include <config.h>
+
 #include <cell.h>
 
 #include <format.h>
@@ -40,7 +42,7 @@
 using namespace std;
 using namespace xlslib_core;
 
-cell_t::cell_t(CGlobalRecords& gRecord, unsigned16_t rowNum, unsigned16_t colNum) :
+cell_t::cell_t(CGlobalRecords& gRecord, unsigned32_t rowNum, unsigned32_t colNum) :
    m_GlobalRecords(gRecord),
    row(rowNum), col(colNum),
    pxf(gRecord.GetDefaultXF())
@@ -62,8 +64,8 @@ unsigned16_t cell_t::GetXFIndex() const
    return pxf->GetIndex();
 }
 
-unsigned16_t cell_t::GetRow(void) const {return row;}
-unsigned16_t cell_t::GetCol(void) const {return col;}
+unsigned32_t cell_t::GetRow(void) const {return row;}
+unsigned32_t cell_t::GetCol(void) const {return col;}
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // Implementation of the XF record interface (xf_i pure virtual interface)

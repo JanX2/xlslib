@@ -47,6 +47,9 @@
 
 #ifdef RANGE_FEATURE
 
+
+#include <xls_pshpack2.h>
+
 namespace xlslib_core
 {
   class worksheet;
@@ -56,8 +59,8 @@ namespace xlslib_core
     private range_t 
   {
     public:
-		range(unsigned16_t row1, unsigned16_t col1,	// inclusive
-			unsigned16_t row2, unsigned16_t col2,
+		range(unsigned32_t row1, unsigned32_t col1,	// inclusive
+			unsigned32_t row2, unsigned32_t col2,
 			worksheet* pws);
 		virtual ~range();
 
@@ -132,6 +135,9 @@ namespace xlslib_core
 	typedef std::set<xf_Pair_t, xlslib_core::xfSorter> xf_Pair_Set_t;
 	typedef xf_Pair_Set_t::iterator xf_Pair_Set_Itor_t;
 }
+
+
+#include <xls_poppack.h>
 
 #endif //RANGE_H 
 

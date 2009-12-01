@@ -44,6 +44,9 @@
 #define DocSumInfo_LinksUpToDate			16
 #define DocSumInfo_Max						DocSumInfo_LinksUpToDate
 
+
+#include <xls_pshpack2.h>
+
 namespace xlslib_core
 {
 
@@ -74,6 +77,9 @@ CDocSummaryInfo class declaration
     };
 
 }
+
+#include <xls_poppack.h>
+
 #endif //DOCSUMMARYINFO_H
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

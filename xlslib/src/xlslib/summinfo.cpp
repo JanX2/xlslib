@@ -33,6 +33,8 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 
+#include <config.h>
+
 #include <time.h>
 #include <summinfo.h>
 
@@ -58,13 +60,18 @@ const signed32_t xlslib_core::property2summary[] = {
 CSummaryInfo class implementation
 **********************************************************************
 */
-CSummaryInfo::CSummaryInfo() :
-	hpsf(new HPSFdoc(HPSF_SUMMARY))
+CSummaryInfo::CSummaryInfo()
 {
 	unsigned64_t	msTime;
 	string			s;
 	
 	XTRACE("WRITE_SUMMARY");
+
+#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+	hpsf = MakeHPSFdoc(HPSF_SUMMARY);
+#else
+	hpsf = new HPSFdoc(*this, HPSF_SUMMARY);
+#endif
 
 	msTime =  hpsf->unix2mstime(time(NULL));
 
@@ -77,7 +84,10 @@ CSummaryInfo::CSummaryInfo() :
 
 CSummaryInfo::~CSummaryInfo()
 {
-	delete hpsf;
+#if 0 /* hpsf gets deleted from within the CDataStorage destructor as it is part of the m_FlushList. */
+	if(hpsf) 
+		delete hpsf;
+#endif
 }
 
 /*
@@ -87,7 +97,7 @@ CSummaryInfo::~CSummaryInfo()
 bool CSummaryInfo::property(property_t prop, const string& content) {
 	unsigned16_t val;
 	
-	val = property2summary[prop];
+	val = static_cast<unsigned16_t>(property2summary[prop]);
 
 	hpsf->addItem(val, content);
 	return true;
@@ -104,7 +114,7 @@ void CSummaryInfo::DumpData(void)
 #if 1
    	hpsf->DumpData();
 	(*this) += hpsf;
-	hpsf = NULL;	// DataStore owns it now
+	// hpsf = NULL;	// DataStore owns it now
 #else
 	CUnit* ptraildata = new CUnit;
 	ptraildata->AddDataArray(CSummaryInfo::summ_info_data, sizeof(CSummaryInfo::summ_info_data));

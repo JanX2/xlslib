@@ -41,46 +41,74 @@
 #include <xlstypes.h>
 
 
+
+#include <xls_pshpack2.h>
+
 namespace xlslib_core
 {
 
 #define UNIT_MAX_SIZE (0xFFFF)
 
   // Error codes
-#define ERR_DATASTORAGE_EMPTY (-2)
-#define ERR_INVALID_INDEX     (-3)
-#define ERR_UNABLE_TOALLOCATE_MEMORY     (-3)
+#define ERR_DATASTORAGE_EMPTY            (-2)
+#define ERR_INVALID_INDEX                (-3)
+#define ERR_UNABLE_TOALLOCATE_MEMORY     (-4) // [i_a]
 
   //Block definitions
 #define BIG_BLOCK_SIZE     (0x200)
 #define SMALL_BLOCK_SIZE   (0x040)
 #define PROP_BLOCK_SIZE    (0x080)
 
+	// forward ref
+	class CDataStorage;
+
   class CUnit {
     // Attributes
   protected:
-	unsigned32_t	m_nSize;		// Size of data store (maybe larger than actual used data)
-	unsigned32_t	m_nDataSize;	// Actual use (next empty space)
+
+#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+
+#define INVALID_STORE_INDEX			0x80000000 // marks a 'not yet set up' unit store
+	  
+	friend class CDataStorage;
+
+	signed32_t m_Index; // positive numbers index space in the associated storage; negative numbers are that index, but the data has been marked as 'sticky' in the associated storage
+	CDataStorage &m_Store;
+
+	unsigned16_t m_Backpatching_Level; // 0: requires no backpatching, 1: innermost backpatching (DBCELL), ...
+
+	// Static attributes
+	static const size_t DefaultInflateSize;
+
+#else
+
+	size_t	m_nSize;		// Size of data store (maybe larger than actual used data)
+	size_t	m_nDataSize;	// Actual use (next empty space)
 	unsigned8_t*	m_pData;		// Data storage
 	//  bool m_ShadowUnit;
 
 	// Static attributes
-	static const unsigned8_t DefaultInflateSize;
+	static const size_t DefaultInflateSize;
+
+#endif
 
     // Operations
-  public:
-    CUnit();
+  protected: // deny these operations to others...
+    CUnit(CDataStorage &datastore);
+  private: // deny these operations to others...
     CUnit(const CUnit& orig);
     CUnit& operator=(const CUnit& right);
-    virtual ~CUnit();
+  public:
+	virtual ~CUnit();
 
-    unsigned8_t& operator[](const unsigned32_t index) const;
-    CUnit&   operator+=(CUnit& from);
-    CUnit&   operator+= ( unsigned8_t from );
+    unsigned8_t& operator[](const size_t index) const;
+	CUnit&   operator+=(const CUnit& from);
+    CUnit&   operator+= (unsigned8_t from);
 
-    size_t GetSize (void);
-    unsigned32_t GetDataSize (void);
-    unsigned8_t* GetBuffer (void);
+    size_t GetSize(void) const;
+    size_t GetDataSize(void) const;
+    unsigned8_t* GetBuffer(void);
+    const unsigned8_t* GetBuffer(void) const;
     signed8_t Init (unsigned8_t* data, 
                     const size_t size, 
                     const unsigned32_t datasz);
@@ -98,7 +126,7 @@ namespace xlslib_core
     signed8_t GetValue8From(signed8_t* data, unsigned32_t  index) const;
 	
   protected:
-    signed8_t Append (CUnit& newunit);
+    signed8_t Append(const CUnit& newunit);
 
     signed8_t AddValue8(unsigned8_t newdata);
     signed8_t AddValue16(unsigned16_t newval);
@@ -106,18 +134,21 @@ namespace xlslib_core
     signed8_t AddValue64(unsigned64_t newval);
     signed8_t AddValue64(unsigned64_t* newvalP);
 
-    signed8_t SetValueAt(unsigned8_t newval, unsigned32_t index);							// Modify specific position
-    signed8_t SetValueAt(unsigned16_t newval, unsigned32_t index);
-    signed8_t SetValueAt(unsigned32_t newval, unsigned32_t index);
+    signed8_t SetValueAt8(unsigned8_t newval, unsigned32_t index);							// Modify specific position
+    signed8_t SetValueAt16(unsigned16_t newval, unsigned32_t index);
+    signed8_t SetValueAt32(unsigned32_t newval, unsigned32_t index);
 
     signed8_t SetArrayAt (const unsigned8_t* newdata, size_t size, unsigned32_t index);
     //  signed8_t GetData(unsigned8_t** data, unsigned32_t from, unsigned32_t to );
 
-    signed8_t RemoveTrailData (unsigned32_t remove_size);
-    signed8_t InitFill (unsigned8_t data, unsigned32_t size);
+    signed8_t RemoveTrailData(size_t remove_size);
+    signed8_t InitFill(unsigned8_t data, size_t size);
     signed8_t Inflate(size_t increase = 0);
   };
 }
+
+#include <xls_poppack.h>
+
 #endif // UNIT_H
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

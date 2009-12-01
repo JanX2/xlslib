@@ -32,6 +32,8 @@
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
+#include <config.h>
+
 #include <globalrec.h>
 
 #include <workbook.h>
@@ -77,7 +79,7 @@ workbook::~workbook()
 {
    if(!m_Sheets.empty())
    {
-      for(unsigned32_t i = 0; i<m_Sheets.size(); i++)
+      for(size_t i = 0; i<m_Sheets.size(); i++)
       {
 		delete m_Sheets[i];
       }
@@ -251,7 +253,7 @@ void workbook::tabBarWidth(unsigned16_t width) { m_GlobalRecords.GetWindow1().Se
 int workbook::Dump(const string& filename)
 {
 	Sheets_Vector_Itor_t	sBegin, sEnd, sIter;
-	unsigned32_t			cells;
+	size_t cells;
 	string					name;
 	int						errors;
 
@@ -263,23 +265,48 @@ int workbook::Dump(const string& filename)
 	sBegin	= m_Sheets.begin();
 	sEnd	= m_Sheets.end();
 	cells	= 0;
-	for(sIter=sBegin; sIter<sEnd; ++sIter) {
-		cells += (*sIter)->NumCells();
+	/*
+	Since it's VERY costly to redimension the cell unit store vector when 
+	we're using lightweight CUnitStore elements et al
+ 	  (defined(LEIGHTWEIGHT_UNIT_FEATURE))
+    we do our utmost best to estimate the total amount of storage units
+	required to 'dump' our spreadsheet. The estimate should be conservative,
+	but not too much. After all, we're attempting to reduce the memory 
+	footprint for this baby when we process multi-million cell spreadsheets...
+	*/
+	for(sIter=sBegin; sIter<sEnd; ++sIter) 
+	{
+		// add a number of units for each worksheet,
+		cells += (*sIter)->EstimateNumBiffUnitsNeeded();
 	}
+	// global units:
+	cells += this->m_GlobalRecords.EstimateNumBiffUnitsNeeded4Header();
+	cells += 1000; // safety margin
+
+	XTRACE2("ESTIMATED: total storage unit count: ", cells);
+#if OLE_DEBUG
+	std::cerr << "ESTIMATED: total unit count: " << cells << std::endl;
+#endif
 
 	errors = Open(filename);
 
 	if(errors == NO_ERRORS) {
-		CDataStorage		biffdata(cells+100);
+		CDataStorage		biffdata(cells);
 		CUnit*				precorddata;
 		bool				keep = true;
 
 		do
 		{
-		  precorddata = DumpData();
+		  precorddata = DumpData(biffdata);
 
 		  if(precorddata != NULL) {
 			 biffdata += precorddata;
+#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+			 //Delete_Pointer(precorddata);
+
+ 			// and we can already discard any previous units at lower backpatch levels
+			biffdata.FlushLowerLevelUnits(precorddata);
+#endif
 		  } else {
 			 keep = false;
 		  }
@@ -307,7 +334,7 @@ int workbook::Dump(const string& filename)
 ***********************************
 ***********************************
 */
-CUnit* workbook::DumpData(void)
+CUnit* workbook::DumpData(CDataStorage &datastore)
 {
    bool repeat = false;
 
@@ -331,9 +358,8 @@ CUnit* workbook::DumpData(void)
          case WB_GLOBALRECORDS:
 
             XTRACE("\tGLOBALRECORDS");
-
  
-            m_pCurrentData = m_GlobalRecords.DumpData();
+            m_pCurrentData = m_GlobalRecords.DumpData(datastore);
             if(m_pCurrentData == NULL)
             {
 				offset = writeLen;
@@ -352,14 +378,14 @@ CUnit* workbook::DumpData(void)
          {
             XTRACE("\tSHEETS");
 
-            m_pCurrentData = m_Sheets[current_sheet]->DumpData(offset);
+            m_pCurrentData = m_Sheets[current_sheet]->DumpData(datastore, offset);
             if(m_pCurrentData == NULL)
             {
 				Boundsheet_Vect_Itor_t bs = m_GlobalRecords.GetBoundSheetAt(current_sheet);
 
 				(*bs)->sheetData->SetStreamPosition(offset);
 
-				if((unsigned16_t)(current_sheet+1) < m_Sheets.size())
+				if((current_sheet+1) < (unsigned16_t)m_Sheets.size()) // [i_a]
 				{
 					// Update the offset for the next sheet
 					offset += writeLen;
@@ -395,7 +421,11 @@ CUnit* workbook::DumpData(void)
             if(m_ContinueIndex == 0)
             {
                //Create a new data unit containing the max data size
-               m_pContinueRecord = (CUnit*)(new CRecord());
+#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+				m_pContinueRecord = datastore.MakeCRecord();
+#else
+               m_pContinueRecord = (CUnit*)(new CRecord(datastore));
+#endif
 
                // The real size of the record is the size of the buffer minus the
                // size of the header record
@@ -404,7 +434,7 @@ CUnit* workbook::DumpData(void)
                ((CRecord*)(m_pContinueRecord))->SetRecordType(((CRecord*)m_pCurrentData)->GetRecordType());
                ((CRecord*)(m_pContinueRecord))->SetRecordLength(MAX_RECORD_SIZE);
 
-//m_pContinueRecord->SetValueAt(MAX_RECORD_SIZE-4,2);
+				//m_pContinueRecord->SetValueAt(MAX_RECORD_SIZE-4,2);
                m_ContinueIndex++;
 
                return m_pContinueRecord;
@@ -415,17 +445,21 @@ CUnit* workbook::DumpData(void)
                unsigned8_t* pdata = (((CRecord*)m_pCurrentData)->GetRecordDataBuffer()) + m_ContinueIndex*MAX_RECORD_SIZE;
 
                // Get the size of the chunk of data (that is the MAX_REC_SIZE except by the last one)
-               unsigned32_t csize = 0;
+               size_t csize = 0;
                if(( ((CRecord*)m_pCurrentData)->GetRecordDataSize()/MAX_RECORD_SIZE) > m_ContinueIndex)
                {
                   csize = MAX_RECORD_SIZE;
                   m_ContinueIndex++;
 
-                  m_pContinueRecord =(CUnit*) ( new CContinue(pdata, csize));
+#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+                  m_pContinueRecord = datastore.MakeCContinue(pdata, csize);
+#else
+                  m_pContinueRecord =(CUnit*) ( new CContinue(datastore, pdata, csize));
+#endif
 
                   return m_pContinueRecord;
                } else {
-				  unsigned32_t data_size = ((CRecord*)m_pCurrentData)->GetRecordDataSize();
+				  size_t data_size = ((CRecord*)m_pCurrentData)->GetRecordDataSize();
 
                   csize = data_size - m_ContinueIndex * MAX_RECORD_SIZE;
 
@@ -437,11 +471,20 @@ CUnit* workbook::DumpData(void)
 
                   if(csize)
                   {
-                     m_pContinueRecord = (CUnit*) new CContinue(pdata, csize);
-                     Delete_Pointer(m_pCurrentData);
-                     return m_pContinueRecord;
+#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+                     m_pContinueRecord = datastore.MakeCContinue(pdata, csize);
+					 //((CRecord*)m_pCurrentData)->SetRecordLength(MAX_RECORD_SIZE);
+#else
+                     m_pContinueRecord = (CUnit*) new CContinue(datastore, pdata, csize);
+					 Delete_Pointer(m_pCurrentData);
+#endif
+					 return m_pContinueRecord;
                   } else {
-                      Delete_Pointer(m_pCurrentData);
+#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+					 //((CRecord*)m_pCurrentData)->SetRecordLength(MAX_RECORD_SIZE);
+#else
+					 Delete_Pointer(m_pCurrentData);
+#endif
                      repeat = true;
                   }
                }

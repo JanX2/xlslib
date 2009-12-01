@@ -41,14 +41,17 @@
 #include <record.h>
 #include <colors.h>
 
+
+#include <xls_pshpack2.h>
+
 namespace xlslib_core
 {
   // Bold style most used values 
   // (it can be a number of some range. See Documentation for details):
-#define FONT_BOLDNESS_BOLD			((unsigned16_t)700)
-#define FONT_BOLDNESS_HALF			((unsigned16_t)550)
-#define FONT_BOLDNESS_NORMAL		((unsigned16_t)400)
-#define FONT_BOLDNESS_DOUBLE		((unsigned16_t)800)
+#define FONT_BOLDNESS_BOLD			700
+#define FONT_BOLDNESS_HALF			550
+#define FONT_BOLDNESS_NORMAL		400
+#define FONT_BOLDNESS_DOUBLE		800
 
 	typedef enum
 	{
@@ -60,9 +63,9 @@ namespace xlslib_core
 
 
   // Super/subscript field option values
-#define FONT_SCRIPT_NONE			((unsigned16_t)0x0000)
-#define FONT_SCRIPT_SUPER			((unsigned16_t)0x0001)
-#define FONT_SCRIPT_SUB				((unsigned16_t)0x0002)
+#define FONT_SCRIPT_NONE			0x0000
+#define FONT_SCRIPT_SUPER			0x0001
+#define FONT_SCRIPT_SUB				0x0002
 
 	typedef enum
 	{
@@ -72,11 +75,11 @@ namespace xlslib_core
 	} script_option_t;
 
   // Underline field option values:
-#define FONT_UNDERLINE_NONE			((unsigned8_t)0x00)
-#define FONT_UNDERLINE_SINGLE		((unsigned8_t)0x01)
-#define FONT_UNDERLINE_DOUBLE		((unsigned8_t)0x02)
-#define FONT_UNDERLINE_SINGLEACC	((unsigned8_t)0x21)
-#define FONT_UNDERLINE_DOUBLEACC	((unsigned8_t)0x22)
+#define FONT_UNDERLINE_NONE			0x00
+#define FONT_UNDERLINE_SINGLE		0x01
+#define FONT_UNDERLINE_DOUBLE		0x02
+#define FONT_UNDERLINE_SINGLEACC	0x21
+#define FONT_UNDERLINE_DOUBLEACC	0x22
 
 	typedef enum
 	{
@@ -91,38 +94,38 @@ namespace xlslib_core
 
   // The following are default values used when the font's
   // constructor is called without args:
-#define FONT_DFLT_FAMILY			((unsigned8_t)0x00)			// NONE (don't know, don't care)
-#define FONT_DFLT_CHARSET			((unsigned8_t)0x01)			// 0 == ANSI Latin, 1 == System Default (this was 0x00 before 12/2008)
-#define FONT_DFLT_HEIGHT			((unsigned16_t)0x00c8)
-#define FONT_DFLT_ATTRIBUTES		((unsigned16_t)0x0000)
-#define FONT_DFLT_PALETTE			((unsigned16_t)0x7fff)		// See Palette record - this is a special flag meaning the window color
-#define FONT_DFLT_FONTNAME			((std::string)"Verdana")	// Was Arial before 12/2008
+#define FONT_DFLT_FAMILY			0x00			// NONE (don't know, don't care)
+#define FONT_DFLT_CHARSET			0x01			// 0 == ANSI Latin, 1 == System Default (this was 0x00 before 12/2008)
+#define FONT_DFLT_HEIGHT			0x00c8
+#define FONT_DFLT_ATTRIBUTES		0x0000
+#define FONT_DFLT_PALETTE			0x7fff		// See Palette record - this is a special flag meaning the window color
+#define FONT_DFLT_FONTNAME			std::string("Verdana")	// Was Arial before 12/2008
 
-#define FONT_RESERVED				((unsigned8_t)0x00)
+#define FONT_RESERVED				0x00
 
   // The font-record field offsets:
-#define FONT_OFFSET_HEIGHT			((unsigned32_t) 4)
-#define FONT_OFFSET_ATTRIBUTES		((unsigned32_t) 6)
-#define FONT_OFFSET_PALETTE			((unsigned32_t) 8)
-#define FONT_OFFSET_BOLDSTYLE		((unsigned32_t)10)
-#define FONT_OFFSET_SCRIPT			((unsigned32_t)12)
-#define FONT_OFFSET_UNDERLINE		((unsigned32_t)14)
-#define FONT_OFFSET_FAMILY			((unsigned32_t)15)
-#define FONT_OFFSET_CHARSET			((unsigned32_t)16)
-#define FONT_OFFSET_NAMELENGTH		((unsigned32_t)18)
-#define FONT_OFFSET_NAME			((unsigned32_t)19)
+#define FONT_OFFSET_HEIGHT			 4
+#define FONT_OFFSET_ATTRIBUTES		 6
+#define FONT_OFFSET_PALETTE			 8
+#define FONT_OFFSET_BOLDSTYLE		10
+#define FONT_OFFSET_SCRIPT			12
+#define FONT_OFFSET_UNDERLINE		14
+#define FONT_OFFSET_FAMILY			15
+#define FONT_OFFSET_CHARSET			16
+#define FONT_OFFSET_NAMELENGTH		18
+#define FONT_OFFSET_NAME			19
 
 
   // The attribute bit or-masks:
-#define FONT_ATTR_BOLD				((unsigned16_t)0x0001)
-#define FONT_ATTR_ITALIC			((unsigned16_t)0x0002)
-#define FONT_ATTR_UNDERLINED		((unsigned16_t)0x0004)
-#define FONT_ATTR_STRIKEOUT			((unsigned16_t)0x0008)
-#define FONT_ATTR_OUTLINEMACH		((unsigned16_t)0x0010)
-#define FONT_ATTR_SHADOWMACH		((unsigned16_t)0x0020)
-#define FONT_ATTR_CONDENSED			((unsigned16_t)0x00c0)
-#define FONT_ATTR_EXTENDED			((unsigned16_t)0x0080)
-#define FONT_ATTR_UNUSED			((unsigned16_t)0xff00)
+#define FONT_ATTR_BOLD				0x0001
+#define FONT_ATTR_ITALIC			0x0002
+#define FONT_ATTR_UNDERLINED		0x0004
+#define FONT_ATTR_STRIKEOUT			0x0008
+#define FONT_ATTR_OUTLINEMACH		0x0010
+#define FONT_ATTR_SHADOWMACH		0x0020
+#define FONT_ATTR_CONDENSED			0x00c0
+#define FONT_ATTR_EXTENDED			0x0080
+#define FONT_ATTR_UNUSED			0xff00
 
   /* 
 ******************************
@@ -245,8 +248,12 @@ CFont class declaration
 
       //void operator=(font_t& right);
 
-    private:
-      /* FONT  attributes wrappers */
+#if 0 // [i_a] xls C i/f & C++ facade export these?
+	private:
+#else
+	public:
+#endif
+	  /* FONT  attributes wrappers */
       void SetAttributes(unsigned16_t attr);
       unsigned16_t GetAttributes(void) const;
 
@@ -279,13 +286,19 @@ CFont class declaration
   typedef Font_Vect_t::iterator Font_Vect_Itor_t;
 
 
+	// forward ref
+	class CDataStorage;
+
   class CFont: public CRecord
     {
-	
-    protected:
+#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+	friend class CDataStorage;
+#endif
 
-    public:
-      CFont(std::string name		= FONT_DFLT_FONTNAME,
+    protected:
+#if 0
+      CFont(CDataStorage &datastore, 
+			std::string name		= FONT_DFLT_FONTNAME,
             unsigned16_t height		= FONT_DFLT_HEIGHT,
             unsigned16_t boldstyle  = FONT_BOLDNESS_NORMAL,
             unsigned8_t underline	= FONT_UNDERLINE_NONE,
@@ -294,11 +307,17 @@ CFont class declaration
             unsigned16_t attributes	= FONT_DFLT_ATTRIBUTES,
             unsigned8_t family		= FONT_DFLT_FAMILY,
             unsigned8_t charset		= FONT_DFLT_CHARSET   );
-      CFont(font_t* fontdef);
-      ~CFont();
+#endif
+	  CFont(CDataStorage &datastore, 
+			const font_t* fontdef);
+	private:
+      virtual ~CFont();
     };
 
 }
+
+
+#include <xls_poppack.h>
 
 #endif //FONT_H
 

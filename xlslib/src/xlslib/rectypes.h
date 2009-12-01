@@ -36,7 +36,7 @@
 #define RECTYPES_H
 
 /*
-  sed -e 's/\(^\([A-Z0-9]*\)\:.*$\)/\/\* \1 \*\/\n#define RECTYPE_\2 \\/' biff_records_alpha.txt  | sed -e 's/^ \([A-F0-9]*\)\h$/                                              ((unsigned16_t)0x\1)/' >recordtypes.h
+  sed -e 's/\(^\([A-Z0-9]*\)\:.*$\)/\/\* \1 \*\/\n#define RECTYPE_\2 \\/' biff_records_alpha.txt  | sed -e 's/^ \([A-F0-9]*\)\h$/                                              0x\1/' >recordtypes.h
 */
 
 #include <config.h>
@@ -45,711 +45,711 @@
 // SIZES
 #define MAX_RECORD_SIZE		8224			// payload only
 
-#define BOF_SIZE ((unsigned8_t)20)
+#define BOF_SIZE 20
 
-#define EOF_SIZE ((unsigned8_t)4)
+#define EOF_SIZE 4
 
-#define WINDOW2_SIZE ((unsigned8_t)22)
+#define WINDOW2_SIZE 22
 
-#define DIMENSION_SIZE ((unsigned8_t)18)
+#define DIMENSION_SIZE 18
 // End SIZES
 
 #define RECTYPE_NULL                            \
-  ((unsigned16_t)0x00)
+  0x00
 
 /* DATEMODE: 1900 / 1904 Date System (PC=0, MAC=1, still) */
 #define RECTYPE_DATEMODE                           \
-  ((unsigned16_t)0x22)
+  0x22
  
 /* ADDIN: Workbook Is an Add-in Macro */
 #define RECTYPE_ADDIN                           \
-  ((unsigned16_t)0x87)
+  0x87
  
 /* ADDMENU: Menu Addition */
 #define RECTYPE_ADDMENU                         \
-  ((unsigned16_t)0xC2)
+  0xC2
  
 /* ARRAY: Array-Entered Formula */
 #define RECTYPE_ARRAY                           \
-  ((unsigned16_t)0x221)
+  0x221
  
 /* AUTOFILTER: AutoFilter Data */
 #define RECTYPE_AUTOFILTER                      \
-  ((unsigned16_t)0x9E)
+  0x9E
  
 /* AUTOFILTERINFO: Drop-Down Arrow Count */
 #define RECTYPE_AUTOFILTERINFO                  \
-  ((unsigned16_t)0x9D)
+  0x9D
  
 /* BACKUP: Save Backup Version of the File */
 #define RECTYPE_BACKUP                          \
-  ((unsigned16_t)0x40)
+  0x40
  
 /* BLANK: Cell Value, Blank Cell */
 #define RECTYPE_BLANK                           \
-  ((unsigned16_t)0x201)
+  0x201
  
 /* BOF: Beginning of File */
 #define RECTYPE_BOF                             \
-  ((unsigned16_t)0x809)
+  0x809
  
 /* BOOKBOOL: Workbook Option Flag */
 #define RECTYPE_BOOKBOOL                        \
-  ((unsigned16_t)0xDA)
+  0xDA
  
 /* BOOLERR: Cell Value, Boolean or Error */
 #define RECTYPE_BOOLERR                         \
-  ((unsigned16_t)0x205)
+  0x205
  
 /* BOTTOMMARGIN: Bottom Margin Measurement */
 #define RECTYPE_BOTTOMMARGIN                    \
-  ((unsigned16_t)0x29)
+  0x29
  
 /* BOUNDSHEET: Sheet Information */
 #define RECTYPE_BOUNDSHEET                      \
-  ((unsigned16_t)0x85)
+  0x85
  
 /* CALCCOUNT: Iteration Count */
 #define RECTYPE_CALCCOUNT                       \
-  ((unsigned16_t)0x0C)
+  0x0C
  
 /* CALCMODE: Calculation Mode */
 #define RECTYPE_CALCMODE                        \
-  ((unsigned16_t)0x0D)
+  0x0D
  
 /* CF
    : Conditional Formatting Conditions */
 #define RECTYPE_CF                              \
-  ((unsigned16_t)0x1B1)
+  0x1B1
  
 /* CONDFMT: Conditional Formatting Range Information */
 #define RECTYPE_CONDFMT                         \
-  ((unsigned16_t)0x1B0)
+  0x1B0
  
 /* CODENAME: VBE Object Name */
 #define RECTYPE_CODENAME                        \
-  ((unsigned16_t)0x42)
+  0x42
  
 /* CODEPAGE: Default Code Page */
 #define RECTYPE_CODEPAGE                        \
-  ((unsigned16_t)0x42)
+  0x42
  
 /* COLINFO: Column Formatting Information */
 #define RECTYPE_COLINFO                         \
-  ((unsigned16_t)0x7D)
+  0x7D
  
 /* CONTINUE: Continues Long Records */
 #define RECTYPE_CONTINUE                        \
-  ((unsigned16_t)0x3C)
+  0x3C
  
 /* COORDLIST: Polygon Object Vertex Coordinates */
 #define RECTYPE_COORDLIST                       \
-  ((unsigned16_t)0xA9)
+  0xA9
  
 /* COUNTRY: Default Country and WIN.INI Country */
 #define RECTYPE_COUNTRY                         \
-  ((unsigned16_t)0x8C)
+  0x8C
  
 /* CRN: Nonresident Operands */
 #define RECTYPE_CRN                             \
-  ((unsigned16_t)0x5A)
+  0x5A
  
 /* DBCELL: Stream Offsets */
 #define RECTYPE_DBCELL                          \
-  ((unsigned16_t)0xD7)
+  0xD7
  
 /* DCON: Data Consolidation Information */
 #define RECTYPE_DCON                            \
-  ((unsigned16_t)0x50)
+  0x50
  
 /* DCONBIN: Data Consolidation Information */
 #define RECTYPE_DCONBIN                         \
-  ((unsigned16_t)0x1B5)
+  0x1B5
  
 /* DCONNAME: Data Consolidation Named References */
 #define RECTYPE_DCONNAME                        \
-  ((unsigned16_t)0x52)
+  0x52
  
 /* DCONREF: Data Consolidation References */
 #define RECTYPE_DCONREF                         \
-  ((unsigned16_t)0x51)
+  0x51
  
 /* DEFAULTROWHEIGHT: Default Row Height */
 #define RECTYPE_DEFAULTROWHEIGHT                \
-  ((unsigned16_t)0x225)
+  0x225
  
 /* DEFCOLWIDTH: Default Width for Columns */
 #define RECTYPE_DEFCOLWIDTH                     \
-  ((unsigned16_t)0x55)
+  0x55
  
 /* DELMENU: Menu Deletion */
 #define RECTYPE_DELMENU                         \
-  ((unsigned16_t)0xC3)
+  0xC3
  
 /* DELTA: Iteration Increment */
 #define RECTYPE_DELTA                           \
-  ((unsigned16_t)0x10)
+  0x10
  
 /* DIMENSIONS: Cell Table Size */
 #define RECTYPE_DIMENSIONS                      \
-  ((unsigned16_t)0x200)
+  0x200
  
 /* DOCROUTE: Routing Slip Information */
 #define RECTYPE_DOCROUTE                        \
-  ((unsigned16_t)0xB8)
+  0xB8
  
 /* DSF: Double Stream File */
 #define RECTYPE_DSF                             \
-  ((unsigned16_t)0x161)
+  0x161
  
 /* DV: Data Validation Criteria */
 #define RECTYPE_DV                              \
-  ((unsigned16_t)0x1BE)
+  0x1BE
  
 /* DVAL: Data Validation Information */
 #define RECTYPE_DVAL                            \
-  ((unsigned16_t)0x1B2)
+  0x1B2
  
 /* EDG: Edition Globals */
 #define RECTYPE_EDG                             \
-  ((unsigned16_t)0x88)
+  0x88
  
 /* EOF: End of File */
 #define RECTYPE_EOF                             \
-  ((unsigned16_t)0x0A)
+  0x0A
  
 /* EXTERNCOUNT: Number of External References */
 #define RECTYPE_EXTERNCOUNT                     \
-  ((unsigned16_t)0x16)
+  0x16
  
 /* EXTERNNAME: Externally Referenced Name */
 #define RECTYPE_EXTERNNAME                      \
-  ((unsigned16_t)0x223)
+  0x223
  
 /* EXTERNSHEET: External Reference */
 #define RECTYPE_EXTERNSHEET                     \
-  ((unsigned16_t)0x17)
+  0x17
  
 /* EXTSST: Extended Shared String Table */
 #define RECTYPE_EXTSST                          \
-  ((unsigned16_t)0xFF)
+  0xFF
  
 /* FILEPASS: File Is Password-Protected */
 #define RECTYPE_FILEPASS                        \
-  ((unsigned16_t)0x2F)
+  0x2F
  
 /* FILESHARING: File-Sharing Information */
 #define RECTYPE_FILESHARING                     \
-  ((unsigned16_t)0x5B)
+  0x5B
  
 /* FILESHARING2: File-Sharing Information for Shared Lists */
 #define RECTYPE_FILESHARING2                    \
-  ((unsigned16_t)0x1A5)
+  0x1A5
  
 /* FILTERMODE: Sheet Contains Filtered List */
 #define RECTYPE_FILTERMODE                      \
-  ((unsigned16_t)0x9B)
+  0x9B
  
 /* FNGROUPCOUNT: Built-in Function Group Count */
 #define RECTYPE_FNGROUPCOUNT                    \
-  ((unsigned16_t)0x9C)
+  0x9C
  
 /* FNGROUPNAME: Function Group Name */
 #define RECTYPE_FNGROUPNAME                     \
-  ((unsigned16_t)0x9A)
+  0x9A
  
 /* FONT: Font Description */
 // NOTE: Changed temporarilly to 31h (the manual says is 231h)
 #define RECTYPE_FONT                            \
-  ((unsigned16_t)0x31)
+  0x31
  
 /* FOOTER: Print Footer on Each Page */
 #define RECTYPE_FOOTER                          \
-  ((unsigned16_t)0x15)
+  0x15
  
 /* FORMAT: Number Format */
 #define RECTYPE_FORMAT                          \
-  ((unsigned16_t)0x41E)
+  0x41E
  
 /* FORMULA: Cell Formula */
 #define RECTYPE_FORMULA                         \
-  ((unsigned16_t)0x406)
+  0x406
  
 /* GCW: Global Column-Width Flags */
 #define RECTYPE_GCW                             \
-  ((unsigned16_t)0xAB)
+  0xAB
  
 /* GRIDSET: State Change of Gridlines Option */
 #define RECTYPE_GRIDSET                         \
-  ((unsigned16_t)0x82)
+  0x82
  
 /* GUTS: Size of Row and Column Gutters */
 #define RECTYPE_GUTS                            \
-  ((unsigned16_t)0x80)
+  0x80
  
 /* HCENTER: Center Between Horizontal Margins */
 #define RECTYPE_HCENTER                         \
-  ((unsigned16_t)0x83)
+  0x83
  
 /* HEADER: Print Header on Each Page */
 #define RECTYPE_HEADER                          \
-  ((unsigned16_t)0x14)
+  0x14
  
 /* HIDEOBJ: Object Display Options */
 #define RECTYPE_HIDEOBJ                         \
-  ((unsigned16_t)0x8D)
+  0x8D
  
 /* HLINK: Hyperlink */
 #define RECTYPE_HLINK                           \
-  ((unsigned16_t)0x1B8)
+  0x1B8
  
 /* HORIZONTALPAGEBREAKS: Explicit Row Page Breaks */
 #define RECTYPE_HORIZONTALPAGEBREAKS            \
-  ((unsigned16_t)0x1B)
+  0x1B
  
 /* IMDATA: Image Data */
 #define RECTYPE_IMDATA                          \
-  ((unsigned16_t)0x7F)
+  0x7F
  
 /* INDEX: Index Record */
 #define RECTYPE_INDEX                           \
-  ((unsigned16_t)0x20B)
+  0x20B
  
 /* INTERFACEEND: End of User Interface Records */
 #define RECTYPE_INTERFACEEND                    \
-  ((unsigned16_t)0xE2)
+  0xE2
  
 /* INTERFACEHDR: Beginning of User Interface Records */
 #define RECTYPE_INTERFACEHDR                    \
-  ((unsigned16_t)0xE1)
+  0xE1
  
 /* ITERATION: Iteration Mode */
 #define RECTYPE_ITERATION                       \
-  ((unsigned16_t)0x11)
+  0x11
  
 /* LABEL: Cell Value, String Constant */
 #define RECTYPE_LABEL                           \
-  ((unsigned16_t)0x204)
+  0x204
  
 /* LABELSST: Cell Value, String Constant/SST */
 #define RECTYPE_LABELSST                        \
-  ((unsigned16_t)0xFD)
+  0xFD
  
 /* LEFTMARGIN: Left Margin Measurement */
 #define RECTYPE_LEFTMARGIN                      \
-  ((unsigned16_t)0x26)
+  0x26
  
 /* LHNGRAPH: Named Graph Information */
 #define RECTYPE_LHNGRAPH                        \
-  ((unsigned16_t)0x95)
+  0x95
  
 /* LHRECORD: .WK? File Conversion Information */
 #define RECTYPE_LHRECORD                        \
-  ((unsigned16_t)0x94)
+  0x94
  
 /* LPR: Sheet Was Printed Using LINE.PRINT( */
 #define RECTYPE_LPR                             \
-  ((unsigned16_t)0x98)
+  0x98
  
 /* MMS: ADDMENU/DELMENU Record Group Count */
 #define RECTYPE_MMS                             \
-  ((unsigned16_t)0xC1)
+  0xC1
  
 /* MSODRAWING: Microsoft Office Drawing */
 #define RECTYPE_MSODRAWING                      \
-  ((unsigned16_t)0xEC)
+  0xEC
  
 /* MSODRAWINGGROUP: Microsoft Office Drawing Group */
 #define RECTYPE_MSODRAWINGGROUP                 \
-  ((unsigned16_t)0xEB)
+  0xEB
  
 /* MSODRAWINGSELECTION: Microsoft Office Drawing Selection */
 #define RECTYPE_MSODRAWINGSELECTION             \
-  ((unsigned16_t)0xED)
+  0xED
  
 /* MULBLANK: Multiple Blank Cells */
 #define RECTYPE_MULBLANK                        \
-  ((unsigned16_t)0xBE)
+  0xBE
  
 /* MULRK: Multiple RK Cells */
 #define RECTYPE_MULRK                           \
-  ((unsigned16_t)0xBD)
+  0xBD
  
 /* NAME: Defined Name */
 #define RECTYPE_NAME                            \
-  ((unsigned16_t)0x218)
+  0x218
  
 /* NOTE: Comment Associated with a Cell */
 #define RECTYPE_NOTE                            \
-  ((unsigned16_t)0x1C)
+  0x1C
  
 /* NUMBER: Cell Value, Floating-Point Number */
 #define RECTYPE_NUMBER                          \
-  ((unsigned16_t)0x203)
+  0x203
  
 /* OBJ: Describes a Graphic Object */
 #define RECTYPE_OBJ                             \
-  ((unsigned16_t)0x5D)
+  0x5D
  
 /* OBJPROTECT: Objects Are Protected */
 #define RECTYPE_OBJPROTECT                      \
-  ((unsigned16_t)0x63)
+  0x63
  
 /* OBPROJ: Visual Basic Project */
 #define RECTYPE_OBPROJ                          \
-  ((unsigned16_t)0xD3)
+  0xD3
  
 /* OLESIZE: Size of OLE Object */
 #define RECTYPE_OLESIZE                         \
-  ((unsigned16_t)0xDE)
+  0xDE
  
 /* PALETTE: Color Palette Definition */
 #define RECTYPE_PALETTE                         \
-  ((unsigned16_t)0x92)
+  0x92
  
 /* PANE: Number of Panes and Their Position */
 #define RECTYPE_PANE                            \
-  ((unsigned16_t)0x41)
+  0x41
  
 /* PARAMQRY: Query Parameters */
 #define RECTYPE_PARAMQRY                        \
-  ((unsigned16_t)0xDC)
+  0xDC
  
 /* PASSWORD: Protection Password */
 #define RECTYPE_PASSWORD                        \
-  ((unsigned16_t)0x13)
+  0x13
  
 /* PLS: Environment-Specific Print Record */
 #define RECTYPE_PLS                             \
-  ((unsigned16_t)0x4D)
+  0x4D
  
 /* PRECISION: Precision */
 #define RECTYPE_PRECISION                       \
-  ((unsigned16_t)0x0E)
+  0x0E
  
 /* PRINTGRIDLINES: Print Gridlines Flag */
 #define RECTYPE_PRINTGRIDLINES                  \
-  ((unsigned16_t)0x2B)
+  0x2B
  
 /* PRINTHEADERS: Print Row/Column Labels */
 #define RECTYPE_PRINTHEADERS                    \
-  ((unsigned16_t)0x2A)
+  0x2A
  
 /* PROTECT: Protection Flag */
 #define RECTYPE_PROTECT                         \
-  ((unsigned16_t)0x12)
+  0x12
  
 /* PROT4REV: Shared Workbook Protection Flag */
 #define RECTYPE_PROT4REV                        \
-  ((unsigned16_t)0x1AF)
+  0x1AF
  
 /* QSI: External Data Range */
 #define RECTYPE_QSI                             \
-  ((unsigned16_t)0x1AD)
+  0x1AD
  
 /* RECIPNAME: Recipient Name */
 #define RECTYPE_RECIPNAME                       \
-  ((unsigned16_t)0xB9)
+  0xB9
  
 /* REFMODE: Reference Mode */
 #define RECTYPE_REFMODE                         \
-  ((unsigned16_t)0x0F)
+  0x0F
  
 /* REFRESHALL: Refresh Flag */
 #define RECTYPE_REFRESHALL                      \
-  ((unsigned16_t)0x1B7)
+  0x1B7
  
 /* RIGHTMARGIN: Right Margin Measurement */
 #define RECTYPE_RIGHTMARGIN                     \
-  ((unsigned16_t)0x27)
+  0x27
  
 /* RK: Cell Value, RK Number */
 #define RECTYPE_RK                              \
-  ((unsigned16_t)0x27E)
+  0x27E
  
 /* ROW: Describes a Row */
 #define RECTYPE_ROW                             \
-  ((unsigned16_t)0x208)
+  0x208
  
 /* RSTRING: Cell with Character Formatting */
 #define RECTYPE_RSTRING                         \
-  ((unsigned16_t)0xD6)
+  0xD6
  
 /* SAVERECALC: Recalculate Before Save */
 #define RECTYPE_SAVERECALC                      \
-  ((unsigned16_t)0x5F)
+  0x5F
  
 /* SCENARIO: Scenario Data */
 #define RECTYPE_SCENARIO                        \
-  ((unsigned16_t)0xAF)
+  0xAF
  
 /* SCENMAN: Scenario Output Data */
 #define RECTYPE_SCENMAN                         \
-  ((unsigned16_t)0xAE)
+  0xAE
  
 /* SCENPROTECT: Scenario Protection */
 #define RECTYPE_SCENPROTECT                     \
-  ((unsigned16_t)0xDD)
+  0xDD
  
 /* SCL: Window Zoom Magnification */
 #define RECTYPE_SCL                             \
-  ((unsigned16_t)0xA0)
+  0xA0
  
 /* SELECTION: Current Selection */
 #define RECTYPE_SELECTION                       \
-  ((unsigned16_t)0x1D)
+  0x1D
  
 /* SETUP: Page Setup */
 #define RECTYPE_SETUP                           \
-  ((unsigned16_t)0xA1)
+  0xA1
  
 /* SHRFMLA: Shared Formula */
 #define RECTYPE_SHRFMLA                         \
-  ((unsigned16_t)0xBC)
+  0xBC
  
 /* SORT: Sorting Options */
 #define RECTYPE_SORT                            \
-  ((unsigned16_t)0x90)
+  0x90
  
 /* SOUND: Sound Note */
 #define RECTYPE_SOUND                           \
-  ((unsigned16_t)0x96)
+  0x96
  
 /* SST: Shared String Table */
 #define RECTYPE_SST                             \
-  ((unsigned16_t)0xFC)
+  0xFC
  
 /* STANDARDWIDTH: Standard Column Width */
 #define RECTYPE_STANDARDWIDTH                   \
-  ((unsigned16_t)0x99)
+  0x99
  
 /* STRING: String Value of a Formula */
 #define RECTYPE_STRING                          \
-  ((unsigned16_t)0x207)
+  0x207
  
 /* STYLE: Style Information */
 #define RECTYPE_STYLE                           \
-  ((unsigned16_t)0x293)
+  0x293
  
 /* SUB: Subscriber */
 #define RECTYPE_SUB                             \
-  ((unsigned16_t)0x91)
+  0x91
  
 /* SUPBOOK: Supporting Workbook */
 #define RECTYPE_SUPBOOK                         \
-  ((unsigned16_t)0x1AE)
+  0x1AE
  
 /* SXDB: PivotTable Cache Data */
 #define RECTYPE_SXDB                            \
-  ((unsigned16_t)0xC6)
+  0xC6
  
 /* SXDBEX: PivotTable Cache Data */
 #define RECTYPE_SXDBEX                          \
-  ((unsigned16_t)0x122)
+  0x122
  
 /* SXDI: Data Item */
 #define RECTYPE_SXDI                            \
-  ((unsigned16_t)0xC5)
+  0xC5
  
 /* SXEX: PivotTable View Extended Information */
 #define RECTYPE_SXEX                            \
-  ((unsigned16_t)0xF1)
+  0xF1
  
 /* SXEXT: External Source Information */
 #define RECTYPE_SXEXT                           \
-  ((unsigned16_t)0xDC)
+  0xDC
  
 /* SXFDBTYPE: SQL Datatype Identifier */
 #define RECTYPE_SXFDBTYPE                       \
-  ((unsigned16_t)0x1BB)
+  0x1BB
  
 /* SXFILT: PivotTable Rule Filter */
 #define RECTYPE_SXFILT                          \
-  ((unsigned16_t)0xF2)
+  0xF2
  
 /* SXFORMAT: PivotTable Format Record */
 #define RECTYPE_SXFORMAT                        \
-  ((unsigned16_t)0xFB)
+  0xFB
  
 /* SXFORMULA: PivotTable Formula Record */
 #define RECTYPE_SXFORMULA                       \
-  ((unsigned16_t)0x103)
+  0x103
  
 /* SXFMLA: PivotTable Parsed Expression */
 #define RECTYPE_SXFMLA                          \
-  ((unsigned16_t)0xF9)
+  0xF9
  
 /* SXIDSTM: Stream ID */
 #define RECTYPE_SXIDSTM                         \
-  ((unsigned16_t)0xD5)
+  0xD5
  
 /* SXIVD: Row/Column Field IDs */
 #define RECTYPE_SXIVD                           \
-  ((unsigned16_t)0xB4)
+  0xB4
  
 /* SXLI: Line Item Array */
 #define RECTYPE_SXLI                            \
-  ((unsigned16_t)0xB5)
+  0xB5
  
 /* SXNAME: PivotTable Name  */
 #define RECTYPE_SXNAME                          \
-  ((unsigned16_t)0xF6)
+  0xF6
  
 /* SXPAIR: PivotTable Name Pair */
 #define RECTYPE_SXPAIR                          \
-  ((unsigned16_t)0xF8)
+  0xF8
  
 /* SXPI: Page Item */
 #define RECTYPE_SXPI                            \
-  ((unsigned16_t)0xB6)
+  0xB6
  
 /* SXRULE: PivotTable Rule Data */
 #define RECTYPE_SXRULE                          \
-  ((unsigned16_t)0xF0)
+  0xF0
  
 /* SXSTRING: String */
 #define RECTYPE_SXSTRING                        \
-  ((unsigned16_t)0xCD)
+  0xCD
  
 /* SXSELECT: PivotTable Selection Information */
 #define RECTYPE_SXSELECT                        \
-  ((unsigned16_t)0xF7)
+  0xF7
  
 /* SXTBL: Multiple Consolidation Source Info */
 #define RECTYPE_SXTBL                           \
-  ((unsigned16_t)0xD0)
+  0xD0
  
 /* SXTBPG: Page Item Indexes */
 #define RECTYPE_SXTBPG                          \
-  ((unsigned16_t)0xD2)
+  0xD2
  
 /* SXTBRGIITM: Page Item Name Count */
 #define RECTYPE_SXTBRGIITM                      \
-  ((unsigned16_t)0xD1)
+  0xD1
  
 /* SXVD: View Fields */
 #define RECTYPE_SXVD                            \
-  ((unsigned16_t)0xB1)
+  0xB1
  
 /* SXVDEX: Extended PivotTable View Fields */
 #define RECTYPE_SXVDEX                          \
-  ((unsigned16_t)0x100)
+  0x100
  
 /* SXVI: View Item */
 #define RECTYPE_SXVI                            \
-  ((unsigned16_t)0xB2)
+  0xB2
  
 /* SXVIEW: View Definition */
 #define RECTYPE_SXVIEW                          \
-  ((unsigned16_t)0xB0)
+  0xB0
  
 /* SXVS: View Source */
 #define RECTYPE_SXVS                            \
-  ((unsigned16_t)0xE3)
+  0xE3
  
 /* TABID: Sheet Tab Index Array */
 #define RECTYPE_TABID                           \
-  ((unsigned16_t)0x13D)
+  0x13D
  
 /* TABIDCONF: Sheet Tab ID of Conflict History */
 #define RECTYPE_TABIDCONF                       \
-  ((unsigned16_t)0xEA)
+  0xEA
  
 /* TABLE: Data Table */
 #define RECTYPE_TABLE                           \
-  ((unsigned16_t)0x236)
+  0x236
  
 /* TEMPLATE: Workbook Is a Template */
 #define RECTYPE_TEMPLATE                        \
-  ((unsigned16_t)0x60)
+  0x60
  
 /* TOPMARGIN: Top Margin Measurement */
 #define RECTYPE_TOPMARGIN                       \
-  ((unsigned16_t)0x28)
+  0x28
  
 /* TXO: Text Object */
 #define RECTYPE_TXO                             \
-  ((unsigned16_t)0x1B6)
+  0x1B6
  
 /* UDDESC: Description String for Chart Autoformat */
 #define RECTYPE_UDDESC                          \
-  ((unsigned16_t)0xDF)
+  0xDF
  
 /* UNCALCED: Recalculation Status */
 #define RECTYPE_UNCALCED                        \
-  ((unsigned16_t)0x5E)
+  0x5E
  
 /* USERBVIEW: Workbook Custom View Settings */
 #define RECTYPE_USERBVIEW                       \
-  ((unsigned16_t)0x1A9)
+  0x1A9
  
 /* USERSVIEWBEGIN: Custom View Settings */
 #define RECTYPE_USERSVIEWBEGIN                  \
-  ((unsigned16_t)0x1AA)
+  0x1AA
  
 /* USERSVIEWEND: End of Custom View Records */
 #define RECTYPE_USERSVIEWEND                    \
-  ((unsigned16_t)0x1AB)
+  0x1AB
  
 /* USESELFS: Natural Language Formulas Flag */
 #define RECTYPE_USESELFS                        \
-  ((unsigned16_t)0x160)
+  0x160
  
 /* VCENTER: Center Between Vertical Margins */
 #define RECTYPE_VCENTER                         \
-  ((unsigned16_t)0x84)
+  0x84
  
 /* VERTICALPAGEBREAKS: Explicit Column Page Breaks */
 #define RECTYPE_VERTICALPAGEBREAKS              \
-  ((unsigned16_t)0x1A)
+  0x1A
  
 /* WINDOW1: Window Information */
 #define RECTYPE_WINDOW1                         \
-  ((unsigned16_t)0x3D)
+  0x3D
  
 /* WINDOW2: Sheet Window Information */
 #define RECTYPE_WINDOW2                         \
-  ((unsigned16_t)0x23E)
+  0x23E
  
 /* WINDOWPROTECT: Windows Are Protected */
 #define RECTYPE_WINDOWPROTECT                   \
-  ((unsigned16_t)0x19)
+  0x19
  
 /* WRITEACCESS: Write Access User Name */
 #define RECTYPE_WRITEACCESS                     \
-  ((unsigned16_t)0x5C)
+  0x5C
  
 /* WRITEPROT: Workbook Is Write-Protected */
 #define RECTYPE_WRITEPROT                       \
-  ((unsigned16_t)0x86)
+  0x86
  
 /* WSBOOL: Additional Workspace Information */
 #define RECTYPE_WSBOOL                          \
-  ((unsigned16_t)0x81)
+  0x81
  
 /* XCT: CRN Record Count */
 #define RECTYPE_XCT                             \
-  ((unsigned16_t)0x59)
+  0x59
  
 /* XF: Extended Format */
 #define RECTYPE_XF                              \
-  ((unsigned16_t)0xE0)
+  0xE0
  
 /* XL5MODIFY: Flag for DSF */
 #define RECTYPE_XL5MODIFY                       \
-  ((unsigned16_t)0x162)
+  0x162
 
 /* TOOLBARHDR: Not documented */
 #define RECTYPE_TOOLBARHDR                      \
-  ((unsigned16_t)0xbf)
+  0xbf
 
 /* TOOLBAREND: Not documented */
 #define RECTYPE_TOOLBAREND                      \
-  ((unsigned16_t)0xc0)
+  0xc0
 
 /* TOOLBAREND: Not documented */
 #define RECTYPE_MERGEDCELLS                     \
-  ((unsigned16_t)0xe5)
+  0xe5
 
 #endif //RECTYPES_H
 

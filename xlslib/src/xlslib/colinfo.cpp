@@ -32,17 +32,20 @@
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
+#include <config.h>
+
 #include <colinfo.h>
 
 using namespace std;
 using namespace xlslib_core;
 
-CColInfo::CColInfo(colinfo_t* newci)
+CColInfo::CColInfo(CDataStorage &datastore, const colinfo_t* newci):
+		CRecord(datastore)
 {
    SetRecordType(RECTYPE_COLINFO);
 
-   AddValue16(newci->colfirst);
-   AddValue16(newci->collast);
+   AddValue16((unsigned16_t)newci->colfirst);
+   AddValue16((unsigned16_t)newci->collast);
    AddValue16(newci->width);
 
    if(newci->xformat != NULL)

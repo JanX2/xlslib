@@ -4,7 +4,7 @@
 # SEE IF WE REALLY NEED IT THOUGH 
 # AM_CXXFLAGS = -O2
 
-INCLUDES		=    \
+AM_CPPFLAGS		=    \
 -I$(top_builddir)/src/data   \
 -I$(top_builddir)/src/oledoc \
 -I$(top_builddir)/src/common \
@@ -55,6 +55,10 @@ common/stringtok.h		      \
 common/systype.h		      \
 common/xlconfig.h		      \
 common/timespan.h		      \
+common/xls_poppack.h				  \
+common/xls_pshpack1.h				  \
+common/xls_pshpack2.h				  \
+common/xls_pshpack4.h				  \
 common/xlslib.h				  \
 oledoc/binfile.h		      \
 oledoc/oledoc.h			      \

@@ -429,7 +429,8 @@ CFont class implementation
 **********************************
 */
 #if 0
-CFont::CFont(string	name,			
+CFont::CFont(CDataStorage &datastore, 
+			string	name,			
 	     unsigned16_t height, 
 	     unsigned16_t boldstyle,
 	     unsigned8_t  underline,
@@ -437,7 +438,8 @@ CFont::CFont(string	name,
 	     unsigned16_t color,	 
 	     unsigned16_t attributes,
 	     unsigned8_t  family, 
-	     unsigned8_t  charset)
+	     unsigned8_t  charset):
+		CRecord(datastore)
 {
 	SetRecordType(RECTYPE_FONT);
 
@@ -456,7 +458,8 @@ CFont::CFont(string	name,
 }
 #endif
 
-CFont::CFont(font_t* fontdef)
+CFont::CFont(CDataStorage &datastore, const font_t* fontdef):
+		CRecord(datastore)
 {
 	SetRecordType(RECTYPE_FONT);
 

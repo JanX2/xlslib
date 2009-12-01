@@ -40,6 +40,9 @@
 #include <common.h>
 #include <record.h>
 
+
+#include <xls_pshpack2.h>
+
 namespace xlslib_core
 {
 
@@ -48,23 +51,39 @@ namespace xlslib_core
 CIndex class declaration
 ******************************
 */
-#define INDEX_DFLT_RESERVED ((unsigned32_t)0x00000000)
+#define INDEX_DFLT_RESERVED 0x00000000
 
-#define INDEX_OFFSET_B8FIRSTROW ((unsigned32_t)8)
-#define INDEX_OFFSET_B8LASTROW  ((unsigned32_t)12)
+#define INDEX_OFFSET_B7FIRSTROW 8
+#define INDEX_OFFSET_B7LASTROW  10
+#define INDEX_OFFSET_B8FIRSTROW 8
+#define INDEX_OFFSET_B8LASTROW  12
+
+	// forward ref
+	class CDataStorage;
 
   class CIndex: public CRecord
     {
-    public:
-      CIndex(unsigned32_t firstrow, 
+#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+	friend class CDataStorage;
+#endif
+
+    protected:
+      CIndex(CDataStorage &datastore, 
+			 unsigned32_t firstrow, 
              unsigned32_t lastrow);
-      ~CIndex();
-      void AddDBCellOffset(unsigned32_t dbcoffset);
+	private:
+      virtual ~CIndex();
+
+	public:
+      void AddDBCellOffset(size_t dbcoffset);
       void SetRows(unsigned32_t firstrow, unsigned32_t lastrow);
       unsigned32_t GetFirstRow(void);
       unsigned32_t GetLastRow(void);
     };
 }
+
+#include <xls_poppack.h>
+
 #endif //INDEX_H
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

@@ -33,7 +33,10 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 
+#include <config.h>
+
 #include <row.h>
+#include <datast.h>
 
 using namespace std;
 using namespace xlslib_core;
@@ -44,16 +47,18 @@ CRow class implementation
 ******************************
 */
 
-CRow::CRow(unsigned16_t rownum,  
-           unsigned16_t firstcol,
-           unsigned16_t lastcol, 
+CRow::CRow(CDataStorage &datastore, 
+		   unsigned32_t rownum,  
+           unsigned32_t firstcol,
+           unsigned32_t lastcol, 
            unsigned16_t rowheight,
-		   xf_t* xformat)
+		   const xf_t* xformat):
+		CRecord(datastore)
 {
 	SetRecordType(RECTYPE_ROW);
-	AddValue16(rownum);
-	AddValue16(firstcol);
-	AddValue16(lastcol+1);
+	AddValue16((unsigned16_t)rownum);
+	AddValue16((unsigned16_t)firstcol);
+	AddValue16((unsigned16_t)(lastcol+1));
 	AddValue16(rowheight);
 
 	// A field used by MS for "optimizing" (?) the loading of a file.
@@ -64,18 +69,17 @@ CRow::CRow(unsigned16_t rownum,
 
 	// TODO: The following flag-word can be used for outline cells.
 	// As a default the GhostDirty flag is set, so the row has a default
-
 	// format (set by the index of byte 18).
 	if(rowheight == ROW_DFLT_HEIGHT)
 	{
-		AddValue16((unsigned16_t)(ROW_DFLT_GRBIT));
+		AddValue16(ROW_DFLT_GRBIT/*|0x100*/); // [i_a] Excel2003 also sets bit 8: 0x100
 	} else {
-		AddValue16((unsigned16_t)(ROW_DFLT_GRBIT|ROW_GRBIT_UNSYNC));   
+		AddValue16(ROW_DFLT_GRBIT|ROW_GRBIT_UNSYNC/*|0x100*/);   
 	}
 	if(xformat == NULL) {
-		AddValue16((unsigned16_t)ROW_DFLT_IXFE);
+		AddValue16(ROW_DFLT_IXFE);
 	} else {
-		AddValue16((unsigned16_t)xformat->GetIndex());
+		AddValue16(xformat->GetIndex());
 	}
 
 	SetRecordLength(GetDataSize()-4);
@@ -100,7 +104,7 @@ CRow::CRow(row_t& rowdef)
 	// TODO: The following flag-word can be used for outline cells.
 	// As a default the GhostDirty flag is set, so the row has a default
 	// format (set by the index of byte 18).
-	AddValue16((unsigned16_t)(ROW_DFLT_GRBIT|ROW_GRBIT_UNSYNC));
+	AddValue16(ROW_DFLT_GRBIT|ROW_GRBIT_UNSYNC);
 	if(rowdef.xformat == NULL) {
 		AddValue16((unsigned16_t)ROW_DFLT_IXFE);
 	} else {
@@ -115,29 +119,30 @@ CRow::~CRow()
 {
 }
 
+#if 0
 /*
 ******************************
 ******************************
 */
-void CRow::SetFirstCol(unsigned16_t firstcol)
+void CRow::SetFirstCol(unsigned32_t firstcol)
 {
-   SetValueAt((unsigned16_t)firstcol, ROW_OFFSET_FIRSTCOL);
+   SetValueAt16((unsigned16_t)firstcol, ROW_OFFSET_FIRSTCOL);
 }
 
 /*
 ******************************
 ******************************
 */
-void CRow::SetLastCol(unsigned16_t lastcol)
+void CRow::SetLastCol(unsigned32_t lastcol)
 {
-   SetValueAt((unsigned16_t)lastcol, ROW_OFFSET_LASTCOL);
+   SetValueAt16((unsigned16_t)(lastcol+1), ROW_OFFSET_LASTCOL);
 }
   
 /*
 ******************************
 ******************************
 */
-unsigned16_t CRow::GetFirstCol(void)
+unsigned32_t CRow::GetFirstCol(void)
 {
 
    signed16_t firstcol;
@@ -150,20 +155,28 @@ unsigned16_t CRow::GetFirstCol(void)
 ******************************
 ******************************
 */
-unsigned16_t CRow::GetLastCol(void)
+unsigned32_t CRow::GetLastCol(void)
 {
    signed16_t lastcol;
    GetValue16From(&lastcol,ROW_OFFSET_LASTCOL);
-   return (unsigned16_t)lastcol;
+   return (unsigned16_t)lastcol-1;
 }
+
+#endif
 
 /*
 ******************************
 CDBCell class implementation
 ******************************
 */
-CDBCell::CDBCell(unsigned32_t startblock)
+CDBCell::CDBCell(CDataStorage &datastore, size_t startblock):
+		CRecord(datastore)
 {
+#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+   m_Backpatching_Level = 1;
+#else
+#endif
+
    // The new initializated DBCell record points to nowhere and has no 
    // extra rows (the array of stream offsets is empty);
    SetRecordType(RECTYPE_DBCELL);
@@ -177,11 +190,10 @@ CDBCell::~CDBCell()
 }
 
 
-void CDBCell::AddRowOffset(unsigned16_t rowoffset)
+void CDBCell::AddRowOffset(size_t rowoffset)
 {    
    AddValue16((unsigned16_t) rowoffset);
    SetRecordLength(GetDataSize()-4);
-
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

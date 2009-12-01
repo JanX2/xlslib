@@ -33,6 +33,8 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 
+#include <config.h>
+
 #include <merged.h>
 
 using namespace std;
@@ -43,7 +45,8 @@ using namespace xlslib_core;
 CMergedCells class implementation
 ****************************** 
 */
-CMergedCells::CMergedCells()
+CMergedCells::CMergedCells(CDataStorage &datastore):
+		CRecord(datastore)
 {
    SetRecordType(RECTYPE_MERGEDCELLS);
 
@@ -63,10 +66,10 @@ CMergedCells::~CMergedCells()
 */
 void CMergedCells::AddRange(range_t* rng)
 {
-   AddValue16(rng->first_row);
-   AddValue16(rng->last_row);
-   AddValue16(rng->first_col);
-   AddValue16(rng->last_col);
+   AddValue16((unsigned16_t)rng->first_row);
+   AddValue16((unsigned16_t)rng->last_row);
+   AddValue16((unsigned16_t)rng->first_col);
+   AddValue16((unsigned16_t)rng->last_col);
 
    SetRecordLength(GetDataSize()-4);
 }
@@ -75,9 +78,9 @@ void CMergedCells::AddRange(range_t* rng)
 ******************************
 ****************************** 
 */
-void CMergedCells::SetNumRanges(unsigned16_t numranges)
+void CMergedCells::SetNumRanges(size_t numranges)
 {
-   SetValueAt((unsigned16_t)numranges, 0x04);
+   SetValueAt16((unsigned16_t)numranges, 0x04);
 }
 
 

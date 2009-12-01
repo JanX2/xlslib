@@ -78,7 +78,7 @@ COleProp class declaration
       signed32_t m_nTSModifiedDays;   
 
       signed32_t m_nStartBlock;
-      signed32_t m_nSize;
+      size_t m_nSize;
   
       // The following set of attributes are not part of the definition of 
       // an OleDoc's property:
@@ -101,44 +101,44 @@ COleProp class declaration
       int Init(signed32_t node_index, std::string& name, CDataStorage* data = NULL);
 
       int SetName(std::string name);
-      std::string GetName(void);
+      std::string GetName(void) const;
 
       int SetIndex(signed32_t newindex);
       inline signed32_t GetIndex(void) const {return m_nIndex;}
 
-      int SetSize(signed32_t size);
-      signed32_t GetSize(void);
+      int SetSize(size_t size);
+      size_t GetSize(void) const;
 
       int SetType(unsigned8_t newtype);
-      unsigned8_t GetType(void);
+      unsigned8_t GetType(void) const;
 
       int SetColor(unsigned8_t newcolor);
-      unsigned8_t GetColor(void);
+      unsigned8_t GetColor(void) const;
 
       int SetPreviousIndex(signed32_t prev);
-      signed32_t GetPreviousIndex(void);
+      signed32_t GetPreviousIndex(void) const;
 
       int SetNextIndex(signed32_t next);
-      signed32_t GetNextIndex(void);
+      signed32_t GetNextIndex(void) const;
 
       int SetChildIndex(signed32_t child);
-      signed32_t GetChildIndex(void);
+      signed32_t GetChildIndex(void) const;
 
       int SetStartBlock(signed32_t sb);
-      signed32_t GetStartBlock(void);
+      signed32_t GetStartBlock(void) const;
 
       void SetDataPointer(CDataStorage* pdata);
-      CDataStorage* GetDataPointer(void);
+      CDataStorage* GetDataPointer(void) const;
 
       void SetCreatedSecs(signed32_t sec1);
-      signed32_t GetCreatedSecs(void);
+      signed32_t GetCreatedSecs(void) const;
       void SetCreatedDays(signed32_t day1);
-      signed32_t GetCreatedDays(void);
+      signed32_t GetCreatedDays(void) const;
 
       void SetModifiedSecs(signed32_t sec2);
-      signed32_t GetModifiedSecs(void);
+      signed32_t GetModifiedSecs(void) const;
       void SetModifiedDays(signed32_t day2);
-      signed32_t GetModifiedDays(void);
+      signed32_t GetModifiedDays(void) const;
     };
 }
 

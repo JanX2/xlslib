@@ -45,6 +45,9 @@
 
 #define XLSLIB_VERSION "2.0.0"
 
+
+#include <xls_pshpack2.h>
+
 namespace xlslib_core
 {
 
@@ -89,10 +92,10 @@ namespace xlslib_core
 
 		bool property(property_t prop, const std::string& content);
 		
-		void windPosition(unsigned16_t horz, unsigned16_t vert) ;
-		void windSize(unsigned16_t width, unsigned16_t height) ;
-		void firstTab(unsigned16_t firstTab) ;
-		void tabBarWidth(unsigned16_t width) ;
+		void windPosition(unsigned16_t horz, unsigned16_t vert);
+		void windSize(unsigned16_t width, unsigned16_t height);
+		void firstTab(unsigned16_t firstTab);
+		void tabBarWidth(unsigned16_t width);
 
 		int Dump(const std::string& filename);
 
@@ -101,7 +104,7 @@ namespace xlslib_core
 		workbook& operator=(const workbook& right);
 
     private:
-		CUnit* DumpData(void);	// oledoc use
+		CUnit* DumpData(CDataStorage &datastore);	// oledoc use
 
     private:
 		CGlobalRecords			m_GlobalRecords;
@@ -111,21 +114,24 @@ namespace xlslib_core
 		Sheets_Vector_t			m_Sheets;
 		WorkbookDumpState_t		m_DumpState;
 		WorkbookDumpState_t		m_PreviousDumpState;
-		unsigned32_t			sheetIndex;
+		unsigned16_t			sheetIndex;
 
 		CUnit*					m_pCurrentData;
 		
 
 		// Continue record variables:
-		unsigned32_t			writeLen;
+		size_t			writeLen;
 		CUnit*					m_pContinueRecord;
 		unsigned16_t			m_ContinueIndex;
 		
 		unsigned16_t			current_sheet;
-		unsigned32_t			offset;              
+		size_t			offset;              
     };
 
 }
+
+#include <xls_poppack.h>
+
 #endif //WORKBOOK_H
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

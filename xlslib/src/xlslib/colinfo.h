@@ -40,21 +40,24 @@
 #include <record.h>
 #include <extformat.h>
 
+
+#include <xls_pshpack2.h>
+
 namespace xlslib_core
 {
-  typedef struct
+  struct colinfo_t
   {
-    unsigned16_t	colfirst;
-    unsigned16_t	collast;
+    unsigned32_t	colfirst;
+    unsigned32_t	collast;
     unsigned16_t	width;
     xf_t*			xformat;
     unsigned16_t	flags;
-  } colinfo_t;
+  };
 
   class colinfosort
   {
     public:
-		bool operator()(colinfo_t* const &a, colinfo_t* const  &b) const
+		bool operator()(colinfo_t* const &a, colinfo_t* const &b) const
 		{
 		  return (a->colfirst < b->colfirst);
 		};
@@ -63,14 +66,25 @@ namespace xlslib_core
   typedef std::set<xlslib_core::colinfo_t*, colinfosort XLSLIB_DFLT_ALLOCATOR> Colinfo_Set_t;
   typedef Colinfo_Set_t::iterator Colinfo_Set_Itor_t;
 
+	// forward ref
+	class CDataStorage;
+
   class CColInfo: public CRecord
     {
-    public:
-      CColInfo(colinfo_t* newci);
-      ~CColInfo();
+#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+	friend class CDataStorage;
+#endif
+
+    protected:
+      CColInfo(CDataStorage &datastore, const colinfo_t* newci);
+	private:
+      virtual ~CColInfo();
     };
 
 }
+
+
+#include <xls_poppack.h>
 
 #endif //COLINFO_H
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

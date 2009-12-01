@@ -32,6 +32,8 @@
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
+#include <config.h>
+
 #include <sstream>
 
 #include <extformat.h>
@@ -728,7 +730,6 @@ bool xf_t::operator==(const xf_t& right)
 	if(wrap != right.wrap)				return false;
 	if(is_cell != right.is_cell)		return false;
 	if(is_userXF != right.is_userXF)	return false;
- 	if(is_userXF != right.is_userXF)	return false;
  
 	return true;
 #endif
@@ -906,7 +907,8 @@ bool xf_t::IsCell(void) const
 }
 
 
-CExtFormat::CExtFormat(xf_t* xfdef)
+CExtFormat::CExtFormat(CDataStorage &datastore, const xf_t* xfdef):
+		CRecord(datastore)
 {
 	//cerr << "CExtFormat:" << endl << xfdef->Description() << endl;
 
@@ -962,7 +964,7 @@ XF8;
 static int flop;
 	printf("----------------------------------------\n");
 if(flop == 21) flop = 0;
-    printf("      INDEX: %u size=%d dataSize=%d SIZE=%d\n",flop++, m_nSize, m_nDataSize, sizeof(XF8));
+    printf("      INDEX: %u size=%d dataSize=%d SIZE=%d\n",flop++, (int)m_nSize, (int)m_nDataSize, (int)sizeof(XF8));
 	
 
 #if 0
@@ -1020,11 +1022,11 @@ void CExtFormat::InitDummy(bool is_cell)
 
    //The default style is a dummy. The flags that indicate what the style affects (byte 11)
    // are disabled (set to 1).
-   unsigned8_t xfCellDefault[] = {
+   static const unsigned8_t xfCellDefault[] = {
 /*    0         2         4         6         8         10        12        14         16       18        20 */
       0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
    };
-   unsigned8_t xfStyleDefault[] = {
+   static const unsigned8_t xfStyleDefault[] = {
       // Open Office offsets
 /*    0         2         4         6         8         10        12        14         16       18        20 */
       0x00,0x00,0x00,0x00,0xf5,0xff,0x20,0x00,0x00,0xfc,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xc0,0x20
@@ -1070,7 +1072,7 @@ bool CExtFormat::IsCell()
 int CExtFormat::SetFontIndex(unsigned16_t fontindex)
 {
    // Set the index value
-   int errcode = SetValueAt((unsigned16_t)fontindex, XF_OFFSET_FONT);
+   int errcode = SetValueAt16((unsigned16_t)fontindex, XF_OFFSET_FONT);
 
    return errcode;
 }
@@ -1094,7 +1096,7 @@ unsigned16_t CExtFormat::GetFontIndex(void)
 int CExtFormat::SetFormatIndex(unsigned16_t formatindex)
 {
    // Set the index value
-   int errcode = SetValueAt((unsigned16_t)formatindex, XF_OFFSET_FORMAT);
+   int errcode = SetValueAt16((unsigned16_t)formatindex, XF_OFFSET_FORMAT);
    
    return errcode;
 }
@@ -1121,7 +1123,7 @@ void CExtFormat::SetLocked()
 
    GetValue16From((signed16_t*)&value, XF_OFFSET_PROP);
    value |= XF_PROP_LOCKED;
-   SetValueAt((unsigned16_t)value, XF_OFFSET_PROP);
+   SetValueAt16((unsigned16_t)value, XF_OFFSET_PROP);
 }
 
 /* 
@@ -1134,7 +1136,7 @@ void CExtFormat::SetHidden()
 
    GetValue16From((signed16_t*)&value, XF_OFFSET_PROP);
    value |= XF_PROP_HIDDEN;
-   SetValueAt((unsigned16_t)value, XF_OFFSET_PROP);
+   SetValueAt16((unsigned16_t)value, XF_OFFSET_PROP);
 }
 
 /* 
@@ -1147,7 +1149,7 @@ void CExtFormat::SetHorizAlign(unsigned8_t alignval)
    
    GetValue32From((signed32_t*)&value, XF_OFFSET_ALIGN);
    value = (value&(~XF_ALIGN_HORIZONTAL))|(alignval & XF_ALIGN_HORIZONTAL);
-   SetValueAt((unsigned32_t)value, XF_OFFSET_ALIGN);
+   SetValueAt32((unsigned32_t)value, XF_OFFSET_ALIGN);
 }
 
 /* 
@@ -1161,7 +1163,7 @@ void CExtFormat::SetVertAlign(unsigned8_t alignval)
    GetValue32From((signed32_t*)&value, XF_OFFSET_ALIGN);
    alignval32 = (unsigned32_t)alignval << XF_ALIGN_SHIFTPOS_VALIGN;				// Place the option at the right bit position
    value = (value&(~XF_ALIGN_VERTICAL))|(alignval32 & XF_ALIGN_VERTICAL);
-   SetValueAt((unsigned32_t)value, XF_OFFSET_ALIGN);
+   SetValueAt32((unsigned32_t)value, XF_OFFSET_ALIGN);
 }
 
 /* 
@@ -1174,7 +1176,7 @@ void CExtFormat::SetWrap()
 
    GetValue32From((signed32_t*)&value, XF_OFFSET_ALIGN);
    value |= XF_ALIGN_WRAP;
-   SetValueAt((unsigned32_t)value, XF_OFFSET_ALIGN);
+   SetValueAt32((unsigned32_t)value, XF_OFFSET_ALIGN);
 }
 /* 
 **********************************
@@ -1203,7 +1205,7 @@ void CExtFormat::SetIndent(unsigned8_t indentval)
 	unsigned32_t indentval32 = (unsigned32_t)indentval << XF_INDENT_SHIFTPOS; // Place the option at the right bit position
 	value = (value&(~mask))|(indentval32 & mask);
 
-	SetValueAt((unsigned32_t)value, XF_OFFSET_ALIGN);
+	SetValueAt32((unsigned32_t)value, XF_OFFSET_ALIGN);
 }
 
 /* 
@@ -1215,17 +1217,18 @@ void CExtFormat::SetTxtOrientation(unsigned8_t alignval)
    unsigned32_t value;
 
    GetValue32From((signed32_t*)&value, XF_OFFSET_ALIGN);
-   unsigned32_t alignval32 = alignval << XF_ORI_SHIFTPOS; // Place the option at the right bit position
+   unsigned32_t alignval32 = alignval;
+   alignval32 <<= XF_ORI_SHIFTPOS; // Place the option at the right bit position
 
    value = (value&(~XF_ORI_MASK))|(alignval32 & XF_ORI_MASK);
-   SetValueAt((unsigned32_t)value, XF_OFFSET_ALIGN);
+   SetValueAt32((unsigned32_t)value, XF_OFFSET_ALIGN);
 }
 
 /* 
 **********************************
 **********************************
 */
-void CExtFormat::SetFGColorIndex(unsigned8_t color)
+void CExtFormat::SetFGColorIndex(unsigned16_t color)
 {
    unsigned16_t value;
    
@@ -1236,27 +1239,27 @@ void CExtFormat::SetFGColorIndex(unsigned8_t color)
    // Set the new color
    value |= (color & XF_COLOR_FOREGROUND);
 
-   SetValueAt((unsigned16_t)value, XF_OFFSET_COLOR);
+   SetValueAt16((unsigned16_t)value, XF_OFFSET_COLOR);
 }
 
 /* 
 **********************************
 **********************************
 */
-void CExtFormat::SetBGColorIndex(unsigned8_t color)
+void CExtFormat::SetBGColorIndex(unsigned16_t color)
 {
-   unsigned16_t value, color16;
+   unsigned16_t value;
    
-   color16 = (unsigned16_t)color <<  XF_COLOR_SHIFTPOS_BG;
+   color <<= XF_COLOR_SHIFTPOS_BG;
   
    GetValue16From((signed16_t*)&value, XF_OFFSET_COLOR);
 
    // Clear the field for Foreground color
    value &= (~XF_COLOR_BACKGROUND);
    // Set the new color
-   value |= (color16 & XF_COLOR_BACKGROUND);
+   value |= (color & XF_COLOR_BACKGROUND);
 
-   SetValueAt((unsigned16_t)value, XF_OFFSET_COLOR);
+   SetValueAt16((unsigned16_t)value, XF_OFFSET_COLOR);
 }
 
 /* 
@@ -1272,7 +1275,7 @@ void CExtFormat::SetFillPattern(unsigned8_t pattern)
 
 	pattern32 <<= XF_SHIFTPOS_FILLPATTERN;
 	value |= (pattern32 & XF_BORDER_FILLPATTERN);
-	SetValueAt((unsigned32_t)value, XF_OFFSET_BORDERB);
+	SetValueAt32((unsigned32_t)value, XF_OFFSET_BORDERB);
 }
 
 
@@ -1298,13 +1301,13 @@ GetValue32From((signed32_t*)&valueB0, XF_OFFSET_BORDERB);
 		 value &= (~XF_BORDER_BOTTOMSTYLE);
 		 style32 <<= XF_STYLE_SHIFTPOS_BOTTOM;
 		 value |= (style32 & XF_BORDER_BOTTOMSTYLE);
-		 SetValueAt((unsigned32_t)value, XF_OFFSET_BORDERA);
+		 SetValueAt32((unsigned32_t)value, XF_OFFSET_BORDERA);
 
 		 GetValue32From((signed32_t*)&value, XF_OFFSET_BORDERB);
 		 value &= (~XF_BORDER_BOTTOMCOLOR);
 		 color32 <<= XF_COLOR_SHIFTPOS_BOTTOM;
 		 value |= (color32 & XF_BORDER_BOTTOMCOLOR);
-		 SetValueAt((unsigned32_t)value, XF_OFFSET_BORDERB);
+		 SetValueAt32((unsigned32_t)value, XF_OFFSET_BORDERB);
 		}
 		break;
 	case BORDER_TOP:
@@ -1315,13 +1318,13 @@ GetValue32From((signed32_t*)&valueB0, XF_OFFSET_BORDERB);
 		 value &= (~XF_BORDER_TOPSTYLE);
 		 style32 <<= XF_STYLE_SHIFTPOS_TOP;
 		 value |= (style32 & XF_BORDER_TOPSTYLE);
-		 SetValueAt((unsigned32_t)value, XF_OFFSET_BORDERA);
+		 SetValueAt32((unsigned32_t)value, XF_OFFSET_BORDERA);
 
 		 GetValue32From((signed32_t*)&value, XF_OFFSET_BORDERB);
 		 value &= (~XF_BORDER_TOPCOLOR);
 		 color32 <<= XF_COLOR_SHIFTPOS_TOP;
 		 value |= (color32 & XF_BORDER_TOPCOLOR);
-		 SetValueAt((unsigned32_t)value, XF_OFFSET_BORDERB);
+		 SetValueAt32((unsigned32_t)value, XF_OFFSET_BORDERB);
 		}
 		break;
 	case BORDER_LEFT:   
@@ -1335,7 +1338,7 @@ GetValue32From((signed32_t*)&valueB0, XF_OFFSET_BORDERB);
 		 style32 <<= XF_STYLE_SHIFTPOS_LEFT;
 		 value |= (color32 & XF_BORDER_LEFTCOLOR) | (style32 & XF_BORDER_LEFTSTYLE);
 
-		 SetValueAt((unsigned32_t)value, XF_OFFSET_BORDERA);
+		 SetValueAt32((unsigned32_t)value, XF_OFFSET_BORDERA);
 		}
 		break;
 	case BORDER_RIGHT:  
@@ -1349,7 +1352,7 @@ GetValue32From((signed32_t*)&valueB0, XF_OFFSET_BORDERB);
 		 style32 <<= XF_STYLE_SHIFTPOS_RIGHT;
 		 value |= (color32 & XF_BORDER_RIGHTCOLOR) | (style32 & XF_BORDER_RIGHTSTYLE);
 
-		 SetValueAt((unsigned32_t)value, XF_OFFSET_BORDERA);
+		 SetValueAt32((unsigned32_t)value, XF_OFFSET_BORDERA);
 		}
 		break;
 
@@ -1376,7 +1379,7 @@ void CExtFormat::SetFlags(unsigned8_t flags)
 
    GetValue32From((signed32_t*)&value, XF_OFFSET_ALIGN);
    value = (value&(~XF_ALIGN_ATR_MASK))|(flags32 & XF_ALIGN_ATR_MASK);
-   SetValueAt((unsigned32_t)value, XF_OFFSET_ALIGN);
+   SetValueAt32((unsigned32_t)value, XF_OFFSET_ALIGN);
 }
 
 
@@ -1394,7 +1397,7 @@ void CExtFormat::SetXFParent(unsigned16_t parent)
       // Set the cell's style parent to Normal
       GetValue16From((signed16_t*)&value, XF_OFFSET_PROP);
       value = (value&(~XF_PROP_XFPARENT))|((parent<<XF_PROP_SHIFTPOS_PARENT) & XF_PROP_XFPARENT);
-      SetValueAt((unsigned16_t)value, XF_OFFSET_PROP);
+      SetValueAt16((unsigned16_t)value, XF_OFFSET_PROP);
    } else {
       /*Do nothing: Styles don't have parent... but still clear the flags...*/
    }

@@ -44,6 +44,9 @@
 #include <format.h>
 //#include <workbook.h>
 
+
+#include <xls_pshpack2.h>
+
 namespace xlslib_core
 {
 
@@ -52,39 +55,39 @@ namespace xlslib_core
   // The Cell Properties bit or-masks:
 #define XF_PROP_SHIFTPOS_PARENT  (4)
 
-#define XF_PROP_LOCKED      ((unsigned16_t)0x0001)
-#define XF_PROP_HIDDEN      ((unsigned16_t)0x0002)
-#define XF_PROP_STYLE       ((unsigned16_t)0x0004)
-//#define XF_PROP_123PREFIX   ((unsigned16_t)0x0008)
-#define XF_PROP_XFPARENT    ((unsigned16_t)0xFFF0)
+#define XF_PROP_LOCKED      0x0001
+#define XF_PROP_HIDDEN      0x0002
+#define XF_PROP_STYLE       0x0004
+//#define XF_PROP_123PREFIX   0x0008
+#define XF_PROP_XFPARENT    0xFFF0
 #define XF_PROP_XF_DEFAULT_CELL			   15
 
   // The Alignment field bit or-masks:
-#define XF_ALIGN_HORIZONTAL  ((unsigned32_t)0x0007)
-#define XF_ALIGN_WRAP        ((unsigned32_t)0x0008)
-#define XF_ALIGN_VERTICAL    ((unsigned32_t)0x0070)
-#define XF_ALIGN_JUSTLAST    ((unsigned32_t)0x0080) /* BIFF8: Used only in far-east versions of excel */
+#define XF_ALIGN_HORIZONTAL  0x0007
+#define XF_ALIGN_WRAP        0x0008
+#define XF_ALIGN_VERTICAL    0x0070
+#define XF_ALIGN_JUSTLAST    0x0080 /* BIFF8: Used only in far-east versions of excel */
 
   // Style options
-#define XF_FILL_NONE                ((unsigned8_t)0x00)
-#define XF_FILL_SOLID               ((unsigned8_t)0x01)
-#define XF_FILL_ATEN75              ((unsigned8_t)0x03)
-#define XF_FILL_ATEN50              ((unsigned8_t)0x02)
-#define XF_FILL_ATEN25              ((unsigned8_t)0x04)
-#define XF_FILL_ATEN12              ((unsigned8_t)0x11)
-#define XF_FILL_ATEN06              ((unsigned8_t)0x12)
-#define XF_FILL_HORIZ_LIN           ((unsigned8_t)0x05)
-#define XF_FILL_VERTICAL_LIN        ((unsigned8_t)0x06)
-#define XF_FILL_DIAG                ((unsigned8_t)0x07)
-#define XF_FILL_INV_DIAG            ((unsigned8_t)0x08)
-#define XF_FILL_INTER_DIAG          ((unsigned8_t)0x09)
-#define XF_FILL_DIAG_THICK_INTER    ((unsigned8_t)0x0a)
-#define XF_FILL_HORIZ_LINES_THIN    ((unsigned8_t)0x0b)
-#define XF_FILL_VERTICAL_LINES_THIN ((unsigned8_t)0x0c)
-#define XF_FILL_DIAG_THIN           ((unsigned8_t)0x0d)
-#define XF_FILL_INV_DIAG_THIN       ((unsigned8_t)0x0e)
-#define XF_FILL_HORIZ_INT_THIN      ((unsigned8_t)0x0f)
-#define XF_FILL_HORIZ_INTER_THICK   ((unsigned8_t)0x10)
+#define XF_FILL_NONE                0x00
+#define XF_FILL_SOLID               0x01
+#define XF_FILL_ATEN75              0x03
+#define XF_FILL_ATEN50              0x02
+#define XF_FILL_ATEN25              0x04
+#define XF_FILL_ATEN12              0x11
+#define XF_FILL_ATEN06              0x12
+#define XF_FILL_HORIZ_LIN           0x05
+#define XF_FILL_VERTICAL_LIN        0x06
+#define XF_FILL_DIAG                0x07
+#define XF_FILL_INV_DIAG            0x08
+#define XF_FILL_INTER_DIAG          0x09
+#define XF_FILL_DIAG_THICK_INTER    0x0a
+#define XF_FILL_HORIZ_LINES_THIN    0x0b
+#define XF_FILL_VERTICAL_LINES_THIN 0x0c
+#define XF_FILL_DIAG_THIN           0x0d
+#define XF_FILL_INV_DIAG_THIN       0x0e
+#define XF_FILL_HORIZ_INT_THIN      0x0f
+#define XF_FILL_HORIZ_INTER_THICK   0x10
   typedef enum
     {
       FILL_NONE = 0,
@@ -109,14 +112,14 @@ namespace xlslib_core
     } fill_option_t;
 
   // Border Options
-#define XF_BRDOPTION_NONE       ((unsigned8_t)0x00)
-#define XF_BRDOPTION_THIN       ((unsigned8_t)0x01)
-#define XF_BRDOPTION_MEDIUM     ((unsigned8_t)0x02)
-#define XF_BRDOPTION_DASHED     ((unsigned8_t)0x03)
-#define XF_BRDOPTION_DOTTED     ((unsigned8_t)0x04)
-#define XF_BRDOPTION_THICK      ((unsigned8_t)0x05)
-#define XF_BRDOPTION_DOUBLE     ((unsigned8_t)0x06)
-#define XF_BRDOPTION_HAIR       ((unsigned8_t)0x07)
+#define XF_BRDOPTION_NONE       0x00
+#define XF_BRDOPTION_THIN       0x01
+#define XF_BRDOPTION_MEDIUM     0x02
+#define XF_BRDOPTION_DASHED     0x03
+#define XF_BRDOPTION_DOTTED     0x04
+#define XF_BRDOPTION_THICK      0x05
+#define XF_BRDOPTION_DOUBLE     0x06
+#define XF_BRDOPTION_HAIR       0x07
   typedef enum
     {
       BORDER_NONE = 0,
@@ -130,10 +133,10 @@ namespace xlslib_core
     } border_style_t;
 
    // Border options
-#define XF_BORDER_BOTTOM  ((unsigned8_t)0)
-#define XF_BORDER_TOP     ((unsigned8_t)1)
-#define XF_BORDER_LEFT    ((unsigned8_t)2)
-#define XF_BORDER_RIGHT   ((unsigned8_t)3)
+#define XF_BORDER_BOTTOM  0
+#define XF_BORDER_TOP     1
+#define XF_BORDER_LEFT    2
+#define XF_BORDER_RIGHT   3
   typedef enum
     {
       BORDER_BOTTOM = 0,
@@ -144,13 +147,13 @@ namespace xlslib_core
 	  _NUM_BORDERS
     } border_side_t;
   // Horizontal Align options
-#define XF_HALIGN_GENERAL         ((unsigned8_t)0)
-#define XF_HALIGN_LEFT            ((unsigned8_t)1)
-#define XF_HALIGN_CENTER          ((unsigned8_t)2)
-#define XF_HALIGN_RIGHT           ((unsigned8_t)3)
-#define XF_HALIGN_FILL            ((unsigned8_t)4)
-#define XF_HALIGN_JUSTIFY         ((unsigned8_t)5)
-#define XF_HALIGN_CENTERACCROSS   ((unsigned8_t)6)
+#define XF_HALIGN_GENERAL         0
+#define XF_HALIGN_LEFT            1
+#define XF_HALIGN_CENTER          2
+#define XF_HALIGN_RIGHT           3
+#define XF_HALIGN_FILL            4
+#define XF_HALIGN_JUSTIFY         5
+#define XF_HALIGN_CENTERACCROSS   6
   typedef enum
     {
       HALIGN_GENERAL = 0,
@@ -163,10 +166,10 @@ namespace xlslib_core
     } halign_option_t;
 
    // Vertical Align options
-#define XF_VALIGN_TOP     ((unsigned8_t)0)
-#define XF_VALIGN_CENTER  ((unsigned8_t)1)
-#define XF_VALIGN_BOTTOM  ((unsigned8_t)2)
-#define XF_VALIGN_JUSTIFY ((unsigned8_t)3)
+#define XF_VALIGN_TOP     0
+#define XF_VALIGN_CENTER  1
+#define XF_VALIGN_BOTTOM  2
+#define XF_VALIGN_JUSTIFY 3
   typedef enum
     {
       VALIGN_TOP = 0,
@@ -187,13 +190,13 @@ namespace xlslib_core
 #define XF_IS_CELL			true
 #define XF_IS_STYLE			false
 
-#define XF_OFFSET_FONT         ((unsigned32_t) 4)
-#define XF_OFFSET_FORMAT       ((unsigned32_t) 6)
-#define XF_OFFSET_PROP         ((unsigned32_t) 8)
-#define XF_OFFSET_ALIGN        ((unsigned32_t)10)	// 4 bytes
-#define XF_OFFSET_BORDERA      ((unsigned32_t)14)	// 4 bytes
-#define XF_OFFSET_BORDERB      ((unsigned32_t)18)	// 4 bytes
-#define XF_OFFSET_COLOR        ((unsigned32_t)22)
+#define XF_OFFSET_FONT          4
+#define XF_OFFSET_FORMAT        6
+#define XF_OFFSET_PROP          8
+#define XF_OFFSET_ALIGN        10	// 4 bytes
+#define XF_OFFSET_BORDERA      14	// 4 bytes
+#define XF_OFFSET_BORDERB      18	// 4 bytes
+#define XF_OFFSET_COLOR        22
 
   // Geometric Align options
 #define XF_ALIGN_SHIFTPOS_HALIGN  (0)
@@ -202,22 +205,22 @@ namespace xlslib_core
   // XF_USED_ATTRIB
 #define XF_ALIGN_ATR_SHIFT			24
 
-#define XF_ALIGN_ATRNUM				((unsigned8_t)0x04)
-#define XF_ALIGN_ATRFONT			((unsigned8_t)0x08)
-#define XF_ALIGN_ATRALC				((unsigned8_t)0x10)
-#define XF_ALIGN_ATRBDR				((unsigned8_t)0x20)
-#define XF_ALIGN_ATRPAT				((unsigned8_t)0x40)
-#define XF_ALIGN_ATRPROT			((unsigned8_t)0x80)
+#define XF_ALIGN_ATRNUM				0x04
+#define XF_ALIGN_ATRFONT			0x08
+#define XF_ALIGN_ATRALC				0x10
+#define XF_ALIGN_ATRBDR				0x20
+#define XF_ALIGN_ATRPAT				0x40
+#define XF_ALIGN_ATRPROT			0x80
 #define XF_ALIGN_ALL			    (XF_ALIGN_ATRPROT|XF_ALIGN_ATRPAT|XF_ALIGN_ATRBDR|XF_ALIGN_ATRALC|XF_ALIGN_ATRFONT|XF_ALIGN_ATRNUM)
-#define XF_ALIGN_ATR_MASK			((unsigned32_t)0xFC000000)
+#define XF_ALIGN_ATR_MASK			0xFC000000
 
   // Text Orientation Options
 #define XF_ORI_SHIFTPOS			(8)
-#define XF_ORI_NONE             ((unsigned8_t)0)
-#define XF_ORI_90NOCLOCKTXT     ((unsigned8_t)90)
-#define XF_ORI_90CLOCKTXT       ((unsigned8_t)180)
-#define XF_ORI_TOPBOTTOMTXT     ((unsigned8_t)255)
-#define XF_ORI_MASK				((unsigned32_t)0x0000FF00)
+#define XF_ORI_NONE             0
+#define XF_ORI_90NOCLOCKTXT     90
+#define XF_ORI_90CLOCKTXT       180
+#define XF_ORI_TOPBOTTOMTXT     255
+#define XF_ORI_MASK				0x0000FF00
   typedef enum
     {
       ORI_NONE = 0,      
@@ -228,28 +231,28 @@ namespace xlslib_core
 
   // Indent field
 #define XF_INDENT_SHIFTPOS		(16)
-#define XF_INDENT_LVL			((unsigned8_t)0x0F)
-#define XF_INDENT_0				((unsigned8_t)0x00)
-#define XF_INDENT_1				((unsigned8_t)0x01)
-#define XF_INDENT_2				((unsigned8_t)0x02)
-#define XF_INDENT_3				((unsigned8_t)0x03)
-#define XF_INDENT_4				((unsigned8_t)0x04)
-#define XF_INDENT_5				((unsigned8_t)0x05)
-#define XF_INDENT_6				((unsigned8_t)0x06)
-#define XF_INDENT_7				((unsigned8_t)0x07)
-#define XF_INDENT_8				((unsigned8_t)0x08)
-#define XF_INDENT_9				((unsigned8_t)0x09)
-#define XF_INDENT_10			((unsigned8_t)0x0a)
-#define XF_INDENT_11			((unsigned8_t)0x0b)
-#define XF_INDENT_12			((unsigned8_t)0x0c)
-#define XF_INDENT_13			((unsigned8_t)0x0d)
-#define XF_INDENT_14			((unsigned8_t)0x0e)
-#define XF_INDENT_15			((unsigned8_t)0x0f)
-#define XF_INDENT_SHRINK2FIT    ((unsigned8_t)0x10)
-#define XF_INDENT_DIR			((unsigned8_t)0xC0)
-#define XF_INDENT_CONTEXT		((unsigned8_t)0x00)
-#define XF_INDENT_L2R			((unsigned8_t)0x40)
-#define XF_INDENT_R2L			((unsigned8_t)0x80)
+#define XF_INDENT_LVL			0x0F
+#define XF_INDENT_0				0x00
+#define XF_INDENT_1				0x01
+#define XF_INDENT_2				0x02
+#define XF_INDENT_3				0x03
+#define XF_INDENT_4				0x04
+#define XF_INDENT_5				0x05
+#define XF_INDENT_6				0x06
+#define XF_INDENT_7				0x07
+#define XF_INDENT_8				0x08
+#define XF_INDENT_9				0x09
+#define XF_INDENT_10			0x0a
+#define XF_INDENT_11			0x0b
+#define XF_INDENT_12			0x0c
+#define XF_INDENT_13			0x0d
+#define XF_INDENT_14			0x0e
+#define XF_INDENT_15			0x0f
+#define XF_INDENT_SHRINK2FIT    0x10
+#define XF_INDENT_DIR			0xC0
+#define XF_INDENT_CONTEXT		0x00
+#define XF_INDENT_L2R			0x40
+#define XF_INDENT_R2L			0x80
   typedef enum
     {
       INDENT_0 = 0,
@@ -287,15 +290,15 @@ namespace xlslib_core
 #define XF_COLOR_SHIFTPOS_LEFT  (16)
 #define XF_COLOR_SHIFTPOS_RIGHT (23)
 
-#define XF_BORDER_LEFTSTYLE		((unsigned32_t)0x0000000F)
-#define XF_BORDER_RIGHTSTYLE	((unsigned32_t)0x000000F0)
-#define XF_BORDER_TOPSTYLE		((unsigned32_t)0x00000F00)
-#define XF_BORDER_BOTTOMSTYLE   ((unsigned32_t)0x0000F000)
+#define XF_BORDER_LEFTSTYLE		0x0000000F
+#define XF_BORDER_RIGHTSTYLE	0x000000F0
+#define XF_BORDER_TOPSTYLE		0x00000F00
+#define XF_BORDER_BOTTOMSTYLE   0x0000F000
 
-#define XF_BORDER_LEFTCOLOR		((unsigned32_t)0x007f0000)
-#define XF_BORDER_RIGHTCOLOR	((unsigned32_t)0x3f800000)
-#define XF_DIAG_TL2BR			((unsigned32_t)0x40000000)
-#define XF_DIAG_BL2TR			((unsigned32_t)0x80000000)
+#define XF_BORDER_LEFTCOLOR		0x007f0000
+#define XF_BORDER_RIGHTCOLOR	0x3f800000
+#define XF_DIAG_TL2BR			0x40000000
+#define XF_DIAG_BL2TR			0x80000000
 
   // BORDER B 
 
@@ -305,25 +308,25 @@ namespace xlslib_core
 #define XF_STYLE_SHIFTPOS_DIAG		(21)
 #define XF_SHIFTPOS_FILLPATTERN		(26)
 
-#define XF_BORDER_TOPCOLOR     ((unsigned16_t)0x0000007f)
-#define XF_BORDER_BOTTOMCOLOR  ((unsigned16_t)0x00003f80)
-#define XF_BORDER_DIAGCOLOR    ((unsigned16_t)0x001fc000)
-#define XF_BORDER_DIAGSTYLE    ((unsigned16_t)0x01e00000)
-#define XF_BORDER_FILLPATTERN  ((unsigned32_t)0xFC000000)
+#define XF_BORDER_TOPCOLOR     0x0000007f
+#define XF_BORDER_BOTTOMCOLOR  0x00003f80
+#define XF_BORDER_DIAGCOLOR    0x001fc000
+#define XF_BORDER_DIAGSTYLE    0x01e00000
+#define XF_BORDER_FILLPATTERN  0xFC000000
 
 //#define XF_STYLE_SHIFTPOS_LEFT  (3)
 //#define XF_STYLE_SHIFTPOS_RIGHT (6)
 //#define XF_COLOR_SHIFTPOS_TOP   (9)
-//#define XF_BORDER1_TOPSTYLE     ((unsigned16_t)0x0007)
-//#define XF_BORDER1_LEFTSTYLE    ((unsigned16_t)0x0038)
-//#define XF_BORDER1_RIGHTSTYLE   ((unsigned16_t)0x01c0)
+//#define XF_BORDER1_TOPSTYLE     0x0007
+//#define XF_BORDER1_LEFTSTYLE    0x0038
+//#define XF_BORDER1_RIGHTSTYLE   0x01c0
 
   // The Color field bit or-masks:
 #define XF_COLOR_SHIFTPOS_FG  (0)
 #define XF_COLOR_SHIFTPOS_BG  (7)
-#define XF_COLOR_FOREGROUND    ((unsigned16_t)0x007f)
-#define XF_COLOR_BACKGROUND    ((unsigned16_t)0x3f80)
-#define XF_COLOR_DIAG          ((unsigned16_t)0xc000)
+#define XF_COLOR_FOREGROUND    0x007f
+#define XF_COLOR_BACKGROUND    0x3f80
+#define XF_COLOR_DIAG          0xc000
 
   /*
 ******************************
@@ -410,17 +413,23 @@ CExtFormat class declaration
 		xf_t(const xf_t& orig);
 
 		//xf_t(const xlslib_core::xf_t* origP) { };	// block - not sure why this was there??? Old???
-		~xf_t();									// block (was virtual)
+		virtual ~xf_t();									// block (was virtual)
 		
 		//static xf_init_t::xf_init_t		xfiInit;
 		static const xf_init_t		xfiInit;
 
 		xf_t& operator=(const xf_t& right);
 
+#if 0 // [i_a] xls C i/f & C++ facade export these?
 	private:
+#else
+	public:
+#endif
 		void			SetFormatIndex(unsigned16_t formatidx);
 		unsigned16_t	GetFormatIndex(void) const;
         format_number_t	GetFormat(void) const;
+
+	private:
 		void			UnMarkUsed(void);
 		void			MarkUsed(void);
 		unsigned32_t	Usage() const;
@@ -509,10 +518,16 @@ CExtFormat class declaration
       bool IsHidden(void) const;
 	  // END XF_ALIGN_ATRPROT
 	  
+#if 0 // [i_a] xls C i/f & C++ facade export these?
 	private:
+#else
+	public:
+#endif
 	  /* Cell option wrappers*/
       void SetCellMode(bool cellmode);
       bool IsCell(void) const;
+
+	private:
       unsigned8_t GetFlags() const;
       void SetFlag(unsigned8_t flag);
       void ClearFlag(unsigned8_t flag);
@@ -562,17 +577,26 @@ CExtFormat class declaration
   typedef std::vector<xlslib_core::xf_t* XLSLIB_DFLT_ALLOCATOR> XF_Vect_t;
   typedef XF_Vect_t::iterator XF_Vect_Itor_t;
 
+
+	// forward ref
+	class CDataStorage;
+
   class CExtFormat: public CRecord
     {
+#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+	friend class CDataStorage;
+#endif
+
     private:
       void InitDummy(bool is_cell);
 
-    public:
+    protected:
+      CExtFormat(CDataStorage &datastore, const xf_t* xfdef);
+	private:
+      virtual ~CExtFormat();
 
-      CExtFormat(xf_t* xfdef);
-      ~CExtFormat();
-
-      bool IsCell();
+	public:
+	  bool IsCell();
 
       int SetFontIndex(unsigned16_t fontindex);
       unsigned16_t GetFontIndex(void);
@@ -587,8 +611,8 @@ CExtFormat class declaration
 	  void SetIndent(unsigned8_t indentval);
       void SetVertAlign(unsigned8_t alignval);
       void SetTxtOrientation(unsigned8_t alignval);
-      void SetFGColorIndex(unsigned8_t color);
-      void SetBGColorIndex(unsigned8_t color);
+      void SetFGColorIndex(unsigned16_t color);
+      void SetBGColorIndex(unsigned16_t color);
       void SetFillPattern(unsigned8_t color);
       void SetBorder(border_side_t border, unsigned16_t style, unsigned16_t color);
 	  void SetFlags(unsigned8_t flags);
@@ -596,6 +620,9 @@ CExtFormat class declaration
     };
 
 }
+
+#include <xls_poppack.h>
+
 #endif //EXTFORMAT_H
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

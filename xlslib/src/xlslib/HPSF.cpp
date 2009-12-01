@@ -31,6 +31,8 @@
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
+#include <config.h>
+
 #include "HPSF.h"
 
 using namespace std;
@@ -105,9 +107,10 @@ HPSFitem::~HPSFitem()
 
 size_t HPSFitem::GetSize()
 {
-	size_t	size;
+	size_t size;
 	
-	switch(variant) {
+	switch(variant) 
+	{
 	case HPSF_STRING:
 		size = value.str->length() + 1 + 4;         // 1 for null terminator, 4 for length field
 		// round up to the next 4-byte boundary:
@@ -116,28 +119,28 @@ size_t HPSFitem::GetSize()
 		assert((size % 4) == 0);
 		break;
 	case HPSF_BOOL:
-		size = 2 + 2;   // final 2 is padding
+		size = 2 + 2; // 2 + 2 padding
 		break;
 	case HPSF_INT16:
-		size = 2 + 2;   // final 2 is padding
+		size = 2 + 2; // 2 + 2 padding
 		break;
 	case HPSF_INT32:
-		size = 4;       // 0 padding
+		size = 4; // 0 padding
 		break;
 	case HPSF_INT64:
-		size = 8;       // 0 padding
+		size = 8; // 0 padding
 		break;
 	default:
-		size = 0;       // 0 padding
+		size = 0; // 0 padding
 		break;
 	}
 	
 	return size + 4;	// variant at the start
 }
 
-HPSFdoc::HPSFdoc(docType_t dt) :
+HPSFdoc::HPSFdoc(CDataStorage &datastore, docType_t dt) :
 	docType(dt),
-    itemList()
+	CUnit(datastore)
 {
 
 }
@@ -157,11 +160,13 @@ void HPSFdoc::insert(HPSFitem *item)
 	HPSFitem*		existingItem;
 	bool			success;
 
-	do {
+	do 
+	{
 		pair<HPSF_Set_Itor_t, bool> ret = itemList.insert(item);
 		success = ret.second;
 		
-		if(!success) {
+		if(!success) 
+		{
 			existingItem = *(ret.first);
 			delete existingItem;
 			itemList.erase(existingItem);
@@ -187,10 +192,12 @@ void HPSFdoc::DumpData()
 {
 	HPSF_Set_Itor_t		hBegin, hEnd, hIter;
 	const unsigned32_t	*fmt;
-	unsigned32_t		sectionListOffset, numProperties, itemOffset;
+	size_t sectionListOffset;
+	size_t numProperties;
+	size_t itemOffset;
 	
-	numProperties = static_cast<unsigned32_t>(itemList.size());	
-	fmt = docType == HPSF_SUMMARY ? summaryFormat : docSummaryFormat;
+	numProperties = itemList.size();	
+	fmt = (docType == HPSF_SUMMARY ? summaryFormat : docSummaryFormat);
 
 	Inflate(SUMMARY_SIZE);	// this file will only be this size, ever (zero padded)
 
@@ -202,7 +209,7 @@ void HPSFdoc::DumpData()
 #else
 	AddValue32(2);		// WIN32
 #endif
-	AddValue32(0), AddValue32(0), AddValue32(0), AddValue32(0);		// CLASS
+	AddValue32(0); AddValue32(0); AddValue32(0); AddValue32(0);		// CLASS
 	AddValue32(1);		// One section
 
 	// The section (this is a list but in this case just 1 section so can shorten logic)
@@ -212,12 +219,12 @@ void HPSFdoc::DumpData()
 	AddValue32(fmt[3]);
 
 	// offset to the data (would vary if multiple sections, but since one only its easy
-	sectionListOffset = m_nDataSize + 4;		// offset from the start of this stream to first byte after this offset
-	AddValue32(sectionListOffset);				// where this section starts (right after this tag!)
+	sectionListOffset = GetDataSize() + 4;		// offset from the start of this stream to first byte after this offset     [i_a]
+	AddValue32((unsigned32_t)sectionListOffset);				// where this section starts (right after this tag!)
 	
 	// Start of Section 1: sectionListOffset starts here
 	AddValue32(0);								// length of the section - updated later
-	AddValue32(numProperties);					// 
+	AddValue32((unsigned32_t)numProperties);					// 
 
 	// now write the propertyLists - the values, and where to find the payloads
 	itemOffset	= 8 + numProperties * 8;	// where I am now, then allow for propertyLists
@@ -229,19 +236,22 @@ void HPSFdoc::DumpData()
 		item->SetOffset(itemOffset);
 
 		AddValue32(item->GetPropID());			// Variant (ie type)
-		AddValue32(itemOffset);					// where the actual data will be found
+		AddValue32((unsigned32_t)itemOffset);	// where the actual data will be found
 		
 		itemOffset += item->GetSize();
 	}
-	SetValueAt(itemOffset, sectionListOffset);
-	//printf("Think size is %d\n", itemOffset);
+	SetValueAt32((unsigned32_t)itemOffset, (unsigned32_t)sectionListOffset);
+	//printf("Think size is %d\n", (int)itemOffset);
 
 	// Now we can write out the actual data
 	hBegin		= itemList.begin();
 	hEnd		= itemList.end();
-	for(hIter=hBegin; hIter != hEnd; ++hIter) {
+	for(hIter=hBegin; hIter != hEnd; ++hIter) 
+	{
 		HPSFitem		*item = *hIter;
-		unsigned32_t	len, padding, variant;
+		size_t	len;
+		size_t padding;
+		unsigned16_t variant;
 		hValue			value;
 		
 		value	= item->GetValue();
@@ -250,9 +260,12 @@ void HPSFdoc::DumpData()
 		//  m_nDataSize - sectionListOffset, item->GetOffset(), variant,  hpsfValues[variant], value.val64);
 		AddValue32(hpsfValues[variant]);
 		
-		switch(variant) {
-		case HPSF_STRING:            
+		switch(variant) 
+		{
+		case HPSF_STRING:
 			len = value.str->length() + 1;	// length of string plus null terminator
+			// padding = (len % 4) + 1;		// string terminator is the "1"
+			// round up to the next 4-byte boundary to determine the padding; 
 			// take the mandatory NUL sentinel into account as well:
 			padding = 1 + ((4 - len) & 3);
 			assert(padding + len - 1 >= 4);
@@ -282,10 +295,15 @@ void HPSFdoc::DumpData()
 		}
 		AddFixedDataArray(0, padding);	
 	}
+
+#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+#endif
+
 	//printf("Actual size = %d\n", m_nDataSize - sectionListOffset);
-	assert(m_nDataSize <= m_nSize);
-	m_nDataSize = SUMMARY_SIZE;
-	assert(m_nDataSize <= m_nSize);
+	assert(GetDataSize() <= GetSize());
+	assert(GetDataSize() <= SUMMARY_SIZE);
+	AddFixedDataArray(0, SUMMARY_SIZE - GetDataSize());
+	assert(GetDataSize() <= GetSize());
 
 #if 0
 	// printf("YEAH!\n");
@@ -303,3 +321,4 @@ void HPSFdoc::DumpData()
 #endif
 
 }
+

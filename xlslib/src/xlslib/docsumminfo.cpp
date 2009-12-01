@@ -32,6 +32,8 @@
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
+#include <config.h>
+
 #include <summinfo.h>		// pseudo base class
 #include <docsumminfo.h>
 
@@ -58,11 +60,16 @@ CDocSummaryInfo class implementation
 **********************************************************************
 */
 
-CDocSummaryInfo::CDocSummaryInfo() :
-	hpsf(new HPSFdoc(HPSF_DOCSUMMARY))
+CDocSummaryInfo::CDocSummaryInfo()
 {
 	XTRACE("WRITE_DOC_SUMMARY");
 	
+#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+	hpsf = MakeHPSFdoc(HPSF_DOCSUMMARY);
+#else
+	hpsf = new HPSFdoc(*this, HPSF_DOCSUMMARY);
+#endif
+
 	hpsf->addItem(DocSumInfo_CodePage, (unsigned16_t)1200);				// UTF-16
 #if 0
       ---------
@@ -99,7 +106,14 @@ CDocSummaryInfo::CDocSummaryInfo() :
 
 CDocSummaryInfo::~CDocSummaryInfo()
 {
-	if(hpsf) delete hpsf;
+#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+	/* hpsf gets deleted from within the CDataStorage destructor as it is part of the m_FlushList. */
+#else
+#if 0
+	if(hpsf) 
+		delete hpsf;
+#endif
+#endif
 }
 
 /*
@@ -108,10 +122,11 @@ CDocSummaryInfo::~CDocSummaryInfo()
 */
 bool CDocSummaryInfo::property(property_t prop, const string& content)
 {
-	unsigned16_t	val;
+	signed32_t	val;
 	
 	val = property2docSummary[prop];
-	hpsf->addItem(val, content);
+	assert(val > 0);
+	hpsf->addItem((unsigned16_t)val, content);
 	return true;
 }
 
@@ -122,13 +137,14 @@ bool CDocSummaryInfo::property(property_t prop, const string& content)
 */
 void CDocSummaryInfo::DumpData(void)
 {
-
    XTRACE("CDocSummaryInfo::DumpData");
 
 #if 1
    	hpsf->DumpData();
 	(*this) += hpsf;
+#if 0
 	hpsf = NULL;	// DataStore owns it now
+#endif
 #else
 	CUnit* ptraildata = new CUnit;
 	ptraildata->AddDataArray(CDocSummaryInfo::doc_summ_info_data, sizeof(CDocSummaryInfo::doc_summ_info_data));

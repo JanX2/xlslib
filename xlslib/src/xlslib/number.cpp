@@ -32,7 +32,11 @@
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
+#include <config.h>
+
 #include <number.h>
+#include <datast.h>
+
 
 using namespace std;
 using namespace xlslib_core;
@@ -43,8 +47,8 @@ number_t class implementation
 *********************************
 */
 number_t::number_t(CGlobalRecords& gRecords, 
-		unsigned16_t rowval, 
-		unsigned16_t colval, 
+		unsigned32_t rowval, 
+		unsigned32_t colval, 
 		double numval, 
 		xf_t* pxfval) :
 	cell_t(gRecords, rowval, colval),
@@ -56,8 +60,8 @@ number_t::number_t(CGlobalRecords& gRecords,
 	SetXF(pxfval);
 }
 number_t::number_t(CGlobalRecords& gRecords, 
-		unsigned16_t rowval, 
-		unsigned16_t colval, 
+		unsigned32_t rowval, 
+		unsigned32_t colval, 
 		signed32_t numval, 
 		xf_t* pxfval) :
 	cell_t(gRecords, rowval, colval),
@@ -65,7 +69,7 @@ number_t::number_t(CGlobalRecords& gRecords,
 	num()
 {
 	// 536870911 >= numval >= -536870912
-	if(numval <= (signed32_t)0x1FFFFFFF && numval >= (signed32_t)0xE0000000) {
+	if(numval <= 0x1FFFFFFF && numval >= 0xE0000000) {
 		num.intNum = numval;
 	} else {
 		isDouble	= true;
@@ -75,9 +79,13 @@ number_t::number_t(CGlobalRecords& gRecords,
 	SetXF(pxfval);
 }
 
-CUnit* number_t::GetData() const
+CUnit* number_t::GetData(CDataStorage &datastore) const
 {
-	return (CUnit*)(new CNumber(*this));
+#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+	return datastore.MakeCNumber(*this);
+#else
+	return (CUnit*)(new CNumber(datastore, *this));
+#endif
 }
 
 /*
@@ -85,7 +93,8 @@ CUnit* number_t::GetData() const
 number_t class implementation
 *********************************
 */
-CNumber::CNumber(const number_t& numdef)
+CNumber::CNumber(CDataStorage &datastore, const number_t& numdef):
+		CRecord(datastore)
 {
 	unsigned16_t type;
 
@@ -93,8 +102,8 @@ CNumber::CNumber(const number_t& numdef)
 
 	SetRecordType(type);
 
-	AddValue16(numdef.row);
-	AddValue16(numdef.col);
+	AddValue16((unsigned16_t)numdef.row);
+	AddValue16((unsigned16_t)numdef.col);
 	AddValue16(numdef.GetXFIndex());
 
 	if(type == RECTYPE_RK) {

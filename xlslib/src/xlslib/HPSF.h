@@ -43,6 +43,9 @@
 
 #define FILETIME2UNIX_NS	11644473600000000ll		// from the web
 
+
+#include <xls_pshpack2.h>
+
 namespace xlslib_core
 {
 	extern const unsigned32_t summaryFormat[4], docSummaryFormat[4], hpsfValues[];
@@ -76,7 +79,7 @@ namespace xlslib_core
 			unsigned16_t		propID;
 			hpsf_t				variant;
 			hValue				value;
-			unsigned32_t		offset;
+			size_t offset;
 
 		public:
 			HPSFitem(unsigned16_t type, const std::string& str);
@@ -88,10 +91,10 @@ namespace xlslib_core
 			
 			hValue				GetValue() const {return value;};
 			unsigned16_t		GetPropID() const {return propID;};
-			unsigned16_t		GetVariant() const {return variant;};
+			unsigned16_t		GetVariant() const {return (unsigned16_t)variant;};
 			
-			void SetOffset(unsigned32_t of) { offset=of;};
-			unsigned32_t GetOffset() const { return offset;};
+			void SetOffset(size_t of) { offset=of;};
+			size_t GetOffset() const { return offset;};
 			
 			size_t GetSize();	// actual length rounded up to 4 bytes
 
@@ -107,10 +110,15 @@ namespace xlslib_core
 	typedef std::set<xlslib_core::HPSFitem*, insertsort2 XLSLIB_DFLT_ALLOCATOR> HPSF_Set_t;
 	typedef HPSF_Set_t::iterator HPSF_Set_Itor_t;
 
+
+	// forward ref
+	class CDataStorage;
+
 	class HPSFdoc : public CUnit
 	{
 		friend class CSummaryInfo;
 		friend class CDocSummaryInfo;
+		friend class CDataStorage;
 
 		private:
 			void insert(HPSFitem *item);
@@ -119,10 +127,12 @@ namespace xlslib_core
 			void addItem(unsigned16_t key, unsigned32_t val) {insert(new HPSFitem(key, val));};
 			void addItem(unsigned16_t key, unsigned64_t val) {insert(new HPSFitem(key, val));};
 			
-		public:
-			HPSFdoc(docType_t dt);
-			~HPSFdoc();
+		protected:
+			HPSFdoc(CDataStorage &datastore, docType_t dt);
+		private:
+			virtual ~HPSFdoc();
 			
+		public:
 			void addItem(unsigned16_t key, unsigned16_t val) {insert(new HPSFitem(key, val));};
 			void addItem(unsigned16_t key, const std::string& str) {insert(new HPSFitem(key, str));};
 
@@ -137,5 +147,8 @@ namespace xlslib_core
 			//unsigned32_t	numProperties;
 	};
 }
+
+
+#include <xls_poppack.h>
 
 #endif

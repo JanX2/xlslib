@@ -41,54 +41,60 @@
 #include <rectypes.h>
 #include <record.h>
 
+
+#include <xls_pshpack2.h>
+
 namespace xlslib_core
 {
 
   // The font-record field offsets:
-#define FORMAT_OFFSET_INDEX        ((unsigned32_t) 4)
-#define FORMAT_OFFSET_NAMELENGTH   ((unsigned32_t) 6)
-#define FORMAT_OFFSET_NAME         ((unsigned32_t) 7)
+#define FORMAT_OFFSET_INDEX         4
+#define FORMAT_OFFSET_NAMELENGTH    6
+#define FORMAT_OFFSET_NAME          7
 
-#define FMTCODE_GENERAL            ((unsigned16_t)0x0000) 
-#define FMTCODE_NUMBER1            ((unsigned16_t)0x0001) 
-#define FMTCODE_NUMBER2            ((unsigned16_t)0x0002)
-#define FMTCODE_NUMBER3            ((unsigned16_t)0x0003)
-#define FMTCODE_NUMBER4            ((unsigned16_t)0x0004)
-#define FMTCODE_CURRENCY1          ((unsigned16_t)0x0005)
-#define FMTCODE_CURRENCY2          ((unsigned16_t)0x0006)
-#define FMTCODE_CURRENCY3          ((unsigned16_t)0x0007)
-#define FMTCODE_CURRENCY4          ((unsigned16_t)0x0008)
-#define FMTCODE_PERCENT1           ((unsigned16_t)0x0009)
-#define FMTCODE_PERCENT2           ((unsigned16_t)0x000a)
-#define FMTCODE_SCIENTIFIC1        ((unsigned16_t)0x000b)
-#define FMTCODE_FRACTION1          ((unsigned16_t)0x000c)
-#define FMTCODE_FRACTION2          ((unsigned16_t)0x000d)
-#define FMTCODE_DATE1              ((unsigned16_t)0x000e)
-#define FMTCODE_DATE2              ((unsigned16_t)0x000f)
-#define FMTCODE_DATE3              ((unsigned16_t)0x0010)
-#define FMTCODE_DATE4              ((unsigned16_t)0x0011)
-#define FMTCODE_HOUR1              ((unsigned16_t)0x0012)
-#define FMTCODE_HOUR2              ((unsigned16_t)0x0013)
-#define FMTCODE_HOUR3              ((unsigned16_t)0x0014)
-#define FMTCODE_HOUR4              ((unsigned16_t)0x0015)
-#define FMTCODE_HOURDATE           ((unsigned16_t)0x0016)
-#define FMTCODE_ACCOUNTING1        ((unsigned16_t)0x0025)
-#define FMTCODE_ACCOUNTING2        ((unsigned16_t)0x0026)
-#define FMTCODE_ACCOUNTING3        ((unsigned16_t)0x0027)
-#define FMTCODE_ACCOUNTING4        ((unsigned16_t)0x0028)
-#define FMTCODE_CURRENCY5          ((unsigned16_t)0x0029)
-#define FMTCODE_CURRENCY6          ((unsigned16_t)0x002a)
-#define FMTCODE_CURRENCY7          ((unsigned16_t)0x002b)
-#define FMTCODE_CURRENCY8          ((unsigned16_t)0x002c)
-#define FMTCODE_HOUR5              ((unsigned16_t)0x002d)
-#define FMTCODE_HOUR6              ((unsigned16_t)0x002e)
-#define FMTCODE_HOUR7              ((unsigned16_t)0x002f)
-#define FMTCODE_SCIENTIFIC2        ((unsigned16_t)0x0030)
-#define FMTCODE_TEXT               ((unsigned16_t)0x0031)
+#define FMTCODE_GENERAL            0x0000 
+#define FMTCODE_NUMBER1            0x0001 
+#define FMTCODE_NUMBER2            0x0002
+#define FMTCODE_NUMBER3            0x0003
+#define FMTCODE_NUMBER4            0x0004
+#define FMTCODE_CURRENCY1          0x0005
+#define FMTCODE_CURRENCY2          0x0006
+#define FMTCODE_CURRENCY3          0x0007
+#define FMTCODE_CURRENCY4          0x0008
+#define FMTCODE_PERCENT1           0x0009
+#define FMTCODE_PERCENT2           0x000a
+#define FMTCODE_SCIENTIFIC1        0x000b
+#define FMTCODE_FRACTION1          0x000c
+#define FMTCODE_FRACTION2          0x000d
+#define FMTCODE_DATE1              0x000e
+#define FMTCODE_DATE2              0x000f
+#define FMTCODE_DATE3              0x0010
+#define FMTCODE_DATE4              0x0011
+#define FMTCODE_HOUR1              0x0012
+#define FMTCODE_HOUR2              0x0013
+#define FMTCODE_HOUR3              0x0014
+#define FMTCODE_HOUR4              0x0015
+#define FMTCODE_HOURDATE           0x0016
+#define FMTCODE_ACCOUNTING1        0x0025
+#define FMTCODE_ACCOUNTING2        0x0026
+#define FMTCODE_ACCOUNTING3        0x0027
+#define FMTCODE_ACCOUNTING4        0x0028
+#define FMTCODE_CURRENCY5          0x0029
+#define FMTCODE_CURRENCY6          0x002a
+#define FMTCODE_CURRENCY7          0x002b
+#define FMTCODE_CURRENCY8          0x002c
+#define FMTCODE_HOUR5              0x002d
+#define FMTCODE_HOUR6              0x002e
+#define FMTCODE_HOUR7              0x002f
+#define FMTCODE_SCIENTIFIC2        0x0030
+#define FMTCODE_TEXT               0x0031
 
 #define FMT_CODE_FIRST_USER			164
 
 // good resource for format strings: http://www.mvps.org/dmcritchie/excel/formula.htm
+// Good explanation of custom formats: http://www.ozgrid.com/Excel/CustomFormats.htm
+// MS examples (need Windows): http://download.microsoft.com/download/excel97win/sample/1.0/WIN98Me/EN-US/Nmbrfrmt.exe
+// Google this for MS help: "Create or delete a custom number format"
 typedef enum
 {
   FMT_GENERAL = 0,
@@ -166,15 +172,23 @@ CFormat class declaration
   typedef std::vector<xlslib_core::format_t* XLSLIB_DFLT_ALLOCATOR> Format_Vect_t;
   typedef Format_Vect_t::iterator Format_Vect_Itor_t;
 
+
+	// forward ref
+	class CDataStorage;
+
   class CFormat: public CRecord
     {
+#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+	friend class CDataStorage;
+#endif
+
     protected:
+      //CFormat(CDataStorage &datastore, u16string&  formatstr, bool isASCII, unsigned16_t index);
+      CFormat(CDataStorage &datastore, const format_t* formatdef);
+	private:
+      virtual ~CFormat();
 
-    public:
-      //CFormat(u16string&  formatstr, bool isASCII, unsigned16_t index);
-      CFormat(format_t* formatdef);
-      ~CFormat();
-
+	public:
 
      // int SetFormatStr(u16string& formatstr);
       //int GetFormatStr(u16string& formatstr) const;
@@ -184,6 +198,9 @@ CFormat class declaration
     };
 
 }
+
+
+#include <xls_poppack.h>
 
 #endif //FORMAT_H
 

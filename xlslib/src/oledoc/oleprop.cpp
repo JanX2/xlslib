@@ -32,6 +32,8 @@
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
+#include <config.h>
+
 #include <oleprop.h>
 
 /* 
@@ -156,7 +158,7 @@ int COleProp::SetName(string name)
 ***********************************
 */
 
-string COleProp::GetName(void)
+string COleProp::GetName(void) const
 {
    return m_sName;
 }
@@ -192,7 +194,7 @@ int COleProp::SetType(unsigned8_t newtype)
 ***********************************
 ***********************************
 */
-unsigned8_t COleProp::GetType(void)
+unsigned8_t COleProp::GetType(void) const
 {
    return m_nPropType;
 }
@@ -215,7 +217,7 @@ int COleProp::SetColor(unsigned8_t newcolor)
 ***********************************
 ***********************************
 */
-unsigned8_t COleProp::GetColor(void)
+unsigned8_t COleProp::GetColor(void) const
 {
    return m_nNodeColor;
 }
@@ -238,7 +240,7 @@ int COleProp::SetPreviousIndex(signed32_t prev)
 ***********************************
 ***********************************
 */
-signed32_t COleProp::GetPreviousIndex(void)
+signed32_t COleProp::GetPreviousIndex(void) const
 {
    return m_nPrevPropIndex;
 }
@@ -261,7 +263,7 @@ int COleProp::SetNextIndex(signed32_t next)
 ***********************************
 ***********************************
 */
-signed32_t COleProp::GetNextIndex(void)
+signed32_t COleProp::GetNextIndex(void) const
 {
    return m_nNextPropIndex;
 }
@@ -284,7 +286,7 @@ int COleProp::SetChildIndex(signed32_t child)
 ***********************************
 ***********************************
 */
-signed32_t COleProp::GetChildIndex(void)
+signed32_t COleProp::GetChildIndex(void) const
 {
    return m_nChildPropIndex;
 }
@@ -298,7 +300,7 @@ int COleProp::SetStartBlock(signed32_t sb)
    return errcode;
 
 }
-signed32_t COleProp::GetStartBlock(void)
+signed32_t COleProp::GetStartBlock(void) const
 {
    return m_nStartBlock;
 }
@@ -307,7 +309,7 @@ signed32_t COleProp::GetStartBlock(void)
 ***********************************
 ***********************************
 */
-int COleProp::SetSize(signed32_t size)
+int COleProp::SetSize(size_t size)
 {
    int errcode = NO_ERRORS;
   
@@ -322,7 +324,7 @@ int COleProp::SetSize(signed32_t size)
 ***********************************
 */
 
-signed32_t COleProp::GetSize(void)
+size_t COleProp::GetSize(void) const
 {
    return m_nSize;
 }
@@ -335,7 +337,6 @@ signed32_t COleProp::GetSize(void)
 
 void COleProp::SetDataPointer(CDataStorage* pdata)
 {
-
    m_pData = pdata;
 }
 
@@ -344,7 +345,7 @@ void COleProp::SetDataPointer(CDataStorage* pdata)
 ***********************************
 */
 
-CDataStorage* COleProp::GetDataPointer(void)
+CDataStorage* COleProp::GetDataPointer(void) const
 {
    return m_pData;
 }
@@ -361,7 +362,7 @@ void COleProp::SetCreatedSecs(signed32_t secs1)
 ***********************************
 ***********************************
 */
-signed32_t COleProp::GetCreatedSecs(void)
+signed32_t COleProp::GetCreatedSecs(void) const
 {
    return m_nTSCreatedSeconds;
 }
@@ -380,7 +381,7 @@ void COleProp::SetCreatedDays(signed32_t days1)
 ***********************************
 ***********************************
 */
-signed32_t COleProp::GetCreatedDays(void)
+signed32_t COleProp::GetCreatedDays(void) const
 {
    return m_nTSCreatedDays;
 }
@@ -399,7 +400,7 @@ void COleProp::SetModifiedSecs(signed32_t secs2)
 ***********************************
 ***********************************
 */
-signed32_t COleProp::GetModifiedSecs(void)
+signed32_t COleProp::GetModifiedSecs(void) const
 {
    return m_nTSModifiedSeconds;
 }
@@ -418,7 +419,7 @@ void COleProp::SetModifiedDays(signed32_t days2)
 ***********************************
 ***********************************
 */
-signed32_t COleProp::GetModifiedDays(void)
+signed32_t COleProp::GetModifiedDays(void) const
 {
    return  m_nTSModifiedDays;
 }

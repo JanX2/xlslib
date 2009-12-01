@@ -40,8 +40,14 @@
 #include <rectypes.h>
 #include <record.h>
 
+
+#include <xls_pshpack2.h>
+
 namespace xlslib_core
 {
+
+	// forward ref
+	class CDataStorage;
 
 /*
 ******************************
@@ -50,14 +56,23 @@ CMergedCells class declaration
 */
   class CMergedCells: public CRecord
     {
-    public:
-      CMergedCells();
-      ~CMergedCells();
-  
+#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+	friend class CDataStorage;
+#endif
+
+    protected:
+      CMergedCells(CDataStorage &datastore);
+	private:
+      virtual ~CMergedCells();
+
+	public:
       void AddRange(range_t* rng);
-      void SetNumRanges(unsigned16_t numranges);
+      void SetNumRanges(size_t numranges);
     };
 }
+
+
+#include <xls_poppack.h>
 
 #endif //MERGED_H 
 

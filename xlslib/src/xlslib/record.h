@@ -41,8 +41,14 @@
 #include <rectypes.h>
 #include <unit.h>
 
+
+#include <xls_pshpack2.h>
+
 namespace xlslib_core
 {
+	// forward ref
+	class CDataStorage;
+
   /* 
 ******************************
 CRecord class declaration
@@ -50,27 +56,35 @@ CRecord class declaration
 */
   class CRecord: public CUnit
     {
+#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+	friend class CDataStorage;
+#endif
+
     protected:
       unsigned16_t m_Num;
       //unsigned32_t streamPos;
 
-    public:
-      CRecord();
-      ~CRecord();
+    protected:
+      CRecord(CDataStorage &datastore);
+      virtual ~CRecord();
   
+    public:
       void SetRecordType(unsigned16_t rtype);
       unsigned16_t GetRecordType();
 
-      void SetRecordLength(unsigned32_t);
-      unsigned16_t GetRecordLength();
+      void SetRecordLength(size_t);
+      size_t GetRecordLength();
 
       unsigned8_t* GetRecordDataBuffer();
-      unsigned32_t GetRecordDataSize();
+      size_t GetRecordDataSize();
 
-      //void SetStreamPos(unsigned32_t pos) { streamPos = pos; };
-      //unsigned32_t GetStreamPos() { return streamPos; };
+      //void SetStreamPos(size_t pos) { streamPos = pos; };
+      //size_t GetStreamPos() { return streamPos; };
     };
 }
+
+#include <xls_poppack.h>
+
 #endif //RECORD_H
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

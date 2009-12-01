@@ -33,6 +33,8 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 
+#include <config.h>
+
 #include <range.h>
 #include <extformat.h>
 
@@ -41,10 +43,10 @@
 using namespace std;
 using namespace xlslib_core;
 
-range::range(unsigned16_t row1,
-             unsigned16_t col1,
-             unsigned16_t row2,
-             unsigned16_t col2,
+range::range(unsigned32_t row1,
+             unsigned32_t col1,
+             unsigned32_t row2,
+             unsigned32_t col2,
              worksheet* pws) :
 	m_pWorkSheet(pws),
 	m_Atomic(false)
@@ -67,7 +69,7 @@ range::~range()
 // Special case: two methods are called
 void range::cellcolor(color_name_t color)
 {
-	unsigned16_t					r,c;
+	unsigned32_t					r,c;
 	xf_Pair_Set_t					prSet;
 	xf_t							*xf;
 	pair<xf_Pair_Set_Itor_t, bool>	ret;
@@ -106,7 +108,7 @@ void range::cellcolor(color_name_t color)
 // Special case: two methods are called
 void range::cellcolor(color_name_t color)
 {
-	unsigned16_t					r,c;
+	unsigned32_t					r,c;
 
 	for(r = first_row; r <= last_row; r++) {
 		for(c = first_col; c <= last_col; c++)
@@ -121,7 +123,7 @@ void range::cellcolor(color_name_t color)
 
 void range::boxer(border_style_t borderStyle, fill_option_t fillStyle, color_name_t borderColor, color_name_t fillFgColor, color_name_t fillBgColor)
 {
-	unsigned16_t					r,c;
+	unsigned32_t					r,c;
 	xf_Pair_Set_t					prSet;
 	xf_t							*xf;
 	pair<xf_Pair_Set_Itor_t, bool>	ret;
@@ -187,7 +189,7 @@ void range::boxer(border_style_t borderStyle, fill_option_t fillStyle, color_nam
    
 #define SET_RANGE_FUNCTION(function, value)							\
    {																\
-      unsigned16_t r,c;												\
+      unsigned32_t r,c;												\
       for(r = first_row; r <= last_row; r++)						\
          for(c = first_col; c <= last_col; c++)						\
          {															\
@@ -210,7 +212,7 @@ void range::format(format_t* fmt)
 }
 void range::borderstyle(border_side_t side, border_style_t style)
 {
-   unsigned16_t r,c;
+   unsigned32_t r,c;
    for(r = first_row; r <= last_row; r++)
       for(c = first_col; c <= last_col; c++)
       {
@@ -220,7 +222,7 @@ void range::borderstyle(border_side_t side, border_style_t style)
 }          
 void range::bordercolor(border_side_t side, color_name_t color)
 {
-   unsigned16_t r,c;
+   unsigned32_t r,c;
    for(r = first_row; r <= last_row; r++)
       for(c = first_col; c <= last_col; c++)
       {
@@ -230,7 +232,7 @@ void range::bordercolor(border_side_t side, color_name_t color)
 }          
 void range::bordercolor(border_side_t side, unsigned8_t color)
 {
-   unsigned16_t r,c;
+   unsigned32_t r,c;
    for(r = first_row; r <= last_row; r++)
       for(c = first_col; c <= last_col; c++)
       {

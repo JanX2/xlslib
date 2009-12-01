@@ -33,6 +33,8 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 
+#include <config.h>
+
 #include <continue.h>
 
 
@@ -46,7 +48,8 @@ using namespace std;
 using namespace xlslib_core;
 
 
-CContinue::CContinue(unsigned8_t* data, unsigned32_t size)
+CContinue::CContinue(CDataStorage &datastore, const unsigned8_t* data, size_t size):
+		CRecord(datastore)
 {
    SetRecordType(RECTYPE_CONTINUE);
    AddDataArray(data,size);

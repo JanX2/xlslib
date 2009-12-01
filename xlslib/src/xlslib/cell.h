@@ -42,6 +42,9 @@
 #include <font.h>
 #include <extformat.h>
 
+
+#include <xls_pshpack2.h>
+
 namespace xlslib_core
 {
   class insertsort;
@@ -53,8 +56,8 @@ namespace xlslib_core
 		friend class worksheet;
 
     protected:
-		cell_t(CGlobalRecords& gRecord, unsigned16_t row, unsigned16_t col);
-		virtual ~cell_t();	// "C++ Coding Standards" rule 50 (protected and non-virtual) 
+		cell_t(CGlobalRecords& gRecord, unsigned32_t row, unsigned32_t col);
+		virtual ~cell_t();	// "C++ Coding Standards" rule 50 (protected and non-virtual)     [i_a] MUST be virtual or you'll get blown out of the sky by memleaks (label_t instances in cell_t lists)
 
     private:
 		cell_t(const cell_t& that);
@@ -62,20 +65,20 @@ namespace xlslib_core
 
     public:
 		unsigned16_t GetXFIndex(void) const;
-		unsigned16_t GetRow(void) const;
-		unsigned16_t GetCol(void) const;
+		unsigned32_t GetRow(void) const;
+		unsigned32_t GetCol(void) const;
 
 		void SetXF(xf_t* pxfval);
 		xf_t* GetXF(void) const;
 
-		virtual unsigned16_t GetSize() const = 0;
-		virtual CUnit* GetData() const = 0;
+		virtual size_t GetSize(void) const = 0;
+		virtual CUnit* GetData(CDataStorage &datastore) const = 0;
 
 	protected:
 		CGlobalRecords& m_GlobalRecords;
 		static const unsigned16_t FORMAT_NUM_OPTIONS_TABLE[];
-		unsigned16_t row;
-		unsigned16_t col;
+		unsigned32_t row;
+		unsigned32_t col;
 		xf_t* pxf;
 
     public: // xf_i interface
@@ -128,6 +131,9 @@ namespace xlslib_core
   typedef Cell_Set_t::iterator Cell_Set_Itor_t;
   typedef Cell_Set_t::const_iterator Cell_Set_CItor_t;
 }
+
+
+#include <xls_poppack.h>
 
 #endif // CELL_H
 

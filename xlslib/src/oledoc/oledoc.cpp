@@ -34,6 +34,8 @@
 
 #define OLE_DEBUG	0
 
+#include <config.h>
+
 #include <oledoc.h>
 
 using namespace std;
@@ -70,9 +72,12 @@ COleDoc::~COleDoc()
 ***********************************
 */
 
-int  COleDoc::DumpHeader(blocks bks, unsigned32_t total_data_size)
+int  COleDoc::DumpHeader(blocks bks, size_t total_data_size)
 {
-    unsigned32_t	i, total_data_blocks, sectorID, msatID;
+    size_t i;
+	size_t total_data_blocks;
+	size_t sectorID;
+	size_t msatID;
 	int				errcode = NO_ERRORS;
    
 	total_data_blocks = total_data_size/BIG_BLOCK_SIZE;
@@ -81,7 +86,7 @@ int  COleDoc::DumpHeader(blocks bks, unsigned32_t total_data_size)
 	fprintf(stderr, "dataBlocks=%u\n", total_data_blocks), fflush(stderr);
 #endif
    // [00]FILETYPE
-   WriteByteArray(COleDoc::OLE_FILETYPE, /*(unsigned32_t)*/sizeof(COleDoc::OLE_FILETYPE));
+   WriteByteArray(COleDoc::OLE_FILETYPE, sizeof(COleDoc::OLE_FILETYPE));
    // [08]UK1
    WriteSigned32(HEADVAL_DFLT_UK1);
    // [0c]UK2
@@ -106,12 +111,12 @@ int  COleDoc::DumpHeader(blocks bks, unsigned32_t total_data_size)
    WriteSigned32(HEADVAL_DFLT_UK8);
 
    // [2c] BAT_COUNT (BBDEPOT NUM BLOCKS)
-   WriteUnsigned32(bks.bat_count);
+   WriteUnsigned32((unsigned32_t)bks.bat_count);
 
    //[30] PROPERTIES_START_BLOCK
    // Since the big block depot will go immediately after the data, I need
    // to know the size of the data and the size of the BAT in blocks (prev)
-   WriteUnsigned32(bks.msat_count+total_data_blocks+bks.bat_count);
+   WriteUnsigned32((unsigned32_t)(bks.msat_count+total_data_blocks+bks.bat_count));
 #if OLE_DEBUG
 	fprintf(stderr, "HEADER says directory at %d\n", bks.msat_count+total_data_blocks+bks.bat_count);
 #endif
@@ -136,7 +141,7 @@ int  COleDoc::DumpHeader(blocks bks, unsigned32_t total_data_size)
 #endif
 
    // [48] XBAT_COUNT
-   WriteUnsigned32(bks.msat_count);	// was HEADVAL_DFLT_XBAT_COUNT (0)
+   WriteUnsigned32((unsigned32_t)bks.msat_count);	// was HEADVAL_DFLT_XBAT_COUNT (0)
 #if OLE_DEBUG
 	fprintf(stderr, "msat_count=%d\n", bks.msat_count), fflush(stderr);
 #endif
@@ -213,12 +218,22 @@ int  COleDoc::DumpData(void)
    {
       if((*i)->GetType() == PTYPE_FILE)
       {
-         for(DataList_Itor_t j = (*i)->GetDataPointer()->begin(); 
+#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+		  for(StoreList_Itor_t j = (*i)->GetDataPointer()->begin(); 
+             j != (*i)->GetDataPointer()->end(); j++)
+         {
+			 assert(j->GetBuffer() != NULL);
+			 //assert(j->GetDataSize() > 0);
+            WriteByteArray(j->GetBuffer(), j->GetDataSize());
+         }
+#else
+		  for(DataList_Itor_t j = (*i)->GetDataPointer()->begin(); 
              j != (*i)->GetDataPointer()->end(); j++)
          {
             WriteByteArray((*j)->GetBuffer(), (*j)->GetDataSize());
          }
-      }
+#endif
+	  }
    } 
 
    return errcode;
@@ -239,7 +254,7 @@ int  COleDoc::DumpDepots(blocks bks)
 	bat_index = 0;
 	
 	// tells Excel that these are used by the MSAT
-	for(unsigned32_t i=0; i<bks.msat_count; ++i) {
+	for(size_t i=0; i<bks.msat_count; ++i) {
 		WriteSigned32(BAT_MSAT_PLACE);
 		++bat_index;
 		++bks._bat_entries;
@@ -250,7 +265,8 @@ int  COleDoc::DumpDepots(blocks bks)
 #endif
    for(NodeList_Itor_t node = node_list.begin(); node != node_list.end(); node++)
    {
-		unsigned32_t chain_len, data_size;
+		size_t chain_len;
+		size_t data_size;
 
 		// The start block is set in the node.
 		(*node)->SetStartBlock(bat_index);
@@ -276,7 +292,7 @@ int  COleDoc::DumpDepots(blocks bks)
    fprintf(stderr, "BAT_SELF_PLACE=%d -> %d TOTAL=%d\n", bat_index+1, bat_index+1+bks.bat_count+1, bks.bat_count);
 #endif
    // Write the -3 number for every index in the BAT that references to some BAT block (uh!?)
-   for(unsigned32_t i=0; i<bks.bat_count;i++)
+   for(size_t i=0; i<bks.bat_count;i++)
    {
 		WriteSigned32(BAT_SELF_PLACE);
 		++bat_index;
@@ -344,18 +360,18 @@ int  COleDoc::DumpOleFile(void)
    int errcode = NO_ERRORS;
 
    bks = GetBATCount();
-   unsigned32_t total_data_size = GetTotalDataSize();
+   size_t total_data_size = GetTotalDataSize();
 
-   errcode |=  DumpHeader(bks, total_data_size);
+   errcode |= DumpHeader(bks, total_data_size);
    assert((Position() % 512) == 0 /*1*/);
 
-   errcode |=  DumpData();
+   errcode |= DumpData();
    assert((Position() % 512) == 0 /*2*/);
 
-   errcode |=  DumpDepots(bks);
+   errcode |= DumpDepots(bks);
    assert((Position() % 512) == 0 /*3*/);
 
-   errcode |=  DumpFileSystem();
+   errcode |= DumpFileSystem();
    assert((Position() % 512) == 0 /*3*/);
 
    return errcode;
@@ -367,10 +383,12 @@ int  COleDoc::DumpOleFile(void)
 blocks COleDoc::GetBATCount()
 {
 	blocks			bks;
-	unsigned32_t	bat_num_entries, data_bat_entries, bat_num_blocks, dir_bat_entries, bat_blocks_needed, bat_block_capacity;
-	unsigned32_t	extra_bats, msat_blocks, msat_bats, last_block_extras;
+	size_t bat_num_entries;
+	size_t data_bat_entries;
+	size_t bat_num_blocks, dir_bat_entries, bat_blocks_needed, bat_block_capacity;
+	size_t extra_bats, msat_blocks, msat_bats, last_block_extras;
 
-	memset(&bks, 0, sizeof(bks) );
+	memset(&bks, 0, sizeof(bks));
 
 	data_bat_entries = GetTotalDataSize()/BIG_BLOCK_SIZE; //  + GetNumDataFiles(); //terminator???
 	assert(GetTotalDataSize() == (data_bat_entries * BIG_BLOCK_SIZE) );
@@ -447,19 +465,19 @@ blocks COleDoc::GetBATCount()
 // derived class, so the array would be deleted automatically
 
 
-signed16_t COleDoc::GetUnicodeName(const char* name, char** ppname_unicode)
+size_t COleDoc::GetUnicodeName(const char* name, char** ppname_unicode)
 {
-   unsigned16_t name_size = static_cast<unsigned16_t>(strlen(name));
+   size_t name_size = strlen(name);
    if(name_size > PROPERTY_MAX_NAME_LENGTH)
       name_size = PROPERTY_MAX_NAME_LENGTH;
 
-   unsigned8_t size_unicode = (name_size+1)*2;
+   size_t size_unicode = (name_size+1)*2;
   
    if(*ppname_unicode != NULL) delete[] *ppname_unicode;
    *ppname_unicode = (char*)new unsigned8_t[size_unicode];
    memset(*ppname_unicode, 0x00, size_unicode);
 
-   for(int i=0; i<(size_unicode/2-1); i++)
+   for(size_t i=0; i<(size_unicode/2-1); i++)
       (*ppname_unicode)[2*i] = name[i];
 
    return size_unicode;
@@ -478,16 +496,17 @@ int COleDoc::DumpNode(COleProp& node)
    char* name_unicode = NULL;
 
    // Get the unicode name and its size
-   signed16_t size_name = GetUnicodeName(node.GetName().c_str(), &name_unicode);
+   size_t size_name = GetUnicodeName(node.GetName().c_str(), &name_unicode);
 
    // [00] PROPERTY_NAME
    WriteByteArray((const unsigned8_t*)name_unicode, size_name);
 
    // Fill the rest of the name field with 0x00
+   assert(PPTPOS_NAMELENGTH > size_name);
    SerializeFixedArray(PROPERTY_DFLT_NOTUSED, PPTPOS_NAMELENGTH - size_name);
 
    // [40] NAME_SIZE
-   WriteSigned16(size_name);
+   WriteSigned16((signed16_t)size_name);
       
    // [42] PROPERTY_TYPE
    WriteByte(node.GetType());
@@ -520,7 +539,7 @@ int COleDoc::DumpNode(COleProp& node)
 
    // [78] SIZE
    if(node.GetType() == PTYPE_FILE)
-      WriteSigned32(node.GetSize());
+      WriteSigned32((signed32_t)node.GetSize());
    else
       WriteSigned32(0);
 

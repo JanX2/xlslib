@@ -43,6 +43,10 @@ CBiffSection class declaration
 ******************************
 */
 
+
+
+#include <xls_pshpack2.h>
+
 namespace xlslib_core
 {
 
@@ -56,6 +60,9 @@ namespace xlslib_core
  };
 
 }
+
+
+#include <xls_poppack.h>
 
 #endif //BIFFSECTION_H
 

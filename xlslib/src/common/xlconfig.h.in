@@ -9,11 +9,26 @@
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
 
+/* Define to 1 if you have the `memchr' function. */
+#undef HAVE_MEMCHR
+
 /* Define to 1 if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H
 
 /* Define to 1 if you have the `memset' function. */
 #undef HAVE_MEMSET
+
+/* Define if compiler supports #pragma pack(<size>). */
+#undef HAVE_PRAGMA_PACK
+
+/* Define if compiler does not listen strictly to large <size>s in #pragma
+   pack(<size>) but applies further member packing instead when none of the
+   (basic) members are <size> bytes or more. */
+#undef HAVE_PRAGMA_PACK_OVERSMART_COMPILER
+
+/* Define if compiler supports #pragma pack(push) / pack(pop) and
+   pack(<size>). */
+#undef HAVE_PRAGMA_PACK_PUSH_POP
 
 /* Define to 1 if stdbool.h conforms to C99. */
 #undef HAVE_STDBOOL_H
@@ -47,6 +62,10 @@
 
 /* Define to 1 if the system has the type `_Bool'. */
 #undef HAVE__BOOL
+
+/* Define to the sub-directory in which libtool stores uninstalled libraries.
+   */
+#undef LT_OBJDIR
 
 /* Name of package */
 #undef PACKAGE

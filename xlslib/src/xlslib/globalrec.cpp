@@ -33,7 +33,11 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 
+#include <config.h>
+
 #include <globalrec.h>
+#include <datast.h>
+
 
 using namespace std;
 using namespace xlslib_core;
@@ -289,11 +293,33 @@ void CGlobalRecords::Clean()
 	m_pGlobalRecords = NULL;
 }
 #endif
+
 /*
 ****************************************
 ****************************************
 */
-CUnit* CGlobalRecords::DumpData()
+
+size_t CGlobalRecords::EstimateNumBiffUnitsNeeded4Header(void)
+{
+	size_t ret = 5;
+
+	ret += m_Fonts.size();        
+	ret += m_DefaultFonts.size();
+	ret += m_Formats.size();    
+	ret += m_XFs.size();            
+	ret += m_DefaultXFs.size();            
+	ret += m_Styles.size();      
+	ret += m_BoundSheets.size();
+
+	return ret;
+}
+
+/*
+****************************************
+****************************************
+*/
+
+CUnit* CGlobalRecords::DumpData(CDataStorage &datastore)
 {
 	CUnit*	m_pCurrentData	= NULL;
 	bool	repeat			= false;
@@ -325,10 +351,13 @@ CUnit* CGlobalRecords::DumpData()
 
             repeat = false;
 
-            //MSVC
+#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+            m_pCurrentData = datastore.MakeCBof(BOF_TYPE_WBGLOBALS);
+#else
             // Delete_Pointer(m_pCurrentData);
-            m_pCurrentData = (CUnit*)(new CBof(BOF_TYPE_WBGLOBALS));
-            m_DumpState = GLOBAL_CODEPAGE; // DFH GLOBAL_WINDOW1;
+            m_pCurrentData = (CUnit*)(new CBof(datastore, BOF_TYPE_WBGLOBALS));
+#endif
+			m_DumpState = GLOBAL_CODEPAGE; // DFH GLOBAL_WINDOW1;
             break;
 
          case GLOBAL_CODEPAGE:		// ********** STATE 1B *************
@@ -336,9 +365,13 @@ CUnit* CGlobalRecords::DumpData()
  
 			repeat = false;
 
+#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+            m_pCurrentData = datastore.MakeCCodePage(1200);	// UTF-16
+#else
             //Delete_Pointer(m_pCurrentData);
-            m_pCurrentData = (CUnit*)(new CCodePage(1200));	// UTF-16
-            m_DumpState = GLOBAL_WINDOW1;
+            m_pCurrentData = (CUnit*)(new CCodePage(datastore, 1200));	// UTF-16
+#endif
+			m_DumpState = GLOBAL_WINDOW1;
             break;
 
          case GLOBAL_WINDOW1:		// ********** STATE 2A *************
@@ -346,9 +379,13 @@ CUnit* CGlobalRecords::DumpData()
  
 			repeat = false;
 
+#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+			m_pCurrentData = datastore.MakeCWindow1(m_window1);
+#else
             //Delete_Pointer(m_pCurrentData);
-			m_pCurrentData = (CUnit*)(new CWindow1(m_window1));
-            m_DumpState = GLOBAL_DATEMODE; // GLOBAL_DEFAULTFONTS;
+			m_pCurrentData = (CUnit*)(new CWindow1(datastore, m_window1));
+#endif
+			m_DumpState = GLOBAL_DATEMODE; // GLOBAL_DEFAULTFONTS;
             break;
 
          case GLOBAL_DATEMODE:		// ********** STATE 2B *************
@@ -356,9 +393,13 @@ CUnit* CGlobalRecords::DumpData()
  
 			repeat = false;
 
+#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+            m_pCurrentData = datastore.MakeCDateMode();
+#else
             //Delete_Pointer(m_pCurrentData);
-            m_pCurrentData = (CUnit*)(new CDateMode());
-            m_DumpState = GLOBAL_DEFAULTFONTS;
+            m_pCurrentData = (CUnit*)(new CDateMode(datastore));
+#endif
+			m_DumpState = GLOBAL_DEFAULTFONTS;
             break;
 
          case GLOBAL_DEFAULTFONTS:	// ********** STATE 3A *************
@@ -366,7 +407,11 @@ CUnit* CGlobalRecords::DumpData()
 			
 			repeat = false;
 			
-			m_pCurrentData = (CUnit*)(new CFont(*font_dflt));
+#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+			m_pCurrentData = datastore.MakeCFont(*font_dflt);
+#else
+			m_pCurrentData = (CUnit*)(new CFont(datastore, *font_dflt));
+#endif
 
 			if(font_dflt != (--m_DefaultFonts.end()))
 			{
@@ -384,7 +429,11 @@ CUnit* CGlobalRecords::DumpData()
 			// First check if the list of fonts is not empty...
 			if(!m_Fonts.empty())
 			{
-				m_pCurrentData = (CUnit*)(new CFont(*font));
+#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+				m_pCurrentData = datastore.MakeCFont(*font);
+#else
+				m_pCurrentData = (CUnit*)(new CFont(datastore, *font));
+#endif
 				if(font != (--m_Fonts.end()))
 				{
 				  // if it was'nt the last font from the list, increment to get the next one
@@ -408,7 +457,11 @@ CUnit* CGlobalRecords::DumpData()
 
 			if(!m_Formats.empty())
 			{
-				m_pCurrentData = (CUnit*)(new CFormat(*format));
+#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+				m_pCurrentData = datastore.MakeCFormat(*format);
+#else
+				m_pCurrentData = (CUnit*)(new CFormat(datastore, *format));
+#endif
 				if(format != (--m_Formats.end()))
 				{
 				  // if it was'nt the last font from the list, increment to get the next one
@@ -430,7 +483,11 @@ CUnit* CGlobalRecords::DumpData()
          case GLOBAL_DEFAULTXFS: // ********** STATE 5a *************
 
             XTRACE("\tXDEFAULTFS");
-            m_pCurrentData = (CUnit*)(new CExtFormat(*xf_dflt));
+#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+            m_pCurrentData = datastore.MakeCExtFormat(*xf_dflt);
+#else
+            m_pCurrentData = (CUnit*)(new CExtFormat(datastore, *xf_dflt));
+#endif
 
             if(xf_dflt != (--m_DefaultXFs.end()))
             {
@@ -449,7 +506,11 @@ CUnit* CGlobalRecords::DumpData()
 			XTRACE("\tXFS");
 			if(!m_XFs.empty())
 			{
-				m_pCurrentData = (CUnit*)(new CExtFormat(*xf));
+#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+				m_pCurrentData = datastore.MakeCExtFormat(*xf);
+#else
+				m_pCurrentData = (CUnit*)(new CExtFormat(datastore, *xf));
+#endif
 
 				if(xf != (--m_XFs.end()))
 				{
@@ -475,8 +536,12 @@ CUnit* CGlobalRecords::DumpData()
             if(!m_Styles.empty())
             {
 				// First check if the list of fonts is not empty...
+#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+				m_pCurrentData = datastore.MakeCStyle(*style);
+#else
 				//Delete_Pointer(m_pCurrentData);
-				m_pCurrentData = (CUnit*)(new CStyle(*style));
+				m_pCurrentData = (CUnit*)(new CStyle(datastore, *style));
+#endif
 
 				if(style != (--m_Styles.end()))
 				{
@@ -501,10 +566,10 @@ CUnit* CGlobalRecords::DumpData()
  
 			repeat = false;
 
+            m_pCurrentData = m_palette.GetData(datastore);
             //Delete_Pointer(m_pCurrentData);
-           // m_pCurrentData = (CUnit*)(new CPalette());
-            m_pCurrentData = m_palette.GetData();
-            m_DumpState = GLOBAL_BOUNDSHEETS;
+			//m_pCurrentData = (CUnit*)(new CPalette(datastore, (colors ? colors : default_palette)));
+			m_DumpState = GLOBAL_BOUNDSHEETS;
             break;
 
          case GLOBAL_BOUNDSHEETS: // ********** STATE 8 *************
@@ -512,8 +577,12 @@ CUnit* CGlobalRecords::DumpData()
 			if(!m_BoundSheets.empty())
 			{
 				// First check if the list of sheets is not empty...
+#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+				m_pCurrentData = datastore.MakeCBSheet(*bsheet);
+#else
 				//Delete_Pointer(m_pCurrentData);
-				m_pCurrentData = (CUnit*)(new CBSheet(*bsheet));
+				m_pCurrentData = (CUnit*)(new CBSheet(datastore, *bsheet));
+#endif
 				(*bsheet)->sheetData = (CBSheet *)m_pCurrentData;
 
 				if(bsheet != (--m_BoundSheets.end()))
@@ -539,8 +608,12 @@ CUnit* CGlobalRecords::DumpData()
 
             repeat = false;
 
-            m_pCurrentData = (CUnit*)(new CEof());
-            m_DumpState = GLOBAL_FINISH;
+#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+            m_pCurrentData = datastore.MakeCEof();
+#else
+            m_pCurrentData = (CUnit*)(new CEof(datastore));
+#endif
+			m_DumpState = GLOBAL_FINISH;
             break;
 
          case GLOBAL_FINISH: // ********** STATE 10 *************
@@ -755,13 +828,13 @@ void  CGlobalRecords::wide2str16(const ustring& str1, u16string& str2)
 	size_t	len;
 
 #if !defined(_MSC_VER) /*  MSVC2005 doesn't accept this for ANSI builds at least! */
-    // if character size of both strings is the same, well, we should be able to just assign them
- 	if(sizeof(unichar_t) == sizeof(unsigned16_t)) {
- 		str2 = str1;
- 		return;
- 	}
+	// if character size of both strings is the same, well, we should be able to just assign them
+	if(sizeof(unichar_t) == sizeof(unsigned16_t)) {
+		str2 = str1;
+		return;
+	}
 #endif
-
+	
 	len = str1.length();
 	str2.reserve(len);
 
@@ -830,4 +903,17 @@ void  CGlobalRecords::char2str16(const string& str1, u16string& str2)
  * Initial Import.
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+
+
+
+
+#if defined(_MSC_VER)
+#undef new
+void *operator_new_dbg(size_t count, const char *f, int l)
+{
+	return operator new(count, _CLIENT_BLOCK, f, l);
+}
+#endif
+
 

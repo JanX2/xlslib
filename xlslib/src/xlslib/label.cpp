@@ -32,7 +32,11 @@
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
+#include <config.h>
+
 #include <label.h>
+#include <datast.h>
+
 
 using namespace std;
 using namespace xlslib_core;
@@ -43,7 +47,7 @@ label_t class implementation
 ******************************
 */
 xlslib_core::label_t::label_t(CGlobalRecords& gRecords, 
-		unsigned16_t rowval, unsigned16_t colval, const u16string& labelstrval, xf_t* pxfval) :
+		unsigned32_t rowval, unsigned32_t colval, const u16string& labelstrval, xf_t* pxfval) :
 	cell_t(gRecords, rowval, colval),
 	strLabel(),
 	isASCII(true)
@@ -59,7 +63,8 @@ xlslib_core::label_t::label_t(CGlobalRecords& gRecords,
 	cBegin = labelstrval.begin();
 	cEnd = labelstrval.end();
 	
-	while(cBegin != cEnd) {
+	while(cBegin != cEnd) 
+	{
 		unsigned16_t	c;
 		
 		c = *cBegin++;
@@ -69,6 +74,7 @@ xlslib_core::label_t::label_t(CGlobalRecords& gRecords,
 	}
 }
 
+
 xlslib_core::label_t::~label_t()
 {
 }
@@ -77,12 +83,12 @@ xlslib_core::label_t::~label_t()
 ******************************
 ******************************
 */
-unsigned16_t xlslib_core::label_t::GetSize() const
+size_t xlslib_core::label_t::GetSize(void) const
 {
-	unsigned16_t size = 0;
+	size_t size = 0;
 
 	size = 10;		// empty Unicode string has a flags byte
-	size += static_cast<unsigned16_t>
+	size += 
       (sizeof(unsigned16_t) + 1 + strLabel.size() * (isASCII ? sizeof(unsigned8_t) : sizeof(unsigned16_t)));
 	  
 	return size;
@@ -91,9 +97,13 @@ unsigned16_t xlslib_core::label_t::GetSize() const
 ******************************
 ******************************
 */
-CUnit* xlslib_core::label_t::GetData() const
+CUnit* xlslib_core::label_t::GetData(CDataStorage &datastore) const
 {
-	return (CUnit*)( new CLabel(row, col, strLabel, isASCII, pxf));	// NOTE: this pointer HAS to be deleted elsewhere.
+#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+	return datastore.MakeCLabel(*this);	// NOTE: this pointer HAS to be deleted elsewhere.
+#else
+	return (CUnit*)( new CLabel(datastore, *this));	// NOTE: this pointer HAS to be deleted elsewhere.
+#endif
 }
 
 /*
@@ -101,17 +111,20 @@ CUnit* xlslib_core::label_t::GetData() const
 CLabel class implementation
 ******************************
 */
-CLabel::CLabel(unsigned16_t row,	  
-	       unsigned16_t col,	  
+#if 0
+CLabel::CLabel(CDataStorage &datastore, 
+		   unsigned32_t row,	  
+	       unsigned32_t col,	  
 	       const u16string& strlabel,
 		   bool isASCII,
-		   const xf_t* pxfval)
+		   const xf_t* pxfval):
+		CRecord(datastore)
 {
 	unsigned16_t xfindex;
 
 	SetRecordType(RECTYPE_LABEL);
-	AddValue16(row);
-	AddValue16(col);
+	AddValue16((unsigned16_t)row);
+	AddValue16((unsigned16_t)col);
 
 	if(pxfval != NULL)
 		xfindex = pxfval->GetIndex();
@@ -124,13 +137,14 @@ CLabel::CLabel(unsigned16_t row,
 
 	SetRecordLength(GetDataSize()-4);
 }
+#endif
 
-CLabel::CLabel(label_t& labeldef)
-
+CLabel::CLabel(CDataStorage &datastore, const label_t& labeldef):
+		CRecord(datastore)
 {
 	SetRecordType(RECTYPE_LABEL);
-	AddValue16(labeldef.GetRow());
-	AddValue16(labeldef.GetCol());
+	AddValue16((unsigned16_t)labeldef.GetRow());
+	AddValue16((unsigned16_t)labeldef.GetCol());
 	AddValue16(labeldef.GetXFIndex());
 
 	AddUnicodeString(labeldef.GetStrLabel(), sizeof(unsigned16_t), labeldef.GetIsASCII());

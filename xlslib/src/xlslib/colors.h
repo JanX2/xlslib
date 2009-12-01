@@ -41,6 +41,9 @@
 #include <record.h>
 #include <unit.h>
 
+
+#include <xls_pshpack2.h>
+
 namespace xlslib_core
 {
 // Colors can be "base" (< 8) or palette (changes with BIFF)
@@ -134,9 +137,9 @@ typedef enum
 
 	struct color_entry_t
 	{
- 		unsigned8_t r, g, b, nuttin;
+		unsigned8_t r, g, b, nuttin;
 	};
- 
+
 	class colors_t // : public CRecord
 	{
 	  public:
@@ -144,15 +147,18 @@ typedef enum
 		~colors_t();
 
 		bool setColor(unsigned8_t r, unsigned8_t g, unsigned8_t b, unsigned8_t idx); // 8 <= idx <= 64
-		CUnit* GetData() const;
+		CUnit* GetData(CDataStorage &datastore) const;
 
 	  private:
 		colors_t(const colors_t &that);
 		colors_t& operator=(const colors_t& right);
 
 	  private:
-		color_entry_t *colors;
+		color_entry_t	*colors;
 	};
+
+	// forward ref
+	class CDataStorage;
 
 /*
 ******************************
@@ -161,14 +167,20 @@ CPalette class declaration
 */
   class CPalette: public CRecord
     {
-    protected:
+#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+	friend class CDataStorage;
+#endif
 
-    public:
-      CPalette(const color_entry_t *colors);
-      ~CPalette();
+    protected:
+      CPalette(CDataStorage &datastore, const color_entry_t *colors);
+	private:
+      virtual ~CPalette();
     };
 
 }
+
+#include <xls_poppack.h>
+
 #endif //COLORS_H
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

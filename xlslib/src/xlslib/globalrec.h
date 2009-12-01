@@ -44,6 +44,9 @@
 #include <recdef.h>
 #include <unit.h>
 
+
+#include <xls_pshpack2.h>
+
 namespace xlslib_core
 {
 /*
@@ -104,7 +107,7 @@ CGlobalRecords class declaration
    
       // A Kind of state machine that will return
       // a non-null pointer to the data unit until all data has been retrieved.
-      CUnit*		DumpData(); 
+      CUnit*		DumpData(CDataStorage &datastore); 
 
       Boundsheet_Vect_Itor_t GetFirstBoundSheet();
       Boundsheet_Vect_Itor_t GetEndBoundSheet();
@@ -115,6 +118,8 @@ CGlobalRecords class declaration
 	  window1&		GetWindow1() {return m_window1;}
 	  
 	  font_t*		fontdup(unsigned8_t fontnum) const;
+
+	  size_t		EstimateNumBiffUnitsNeeded4Header(void);
 	  
 
       void wide2str16(const std::ustring& str1, u16string& str2);
@@ -166,6 +171,9 @@ CGlobalRecords class declaration
     };
 
 }
+
+#include <xls_poppack.h>
+
 #endif // GLOBALREC_H
 
 

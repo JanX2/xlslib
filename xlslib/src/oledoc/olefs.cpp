@@ -30,6 +30,8 @@
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
+#include <config.h>
+
 #include <olefs.h>
 #include <string>
 #include <stringtok.h>
@@ -181,7 +183,7 @@ int COleFileSystem::AddFile(string const &dir_path, CDataStorage* pdata)
 
       
       // Calculate the trail data size needed to complete a BIG_BLOCK
-      unsigned32_t trail_size = (pdata->GetDataSize() % BIG_BLOCK_SIZE)?
+      size_t trail_size = (pdata->GetDataSize() % BIG_BLOCK_SIZE)?
          (BIG_BLOCK_SIZE - (pdata->GetDataSize() % BIG_BLOCK_SIZE)):0;
 
       // This library won't use Small Blocks, so all data elements shall be >0x1000
@@ -195,9 +197,17 @@ int COleFileSystem::AddFile(string const &dir_path, CDataStorage* pdata)
       }
 
       // create the trail data unit.
-      CUnit* ptraildata = new CUnit;
+#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+	  CUnit* ptraildata = pdata->MakeCUnit();
+#else
+	  CUnit* ptraildata = new CUnit(*pdata);
+#endif
       ptraildata->AddFixedDataArray(0x00, trail_size);
       (*pdata) += ptraildata;
+#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+#else
+	  //Delete_Pointer(ptraildata);
+#endif
 
       (*newnode)->SetDataPointer(pdata);
 
@@ -399,11 +409,11 @@ void COleFileSystem::SortList(NodeList_t& node_list)
 ***********************************
 ***********************************
 */
-unsigned32_t COleFileSystem::GetTotalDataSize()
+size_t COleFileSystem::GetTotalDataSize()
 {
    NodeList_t node_list;
    GetAllNodes(node_list);
-   unsigned32_t total_size = 0;
+   size_t total_size = 0;
 
    for(NodeList_Itor_t i = node_list.begin(); i != node_list.end(); i++)
    {

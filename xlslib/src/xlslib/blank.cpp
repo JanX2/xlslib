@@ -31,7 +31,12 @@
  *
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+#include <config.h>
+
 #include <blank.h>
+#include <datast.h>
+
 
 using namespace std;
 using namespace xlslib_core;
@@ -41,13 +46,17 @@ using namespace xlslib_core;
 blank_t class implementation
 *********************************
 */
-blank_t::blank_t(CGlobalRecords& gRecords, unsigned16_t rowval, unsigned16_t colval, xf_t* pxfval) :
+blank_t::blank_t(CGlobalRecords& gRecords, unsigned32_t rowval, unsigned32_t colval, xf_t* pxfval) :
 	cell_t(gRecords, rowval, colval)
 {
    SetXF(pxfval);
 }
-CUnit* blank_t::GetData() const {
-   return (CUnit*)(new CBlank(row,col,pxf));	// NOTE: this pointer HAS to be deleted elsewhere.
+CUnit* blank_t::GetData(CDataStorage &datastore) const {
+#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+   return datastore.MakeCBlank(*this);	// NOTE: this pointer HAS to be deleted elsewhere.
+#else
+   return (CUnit*)(new CBlank(datastore, *this));	// NOTE: this pointer HAS to be deleted elsewhere.
+#endif
 }
 blank_t::~blank_t()
 {
@@ -58,21 +67,26 @@ blank_t::~blank_t()
 CBlank class implementation
 *********************************
 */
-CBlank::CBlank(unsigned16_t row, unsigned16_t col, const xf_t* pxfval)
+#if 0
+CBlank::CBlank(CDataStorage &datastore, 
+		   unsigned32_t row, unsigned32_t col, const xf_t* pxfval):
+		CRecord(datastore)
 {
    SetRecordType(RECTYPE_BLANK);
-   AddValue16(row);
-   AddValue16(col);
+   AddValue16((unsigned16_t)row);
+   AddValue16((unsigned16_t)col);
    AddValue16(pxfval ? pxfval->GetIndex() : XF_PROP_XF_DEFAULT_CELL);  
 
    SetRecordLength(GetDataSize()-4);
 }
+#endif
 
-CBlank::CBlank(blank_t& blankdef)
+CBlank::CBlank(CDataStorage &datastore, const blank_t& blankdef):
+		CRecord(datastore)
 {
    SetRecordType(RECTYPE_BLANK);	// DFH - was RECTYPE_LABEL, typo ??? (just like the number class)
-   AddValue16(blankdef.GetRow());
-   AddValue16(blankdef.GetCol());
+   AddValue16((unsigned16_t)blankdef.GetRow());
+   AddValue16((unsigned16_t)blankdef.GetCol());
    AddValue16(blankdef.GetXFIndex());
 
    SetRecordLength(GetDataSize()-4);

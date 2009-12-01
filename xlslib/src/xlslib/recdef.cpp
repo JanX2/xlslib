@@ -33,8 +33,11 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 
+#include <config.h>
+
 #include <colors.h>
 #include <recdef.h>
+#include <datast.h>
 
 using namespace std;
 using namespace xlslib_core;
@@ -44,9 +47,10 @@ using namespace xlslib_core;
 CBof class implementation
 ******************************
 */
-CBof::CBof(unsigned16_t boftype)
+CBof::CBof(CDataStorage &datastore, unsigned16_t boftype):
+		CRecord(datastore)
 {
-   SetRecordType(RECTYPE_BOF  );
+   SetRecordType(RECTYPE_BOF);
 
 	AddValue16(VERSION_BIFF);
 	AddValue16(boftype);
@@ -67,9 +71,10 @@ CBof::~CBof()
 CEof class implementation
 ******************************
 */
-CEof::CEof()
+CEof::CEof(CDataStorage &datastore):
+		CRecord(datastore)
 {
-   SetRecordType(RECTYPE_EOF  );
+   SetRecordType(RECTYPE_EOF);
    SetRecordLength(GetDataSize()-4);
 }
 
@@ -82,7 +87,8 @@ CEof::~CEof()
 CCodePage class implementation
 **********************************
 */
-CCodePage::CCodePage(unsigned16_t boftype)
+CCodePage::CCodePage(CDataStorage &datastore, unsigned16_t boftype):
+		CRecord(datastore)
 {
    SetRecordType(RECTYPE_CODENAME);
 
@@ -116,7 +122,8 @@ window1::~window1()
 CWindow1 class implementation
 **********************************
 */
-CWindow1::CWindow1(const window1& wind1)
+CWindow1::CWindow1(CDataStorage &datastore, const window1& wind1):
+		CRecord(datastore)
 {
 	SetRecordType(RECTYPE_WINDOW1);
 
@@ -143,15 +150,12 @@ CDateMode class implementation
 **********************************
 */
 
-CDateMode::CDateMode()
+CDateMode::CDateMode(CDataStorage &datastore):
+		CRecord(datastore)
 {
    SetRecordType(RECTYPE_DATEMODE);
 
-#ifdef __APPLE__ 
-   AddValue16(1);	// 1901
-#else
-   AddValue16(0);	// 1900
-#endif
+   AddValue16(Is_In_1904_Mode() ? 1 : 0);
 
    SetRecordLength(GetDataSize()-4);
 }
@@ -159,12 +163,23 @@ CDateMode::CDateMode()
 CDateMode::~CDateMode()
 {}
 
+
+bool CDateMode::Is_In_1904_Mode(void)
+{
+#ifdef __APPLE__ 
+   return true;	// 1904  [i_a]
+#else
+   return false;	// 1900
+#endif
+}
+
 /*
 **********************************
 CWindow2 class implementation
 **********************************
 */
-CWindow2::CWindow2(bool isActive)
+CWindow2::CWindow2(CDataStorage &datastore, bool isActive):
+		CRecord(datastore)
 {
 	unsigned16_t	flags;
 	
@@ -198,7 +213,12 @@ CWindow2::~CWindow2()
 CDimension class implementation
 **********************************
 */
-CDimension::CDimension(unsigned32_t minRow, unsigned32_t maxRow, unsigned32_t minCol, unsigned32_t maxCol)
+CDimension::CDimension(CDataStorage &datastore, 
+		   unsigned32_t minRow, 
+		   unsigned32_t maxRow, 
+		   unsigned32_t minCol, 
+		   unsigned32_t maxCol):
+		CRecord(datastore)
 {
 	SetRecordType(RECTYPE_DIMENSIONS);
 
@@ -226,7 +246,7 @@ void CWindow2::SetSelected()
 
    grbitval |= W2_GRBITMASK_SELECTED;
 
-   SetValueAt((unsigned16_t)grbitval, W2_OFFSET_GRBIT);
+   SetValueAt16((unsigned16_t)grbitval, W2_OFFSET_GRBIT);
 }
 
 /*
@@ -240,7 +260,7 @@ void CWindow2::SetPaged()
 
    grbitval |= W2_GRBITMASK_PAGEBRK;
 
-   SetValueAt((unsigned16_t)grbitval, W2_OFFSET_GRBIT);
+   SetValueAt16((unsigned16_t)grbitval, W2_OFFSET_GRBIT);
 }
 
 /*
@@ -254,7 +274,7 @@ void CWindow2::ClearSelected()
 
    grbitval &= (~W2_GRBITMASK_SELECTED);
 
-   SetValueAt((unsigned16_t)grbitval, W2_OFFSET_GRBIT);
+   SetValueAt16((unsigned16_t)grbitval, W2_OFFSET_GRBIT);
 }
 
 /*
@@ -268,7 +288,7 @@ void CWindow2::ClearPaged()
 
    grbitval &= (W2_GRBITMASK_PAGEBRK);
 
-   SetValueAt((unsigned16_t)grbitval, W2_OFFSET_GRBIT);
+   SetValueAt16((unsigned16_t)grbitval, W2_OFFSET_GRBIT);
 }
 
 
@@ -290,7 +310,8 @@ CStyle class implementation
 
 //#define STYLE_LEVEL_DUMMY         ((unsigned8_t)0x00)
 
-CStyle::CStyle(style_t* styledef)
+CStyle::CStyle(CDataStorage &datastore, const style_t* styledef):
+		CRecord(datastore)
 {
    // TODO: Implement user-defined styles. So far only built-in are used.
    SetRecordType(RECTYPE_STYLE);
@@ -302,7 +323,10 @@ CStyle::CStyle(style_t* styledef)
    SetRecordLength(GetDataSize()-4);
 }
 
-CStyle::CStyle(unsigned16_t xfindex, unsigned8_t builtintype, unsigned8_t level)
+#if 0
+CStyle::CStyle(CDataStorage &datastore, 
+		   unsigned16_t xfindex, unsigned8_t builtintype, unsigned8_t level):
+		CRecord(datastore)
 {
    // TODO: Implement user-defined styles. So far only built-in are used.
    SetRecordType(RECTYPE_STYLE);
@@ -313,6 +337,7 @@ CStyle::CStyle(unsigned16_t xfindex, unsigned8_t builtintype, unsigned8_t level)
 
    SetRecordLength(GetDataSize()-4);
 }
+#endif
 
 
 CStyle::~CStyle()
@@ -328,7 +353,8 @@ CBSheet class implementation
 CBSheet::CBSheet(unsigned32_t streampos, 
                  unsigned16_t attributes, 
                  u16string& sheetname,
-				 bool is_ascii)
+				 bool is_ascii):
+		CRecord(datastore)
 {
 	SetRecordType(RECTYPE_BOUNDSHEET);
 	streamposOffset = GetDataSize();	// no work
@@ -339,8 +365,14 @@ CBSheet::CBSheet(unsigned32_t streampos,
 	SetRecordLength(GetDataSize()-4);
 }
 #endif
-CBSheet::CBSheet(boundsheet_t* bsheetdef)
+CBSheet::CBSheet(CDataStorage &datastore, const boundsheet_t* bsheetdef):
+		CRecord(datastore)
 {
+#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+	m_Backpatching_Level = 3;
+#else
+#endif
+
 	SetRecordType(RECTYPE_BOUNDSHEET);
 	AddValue32(bsheetdef->streampos);
 
@@ -370,9 +402,9 @@ CBSheet::~CBSheet()
 **********************************
 */
 
-void CBSheet::SetStreamPosition(unsigned32_t pos)
+void CBSheet::SetStreamPosition(size_t pos)
 {
-   SetValueAt((unsigned32_t)pos, BSHEET_OFFSET_POSITION);
+   SetValueAt32((unsigned32_t)pos, BSHEET_OFFSET_POSITION);
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

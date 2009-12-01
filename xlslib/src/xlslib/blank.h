@@ -41,38 +41,51 @@
 #include <record.h>
 #include <unit.h>
 
+
+#include <xls_pshpack2.h>
+
 namespace xlslib_core
 {
-
-  class blank_t;
-  class CBlank: public CRecord
-    {
-    private:
-
-    public:
-      CBlank(unsigned16_t row,
-             unsigned16_t col,
-             const xf_t* pxfval = NULL);
-
-      CBlank(blank_t& blankdef);
-      ~CBlank();
-    };
-
 
   class blank_t: public cell_t
     {
 	  friend class worksheet;
 
     private:
-      blank_t(CGlobalRecords& gRecords, unsigned16_t rowval, unsigned16_t colval, xf_t* pxfval = NULL);
-      ~blank_t();
+      blank_t(CGlobalRecords& gRecords, unsigned32_t rowval, unsigned32_t colval, xf_t* pxfval = NULL);
+      virtual ~blank_t();
 	  
     public:
-      virtual unsigned16_t GetSize() const {return 10;};
-      virtual CUnit* GetData() const;
+      virtual size_t GetSize(void) const {return 10;};
+      virtual CUnit* GetData(CDataStorage &datastore) const;
+    };
+
+
+  // forward ref
+	class CDataStorage;
+
+  class CBlank: public CRecord
+    {
+#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+	friend class CDataStorage;
+#endif
+
+    protected:
+#if 0
+		CBlank(CDataStorage &datastore, 
+			 unsigned32_t row,
+             unsigned32_t col,
+             const xf_t* pxfval = NULL);
+#endif
+      CBlank(CDataStorage &datastore, const blank_t& blankdef);
+	private:
+      virtual ~CBlank();
     };
 
 }
+
+
+#include <xls_poppack.h>
 
 #endif //BLANK_H
 

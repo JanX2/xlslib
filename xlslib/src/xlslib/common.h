@@ -32,8 +32,8 @@
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-#ifndef COMMON_H
-#define COMMON_H
+#ifndef XLSLIB_COMMON_H
+#define XLSLIB_COMMON_H
 
 #include <systype.h>
 
@@ -46,7 +46,14 @@
 #include <iconv.h>
 #endif
 
+/*
+#define when we want the leight weights factory code activated: it's a memory footprint reduction 
+*/
+#define LEIGHTWEIGHT_UNIT_FEATURE
+
 #define RANGE_FEATURE
+
+#include <xls_pshpack2.h>
 
 namespace xlslib_core
 {
@@ -59,19 +66,19 @@ namespace xlslib_core
 		virtual ~range_t() { }
 
 	public:
-		unsigned16_t first_row;
-		unsigned16_t last_row;
-		unsigned16_t first_col;
-		unsigned16_t last_col;
+		unsigned32_t first_row;
+		unsigned32_t last_row;
+		unsigned32_t first_col;
+		unsigned32_t last_col;
   };
 #else
   // Some typedefs used only by xlslib core
   typedef struct
   {
-    unsigned16_t first_row;
-    unsigned16_t last_row;
-    unsigned16_t first_col;
-    unsigned16_t last_col;
+    unsigned32_t first_row;
+    unsigned32_t last_row;
+    unsigned32_t first_col;
+    unsigned32_t last_col;
   } range_t;
 #endif
 
@@ -96,7 +103,10 @@ namespace xlslib_core
 #endif // defined(_MSC_VER) && defined(WIN32)
 }
 
-#endif //COMMON_H
+
+#include <xls_poppack.h>
+
+#endif //XLSLIB_COMMON_H
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * $Log: common.h,v $

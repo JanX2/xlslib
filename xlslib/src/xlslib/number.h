@@ -43,6 +43,9 @@
 #include <unit.h>
 
 
+
+#include <xls_pshpack2.h>
+
 namespace xlslib_core
 {
 
@@ -52,15 +55,15 @@ namespace xlslib_core
 	  friend class CNumber; // ::CNumber(number_t& blankdef);
 
     private:
-      number_t(CGlobalRecords& gRecords, unsigned16_t rowval, unsigned16_t colval, 
+      number_t(CGlobalRecords& gRecords, unsigned32_t rowval, unsigned32_t colval, 
                double numval, xf_t* pxfval = NULL);
       // 536870911 >= numval >= -536870912
-      number_t(CGlobalRecords& gRecords, unsigned16_t rowval, unsigned16_t colval, 
+      number_t(CGlobalRecords& gRecords, unsigned32_t rowval, unsigned32_t colval, 
                signed32_t numval, xf_t* pxfval = NULL);
-      ~number_t(){};
+      virtual ~number_t(){};
 	  
-      virtual unsigned16_t GetSize() const {return isDouble ? 18 : 14;};
-      virtual CUnit* GetData() const;
+      virtual size_t GetSize(void) const {return isDouble ? 18 : 14;};
+      virtual CUnit* GetData(CDataStorage &datastore) const;
 
     private:
       bool isDouble;
@@ -83,24 +86,34 @@ __attribute__((unused))
 									) const {return isDouble ? (signed32_t)num.dblNum : num.intNum;};
     };
 
-  class number_t;
+
+	// forward ref
+	class CDataStorage;
+
   class CNumber: public CRecord
     {
-    private:
+#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+	friend class CDataStorage;
+#endif
 
-    public:
+    protected:
 #if 0
-      CNumber(unsigned16_t row,
-              unsigned16_t col,
+      CNumber(CDataStorage &datastore, 
+			  unsigned32_t row,
+              unsigned32_t col,
               double num,
               const xf_t* pxfval = NULL);
 #endif
-      CNumber(const number_t& blankdef);
-      ~CNumber();
+      CNumber(CDataStorage &datastore, const number_t& blankdef);
+	private:
+      virtual ~CNumber();
     };
 
 
 }
+
+
+#include <xls_poppack.h>
 
 #endif //NUMBER_H
 

@@ -31,11 +31,14 @@
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
+#include <config.h>
+
 #include <sys/types.h>
 #include <string>
 
 #define CPP_BRIDGE_XLS
 
+#include <common.h> /* RANGE_FEATURE */
 #include <xlslib.h>
 
 using namespace std;
@@ -96,40 +99,40 @@ extern "C" {
 																}
 	// Worksheet
 	void xlsWorksheetMakeActive(worksheet *w)					{ return w->MakeActive(); }
-	cell_t *xlsWorksheetFindCell(worksheet *w, unsigned16_t row, unsigned16_t col)
+	cell_t *xlsWorksheetFindCell(worksheet *w, unsigned32_t row, unsigned32_t col)
 																{ return w->FindCell(row, col); }
 	// Cell operations
-	void xlsWorksheetMerge(worksheet *w, unsigned16_t first_row, unsigned16_t first_col, unsigned16_t last_row, unsigned16_t last_col)		
+	void xlsWorksheetMerge(worksheet *w, unsigned32_t first_row, unsigned32_t first_col, unsigned32_t last_row, unsigned32_t last_col)		
 																{ return w->merge(first_row, first_col, last_row, last_col); }
-	void xlsWorksheetColwidth(worksheet *w, unsigned16_t col, unsigned16_t width, xf_t* pxformat)
+	void xlsWorksheetColwidth(worksheet *w, unsigned32_t col, unsigned16_t width, xf_t* pxformat)
 																{ return w->colwidth(col, width, pxformat); }
-	void xlsWorksheetRowheight(worksheet *w, unsigned16_t row, unsigned16_t height, xf_t* pxformat)
+	void xlsWorksheetRowheight(worksheet *w, unsigned32_t row, unsigned16_t height, xf_t* pxformat)
 																{ return w->rowheight(row, height, pxformat); } 
 																
 #ifdef RANGE_FEATURE
 																	// Ranges
-	range *xlsWorksheetRangegroup(worksheet *w, unsigned16_t row1, unsigned16_t col1, unsigned16_t row2, unsigned16_t col2)
+	range *xlsWorksheetRangegroup(worksheet *w, unsigned32_t row1, unsigned32_t col1, unsigned32_t row2, unsigned32_t col2)
 																{ return w->rangegroup(row1, col1, row2, col2); }
 #endif // RANGE_FEATURE
 
 	// Cells
-	cell_t *xlsWorksheetLabel(worksheet *w, unsigned16_t row, unsigned16_t col, const char *strlabel, xf_t *pxformat)
+	cell_t *xlsWorksheetLabel(worksheet *w, unsigned32_t row, unsigned32_t col, const char *strlabel, xf_t *pxformat)
 																{ 
 																	std::string str = strlabel;
 																	return w->label(row, col, strlabel, pxformat);
 																}
-	cell_t *xlsWorksheetLabelW(worksheet *w, unsigned16_t row, unsigned16_t col, const unichar_t *strlabel, xf_t *pxformat)
+	cell_t *xlsWorksheetLabelW(worksheet *w, unsigned32_t row, unsigned32_t col, const unichar_t *strlabel, xf_t *pxformat)
 																{ 
 																	std::ustring str = strlabel;
 																	return w->label(row, col, strlabel, pxformat);
 																}
-	cell_t *xlsWorksheetBlank(worksheet *w, unsigned16_t row, unsigned16_t col, xf_t *pxformat)
+	cell_t *xlsWorksheetBlank(worksheet *w, unsigned32_t row, unsigned32_t col, xf_t *pxformat)
 																{ return w->blank(row, col, pxformat); }
 
-	cell_t *xlsWorksheetNumberDbl(worksheet *w, unsigned16_t row, unsigned16_t col, double numval, xf_t *pxformat)
+	cell_t *xlsWorksheetNumberDbl(worksheet *w, unsigned32_t row, unsigned32_t col, double numval, xf_t *pxformat)
 																{ return w->number(row, col, numval, pxformat); }
 	// 536870911 >= numval >= -536870912
-	cell_t *xlsWorksheetNumberInt(worksheet *w, unsigned16_t row, unsigned16_t col, signed32_t numval, xf_t *pxformat)
+	cell_t *xlsWorksheetNumberInt(worksheet *w, unsigned32_t row, unsigned32_t col, signed32_t numval, xf_t *pxformat)
 																{ return w->number(row, col, numval, pxformat); }
 
 																
@@ -171,8 +174,8 @@ extern "C" {
 	void xlsCellFontoutline(cell_t *c, bool ol)					{ return c->fontoutline(ol); }
 	void xlsCellFontshadow(cell_t *c, bool sh)					{ return c->fontshadow(sh); }
 
-	unsigned16_t xlsCellGetRow(cell_t *c)						{ return c->GetRow(); }
-	unsigned16_t xlsCellGetCol(cell_t *c)						{ return c->GetCol(); }
+	unsigned32_t xlsCellGetRow(cell_t *c)						{ return c->GetRow(); }
+	unsigned32_t xlsCellGetCol(cell_t *c)						{ return c->GetCol(); }
 #ifdef RANGE_FEATURE	
 	// range
 	void xlsRangeCellcolor(range *r, color_name_t color)		{ return r->cellcolor(color); }
@@ -261,4 +264,16 @@ extern "C" {
 	// Macintosh only
 	void xlsFontSetOutline(font_t *f, bool ol)					{ return f->SetOutline(ol); }
 	void xlsFontSetShadow(font_t *f, bool sh)					{ return f->SetShadow(sh); }
+
+// these are accessing private members. Is this intended?
+	unsigned16_t xlsFontGetAttributes(font_t *f)				{ return f->GetAttributes(); }
+	void xlsFontSetAttributes(font_t *f, unsigned16_t attr)		{ f->SetAttributes(attr); }
+	//unsigned32_t xlsXformatGetSignature(xf_t *x)				{ return x->GetSignature(); }
+	bool xlsXformatIsCell(xf_t *x)								{ return x->IsCell(); }
+	void xlsXformatSetCellMode(xf_t *x, bool cellmode)			{ x->SetCellMode(cellmode); }
+	unsigned16_t xlsXformatGetFormatIndex(xf_t *x)				{ return x->GetFormatIndex(); }
+	format_number_t xlsXformatGetFormat(xf_t *x)				{ return x->GetFormat(); }
+	void xlsCellSetXF(cell_t *c, xf_t *pxfval)					{ c->SetXF(pxfval); }
+	unsigned16_t xlsCellGetXFIndex(cell_t *c)					{ return c->GetXFIndex(); }
+	//void xlsCellFontattr(cell_t *c, unsigned16_t attr)		{ c->Fontattr(attr); }
 }

@@ -41,10 +41,10 @@
 namespace xlslib_core
 {
 
-#define FS_NO_ERRORS            ((int)0)
-#define FS_INVALID_PATH         ((int)-1)
-#define FS_NODE_ALREADY_EXISTS  ((int)-2)
-#define FS_NODE_NOT_A_DIRECTORY ((int)-3)
+#define FS_NO_ERRORS            (0)
+#define FS_INVALID_PATH         (-1)
+#define FS_NODE_ALREADY_EXISTS  (-2)
+#define FS_NODE_NOT_A_DIRECTORY (-3)
 
 /* 
 ***********************************
@@ -60,7 +60,7 @@ COleFileSystem class declaration
       virtual ~COleFileSystem();
 
       COleProp& GetRootEntry();
-      unsigned32_t GetTotalDataSize();
+      size_t GetTotalDataSize();
       unsigned32_t GetNumDataFiles();
 
     public:

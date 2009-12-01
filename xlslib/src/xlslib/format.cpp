@@ -33,6 +33,8 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 
+#include <config.h>
+
 #include <format.h>
 
 using namespace std;
@@ -84,7 +86,9 @@ CFormat class implementation
 **********************************
 */
 #if 0
-CFormat::CFormat(u16string&  formatstr, bool isASCII, unsigned16_t index)
+CFormat::CFormat(CDataStorage &datastore, 
+		   u16string&  formatstr, bool isASCII, unsigned16_t index):
+		CRecord(datastore)
 {
    SetRecordType(RECTYPE_FORMAT);
 
@@ -94,7 +98,8 @@ CFormat::CFormat(u16string&  formatstr, bool isASCII, unsigned16_t index)
    SetRecordLength(GetDataSize()-4);
 }
 #endif
-CFormat::CFormat(format_t* formatdef)
+CFormat::CFormat(CDataStorage &datastore, const format_t* formatdef):
+		CRecord(datastore)
 {
 	SetRecordType(RECTYPE_FORMAT);
 
@@ -136,7 +141,7 @@ int CFormat::GetFormatStr(u16string& formatstr) const
 */
 int CFormat::SetIndex(unsigned16_t index)
 {
-   return (SetValueAt((unsigned16_t)index, FORMAT_OFFSET_INDEX));
+   return (SetValueAt16((unsigned16_t)index, FORMAT_OFFSET_INDEX));
 }
 
 /* 

@@ -50,6 +50,9 @@
 #include <colinfo.h>
 #include <range.h>
 
+
+#include <xls_pshpack2.h>
+
 namespace xlslib_core
 {
 
@@ -73,14 +76,47 @@ worksheet class declaration
       SHEET_FINISH
     } SheetRecordDumpState_t;
 
-  typedef struct
+  typedef struct rowblocksize_t
   {
-    unsigned32_t rowandcell_size;
-    unsigned32_t dbcell_size;
-    unsigned32_t rows_sofar;
+    size_t rowandcell_size;
+    size_t dbcell_size;
+    size_t rows_sofar;
+    size_t cells_sofar;
+
+	unsigned32_t first_col;
+	unsigned32_t last_col;
+	unsigned32_t first_row;
+	unsigned32_t last_row;
+
+	// -------------------------------------
+
+	rowblocksize_t():
+		rowandcell_size(0),
+		dbcell_size(0),
+		rows_sofar(0),
+		cells_sofar(0),
+		first_col((unsigned32_t)(-1)),
+		last_col(0),
+		first_row((unsigned32_t)(-1)),
+		last_row(0)
+	{
+	}
+
+	void reset(void)
+	{
+		rowandcell_size = 0;
+		dbcell_size = 0;
+		rows_sofar = 0;
+		cells_sofar = 0;
+
+		first_col = (unsigned32_t)(-1);
+		last_col = 0;
+		first_row = (unsigned32_t)(-1);
+		last_row = 0;
+	}
   } rowblocksize_t;
 
-  typedef std::vector<xlslib_core::rowblocksize_t* XLSLIB_DFLT_ALLOCATOR> RBSize_Vect_t;
+  typedef std::vector<xlslib_core::rowblocksize_t XLSLIB_DFLT_ALLOCATOR> RBSize_Vect_t;
   typedef RBSize_Vect_t::iterator RBSize_Vect_Itor_t;
 
   typedef enum
@@ -95,7 +131,7 @@ worksheet class declaration
 
     } DumpRowBlocksState_t;
 
-  typedef std::vector<unsigned16_t XLSLIB_DFLT_ALLOCATOR> CellOffsets_Vect_t;
+  typedef std::vector<size_t XLSLIB_DFLT_ALLOCATOR> CellOffsets_Vect_t;
   typedef CellOffsets_Vect_t::iterator CellOffsets_Vect_Itor_t;
 
 //  class range;
@@ -117,12 +153,12 @@ worksheet class declaration
 		RowHeight_Vect_t		m_RowHeights;
 		RowHeight_Vect_Itor_t	m_Current_RowHeight;
 
-		unsigned16_t			minRow, minCol, maxRow, maxCol;
-		unsigned32_t			sheetIndex;
+		unsigned32_t			minRow, minCol, maxRow, maxCol;
+		unsigned16_t			sheetIndex;
 
 		Cell_Set_t				m_Cells;
-		Cell_Set_Itor_t			m_CurrentCell;		// Init this one in the RowBlocksDump INIT state
-		Cell_Set_Itor_t			m_CurrentSizeCell; // Init this one in the INIT state
+		Cell_Set_Itor_t m_CurrentCell;		// Init this one in the RowBlocksDump INIT state
+		Cell_Set_Itor_t m_CurrentSizeCell; // Init this one in the INIT state
 		//bool m_CellsSorted;
 
 #ifdef RANGE_FEATURE
@@ -133,12 +169,12 @@ worksheet class declaration
 		bool					m_SizesCalculated;
 
 		DumpRowBlocksState_t	m_DumpRBState;
-		unsigned8_t				m_RowCounter;
+		unsigned32_t			m_RowCounter;
 		unsigned32_t			m_CellCounter;
-		unsigned32_t			m_DBCellOffset;
+		size_t			m_DBCellOffset;
 		CellOffsets_Vect_t		m_CellOffsets;
 
-		unsigned32_t			m_CurrentRowBlock;
+		//unsigned32_t			m_CurrentRowBlock;
 		Cell_Set_Itor_t			m_Starting_RBCell;
 		
 		// cache a bit for speedups
@@ -149,15 +185,14 @@ worksheet class declaration
 		worksheet(CGlobalRecords& gRecords, unsigned16_t idx);
 		~worksheet();
 
-		void					GetFirstLastRows(unsigned32_t* first_row, unsigned32_t* last_row);
-		unsigned32_t			GetNumRowBlocks();
-		bool					GetRowBlockSizes(unsigned32_t* rowandcell_size, 
-									unsigned32_t* dbcell_size,
-									unsigned32_t* num_rows = NULL);
-		CUnit*					RowBlocksDump();
+		//void					GetFirstLastRows(unsigned32_t* first_row, unsigned32_t* last_row);
+		size_t GetNumRowBlocks(rowblocksize_t* rbsize_ref = NULL);
+		bool					GetRowBlockSizes(rowblocksize_t& rbsize);
+		CUnit*					RowBlocksDump(CDataStorage &datastore);
+		size_t EstimateNumBiffUnitsNeeded(void);
 
 		void					AddCell(cell_t* pcell);
-		CUnit*					DumpData(unsigned32_t offset);
+		CUnit*					DumpData(CDataStorage &datastore, size_t offset);
 		
     private:
 		worksheet( const worksheet& that);
@@ -165,43 +200,48 @@ worksheet class declaration
 
     public:
 		void					MakeActive();	// makes this sheet come up first
-		unsigned32_t			NumCells() const { return static_cast<unsigned32_t>(m_Cells.size()); };
+		size_t NumCells() const { return m_Cells.size(); };
 
-		cell_t*					FindCell(unsigned16_t row, unsigned16_t col) const;
-		cell_t*					FindCellOrMakeBlank(unsigned16_t row, unsigned16_t col);
+		cell_t*					FindCell(unsigned32_t row, unsigned32_t col) const;
+		cell_t*					FindCellOrMakeBlank(unsigned32_t row, unsigned32_t col);
+
+		void					GetFirstLastRowsAndColumns(unsigned32_t* first_row, unsigned32_t* last_row, unsigned32_t* first_col, unsigned32_t* last_col); /* [i_a] */
 
 		// Cell operations
-		void merge(unsigned16_t first_row, unsigned16_t first_col, 
-				 unsigned16_t last_row, unsigned16_t last_col);
-		void colwidth(unsigned16_t col, unsigned16_t width, xf_t* pxformat = NULL);			// sets column widths to 1/256 x width of "0"
-		void rowheight(unsigned16_t row, unsigned16_t height, xf_t* pxformat = NULL);		// in points (Excel uses twips, 1/20th of a point, but we dont)
+		void merge(unsigned32_t first_row, unsigned32_t first_col, 
+				 unsigned32_t last_row, unsigned32_t last_col);
+		void colwidth(unsigned32_t col, unsigned16_t width, xf_t* pxformat = NULL);			// sets column widths to 1/256 x width of "0"
+		void rowheight(unsigned32_t row, unsigned16_t height, xf_t* pxformat = NULL);		// in points (Excel uses twips, 1/20th of a point, but we dont)
 
 #ifdef RANGE_FEATURE
 		// Ranges
-		range* rangegroup(unsigned16_t row1, unsigned16_t col1,
-						unsigned16_t row2, unsigned16_t col2);
+		range* rangegroup(unsigned32_t row1, unsigned32_t col1,
+						unsigned32_t row2, unsigned32_t col2);
 #endif
 		// Cells
-		cell_t* blank(unsigned16_t row, unsigned16_t col, 
+		cell_t* blank(unsigned32_t row, unsigned32_t col, 
 					xf_t* pxformat = NULL);
 
-		cell_t* label(unsigned16_t row, unsigned16_t col, 
+		cell_t* label(unsigned32_t row, unsigned32_t col, 
 					const std::string& strlabel, xf_t* pxformat = NULL);
-		cell_t* label(unsigned16_t row, unsigned16_t col, 
+		cell_t* label(unsigned32_t row, unsigned32_t col, 
 					const std::ustring& strlabel, xf_t* pxformat = NULL);
 
-		cell_t* number(unsigned16_t row, unsigned16_t col, 
+		cell_t* number(unsigned32_t row, unsigned32_t col, 
 					 double numval,  format_number_t fmtval, xf_t* pxformat);	// Deprecated
-		cell_t* number(unsigned16_t row, unsigned16_t col, 
+		cell_t* number(unsigned32_t row, unsigned32_t col, 
 					double numval, xf_t* pxformat = NULL);
 		// 536870911 >= numval >= -536870912
-		cell_t* number(unsigned16_t row, unsigned16_t col, 
+		cell_t* number(unsigned32_t row, unsigned32_t col, 
 					signed32_t numval, xf_t* pxformat = NULL);
 	};
 
   typedef std::vector<xlslib_core::worksheet*> Sheets_Vector_t;
   typedef Sheets_Vector_t::iterator Sheets_Vector_Itor_t;
 }
+
+
+#include <xls_poppack.h>
 
 #endif // SHEETREC_H
 

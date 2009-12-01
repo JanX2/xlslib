@@ -32,9 +32,13 @@
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
+#include <config.h>
+
 #include <globalrec.h>
 
 #include <sheetrec.h>
+
+#include <datast.h>
 
 using namespace std;
 using namespace xlslib_core;
@@ -52,18 +56,19 @@ using namespace xlslib_core;
 #else
 
 #define MARK_CELLS_UNSORTED() {                 \
-   /*m_CellsSorted = false, */                  \
+   /*m_CellsSorted = false; */                  \
    m_SizesCalculated = false;                   \
    m_RBSizes.clear();                           \
 }
 #endif
 
-#define MAX_ROWBLOCK_SIZE (16)                          // was: 32, but CONTINUE-d DBCELLs are not liked by Excel 2003 ???
+#define MAX_ROWBLOCK_SIZE (16) // was: 32, but CONTINUE-d DBCELLs are not liked by 2003 ???
 
-#define RB_DBCELL_MINSIZE          /*(unsigned8_t*/(8)
-#define RB_DBCELL_CELLSIZEOFFSET   /*(unsigned8_t*/(2)
+#define RB_DBCELL_MINSIZE          (8)
+#define RB_DBCELL_CELLSIZEOFFSET   (2)
 
-#define MAX_COLUMNS_PER_ROW 256 // Excel 2003 limit: 256 columns per row. (Update this when we upgrade this lib to support BIFF12 !)
+#define MAX_COLUMNS_PER_ROW			256 // Excel 2003 limit: 256 columns per row. (Update this when we upgrade this lib to support BIFF12 !)
+
 
 using namespace std;
 
@@ -82,7 +87,7 @@ worksheet::worksheet(CGlobalRecords& gRecords, unsigned16_t idx) :
 	m_Current_Colinfo(),
 	m_RowHeights(),
 	m_Current_RowHeight(),
-	minRow(0xFFFF), minCol(0xFFFF),
+	minRow((unsigned32_t)(-1)), minCol((unsigned32_t)(-1)),
 	maxRow(0), maxCol(0),
 	sheetIndex(idx),
 	m_Cells(),
@@ -99,7 +104,7 @@ worksheet::worksheet(CGlobalRecords& gRecords, unsigned16_t idx) :
 	m_CellCounter(0),
 	m_DBCellOffset(0),
 	m_CellOffsets(),
-	m_CurrentRowBlock(0),
+	//m_CurrentRowBlock(0),
 	m_Starting_RBCell(),
 	cellIterHint(),
 	cellHint(NULL)
@@ -108,9 +113,11 @@ worksheet::worksheet(CGlobalRecords& gRecords, unsigned16_t idx) :
 
 worksheet::~worksheet()
 {
-   if(!m_RBSizes.empty())
+#if 0 // [i_a] not needed any longer due to new dump preparation/estimation logic
+	if(!m_RBSizes.empty())
       for(RBSize_Vect_Itor_t rbs = m_RBSizes.begin(); rbs != m_RBSizes.end(); rbs++)
-	 delete *rbs;
+	     delete *rbs;
+#endif
 
    // Delete the dynamically created cell objects (pointers)
    if(!m_Cells.empty())
@@ -198,9 +205,9 @@ void worksheet::SortCells()
 ***********************************
 */
 
-#define RB_INDEX_MINSIZE ((unsigned8_t)20)
+#define RB_INDEX_MINSIZE 20
 
-CUnit* worksheet::DumpData(unsigned32_t offset)
+CUnit* worksheet::DumpData(CDataStorage &datastore, size_t offset)
 {
    bool repeat = false;
 
@@ -222,37 +229,49 @@ CUnit* worksheet::DumpData(unsigned32_t offset)
 
 		repeat = false;
 
+#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+		m_pCurrentData = datastore.MakeCBof(BOF_TYPE_WORKSHEET);
+#else
 		//Delete_Pointer(m_pCurrentData);
-		m_pCurrentData = (CUnit*)(new CBof(BOF_TYPE_WORKSHEET));
+		m_pCurrentData = (CUnit*)(new CBof(datastore, BOF_TYPE_WORKSHEET));
+#endif
 		m_DumpState = SHEET_INDEX;
 		break;
 
 	 case SHEET_INDEX:
 		XTRACE("\tINDEX");
 		{
+			// NOTE: GetNumRowBlocks() has the side-effect of coughing up first/last col/row for the given sheet :-)
+			rowblocksize_t rbsize;
+			size_t numrb = GetNumRowBlocks(&rbsize);
+
 			// Get first/last row from the list of row blocks
-			unsigned32_t first_row, last_row;
-			GetFirstLastRows(&first_row, &last_row);
+			//unsigned32_t first_row, last_row;
+			//GetFirstLastRowsAndColumns(&first_row, &last_row, NULL, NULL);
 	   
-			m_pCurrentData = (CUnit*)(new CIndex(first_row, last_row));
+#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+			m_pCurrentData = datastore.MakeCIndex(rbsize.first_row, rbsize.last_row);
+#else
+			m_pCurrentData = (CUnit*)(new CIndex(datastore, rbsize.first_row, rbsize.last_row));
+#endif
 
-			unsigned32_t numrb = GetNumRowBlocks();
-			unsigned32_t rb_size_acc = 0;
-			unsigned32_t index_size = RB_INDEX_MINSIZE + 4*numrb;
+			size_t rb_size_acc = 0;
+			size_t index_size = RB_INDEX_MINSIZE + 4*numrb;
 
-			for(unsigned32_t rb = 0; rb < numrb; rb++)
+			for(size_t rb = 0; rb < numrb; rb++)
 			{
 			   // Get sizes of next RowBlock
-			   unsigned32_t rowandcell_size, dbcell_size;
-			   GetRowBlockSizes( &rowandcell_size, &dbcell_size);
+			   rowblocksize_t rbsize;
+			   bool state = GetRowBlockSizes(rbsize);
+			   assert(rb == numrb - 1 ? state == false : state == true);
 
 			   // Update the offset accumulator and create the next DBCELL's offset
-			   rb_size_acc += rowandcell_size;
-			   unsigned32_t dbcelloffset = offset + BOF_RECORD_SIZE + index_size + rb_size_acc;
+			   rb_size_acc += rbsize.rowandcell_size;
+			   size_t dbcelloffset = offset + BOF_RECORD_SIZE + index_size + rb_size_acc;
 			   ((CIndex*)m_pCurrentData)->AddDBCellOffset(dbcelloffset);
 
 			   // Update the offset for the next DBCELL's offset
-			   rb_size_acc += dbcell_size;
+			   rb_size_acc += rbsize.dbcell_size;
 			}
 		}
 		m_DumpState = SHEET_DIMENSION; // Change to the next state
@@ -264,7 +283,11 @@ CUnit* worksheet::DumpData(unsigned32_t offset)
 		repeat = false;
 
 		//Delete_Pointer(m_pCurrentData);
-		m_pCurrentData = (CUnit*)(new CDimension(minRow, maxRow, minCol, maxCol));
+#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+		m_pCurrentData = datastore.MakeCDimension(minRow, maxRow, minCol, maxCol);
+#else
+		m_pCurrentData = (CUnit*)(new CDimension(datastore, minRow, maxRow, minCol, maxCol));
+#endif
 		m_DumpState = SHEET_ROWBLOCKS;
 		break;
 
@@ -273,7 +296,7 @@ CUnit* worksheet::DumpData(unsigned32_t offset)
 		if(!m_Cells.empty()) // was if(GetNumRowBlocks())
 		{
 		   // First check if the list of RBs is not empty...
-		   m_pCurrentData = RowBlocksDump();
+		   m_pCurrentData = RowBlocksDump(datastore);
 
 		   if(m_pCurrentData == NULL)
 		   {
@@ -293,8 +316,12 @@ CUnit* worksheet::DumpData(unsigned32_t offset)
 
 		if(!m_MergedRanges.empty())
 		{
-		   m_pCurrentData = (CUnit*)(new CMergedCells());
-		   ((CMergedCells*)m_pCurrentData)->SetNumRanges(static_cast<unsigned16_t>(m_MergedRanges.size()));
+#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+		   m_pCurrentData = datastore.MakeCMergedCells();
+#else
+		   m_pCurrentData = (CUnit*)(new CMergedCells(datastore));
+#endif
+			((CMergedCells*)m_pCurrentData)->SetNumRanges(m_MergedRanges.size());
 		   for(Range_Vect_Itor_t mr = m_MergedRanges.begin(); mr != m_MergedRanges.end(); mr++)
 		   {
 			  ((CMergedCells*)m_pCurrentData)->AddRange(*mr);
@@ -314,8 +341,12 @@ CUnit* worksheet::DumpData(unsigned32_t offset)
 		{
 		   // First check if the list of fonts is not empty...
 
+#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+		   m_pCurrentData = datastore.MakeCColInfo(*m_Current_Colinfo);
+#else
 		   //Delete_Pointer(m_pCurrentData);
-		   m_pCurrentData = (CUnit*)(new CColInfo(*m_Current_Colinfo));
+		   m_pCurrentData = (CUnit*)(new CColInfo(datastore, *m_Current_Colinfo));
+#endif
 
 		   if(m_Current_Colinfo != (--m_Colinfos.end()))
 		   {
@@ -337,21 +368,32 @@ CUnit* worksheet::DumpData(unsigned32_t offset)
 	 case SHEET_WINDOW2:
 		XTRACE("\tWINDOW2");
 		repeat = false;
+#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+		m_pCurrentData = datastore.MakeCWindow2(sheetIndex == m_GlobalRecords.GetWindow1().GetActiveSheet());
+#else
 		//Delete_Pointer(m_pCurrentData);
-		m_pCurrentData = (CUnit*)(new CWindow2(sheetIndex == m_GlobalRecords.GetWindow1().GetActiveSheet()));
+		m_pCurrentData = (CUnit*)(new CWindow2(datastore, (sheetIndex == m_GlobalRecords.GetWindow1().GetActiveSheet())));
+#endif
 		m_DumpState = SHEET_EOF;
 		break;
 
 	 case SHEET_EOF:
 		XTRACE("\tEOF");
+#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+		m_pCurrentData = datastore.MakeCEof();
+#else
 		//Delete_Pointer(m_pCurrentData);
-		m_pCurrentData = (CUnit*)(new CEof());
+		m_pCurrentData = (CUnit*)(new CEof(datastore));
+#endif
 		m_DumpState = SHEET_FINISH;
 		break;
 
 	 case SHEET_FINISH:
 		XTRACE("\tFINISH");
+#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+#else
 		//Delete_Pointer(m_pCurrentData);
+#endif
 		m_pCurrentData = NULL;
 		m_DumpState = SHEET_INIT;
 		break;
@@ -361,7 +403,7 @@ CUnit* worksheet::DumpData(unsigned32_t offset)
    return m_pCurrentData;
 }
 
-CUnit* worksheet::RowBlocksDump()
+CUnit* worksheet::RowBlocksDump(CDataStorage &datastore)
 {
    bool repeat = false;
    CUnit* rb_record = NULL;
@@ -371,7 +413,7 @@ CUnit* worksheet::RowBlocksDump()
 	 switch(m_DumpRBState) {
 	 case RB_INIT:
 		m_DumpRBState = RB_ROWS;
-		m_CurrentRowBlock = 0;
+		//m_CurrentRowBlock = 0;
 		m_RowCounter = 0;
 		//m_CurrentCell = m_Cells.begin(); // moved by DFH to sheet init, should be OK
 
@@ -384,7 +426,8 @@ CUnit* worksheet::RowBlocksDump()
 	 case RB_FIRST_ROW:
 		repeat = true;
    
-		if( m_Cells.empty() || m_CurrentCell != m_Cells.end()) 
+		assert(!m_Cells.empty());
+		if(m_CurrentCell != m_Cells.end())  // [i_a]
 		{
 		   m_Starting_RBCell = m_CurrentCell;      
 		   m_CellCounter = 0;
@@ -403,46 +446,25 @@ CUnit* worksheet::RowBlocksDump()
 
 		// Initialize first/last cols to impossible values
 		// that are appropriate for the following detection algorithm
-		unsigned16_t first_col = (unsigned16_t)(-1);
-		unsigned16_t last_col  = 0;
-		unsigned16_t row_num = 0;
+		unsigned32_t first_col = (unsigned32_t)(-1);
+		unsigned32_t last_col  = 0;
+		unsigned32_t row_num = 0;
 
-		// Get the row number for the current row
-		row_num = (*m_CurrentCell)->GetRow();
-
-		Cell_Set_Itor_t this_cell, next_cell;
-		do {
+		// Get the row number for the current row;
+	    // The order in the conditional statement is important
+		for (row_num = (*m_CurrentCell)->GetRow(); 
+			m_CurrentCell != m_Cells.end() && (*m_CurrentCell)->GetRow() == row_num;
+			m_CurrentCell++)
+		{
 		   // Determine the first/last column of the current row
-		   if((*m_CurrentCell)->GetCol() > last_col)
-			  last_col = (*m_CurrentCell)->GetCol();
+		   unsigned32_t col_num = (*m_CurrentCell)->GetCol();
+		   if(col_num > last_col)
+			  last_col = col_num;
+		   if(col_num < first_col)
+			  first_col = col_num;
 
-		   if((*m_CurrentCell)->GetCol() < first_col)
-			  first_col = (*m_CurrentCell)->GetCol();
-
-		   // To avoid dereference an empty iterator check if this is the only one cell
-		   // in m_Cells list.
-		   if(m_Cells.size() > 1)
-		   {
-			  m_CellCounter++;
-
-			  this_cell = m_CurrentCell;
-			  next_cell = ++m_CurrentCell;
-	
-			  // Break the while if there are no more cells
-			  if(next_cell == m_Cells.end())
-				 break;
-			} else {
-			  // Break the loop if this was the only cell.
-			  if(!m_Cells.empty())
-			  {
-				 m_CellCounter++;
-				 ++m_CurrentCell;
-			  }
-			  break;
-		   }
-
-		   // The order in the following and-statement is important
-		} while( m_CurrentCell != m_Cells.end() && (*this_cell)->GetRow() == (*next_cell )->GetRow());
+ 		   m_CellCounter++;
+		}
 
 		// Check if the current row is in the list of height-set
 		// rows.
@@ -450,15 +472,30 @@ CUnit* worksheet::RowBlocksDump()
 		{
 		   if((*m_Current_RowHeight)->GetRowNum() == row_num)
 		   {
-			  rb_record = (CUnit*) (new CRow(row_num, first_col, 
+#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+			  rb_record = datastore.MakeCRow(row_num, first_col, 
+											 last_col, 
+											 (*m_Current_RowHeight)->GetRowHeight());
+#else
+			  rb_record = (CUnit*) (new CRow(datastore, 
+											 row_num, first_col, 
 											 last_col, 
 											 (*m_Current_RowHeight)->GetRowHeight()) );
-			  m_Current_RowHeight++;          
+#endif
+			   m_Current_RowHeight++;          
 			} else {
-			  rb_record = (CUnit*) (new CRow(row_num, first_col, last_col) );
-		    }
+#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+			  rb_record = datastore.MakeCRow(row_num, first_col, last_col);
+#else
+			  rb_record = (CUnit*) (new CRow(datastore, row_num, first_col, last_col) );
+#endif
+		   }
 		} else {
-		   rb_record = (CUnit*) (new CRow(row_num, first_col, last_col) );
+#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+		   rb_record = datastore.MakeCRow(row_num, first_col, last_col);
+#else
+		   rb_record = (CUnit*) (new CRow(datastore, row_num, first_col, last_col) );
+#endif
 		}
 
 		m_DBCellOffset += ROW_RECORD_SIZE;
@@ -475,7 +512,7 @@ CUnit* worksheet::RowBlocksDump()
 	 }
 
 	 case RB_FIRSTCELL:
-		rb_record = (*m_Starting_RBCell)->GetData();
+		rb_record = (*m_Starting_RBCell)->GetData(datastore);
    
 		// Update the offset to be used in the DBCell Record
 		m_DBCellOffset += rb_record->GetDataSize();
@@ -504,7 +541,7 @@ CUnit* worksheet::RowBlocksDump()
 
 		   repeat = true;
 		} else {
-		   rb_record = (*m_Starting_RBCell)->GetData();
+		   rb_record = (*m_Starting_RBCell)->GetData(datastore);
 
 		   m_DBCellOffset += rb_record->GetDataSize();
 
@@ -517,8 +554,10 @@ CUnit* worksheet::RowBlocksDump()
 	 case RB_DBCELL:
 	    {
 			repeat = false;
-			rb_record = (CUnit*)(new CDBCell(m_DBCellOffset));
-
+#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+			rb_record = datastore.MakeCDBCell(m_DBCellOffset);
+#else
+#endif
 			CellOffsets_Vect_Itor_t celloffset;
 			for(celloffset = m_CellOffsets.begin(); celloffset != m_CellOffsets.end(); celloffset++)
 			   ((CDBCell*)rb_record)->AddRowOffset(*celloffset);
@@ -544,13 +583,50 @@ CUnit* worksheet::RowBlocksDump()
    return rb_record;
 }
 
+
+/*
+***********************************
+***********************************
+*/
+
+size_t worksheet::EstimateNumBiffUnitsNeeded(void)
+{
+	size_t ret = 7;
+
+	ret += m_Colinfos.size();
+	ret += m_RowHeights.size();
+	ret += m_MergedRanges.size();
+	/*
+	and also add units for the number of rows: those DBCELL and ROW records...
+
+	Note the order of the calls is important here: 
+	  GetNumRowBlocks()
+    preps some important per-instance tracking cursors and the RBSize cache
+	which is used by the other calls to speed up the process!
+
+	(trackers are: m_CurrentSizeCell, m_Current_RBSize)
+	*/
+	rowblocksize_t sheet_total;
+	size_t dbcells = GetNumRowBlocks(&sheet_total);
+	ret += dbcells + (MAX_ROWBLOCK_SIZE * MAX_COLUMNS_PER_ROW * RB_DBCELL_CELLSIZEOFFSET) / MAX_RECORD_SIZE; // worst-case: DBCELL+CONTINUEs for full-width rows
+	ret += sheet_total.rows_sofar; // 1 per ROW
+	ret += sheet_total.cells_sofar; // 1 per cell
+
+	return ret;
+}
+
+/*
+***********************************
+***********************************
+*/
+
 void worksheet::MakeActive() { m_GlobalRecords.GetWindow1().SetActiveSheet(sheetIndex);}
 
 /*
 ***********************************
 ***********************************
 */
-cell_t* worksheet::label(unsigned16_t row, unsigned16_t col, 
+cell_t* worksheet::label(unsigned32_t row, unsigned32_t col, 
                          const string& strlabel, xf_t* pxformat)
 {
 	u16string	str16;
@@ -559,11 +635,11 @@ cell_t* worksheet::label(unsigned16_t row, unsigned16_t col,
 	m_GlobalRecords.char2str16(strlabel, str16);
 
 	lbl = new label_t(m_GlobalRecords, row, col, str16, pxformat);
-	AddCell((cell_t*)lbl);
+	AddCell(lbl);
 
-	return (cell_t*)lbl;
+	return lbl;
 }
-cell_t* worksheet::label(unsigned16_t row, unsigned16_t col, 
+cell_t* worksheet::label(unsigned32_t row, unsigned32_t col, 
                          const ustring& strlabel, xf_t* pxformat)
 {
 	u16string str16;
@@ -572,27 +648,27 @@ cell_t* worksheet::label(unsigned16_t row, unsigned16_t col,
 	m_GlobalRecords.wide2str16(strlabel, str16);
 	lbl = new label_t(m_GlobalRecords, row, col, str16, pxformat);
 
-	AddCell((cell_t*)lbl);
+	AddCell(lbl);
 
-	return (cell_t*)lbl;
+	return lbl;
 }
 /*
 ***********************************
 ***********************************
 */
 #if 0 // no good - forces a format and thus xf_t
-cell_t* worksheet::number(unsigned16_t row, unsigned16_t col, 
+cell_t* worksheet::number(unsigned32_t row, unsigned32_t col, 
                           double numval, format_number_t fmtval,
                           xf_t* pxformat)
 {
    number_t* number = new number_t(row, col, numval, pxformat);
-   AddCell((cell_t*)number);
+   AddCell(number);
    number->format(fmtval);
 
-   return (cell_t*)number;
+   return number;
 }
 #endif
-cell_t* worksheet::number(unsigned16_t row, unsigned16_t col, // Deprecated
+cell_t* worksheet::number(unsigned32_t row, unsigned32_t col, // Deprecated
                           double numval, format_number_t fmtval,
                           xf_t* pxformat)
 {
@@ -600,43 +676,43 @@ cell_t* worksheet::number(unsigned16_t row, unsigned16_t col, // Deprecated
 	assert(fmtval <= FMT_TEXT);
 
 	number_t* num = new number_t(m_GlobalRecords, row, col, numval, pxformat);
-	AddCell((cell_t*)num);
+	AddCell(num);
 
 	if(fmtval == FMT_GENERAL && pxformat == NULL) {
 		; // OK
-	} else
-	if(pxformat == NULL || pxformat->GetFormat() != fmtval) {
+	} 
+	else if(pxformat == NULL || pxformat->GetFormat() != fmtval) {
 		// got to add it, will create a new xf_t
 		//number->formatIndex(format2index[fmtval]);
 		num->format(fmtval);
 	}
-	return (cell_t*)num;
+	return num;
 }
-cell_t* worksheet::number(unsigned16_t row, unsigned16_t col, 
+cell_t* worksheet::number(unsigned32_t row, unsigned32_t col, 
                           double numval, xf_t* pxformat)
 {
 	number_t* num = new number_t(m_GlobalRecords, row, col, numval, pxformat);
-	AddCell((cell_t*)num);
-	return (cell_t*)num;
+	AddCell(num);
+	return num;
 }
-cell_t* worksheet::number(unsigned16_t row, unsigned16_t col, // 536870911 >= numval >= -536870912
+cell_t* worksheet::number(unsigned32_t row, unsigned32_t col, // 536870911 >= numval >= -536870912
                           signed32_t numval, xf_t* pxformat)
 {
 	number_t* num = new number_t(m_GlobalRecords, row, col, numval, pxformat);
-	AddCell((cell_t*)num);
-	return (cell_t*)num;
+	AddCell(num);
+	return num;
 }
 
 /*
 ***********************************
 ***********************************
 */
-cell_t* worksheet::blank(unsigned16_t row, unsigned16_t col, xf_t* pxformat)
+cell_t* worksheet::blank(unsigned32_t row, unsigned32_t col, xf_t* pxformat)
 {
    blank_t* blk = new blank_t(m_GlobalRecords, row, col, pxformat);
-   AddCell((cell_t*)blk);
+   AddCell(blk);
 
-   return (cell_t*)blk;
+   return blk;
 }
 
 /*
@@ -645,7 +721,7 @@ cell_t* worksheet::blank(unsigned16_t row, unsigned16_t col, xf_t* pxformat)
 */
 void worksheet::AddCell(cell_t* pcell)
 {
-	unsigned32_t		row, col;
+	unsigned32_t		row, col; // [i_a]
 
 	row = pcell->GetRow();
 	col = pcell->GetCol();
@@ -676,7 +752,6 @@ void worksheet::AddCell(cell_t* pcell)
 	bool success;
 	do {
 		Cell_Set_Itor_t		ret;
-		
 		
 		if(cellHint && pcell->row >= cellHint->row) {
 			ret		= m_Cells.insert(cellIterHint, pcell);
@@ -712,7 +787,7 @@ void worksheet::AddCell(cell_t* pcell)
 ***********************************
 ***********************************
 */
-cell_t* worksheet::FindCell(unsigned16_t row, unsigned16_t col) const
+cell_t* worksheet::FindCell(unsigned32_t row, unsigned32_t col) const
 {
    Cell_Set_CItor_t existing_cell;
    
@@ -730,7 +805,7 @@ cell_t* worksheet::FindCell(unsigned16_t row, unsigned16_t col) const
       return NULL;
    }
 }
-cell_t* worksheet::FindCellOrMakeBlank(unsigned16_t row, unsigned16_t col)
+cell_t* worksheet::FindCellOrMakeBlank(unsigned32_t row, unsigned32_t col)
 {
 	cell_t*	cell = worksheet::FindCell(row, col);
 	
@@ -813,102 +888,100 @@ unsigned32_t worksheet::Get-Size()
 #endif
 /*
 ***********************************
+Returns FALSE when the last row block was processed (and the cursors have been reset
+to point at the start/top of the sheet again); returns TRUE when another row block
+awaits after this one.
 ***********************************
 */
-bool worksheet::GetRowBlockSizes(unsigned32_t* rowandcell_size, 
-                                 unsigned32_t* dbcell_size,
-                                 unsigned32_t* num_rows)
+bool worksheet::GetRowBlockSizes(rowblocksize_t& rbsize)
 {
    //SortCells();
    
-   unsigned32_t row_counter = 0;
-   unsigned32_t cell_counter = 0;
-   unsigned32_t payload;
+   size_t row_counter = 0;
+   size_t cell_counter = 0;
+   size_t payload;
 
-   Cell_Set_Itor_t beginning_cell = m_CurrentSizeCell;
+   //Cell_Set_Itor_t beginning_cell = m_CurrentSizeCell;
 
    // Initialize the size values (since they work as accumulators)
-   *rowandcell_size = 0;
-   *dbcell_size = 0;
+   rbsize.rowandcell_size = 0;
+   rbsize.dbcell_size = 0;
 
    if(!m_SizesCalculated)
    {
       // Check if there are no cells
       if(!m_Cells.empty())
       {
-         // The first cell is inside a row that has to be counted
-         // row_counter = 1;
-         do
-         {
-            cell_counter++; // There's at least  one cell on each loop.. that's for sure!
+		  unsigned32_t row_num;
 
-            // Since the list of cells is sorted by rows, continuouslly equal cells (compared by row)
-            // conform one row... if the next one is different, increment the row counter
-            Cell_Set_Itor_t this_cell = m_CurrentSizeCell;
-            Cell_Set_Itor_t next_cell = ++ m_CurrentSizeCell;
-       
-            // To avoid dereferencing an empty iterator check if this is the only
-            // one cell in m_Cells list.
-            if( m_Cells.size()>1)
-            {
-               if( (*this_cell)->GetRow() != (*next_cell)->GetRow()  ) 
-                  row_counter++;
-			} else {
-               // Break the loop if this was the only one cell in the list
-               // .. also set the only one row
-               cell_counter--;
-               m_CurrentSizeCell = (--m_Cells.end());
-               break;
-            }
-         } while(row_counter < MAX_ROWBLOCK_SIZE &&
-                m_CurrentSizeCell != (--m_Cells.end())); // Check also if the currentcell isn't the last one
+          // The first cell is inside a row that has to be counted
+		  row_counter = 1;
 
-         // If the cells run out before the row counter changes, the last row (and last cell) isn't counted
-         // in the previous control structre.
-         if(m_CurrentSizeCell == (--m_Cells.end()))
-         {
-            row_counter++;
+			row_num = (*m_CurrentSizeCell)->GetRow();
+			if (rbsize.first_row > row_num)
+				rbsize.first_row = row_num;
+			if (rbsize.last_row < row_num)
+				rbsize.last_row = row_num;
+
+		  // Since the list of cells is sorted by rows, continuously equal cells (compared by row)
+		  // conform one row... if the next one is different, increment the row counter
+		  for ( ; m_CurrentSizeCell != m_Cells.end(); m_CurrentSizeCell++)
+		  {
+			if ((*m_CurrentSizeCell)->GetRow() != row_num)
+			{
+				// exit the loop if we have run through MAX rows:
+				if (row_counter >= MAX_ROWBLOCK_SIZE)
+					break;
+
+				row_counter++;
+				row_num = (*m_CurrentSizeCell)->GetRow();
+
+				if (rbsize.first_row > row_num)
+					rbsize.first_row = row_num;
+				if (rbsize.last_row < row_num)
+					rbsize.last_row = row_num;
+			}
+
             cell_counter++;
+	        // Get the size of the cell as well:
+            rbsize.rowandcell_size += (*m_CurrentSizeCell)->GetSize();
+			
+			unsigned32_t col_num = (*m_CurrentSizeCell)->GetCol();
+			if (rbsize.first_col > col_num)
+				rbsize.first_col = col_num;
+			if (rbsize.last_col < col_num)
+				rbsize.last_col = col_num;
          }
 
-         if(num_rows != NULL)
-            *num_rows += row_counter;
+         rbsize.rows_sofar += row_counter;
          // Get the size of the rows
-         *rowandcell_size += ROW_RECORD_SIZE*row_counter;
-      
-         // Get the size of the cells using the saved iterator pointing to the beginning of this block
-         for(unsigned32_t count_blockcells = 0; count_blockcells <cell_counter; count_blockcells++)
-         {
-            *rowandcell_size += (*beginning_cell)->GetSize();
-            beginning_cell++;
-         }
+         rbsize.rowandcell_size += ROW_RECORD_SIZE*row_counter;
 
-         // Now get the size of the DBCELL
+		rbsize.cells_sofar += cell_counter;
+
+		// Now get the size of the DBCELL
 		 payload = RB_DBCELL_CELLSIZEOFFSET*cell_counter;
 
-         *dbcell_size += RB_DBCELL_MINSIZE;
-         *dbcell_size += payload;
+         rbsize.dbcell_size += RB_DBCELL_MINSIZE;
+         rbsize.dbcell_size += payload;
 
          // Check the size of the data in the DBCELL record (without the header)
          // to take in count the overhead of the CONTINUE record (4bytes/CONTrec)
          if(payload > MAX_RECORD_SIZE)
          {
-            unsigned32_t cont_overhead = (payload / MAX_RECORD_SIZE); // continue payloads
-            if(payload % MAX_RECORD_SIZE)
-               cont_overhead++; // partial payload
+            size_t cont_overhead = ((payload + MAX_RECORD_SIZE - 1) / MAX_RECORD_SIZE); // continue payloads; account for trailing partial payloads: round up!
 
-            *dbcell_size += (cont_overhead-1)*4;
+            rbsize.dbcell_size += (cont_overhead-1)*4;
          }
 
-         rowblocksize_t*  rbsize = new rowblocksize_t;
-
-         rbsize->rowandcell_size = *rowandcell_size;
-         rbsize->dbcell_size = *dbcell_size;
-         rbsize->rows_sofar = row_counter;
+         //rbsize->rowandcell_size = *rowandcell_size;
+         //rbsize->dbcell_size = *dbcell_size;
+         //rbsize.rows_sofar = row_counter;
+		 //rbsize.cells_sofar = cell_counter;
          m_RBSizes.push_back(rbsize);
     
          // If it was the last block, reset the current-label pointer
-         if(m_CurrentSizeCell == (--m_Cells.end()))
+         if(m_CurrentSizeCell == m_Cells.end())
          {
             m_CurrentSizeCell = m_Cells.begin();
             m_Current_RBSize = m_RBSizes.begin();
@@ -924,14 +997,10 @@ bool worksheet::GetRowBlockSizes(unsigned32_t* rowandcell_size,
       else
          return true;
    } else {
-      *rowandcell_size = (*m_Current_RBSize)->rowandcell_size;
-      *dbcell_size = (*m_Current_RBSize)->dbcell_size;
-      if(num_rows != NULL) 
-         *num_rows += (*m_Current_RBSize)->rows_sofar;
-
+      rbsize = *m_Current_RBSize;
       m_Current_RBSize++;
 
-      // Resett the current RBSize
+      // Reset the current RBSize
       if(m_Current_RBSize == m_RBSizes.end())
       {
          m_Current_RBSize = m_RBSizes.begin();
@@ -942,6 +1011,7 @@ bool worksheet::GetRowBlockSizes(unsigned32_t* rowandcell_size,
 }
 
 
+#if 0
 /*
 ***********************************
 ***********************************
@@ -949,7 +1019,7 @@ bool worksheet::GetRowBlockSizes(unsigned32_t* rowandcell_size,
 void  worksheet::GetFirstLastRows(unsigned32_t* first_row, unsigned32_t* last_row)
 {
    // First check that the m_Cells list is not empty, so we won't dereference
-   // empty anr iterator.
+   // an empty iterator.
    if(!m_Cells.empty())
    {
       //SortCells();
@@ -967,40 +1037,125 @@ void  worksheet::GetFirstLastRows(unsigned32_t* first_row, unsigned32_t* last_ro
       *last_row = 0;
    }
 }
+#endif
+
 
 /*
 ***********************************
 ***********************************
 */
-unsigned32_t worksheet::GetNumRowBlocks()
+void worksheet::GetFirstLastRowsAndColumns(unsigned32_t* first_row, unsigned32_t* last_row, unsigned32_t* first_col, unsigned32_t* last_col) /* [i_a] */
 {
-
-   unsigned32_t numrb;
-
    // First check that the m_Cells list is not empty, so we won't dereference
-   // empty anr iterator.
+   // an empty iterator.
+   if(!m_Cells.empty())
+   {
+      //SortCells();
+
+	  /*
+	  speedup for when we are not interested to hear about the columns:
+	  since this vector is sorted by row first, we can simply grab the 
+	  last unit to get the highest rownum:
+	  */
+	  if (!first_col && !last_col)
+	  {
+		  cell_t *f = *m_Cells.begin();      // .front()
+		  cell_t *l = *(--m_Cells.end());  // .back()
+
+		  assert(f);
+		  assert(l);
+
+		  if (first_row) 
+			*first_row = f->GetRow();
+		  if (last_row)
+			*last_row = l->GetRow();
+	  }
+	  else
+	  {
+			rowblocksize_t rbsize;
+			GetNumRowBlocks(&rbsize);
+
+		  if (first_row) 
+			  *first_row = rbsize.first_row;
+		  if (last_row)
+			  *last_row = rbsize.last_row;
+		  if (first_col) 
+			  *first_col = rbsize.first_col;
+		  if (last_col)
+			  *last_col = rbsize.last_col;
+	  }
+   } else {
+      // If there is no cells in the list the first/last rows
+      // are defaulted to zero.
+	  if (first_row) 
+		*first_row = 0;
+	  if (last_row)
+		*last_row = 0;
+	  if (first_col) 
+		*first_col = 0;
+	  if (last_col)
+		*last_col = 0;
+   }
+}
+
+/*
+***********************************
+***********************************
+*/
+size_t worksheet::GetNumRowBlocks(rowblocksize_t* rbsize_ref)
+{
+   size_t numrb;
+
+   if (!m_Cells.empty())
+   {
+    m_CurrentSizeCell = m_Cells.begin();
+    m_Current_RBSize = m_RBSizes.begin();
+
+	rowblocksize_t rbsize;
+	if (rbsize_ref)
+	{
+		rbsize_ref->reset();
+	}
+	else
+	{
+		rbsize_ref = &rbsize;
+	}
 
    bool cont = false;
-   unsigned32_t num_rows = 0;
    do
    {
-      unsigned32_t dummy1, dummy2;
-      cont = GetRowBlockSizes(&dummy1, &dummy2, &num_rows);
+		rowblocksize_t rb1;
+		cont = GetRowBlockSizes(rb1);
+
+		rbsize_ref->cells_sofar += rb1.cells_sofar;
+		rbsize_ref->dbcell_size += rb1.dbcell_size;
+		if (rbsize_ref->first_col > rb1.first_col)
+			rbsize_ref->first_col = rb1.first_col;
+		if (rbsize_ref->first_row > rb1.first_row)
+			rbsize_ref->first_row = rb1.first_row;
+		if (rbsize_ref->last_col < rb1.last_col)
+			rbsize_ref->last_col = rb1.last_col;
+		if (rbsize_ref->last_row < rb1.last_row)
+			rbsize_ref->last_row = rb1.last_row;
+		rbsize_ref->rowandcell_size += rb1.rowandcell_size;
+		rbsize_ref->rows_sofar += rb1.rows_sofar;
    } while(cont);
-   
+
 /*
   Cell_Vect_t temp_cell_list = m_Cells;
   temp_cell_list.sort();
   temp_cell_list.unique();
 */
 
-   if(!m_Cells.empty())
+#if 0
+	   // take trailing partial chunk into account: round up!
+      numrb = (rbsize_ref->rows_sofar + MAX_ROWBLOCK_SIZE - 1) / MAX_ROWBLOCK_SIZE;
+#else
+	  numrb = m_RBSizes.size();
+#endif
+   } 
+   else 
    {
-
-      numrb = num_rows/MAX_ROWBLOCK_SIZE;
-      if(num_rows%MAX_ROWBLOCK_SIZE)
-         numrb++;
-   } else {
       // If the m_Cell list is empty, there are no rowblocks in the sheet.
       numrb = 0;
    }
@@ -1012,8 +1167,8 @@ unsigned32_t worksheet::GetNumRowBlocks()
 ***********************************
 ***********************************
 */
-void worksheet::merge(unsigned16_t first_row, unsigned16_t first_col, 
-                      unsigned16_t last_row, unsigned16_t last_col)
+void worksheet::merge(unsigned32_t first_row, unsigned32_t first_col, 
+                      unsigned32_t last_row, unsigned32_t last_col)
 {
    range_t* newrange = new range_t;
 
@@ -1029,7 +1184,7 @@ void worksheet::merge(unsigned16_t first_row, unsigned16_t first_col,
 ***********************************
 ***********************************
 */
-void worksheet::colwidth(unsigned16_t col, unsigned16_t width, xf_t* pxformat)
+void worksheet::colwidth(unsigned32_t col, unsigned16_t width, xf_t* pxformat)
 {
 	colinfo_t* newci = new colinfo_t;
 	Colinfo_Set_Itor_t existing_ci;
@@ -1066,7 +1221,7 @@ void worksheet::colwidth(unsigned16_t col, unsigned16_t width, xf_t* pxformat)
 ***********************************
 ***********************************
 */
-void worksheet::rowheight(unsigned16_t row, unsigned16_t height, xf_t* pxformat)
+void worksheet::rowheight(unsigned32_t row, unsigned16_t height, xf_t* pxformat)
 {
 	rowheight_t* newrh = new rowheight_t(row,height*20,pxformat);
 	RowHeight_Vect_Itor_t existing_rh;
@@ -1092,8 +1247,8 @@ void worksheet::rowheight(unsigned16_t row, unsigned16_t height, xf_t* pxformat)
 }
 
 #ifdef RANGE_FEATURE
-range* worksheet::rangegroup(unsigned16_t row1, unsigned16_t col1,
-                             unsigned16_t row2, unsigned16_t col2)
+range* worksheet::rangegroup(unsigned32_t row1, unsigned32_t col1,
+                             unsigned32_t row2, unsigned32_t col2)
 {
 	range* newrange = new range(row1, col1, row2, col2, this); 
 	m_Ranges.push_back(newrange);

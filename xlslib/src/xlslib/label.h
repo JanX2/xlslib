@@ -43,19 +43,25 @@
 #include <unit.h>
 #include <extformat.h>
 
+
+#include <xls_pshpack2.h>
+
 namespace xlslib_core
 {
 
-#define LABEL_DFLT_XFINDEX              ((unsigned16_t)0x000f)
-#define LABEL_OFFSET_FIRSTCOL           ((unsigned8_t)6)
-#define LABEL_OFFSET_LASTCOL            ((unsigned8_t)8)
+#define LABEL_DFLT_XFINDEX              0x000f
+#define LABEL_OFFSET_FIRSTCOL           6
+#define LABEL_OFFSET_LASTCOL            8
+
+	// forward ref
+	class CDataStorage;
 
   class label_t: public cell_t
     {
 	  friend class worksheet;
 
     private:
-      label_t(CGlobalRecords& gRecords, unsigned16_t rowval, unsigned16_t colval, const u16string& labelstrval, xf_t* pxfval = NULL);
+      label_t(CGlobalRecords& gRecords, unsigned32_t rowval, unsigned32_t colval, const u16string& labelstrval, xf_t* pxfval = NULL);
       virtual ~label_t();
 
     private:
@@ -66,24 +72,33 @@ namespace xlslib_core
       const u16string		*GetStrLabel() const { return &strLabel; };
       bool					GetIsASCII() const { return isASCII; };
 
-      virtual unsigned16_t GetSize() const;
-      virtual CUnit* GetData() const;
+      virtual size_t GetSize(void) const;
+      virtual CUnit* GetData(CDataStorage &datastore) const;
     };
 
   class CLabel: public CRecord
     {
-    private:
+#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+	friend class CDataStorage;
+#endif
 
-    public:
-      CLabel(unsigned16_t row,
-             unsigned16_t col,
+    protected:
+#if 0
+		CLabel(CDataStorage &datastore, 
+			 unsigned32_t row,
+             unsigned32_t col,
              const u16string& strlabel,
 			 bool isASCII,
              const xf_t* pxfval = NULL);
-      CLabel(label_t& labeldef);
-      ~CLabel();
+#endif
+		CLabel(CDataStorage &datastore, const label_t& labeldef);
+	private:
+      virtual ~CLabel();
     };
 }
+
+#include <xls_poppack.h>
+
 #endif //LABEL_H
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

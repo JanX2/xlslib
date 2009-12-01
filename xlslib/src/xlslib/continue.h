@@ -40,16 +40,29 @@
 #include <common.h>
 #include <record.h>
 
+
+#include <xls_pshpack2.h>
+
 namespace xlslib_core
 {
+	// forward ref
+	class CDataStorage;
 
   class CContinue: public CRecord
     {
-    public:
-      CContinue(unsigned8_t* data, unsigned32_t size);
-      ~CContinue();
+#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+	friend class CDataStorage;
+#endif
+
+    protected:
+      CContinue(CDataStorage &datastore, const unsigned8_t* data, size_t size);
+	private:
+      virtual ~CContinue();
     };
 }
+
+
+#include <xls_poppack.h>
 
 #endif //CONTINUE_H
 
