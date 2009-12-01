@@ -14,15 +14,37 @@
  *
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+#ifdef HAVE_CONFIG_H
+#include <xlconfig.h>
+#elif defined(_MSC_VER) && defined(WIN32)
+#include "ac-config.win32.h"
+#endif
+
+
 #include <stdio.h>
+#include <config.h>
+#ifdef HAVE_STDINT_H	// [i_a] 
 #include <stdint.h>
+#endif
+#ifdef HAVE_STDBOOL_H	// [i_a] 
 #include <stdbool.h>
+#else
+typedef enum
+{
+	false = 0,
+	true = 1
+} bool;
+#endif
 #include <wchar.h>
 #include <sys/types.h>
 
+#define RANGE_FEATURE
+#include <xlslib.h>
+
+
 wchar_t foo;
 
-#include <xlslib.h>
 
 int main(int argc, char *argv[]) {
 	workbook *w;

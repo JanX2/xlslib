@@ -3,9 +3,9 @@
  * Copyright (C) 2008 David Hoerl
  *
  * $Source: /cvsroot/xlslib/xlslib/targets/test/mainCPP.cpp,v $
- * $Revision: 1.4 $
+ * $Revision: 1.5 $
  * $Author: dhoerl $
- * $Date: 2009/03/08 21:26:28 $
+ * $Date: 2009/03/08 21:51:40 $
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *
@@ -15,14 +15,14 @@
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
+#include <xlslib.h>
+
+#include <timespan.h>
+
 #include <string>
 #include <sstream>
 #include <iostream>
 #include <stdio.h>
-
-#include <xlslib.h>
-
-#include <timespan.h>
 
 using namespace std;
 using namespace xlslib_core;
@@ -56,11 +56,11 @@ using namespace xlslib_core;
 // Macros
 #define TIMESPAN_START(id)                      \
    CCpuClockTimespan span_##id;                 \
-   span_##id.StartClock();
+   span_##id.StartClock()
 
 #define TIMESPAN_END(id,str)                                      \
    span_##id.StopClock();                                         \
-   cout<<#str<<" "<<span_##id.GetUsedMilliseconds()<<" ms"<<endl;
+   std::cerr<<str<<" "<<span_##id.GetUsedMilliseconds()<<" ms"<<std::endl
 
 extern void StressTest(int a,int b,int c);
 extern void RandomTest(int a,int b,int c);
@@ -84,6 +84,7 @@ extern int GetRndNumber(int max);
 
 static char tmp[256];
 
+
 int main(int argc, char *argv[])
 {
 
@@ -97,14 +98,17 @@ int main(int argc, char *argv[])
 	// comment and uncomment the below to try various tests
 	StandardTest();
 
-	//StressTest(3,100,100);
-	//StressTest(3,4,4);
-	//RandomTest(3,100,100);
-	//RandomCellAndFormatTest(1,15,10); //(1,15,10)
-	//RandomCellAndFormatTestProf(1,15,10);
-	//RandomFormatTest(1,15,10);
+	//if (argc > 1) /* [i_a] */
+	{
+		StressTest(3,100,100);
+		StressTest(3,4,4);
+		RandomTest(3,200,200);
+		RandomCellAndFormatTest(1,15,10); //(1,15,10)
+		RandomCellAndFormatTestProf(1,15,10);
+		RandomFormatTest(1,15,10);
+	}
 
-	fprintf(stderr, "Test finished\n");
+	std::cerr << "Test finished" << std::endl;
 	return 0;
 }
 
@@ -113,15 +117,55 @@ void StandardTest(void)
    // Get the workbook handler
    workbook wb;
    worksheet* sh = wb.sheet("sheet");
+   worksheet* sh2 = wb.sheet("sheet2");
 
 	// Title
    sh->label(1,1,"test1");
    sh->rowheight(1,100);
    sh->rowheight(2,150);
+
+	// Title
+   sh2->label(1,1,"test3");
+   sh2->rowheight(1,100);
+   sh2->rowheight(2,150);
+   sh2->label(2,1,"test4");
+   sh2->number(3,1,1.0);
+   sh2->number(4,1,2.0);
+   sh2->number(5,1,3.0);
+
    sh->label(2,1,"test2");
    sh->number(3,1,1.0);
    sh->number(4,1,2.0);
    sh->number(5,1,3.0);
+
+#if 0
+   printf("limit: "); 
+   char buf[100];
+   gets(buf);
+   int lim = atoi(buf);
+#else
+   int lim = 42;
+#endif
+   printf("\nlimit: %d\n", lim); // >= 14 --> error to load sheet #2; <= 13 = ok
+
+   int j, k;
+	for (j = 0 ; j <= 127; j++)
+	{
+		for (k = 0; k <= 128; k++)
+		{
+			//sh->number(j, k, (0.0 + j + k ) / 1000);
+			if (k == 128 && j > lim)
+				;
+			else
+				sh->blank(j, k);
+		}
+	}
+
+   sh->number(130,128,1.0);
+   sh->number(131,172,2.0);
+   //sh->number(132,128,3.0);
+   std::string s("This tab should should show two numbers in rows 130/131 at columns 128/172 respectively");
+   sh->label(1,1,s);
 
    wb.Dump("./testCPP.xls");
 }
@@ -135,14 +179,12 @@ int GetRndNumber(int max)
 
 void RandomCellAndFormatTest(int sheets_sz, int rows_sz, int cols_sz)
 {
-
    workbook wb;
    worksheet* sh;
 
    srand(time(0));
 
-   TIMESPAN_START(1)
-
+   TIMESPAN_START(1);
 
    for(int shnum = 0; shnum < sheets_sz; shnum++)
    {
@@ -161,7 +203,7 @@ void RandomCellAndFormatTest(int sheets_sz, int rows_sz, int cols_sz)
             int rndcol = GetRndNumber(rows_sz);
             int rndrow = GetRndNumber(cols_sz);
 
-			sprintf(tmp, "S%d:%d-%d", shnum, row+1, col+1);
+			sprintf(tmp, "S%d:%d-%d#%d-%d", shnum, row+1, col+1, rndrow, rndcol);
 			string snamelabel(tmp);
 
             cell_t* cell = sh->label(rndrow, rndcol, snamelabel);
@@ -180,14 +222,11 @@ void RandomCellAndFormatTest(int sheets_sz, int rows_sz, int cols_sz)
    }
 
    wb.Dump("rndcellandformat.xls");
-   TIMESPAN_END(1,Random Cell and Format test:)
-
-      }
+   TIMESPAN_END(1,"Random Cell and Format test:");
+}
 
 void RandomCellAndFormatTestProf(int sheets_sz, int rows_sz, int cols_sz)
 {
-
-
    workbook wb;
    worksheet* sh;
 
@@ -208,37 +247,62 @@ void RandomCellAndFormatTestProf(int sheets_sz, int rows_sz, int cols_sz)
             int rndcol = GetRndNumber(rows_sz);
             int rndrow = GetRndNumber(cols_sz);
 
-			sprintf(tmp, "S%d:%d-%d", shnum, row+1, col+1);
+			sprintf(tmp, "S%d:%d-%d#%d-%d", shnum, row+1, col+1, rndrow, rndcol);
 			string snamelabel(tmp);
 
             cell_t* cell = sh->label(rndrow, rndcol, snamelabel);
 
-            cout<<"CELL ";
+#if defined(__DEBUG__) || defined(_DEBUG)
+			cout<<"CELL ";
             cout.fill('0');
             cout.width(2);
             cout<<rndrow<<",";
             cout.fill('0');
             cout.width(2);
             cout<<rndcol<<": ";
-            int k, fmtries = GetRndNumber(OPT_MAX);
+#endif
+			int k, fmtries = GetRndNumber(OPT_MAX);
 
+#if defined(__DEBUG__) || defined(_DEBUG)
             cout<<endl<<"**FORMAT** ";
-            for(k = 0; k<fmtries; k++)
-               RandomFormat(cell,true);
+#endif
+			for(k = 0; k<fmtries; k++)
+               RandomFormat(cell,
+#if defined(__DEBUG__) || defined(_DEBUG)
+				true
+#else
+				false
+#endif
+			   );
 
+#if defined(__DEBUG__) || defined(_DEBUG)
             cout<<endl<<"**FONT**   ";
-            fmtries = GetRndNumber(OPT_FONTMAX);
+#endif
+			fmtries = GetRndNumber(OPT_FONTMAX);
             for(k = 0; k<fmtries; k++)
-               RandomFontOption(cell,true);
+               RandomFontOption(cell,
+#if defined(__DEBUG__) || defined(_DEBUG)
+				true
+#else
+				false
+#endif
+				);
 
-            RandomFontName(cell,true);
+            RandomFontName(cell,
+#if defined(__DEBUG__) || defined(_DEBUG)
+				true
+#else
+				false
+#endif
+				);
+#if defined(__DEBUG__) || defined(_DEBUG)
             cout<<endl;
-         }
+#endif
+		 }
       }
    }
 
    wb.Dump("rndcellandformat.xls");
-
 }
 
 
@@ -247,7 +311,7 @@ void RandomFormatTest(int sheets_sz, int rows_sz, int cols_sz)
 
    srand(time(0));
 
-   TIMESPAN_START(1)
+   TIMESPAN_START(1);
 
       workbook wb;
    worksheet* sh;
@@ -285,9 +349,10 @@ void RandomFormatTest(int sheets_sz, int rows_sz, int cols_sz)
    }
 
    wb.Dump("rndformat.xls");
-   TIMESPAN_END(1,Random Format test:)
+   TIMESPAN_END(1,"Random Format test:");
+}
 
-      }
+
 #define OPT_FNTNAME_ARIAL             0
 #define OPT_FNTNAME_TIMES             1
 #define OPT_FNTNAME_TAHOMA            2
@@ -464,8 +529,6 @@ string COLOR[] =
 
 void RandomFontOption(cell_t* cell, bool profile)
 {
-
-
    switch(GetRndNumber(OPT_FONTMAX))
    {
       case OPT_FONTHEIGHT:
@@ -531,7 +594,6 @@ void RandomFontOption(cell_t* cell, bool profile)
          if(profile) sh?cout<<"Shadowed, ":cout<<"";                  
          break;
       }
-
    }
 }
 
@@ -610,8 +672,6 @@ string BORDERSIDE[] =
 
 void RandomFormat(cell_t* cell, bool profile)
 {
-
-
    switch(GetRndNumber(OPT_MAX))
    {
       case OPT_HALIGN:
@@ -678,7 +738,6 @@ void RandomFormat(cell_t* cell, bool profile)
 
          cell->borderstyle((border_side_t)side,
                            (border_style_t)sty);
-
          cell->bordercolor((border_side_t)side,
                            (color_name_t)col);
 
@@ -688,7 +747,6 @@ void RandomFormat(cell_t* cell, bool profile)
          break;
       }
    }
-
 }
 
 /*
@@ -697,9 +755,6 @@ void RandomFormat(cell_t* cell, bool profile)
 */
 void StressTest(int sheets_sz, int rows_sz, int cols_sz)
 {
-
-
-
    // Get the workbook handler
    workbook swb;
 
@@ -720,6 +775,7 @@ void StressTest(int sheets_sz, int rows_sz, int cols_sz)
       free(snum);
 
       for(int srow = rows_sz; srow>=0; srow--)
+	  {
          for(int scol = cols_sz; scol>=0; scol--)
          {
             char *slabel = (char*) malloc(42);
@@ -727,16 +783,13 @@ void StressTest(int sheets_sz, int rows_sz, int cols_sz)
             string snamelabel = string(slabel);
             ssh->label(srow,scol,snamelabel,sxf1);
             free(slabel);
-
          }
-
-
+	  }
    }
 
    TIMESPAN_START(1);
    swb.Dump("stress.xls");
-   TIMESPAN_END(1,Cell-stress test:);
-
+   TIMESPAN_END(1,"Cell-stress test:");
 }
 
 /*
@@ -745,7 +798,6 @@ void StressTest(int sheets_sz, int rows_sz, int cols_sz)
 */
 void RandomTest(int sheets_sz, int rows_sz, int cols_sz)
 {
-   
    srand(time(0));
    TIMESPAN_START(1);
    // Get the workbook handler
@@ -765,34 +817,73 @@ void RandomTest(int sheets_sz, int rows_sz, int cols_sz)
       free(snum);
 
       for(int srow = 0; srow<rows_sz; srow++)
+	  {
          for(int scol = 0; scol<cols_sz; scol++)
          {
             int rndcol, rndrow;
+			int koc = GetRndNumber(6);
 
             rndcol = (int)(rand()*((double)cols_sz/RAND_MAX));
             rndrow = (int)(rand()*((double)rows_sz/RAND_MAX));
 
-            char *slabel = (char*) malloc(42);
-            sprintf(slabel,"s%d: %d_%d",sshnum,srow,scol);
-            string snamelabel = string(slabel);
-            ssh->label(rndrow,rndcol,snamelabel,sxf1);
-            free(slabel);
+			switch (koc)
+			{
+			default:
+			case 0: // string
+				{
+					char slabel[80];
+					sprintf(slabel,"s%d: %d_%d#%d-%d", sshnum, srow, scol, rndrow, rndcol);
+					string snamelabel = string(slabel);
+					ssh->label(rndrow,rndcol,snamelabel,sxf1);
+				}
+				break;
 
+			case 1: // integer (most probably; depends a bit: large ints end up as float anyhow in there
+				{
+					ssh->number(rndrow,rndcol,(int)rand(),sxf1);
+				}
+				break;
+
+			case 2: // double
+				{
+					ssh->number(rndrow,rndcol,rand()/(double)RAND_MAX,sxf1);
+				}
+				break;
+
+			case 3: // blank
+				{
+					ssh->blank(rndrow,rndcol,sxf1);
+				}
+				break;
+
+#if 0 // not yet here...
+			case 4: // bool
+				{
+					ssh->blank(rndrow,rndcol,(rand() >= RAND_MAX/2), sxf1);
+				}
+				break;
+
+			case 5: // err
+				{
+					ssh->blank(rndrow,rndcol,PickErrorCode(rand()), sxf1);
+				}
+				break;
+#endif
+			}
          }
-
-
+	  }
    }
 
-
    swb.Dump("random.xls");
-   TIMESPAN_END(1,Random cell test:);
-
-
+   TIMESPAN_END(1,"Random cell test:");
 }
 
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * $Log: mainCPP.cpp,v $
+ * Revision 1.5  2009/03/08 21:51:40  dhoerl
+ * minor tweak
+ *
  * Revision 1.4  2009/03/08 21:26:28  dhoerl
  * minor tweak
  *
