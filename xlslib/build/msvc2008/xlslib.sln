@@ -1,0 +1,114 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{84D563DE-6E8D-49BC-B64D-441448DBA262}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{B173B550-A4DC-41F7-9997-49FD3D9556E5}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xlslib_dll", "xlslib_dll.vcproj", "{4A077629-8590-434C-9486-0D069DF341AF}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+	ProjectSection(ProjectDependencies) = postProject
+		{10BEB970-1565-4944-8768-81BD05DD0A3A} = {10BEB970-1565-4944-8768-81BD05DD0A3A}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "createDLL", "..\..\..\OpenEXR\IlmBase\vc\vc9\IlmBase\createDLL\createDLL.vcproj", "{10BEB970-1565-4944-8768-81BD05DD0A3A}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xlslib-testC", "xlslib-testC.vcproj", "{7DA824B8-FE71-4F75-898F-7215DA0F5FF6}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+	ProjectSection(ProjectDependencies) = postProject
+		{4A077629-8590-434C-9486-0D069DF341AF} = {4A077629-8590-434C-9486-0D069DF341AF}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xlslib-testCPP", "xlslib-testCPP.vcproj", "{6C87B8F9-8A2A-46A7-AEEF-AD2D952086ED}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.Debug = "False"
+	EndProjectSection
+	ProjectSection(ProjectDependencies) = postProject
+		{4A077629-8590-434C-9486-0D069DF341AF} = {4A077629-8590-434C-9486-0D069DF341AF}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Itanium = Debug|Itanium
+		Debug|Win32 = Debug|Win32
+		Debug|x64 = Debug|x64
+		Release|Itanium = Release|Itanium
+		Release|Win32 = Release|Win32
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4A077629-8590-434C-9486-0D069DF341AF}.Debug|Itanium.ActiveCfg = Debug|Itanium
+		{4A077629-8590-434C-9486-0D069DF341AF}.Debug|Itanium.Build.0 = Debug|Itanium
+		{4A077629-8590-434C-9486-0D069DF341AF}.Debug|Win32.ActiveCfg = Debug|Win32
+		{4A077629-8590-434C-9486-0D069DF341AF}.Debug|Win32.Build.0 = Debug|Win32
+		{4A077629-8590-434C-9486-0D069DF341AF}.Debug|x64.ActiveCfg = Debug|x64
+		{4A077629-8590-434C-9486-0D069DF341AF}.Debug|x64.Build.0 = Debug|x64
+		{4A077629-8590-434C-9486-0D069DF341AF}.Release|Itanium.ActiveCfg = Release|Itanium
+		{4A077629-8590-434C-9486-0D069DF341AF}.Release|Itanium.Build.0 = Release|Itanium
+		{4A077629-8590-434C-9486-0D069DF341AF}.Release|Win32.ActiveCfg = Release|Win32
+		{4A077629-8590-434C-9486-0D069DF341AF}.Release|Win32.Build.0 = Release|Win32
+		{4A077629-8590-434C-9486-0D069DF341AF}.Release|x64.ActiveCfg = Release|x64
+		{4A077629-8590-434C-9486-0D069DF341AF}.Release|x64.Build.0 = Release|x64
+		{10BEB970-1565-4944-8768-81BD05DD0A3A}.Debug|Itanium.ActiveCfg = Debug|Win32
+		{10BEB970-1565-4944-8768-81BD05DD0A3A}.Debug|Itanium.Build.0 = Debug|Win32
+		{10BEB970-1565-4944-8768-81BD05DD0A3A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{10BEB970-1565-4944-8768-81BD05DD0A3A}.Debug|Win32.Build.0 = Debug|Win32
+		{10BEB970-1565-4944-8768-81BD05DD0A3A}.Debug|x64.ActiveCfg = Debug|Win32
+		{10BEB970-1565-4944-8768-81BD05DD0A3A}.Debug|x64.Build.0 = Debug|Win32
+		{10BEB970-1565-4944-8768-81BD05DD0A3A}.Release|Itanium.ActiveCfg = Release|Win32
+		{10BEB970-1565-4944-8768-81BD05DD0A3A}.Release|Itanium.Build.0 = Release|Win32
+		{10BEB970-1565-4944-8768-81BD05DD0A3A}.Release|Win32.ActiveCfg = Release|Win32
+		{10BEB970-1565-4944-8768-81BD05DD0A3A}.Release|Win32.Build.0 = Release|Win32
+		{10BEB970-1565-4944-8768-81BD05DD0A3A}.Release|x64.ActiveCfg = Release|Win32
+		{10BEB970-1565-4944-8768-81BD05DD0A3A}.Release|x64.Build.0 = Release|Win32
+		{7DA824B8-FE71-4F75-898F-7215DA0F5FF6}.Debug|Itanium.ActiveCfg = Debug|Itanium
+		{7DA824B8-FE71-4F75-898F-7215DA0F5FF6}.Debug|Itanium.Build.0 = Debug|Itanium
+		{7DA824B8-FE71-4F75-898F-7215DA0F5FF6}.Debug|Win32.ActiveCfg = Debug|Win32
+		{7DA824B8-FE71-4F75-898F-7215DA0F5FF6}.Debug|Win32.Build.0 = Debug|Win32
+		{7DA824B8-FE71-4F75-898F-7215DA0F5FF6}.Debug|x64.ActiveCfg = Debug|x64
+		{7DA824B8-FE71-4F75-898F-7215DA0F5FF6}.Debug|x64.Build.0 = Debug|x64
+		{7DA824B8-FE71-4F75-898F-7215DA0F5FF6}.Release|Itanium.ActiveCfg = Release|Itanium
+		{7DA824B8-FE71-4F75-898F-7215DA0F5FF6}.Release|Itanium.Build.0 = Release|Itanium
+		{7DA824B8-FE71-4F75-898F-7215DA0F5FF6}.Release|Win32.ActiveCfg = Release|Win32
+		{7DA824B8-FE71-4F75-898F-7215DA0F5FF6}.Release|Win32.Build.0 = Release|Win32
+		{7DA824B8-FE71-4F75-898F-7215DA0F5FF6}.Release|x64.ActiveCfg = Release|x64
+		{7DA824B8-FE71-4F75-898F-7215DA0F5FF6}.Release|x64.Build.0 = Release|x64
+		{6C87B8F9-8A2A-46A7-AEEF-AD2D952086ED}.Debug|Itanium.ActiveCfg = Debug|Itanium
+		{6C87B8F9-8A2A-46A7-AEEF-AD2D952086ED}.Debug|Itanium.Build.0 = Debug|Itanium
+		{6C87B8F9-8A2A-46A7-AEEF-AD2D952086ED}.Debug|Win32.ActiveCfg = Debug|Win32
+		{6C87B8F9-8A2A-46A7-AEEF-AD2D952086ED}.Debug|Win32.Build.0 = Debug|Win32
+		{6C87B8F9-8A2A-46A7-AEEF-AD2D952086ED}.Debug|x64.ActiveCfg = Debug|x64
+		{6C87B8F9-8A2A-46A7-AEEF-AD2D952086ED}.Debug|x64.Build.0 = Debug|x64
+		{6C87B8F9-8A2A-46A7-AEEF-AD2D952086ED}.Release|Itanium.ActiveCfg = Release|Itanium
+		{6C87B8F9-8A2A-46A7-AEEF-AD2D952086ED}.Release|Itanium.Build.0 = Release|Itanium
+		{6C87B8F9-8A2A-46A7-AEEF-AD2D952086ED}.Release|Win32.ActiveCfg = Release|Win32
+		{6C87B8F9-8A2A-46A7-AEEF-AD2D952086ED}.Release|Win32.Build.0 = Release|Win32
+		{6C87B8F9-8A2A-46A7-AEEF-AD2D952086ED}.Release|x64.ActiveCfg = Release|x64
+		{6C87B8F9-8A2A-46A7-AEEF-AD2D952086ED}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{10BEB970-1565-4944-8768-81BD05DD0A3A} = {B173B550-A4DC-41F7-9997-49FD3D9556E5}
+	EndGlobalSection
+EndGlobal
