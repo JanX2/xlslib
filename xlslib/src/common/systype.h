@@ -170,7 +170,7 @@ typedef StringList_t::const_iterator StringListItor_t;
 # define MASK_BYTE2 0x0000000000ff0000
 # define MASK_BYTE3 0x00000000ff000000
 
-#if defined(_MSC_VER) && defined(WIN32)
+#if defined(_MSC_VER) && defined(WIN32) && 0 // [i_a]
 
 # define MASK_BYTE4 0x000000ff00000000
 # define MASK_BYTE5 0x0000ff0000000000

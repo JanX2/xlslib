@@ -12,15 +12,19 @@ AC_CONFIG_MACRO_DIR([m4])
 # Checks for programs.
 AC_PROG_CXX
 AC_PROG_CC
-# AC_PROG_RANLIB
+# AC_PROG_RANLIB  -- rendered obsolete by LT_INIT
+LT_INIT
+
+AC_LIBTOOL_WIN32_DLL
 AC_PROG_LIBTOOL
+AC_PROG_INSTALL
 
 # Checks for libraries.
 
 # Checks for header files.
 
 # Taken from libxml - DFH
-AC_CHECK_HEADERS([wchar.h stdint.h])
+AC_CHECK_HEADERS([wchar.h stdint.h stdbool.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_HEADER_STDBOOL
@@ -85,7 +89,6 @@ AC_SUBST(WITH_ICONV)
 
 XLSLIB_LIBS="$ICONV_LIBS $LIBS"
 
-LT_INIT
 AC_SUBST(XLSLIB_LIBS)
 
 ###########################################################
