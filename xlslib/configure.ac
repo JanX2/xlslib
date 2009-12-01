@@ -28,6 +28,8 @@ AC_C_CONST
 AC_C_INLINE
 AC_TYPE_SIZE_T
 
+AX_CC_PRAGMA_PACK
+
 # Checks for library functions.
 AC_HEADER_STDC
 AC_CHECK_FUNCS([memset strchr])
