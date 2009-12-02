@@ -57,12 +57,14 @@ typedef enum {
 	PROP_CATEGORY,
 	PROP_COMMENTS,
 	PROP_COMPANY,
-	PROP_CREATINGAPPLICATION,
+	PROP_CREATINGAPPLICATION,	// [i_a] Cannot see anywhere this is displayed (TODO: remove? use? reserved for future use?)
 	PROP_KEYWORDS,
 	PROP_MANAGER,
 	PROP_REVISION,
 	PROP_SUBJECT,
-	PROP_TITLE
+	PROP_TITLE,
+	
+	PROP_LAST
 } property_t;
 
 // Format options
