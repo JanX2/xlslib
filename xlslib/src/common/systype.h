@@ -142,10 +142,9 @@ typedef std::basic_string<unsigned16_t> u16string;
 
 #endif
 
-
 #if defined(_MSC_VER) && defined(WIN32)
 
-typedef __int64 unsigned64_t;
+typedef unsigned _int64 unsigned64_t;
 
 #else // not windows
 
