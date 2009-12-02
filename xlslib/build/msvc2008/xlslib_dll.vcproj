@@ -622,10 +622,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\xlslib\crc.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\xlslib\datast.cpp"
 				>
 			</File>
@@ -765,10 +761,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\xlslib\continue.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\xlslib\crc.h"
 				>
 			</File>
 			<File

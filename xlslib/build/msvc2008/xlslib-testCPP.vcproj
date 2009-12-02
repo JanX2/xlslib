@@ -618,10 +618,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\xlslib\crc.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\xlslib\datast.h"
 				>
 			</File>
