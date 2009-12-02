@@ -1,19 +1,168 @@
-#! /bin/sh 
+#!/bin/sh
+#
+# $Id: bootstrap,v 1.1 2008/02/04 02:06:45 i_a Exp $
+#
+# bootstrap - script to bootstrap the distribution rolling engine
+#
+# usage:
+#  sh ./bootstrap && ./configure && make distcheck
+#
+# this yields a tarball which one can install doing
+#
+# $ tar zxf PACKAGENAME-*.tar.gz
+# $ cd PACKAGENAME-*
+# $ ./configure
+# $ make
+# # make install
+#
+
+# requirements:
+#  GNU autoconf, from e.g. ftp.gnu.org:/pub/gnu/autoconf/
+#  GNU automake, from e.g. ftp.cygnus.com:/pub/tromey/
+
+# Based upon gnupg-1.2.3/scripts/autogen.sh, which is
+#
+#  Copyright (C) 1998, 1999, 2000, 2001, 2003 Free Software Foundation, Inc.
+#
+#  This file is free software; as a special exception the author gives
+#  unlimited permission to copy and/or distribute it, with or without
+#  modifications, as long as this notice is preserved.
+#
+#  This program is distributed in the hope that it will be useful, but
+#  WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
+#  implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+#
+# modified for CRM114 by Joost van Baal
+# augmented by Ger Hobbelt (2008)
+
+cd `echo $0 | sed -e 's,[\\/][^\\/]\+$,,'`
+
+PGM=XLSlib
+configure_ac="./configure.ac"
+
+cvtver() 
+{
+  awk 'NR==1 { split($NF,A,"."); X=1000000*A[1]+1000*A[2]+A[3]; print X; exit 0; }'
+}
+
+check_version() 
+{
+  if `("$1" --version) < /dev/null > /dev/null 2>&1` ; then
+    if [ `("$1" --version || echo "0") | cvtver` -ge "$2" ]; then
+       return 0
+    fi
+    echo >&2
+    echo '**Error**: '\'$1\'' not installed or too old.' >&2
+    echo '           Version '$3' or newer is required.' >&2
+    [ -n "$4" ] && echo '           Note that this is part of '\'$4\''.' >&2
+  else
+    echo >&2
+    echo '**Error**: You must have '\'$1\'' installed to compile '$PGM'.' >&2
+    echo '           Version '$3' or newer is required.' >&2
+    [ -n "$4" ] && echo '           Note that this is part of '\'$4\''.' >&2
+  fi
+  DIE="yes"
+  return 1
+}
+
+# Allow to override the default tool names
+AUTOCONF=${AUTOCONF_PREFIX}${AUTOCONF:-autoconf}${AUTOCONF_SUFFIX}
+AUTOHEADER=${AUTOCONF_PREFIX}${AUTOHEADER:-autoheader}${AUTOCONF_SUFFIX}
+
+AUTOMAKE=${AUTOMAKE_PREFIX}${AUTOMAKE:-automake}${AUTOMAKE_SUFFIX}
+ACLOCAL=${AUTOMAKE_PREFIX}${ACLOCAL:-aclocal}${AUTOMAKE_SUFFIX}
+
+DIE=no
+FORCE=
+if test x"$1" = x"--force"; then
+  FORCE=" --force"
+  shift
+fi
+VERBOSE=
+if test x"$1" = x"--verbose"; then
+  VERBOSE=" --verbose"
+  shift
+fi
+
+
+# Grep the required versions from configure.ac
+autoconf_vers=`sed -n '/^AC_PREREQ(/ { 
+s/^.*(\(.*\))/\1/p
+q
+}' ${configure_ac}`
+autoconf_vers_num=`echo "$autoconf_vers" | cvtver`
+# echo "detected autoconf version: " $autoconf_vers
+
+automake_vers=`sed -n '/^AM_INIT_AUTOMAKE(/ { 
+s/^.*(.*\([0-9]\+\.[0-9]\+\).*)/\1/p
+q
+}' ${configure_ac}`
+automake_vers_num=`echo "$automake_vers" | cvtver`
+# echo "detected automake version: " $automake_vers
+
+
+if [ -z "$autoconf_vers" -o -z "$automake_vers" ]
+then
+  echo "**Error**: autoconf OR automake version information not found in "\`${configure_ac}\'"." >&2
+  echo "**Error**: detected version for autoconf: '"${autoconf_vers}"'" >&2
+  echo "**Error**: detected version for automake: '"${automake_vers}"'" >&2
+  exit 1
+fi
+
+
+if check_version $AUTOCONF $autoconf_vers_num $autoconf_vers ; then
+    check_version $AUTOHEADER $autoconf_vers_num $autoconf_vers autoconf
+fi
+if check_version $AUTOMAKE $automake_vers_num $automake_vers; then
+  check_version $ACLOCAL $automake_vers_num $autoconf_vers automake
+fi
+
+if test "$DIE" = "yes"; then
+  cat <<EOF
+
+Note that you may use alternative versions of the tools by setting 
+the corresponding environment variables; see README.maintainer for details.
+
+EOF
+  exit 1
+fi
+
+
+
+# echo "Running autoreconf -vi ${FORCE}  ${ACLOCAL_FLAGS:+$ACLOCAL_FLAGS }..."
+# autoreconf -vi ${FORCE}  ${ACLOCAL_FLAGS:+$ACLOCAL_FLAGS }
+# # problem with autoreconf: it's NOT running aclocal with a '-I m4' argument, so we're toast!
+
+# # alternatively, explicitly call
+# #  aclocal && autoheader && \
+# #    && automake --add-missing [--verbose] \
+# #    && autoconf
+
+
+
+# If your autoconf version changes, the autom4te.cache stuff will mess you up.
+# Get rid of it.
+echo "Removing autoheader cache files first ..."
+rm -rf autom4te*.cache
 
 echo "libtoolize may issue a warning on the need to run aclocal - rest assured that aclocal will be run!"
-
 sys=`uname`
-
-
+echo "Running [g]libtoolize ${FORCE} ${ACLOCAL_FLAGS:+$ACLOCAL_FLAGS }..."
 if [ $sys = "Darwin" ]
 then 
-	glibtoolize --force \
-	&& aclocal --force \
-	&& autoconf --force  \
-	&& automake -a --force
+	glibtoolize ${FORCE}  ${ACLOCAL_FLAGS:+$ACLOCAL_FLAGS }
 else
-	libtoolize --force \
-	&& aclocal --force \
-	&& autoconf --force  \
-	&& automake -a --force
+	libtoolize ${FORCE}  ${ACLOCAL_FLAGS:+$ACLOCAL_FLAGS }
 fi
+echo "Running ${ACLOCAL}${FORCE} -I m4 ${ACLOCAL_FLAGS:+$ACLOCAL_FLAGS }..."
+${ACLOCAL}${FORCE} -I m4 ${ACLOCAL_FLAGS:+$ACLOCAL_FLAGS }
+echo "Running ${AUTOCONF}${FORCE} -I m4 ${ACLOCAL_FLAGS:+$ACLOCAL_FLAGS }..."
+${AUTOCONF}${FORCE} -I m4 ${ACLOCAL_FLAGS:+$ACLOCAL_FLAGS }
+echo "Running ${AUTOHEADER}${FORCE} -I m4 ${ACLOCAL_FLAGS:+$ACLOCAL_FLAGS }..."
+${AUTOHEADER}${FORCE} -I m4 ${ACLOCAL_FLAGS:+$ACLOCAL_FLAGS }
+echo "Running ${AUTOMAKE}${FORCE} --add-missing --copy..."
+${AUTOMAKE}${FORCE} --add-missing --copy -Woverride -Wall
+
+
+echo "You can now run \"./configure && make distcheck\"."
+

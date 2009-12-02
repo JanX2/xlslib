@@ -83,7 +83,7 @@ int  COleDoc::DumpHeader(blocks bks, size_t total_data_size)
 	total_data_blocks = total_data_size/BIG_BLOCK_SIZE;
    
 #if OLE_DEBUG
-	fprintf(stderr, "dataBlocks=%u\n", total_data_blocks), fflush(stderr);
+	std::cerr << "dataBlocks=" << total_data_blocks << std::endl;
 #endif
    // [00]FILETYPE
    WriteByteArray(COleDoc::OLE_FILETYPE, sizeof(COleDoc::OLE_FILETYPE));
@@ -118,7 +118,7 @@ int  COleDoc::DumpHeader(blocks bks, size_t total_data_size)
    // to know the size of the data and the size of the BAT in blocks (prev)
    WriteUnsigned32((unsigned32_t)(bks.msat_count+total_data_blocks+bks.bat_count));
 #if OLE_DEBUG
-	fprintf(stderr, "HEADER says directory at %d\n", bks.msat_count+total_data_blocks+bks.bat_count);
+   std::cerr << "HEADER says directory at " << (bks.msat_count+total_data_blocks+bks.bat_count) << std::endl;
 #endif
    // [34] UK9
    WriteSigned32(HEADVAL_DFLT_UK9);
@@ -137,13 +137,13 @@ int  COleDoc::DumpHeader(blocks bks, size_t total_data_size)
    // we will use first and possibly additional blocks for large files
    WriteSigned32(bks.msat_count ? 0 : HEADVAL_DFLT_XBAT_START);
 #if OLE_DEBUG
-	fprintf(stderr, "xbatStart=%d\n", bks.msat_count ? 0 : HEADVAL_DFLT_XBAT_START), fflush(stderr);
+   std::cerr <<  "xbatStart=" << (bks.msat_count ? 0 : HEADVAL_DFLT_XBAT_START) << std::endl;
 #endif
 
    // [48] XBAT_COUNT
    WriteUnsigned32((unsigned32_t)bks.msat_count);	// was HEADVAL_DFLT_XBAT_COUNT (0)
 #if OLE_DEBUG
-	fprintf(stderr, "msat_count=%d\n", bks.msat_count), fflush(stderr);
+   std::cerr << "msat_count=" << bks.msat_count << std::endl;
 #endif
 
    // [4C] BAT_ARRAY
@@ -158,13 +158,13 @@ int  COleDoc::DumpHeader(blocks bks, size_t total_data_size)
    sectorID = bks.msat_count + total_data_blocks;
    for(i=0; i<bks.header_bat_count; i++) {
 #if OLE_DEBUG
-	  // fprintf(stderr, "sectorID=%d\n", sectorID), fflush(stderr);
+	   std::cerr << "sectorID=" << sectorID << std::endl;
 #endif
       WriteUnsigned32(sectorID++);
 	}
 #if OLE_DEBUG
-	fprintf(stderr, "Position=0x%lx\n", Position() );
-	// fprintf(stderr, "SEC_ID[%u]=%u\n", i, total_data_size/(BIG_BLOCK_SIZE) + i), fflush(stderr);
+   std::cerr << std::hex << Position() << std::dec << std::endl;
+   std::cerr << "SEC_ID[" << i << "]=" << (total_data_size/(BIG_BLOCK_SIZE) + i) << std::endl;
 #endif
 
    // if we don't fill the header table, zero out unused entries
@@ -173,7 +173,7 @@ int  COleDoc::DumpHeader(blocks bks, size_t total_data_size)
    }
 
 #if OLE_DEBUG
-	fprintf(stderr, "Position=0x%lx\n", Position() );
+   std::cerr << "Position=0x" << std::hex << Position() << std::dec << std::endl;
 #endif
 
 	// plow ahead, adding up to 127 entries per extra MSAT block
@@ -196,7 +196,7 @@ int  COleDoc::DumpHeader(blocks bks, size_t total_data_size)
 	}
 	
 #if OLE_DEBUG
-	fprintf(stderr, "Position=0x%lx\n", Position() );
+	std::cerr << "Position=0x" << std::hex << Position() << std::dec << std::endl;
 #endif
 
 	assert(Position() == (HEAD_SIZE + (bks.msat_count*BIG_BLOCK_SIZE)));
@@ -274,9 +274,11 @@ int  COleDoc::DumpDepots(blocks bks)
 		data_size	= (*node)->GetDataPointer()->GetDataSize();
 		chain_len	= data_size/BIG_BLOCK_SIZE - 1;
 #if OLE_DEBUG
-		fprintf(stderr, "NODE[%d]: start_block=%d dataSize=%u Sectors=%d\n", foo++, bat_index, data_size, chain_len + 1 /* directory_terminator */);
+		std::cerr << "NODE[" << foo++ << "]: start_block=" << bat_index 
+			<< " dataSize=" << data_size 
+			<< " Sectors=" << chain_len + 1 /* directory_terminator */ << std::endl;
 #endif
-		for(unsigned32_t i = 0; i < chain_len; i++)
+		for(size_t i = 0; i < chain_len; i++)
 		{
 			WriteSigned32(++bat_index);
 			++bks._bat_entries;
@@ -289,7 +291,9 @@ int  COleDoc::DumpDepots(blocks bks)
    } 
 
 #if OLE_DEBUG
-   fprintf(stderr, "BAT_SELF_PLACE=%d -> %d TOTAL=%d\n", bat_index+1, bat_index+1+bks.bat_count+1, bks.bat_count);
+   std::cerr << "BAT_SELF_PLACE=" << (bat_index+1)
+	   << " -> " << (bat_index+1+bks.bat_count+1) 
+	   << " TOTAL=" << bks.bat_count << std::endl;
 #endif
    // Write the -3 number for every index in the BAT that references to some BAT block (uh!?)
    for(size_t i=0; i<bks.bat_count;i++)
@@ -299,7 +303,7 @@ int  COleDoc::DumpDepots(blocks bks)
 		++bks._bat_entries;
    }
 #if OLE_DEBUG
-   fprintf(stderr, "last write: left = %d\n", Position() % HEAD_SIZE);
+   std::cerr << "last write: left = " << (Position() % HEAD_SIZE) << std::endl;
 #endif
 
 	// This is the entry for the directory chain, the very last block, saying directory is just one sector
@@ -313,12 +317,10 @@ int  COleDoc::DumpDepots(blocks bks)
    SerializeFixedArray(BAT_NOT_USED_BYTE, to_fill_size);
 
 #if OLE_DEBUG
-   fprintf(stderr, "last write: left = %d\n", Position() % HEAD_SIZE);
-#endif
+   std::cerr << "last write: left = " << (Position() % HEAD_SIZE) << std::endl;
 
-#if OLE_DEBUG
-   fprintf(stderr, "Position=0x%lx\n", Position() );
-   fprintf(stderr, "bat_entries=%d actual=%d\n", bks.bat_entries, bks._bat_entries );
+   std::cerr << "Position=0x" << std::hex << Position() << std::dec << std::endl;
+   std::cerr << "bat_entries=" << bks.bat_entries << " actual=" << bks._bat_entries << std::endl;
 #endif
 
    assert(bks.bat_entries == bks._bat_entries);
@@ -339,7 +341,8 @@ int  COleDoc::DumpFileSystem(void)
    GetAllNodes(node_list);
 
 #if OLE_DEBUG
-   fprintf(stderr, "FILESYSTEM directory at SecID=%d (remain=%d)\n", (Position() - HEAD_SIZE)/BIG_BLOCK_SIZE, Position() % BIG_BLOCK_SIZE);
+   std::cerr << "FILESYSTEM directory at SecID=" << (Position() - HEAD_SIZE)/BIG_BLOCK_SIZE
+	   << " (remain=" << (Position() % BIG_BLOCK_SIZE) << std::endl;
 #endif
    DumpNode(GetRootEntry());
 
@@ -425,7 +428,9 @@ blocks COleDoc::GetBATCount()
 		// number of slots available
 		bat_block_capacity = HEADER_SAT_SIZE + BAT_BLOCKS_PER_MSAT_BLOCK*msat_blocks;
 #if OLE_DEBUG
-		fprintf(stderr, "bat_blocks=%d capacity=%d needed=%d\n", bat_num_blocks, bat_block_capacity, bat_blocks_needed);
+		std::cerr << "bat_blocks=" << bat_num_blocks
+			<< " capacity=" << bat_block_capacity
+			<< " needed=" << bat_blocks_needed << std::endl;
 #endif
 	}
 	
@@ -448,8 +453,10 @@ blocks COleDoc::GetBATCount()
 	bks.bat_count			= bat_num_blocks;
 
 #if OLE_DEBUG
-	fprintf(stderr, "entries=%u bats=%d msats=%d headerBats=%d extraBats=%d headFill=%d extraFill=%d\n", bks.bat_entries,
-		bks.bat_count, bks.msat_count, bks.header_bat_count, bks.extra_bat_count, bks.header_fill, bks.extra_fill);
+	std::cerr << "entries=" << bks.bat_entries << " bats=" << bks.bat_count
+		<< " msats=" << bks.msat_count << " headerBats=" << bks.header_bat_count
+		<< " extraBats=" << bks.extra_bat_count << " headFill=" << bks.header_fill
+		<< " extraFill=" << bks.extra_fill << std::endl;
 #endif
 
 	return bks;
@@ -533,7 +540,7 @@ int COleDoc::DumpNode(COleProp& node)
 
    // [74] START_BLOCK
 #if OLE_DEBUG
-   fprintf(stderr, "START_BLOCK_1=%d\n", node.GetStartBlock() );
+   std::cerr << "START_BLOCK_1=" << node.GetStartBlock() << std::endl;
 #endif
    WriteSigned32(node.GetStartBlock());
 

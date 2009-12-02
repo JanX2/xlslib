@@ -1,13 +1,18 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
-AC_PREREQ(2.57)
+
+dnl Initialize autoconf/automake
 AC_INIT([xlslib], [1.5.0], [dhoerl@mac.com])
-AC_CONFIG_SRCDIR([src/common/systype.h])
-AC_CONFIG_AUX_DIR(config)
-AM_INIT_AUTOMAKE(xlslib, 1.5.0)
-AM_CONFIG_HEADER([src/common/xlconfig.h])
+
+AC_CONFIG_AUX_DIR([config])
+# Minimum Autoconf version required.
+AC_PREREQ(2.57)
 AC_CONFIG_MACRO_DIR([m4])
+AM_INIT_AUTOMAKE(xlslib, 1.5.0)
+AC_CONFIG_SRCDIR([src/common/systype.h])
+AM_CONFIG_HEADER([src/common/xlconfig.h])
+
 
 # Checks for programs.
 AC_PROG_CXX
