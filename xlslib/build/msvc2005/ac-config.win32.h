@@ -134,7 +134,7 @@
 #define PACKAGE_NAME "xlslib"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "xlslib 1.5.0"
+#define PACKAGE_STRING "xlslib 1.6.0"
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "xlslib"
@@ -143,7 +143,7 @@
 #define PACKAGE_URL ""
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "1.5.0"
+#define PACKAGE_VERSION "1.6.0"
 
 /* revision number of software */
 #define REVISION "@REVISION@"
@@ -170,7 +170,7 @@
 #define TAR_FILENAME_POSTFIX "@TAR_FILENAME_POSTFIX@"
 
 /* Version number of package */
-#define VERSION "1.5.0"
+#define VERSION "1.6.0"
 
 /* version suffix code of the software */
 #define VER_SUFFIX "@VER_SUFFIX@"
