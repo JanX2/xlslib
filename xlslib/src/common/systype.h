@@ -94,75 +94,14 @@
 #   error ERROR: Invalid allocator option
 #endif
 
-#ifdef uint8_t				// if we have this one we will have all the others too
 
-typedef uint8_t				unsigned8_t;
-typedef uint16_t			unsigned16_t;
-typedef uint32_t			unsigned32_t;
 
-typedef int8_t				signed8_t;
-typedef int16_t				signed16_t;
-typedef int32_t				signed32_t;
+#include <xlstypes.h>  /* [i_a]   better to get the definition from a single place */
 
-#else
 
-typedef unsigned char      unsigned8_t;
-typedef unsigned short int unsigned16_t;
-typedef unsigned int       unsigned32_t;
 
-typedef char               signed8_t;
-typedef short int          signed16_t;
-typedef int                signed32_t;
 
-#endif
 
-#if defined(_MSC_VER) && defined(WIN32)
-
-typedef wchar_t unichar_t;
-#define ustring wstring
-//typedef wstring ustring;
-
-#elif defined(__FRAMEWORK__)	// For OSX
-
-#undef HAVE_ICONV
-
-//#if !defined(unichar)
-//typedef uint16_t unichar;
-//#endif
-
-//typedef unichar unichar_t;
-#define unichar_t unsigned16_t
-
-//typedef std::basic_string<unsigned16_t> ustring;
-#define ustring basic_string<unsigned16_t>
-
-typedef std::basic_string<unsigned16_t> u16string;
-
-#else
-
-typedef wchar_t unichar_t;
-#define ustring wstring
-typedef std::basic_string<unsigned16_t> u16string;
-
-#endif
-
-#if defined(_MSC_VER) && defined(WIN32)
-
-typedef unsigned _int64 unsigned64_t;
-
-#else // not windows
-
-#ifdef _UINT64_T
-
-typedef uint64_t unsigned64_t;
-
-#else
-
-typedef unsigned long long unsigned64_t;
-
-#endif
-
-#endif
 
 typedef std::list<std::string* XLSLIB_DFLT_ALLOCATOR> StringList_t;
 typedef StringList_t::const_iterator StringListItor_t;
