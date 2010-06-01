@@ -36,6 +36,8 @@
 
 #if defined(__cplusplus)
 
+#include <xlsys.h>
+
 #include <string>
 #include <xlstypes.h>
 #include <globalrec.h>

@@ -35,7 +35,7 @@
 #ifndef BIFFSECTION_H
 #define BIFFSECTION_H
 
-#include <config.h>
+#include <xlsys.h>
 
 /*
 ******************************

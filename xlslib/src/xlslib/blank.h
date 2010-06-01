@@ -34,7 +34,7 @@
 #ifndef BLANK_H
 #define BLANK_H
 
-#include <config.h>
+#include <xlsys.h>
 #include <common.h>
 
 #include <cell.h>

@@ -32,7 +32,7 @@
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-#include <config.h>
+#include <xlsys.h>
 
 #include <number.h>
 #include <datast.h>

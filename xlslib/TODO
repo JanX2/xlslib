@@ -2,6 +2,50 @@ TODO list for xlslib:
 
 $Id: TODO,v 1.3 2008/10/25 20:29:43 dhoerl Exp $
 
+Code cleanup
+------------
+
+[GerH] currently the header file organization is a bit of a mess; the rename of config.h to xlsys.h 
+       helps (it is a hack!) when using xlslib in a large project environment where lots of libraries/modules
+       are -I included / used.
+       
+       The 'best' way would probably allow/enforce a single -I include/xlslib/ style '-I' arg, i.e. editing all
+       #include<> statements in here to go from
+       
+       #include <xlslib.h>
+       
+       to
+       
+       # include <xlslib/common/xlslib.h>
+       
+       etc.etc. so we significantly reduce the risk of collisions among various libs' header filenames, due to
+       sealous -I usage by the application.
+       
+       
+       Meanwhile, the xlsys.h + xlconfig.h + xlstypes.h set is messy, IMHO. But I'm the one who turned it into a
+       (bigger) mess; the current state of affairs is rather an intermediate stage, as now all types are defined in
+       one place, so the next step here would be to reorganize those 3 header files and make sure they once again
+       represent&contain what they should:
+       
+       - system autoconf-detected capabilities
+       - system-dependent #includes, #defines, type emulations, etc. - all to make xlslib see a unified type system
+       - xlslib basic types, which are portable - thanks to the first two items here.
+
+
+[GerH] kill the sections marked:
+
+  #if 0
+  ...
+  #endif
+  
+       These are mostly remnants of old code, dangling there pending review.
+       
+
+[GerH] create a set of 'real' 'make check' tests for xlslib. See whether we can do that using the autoconf/autom4te
+       toolset.
+      
+      
+
 General xlsLib Features to be added
 ------------------------
 - Formulas (current author, in progress)

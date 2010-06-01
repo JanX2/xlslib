@@ -32,7 +32,7 @@
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-#include <config.h>
+#include <xlsys.h>
 
 #include <summinfo.h>		// pseudo base class
 #include <docsumminfo.h>

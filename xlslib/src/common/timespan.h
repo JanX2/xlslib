@@ -35,9 +35,9 @@
 #ifndef XLSLIB_TIMESPAN_H
 #define XLSLIB_TIMESPAN_H
 
-/* #include <config.h> */
-#include <time.h>
+/* #include <xlsys.h> */
 
+#include <time.h>
 #include <assert.h>	// YES
 
 class CCpuClockTimespan

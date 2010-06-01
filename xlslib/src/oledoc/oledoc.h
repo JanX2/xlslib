@@ -35,7 +35,7 @@
 #ifndef OLEDOC_H
 #define OLEDOC_H 
 
-#include <config.h>
+#include <xlsys.h>
 #include <common.h>
 #include <binfile.h>
 #include <olefs.h>

@@ -39,7 +39,7 @@
 #include <fstream>
 #include <string>
 
-#include <config.h>
+#include <xlsys.h>
 #include <common.h>
 #include <unit.h>
 

@@ -32,7 +32,7 @@
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-//#include <config.h>
+//#include <xlsys.h>
 /*
   sed -e 's/^\([A-Za-z0-9]*\)$/#define FT_\1 \\/' biff_formula_tags_norm.txt  | sed -e 's/^ \([A-F0-9]*\)\h$/                                              0x\1/' | sed  -e "s/^ \([oc].*\)//"  > formtags.h
 */

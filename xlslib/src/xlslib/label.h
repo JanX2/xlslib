@@ -36,7 +36,7 @@
 #ifndef LABEL_H
 #define LABEL_H
 
-#include <config.h>
+#include <xlsys.h>
 #include <common.h>
 #include <cell.h>
 #include <record.h>

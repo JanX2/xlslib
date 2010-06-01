@@ -35,7 +35,7 @@
 #define HPSF_H
 
 #include <time.h>
-#include <config.h>
+#include <xlsys.h>
 #include <common.h>
 #include <unit.h>
 

@@ -36,7 +36,7 @@
 #ifndef CONTINUE_H
 #define CONTINUE_H
 
-#include <config.h>
+#include <xlsys.h>
 #include <common.h>
 #include <record.h>
 

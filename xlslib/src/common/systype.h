@@ -37,10 +37,14 @@
 #ifndef SYSTYPE_H
 #define SYSTYPE_H
 
-#if defined(_MSC_VER) && defined(WIN32)
+#if defined(_MSC_VER) && defined(WIN32) && 0
 #pragma warning(disable: 4786) // Long debug information related to STL
 #pragma warning(disable: 4290) // C++ Exception Specification ignored
 #endif
+
+
+#include <xlsys.h>
+
 
 //#   define PHPEXT_TSRMLS_C  tsrm_ls
 //#   define PHPEXT_TSRMLS_D  void ***tsrm_ls
@@ -52,9 +56,9 @@
 #endif
 #include <cstring>
 #include <string>
-#include <string.h>	
+#include <string.h>	// DFH 10-2-08
 #include <iostream>
-#include <fstream> 
+#include <fstream>  // [i_a] MSVC needs this for cerr (XTRACE() et al)
 #include <list>
 #include <set>
 #include <algorithm>

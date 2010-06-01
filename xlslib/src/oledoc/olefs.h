@@ -33,7 +33,7 @@
 #ifndef OLEFS_H
 #define OLEFS_H
  
-#include <config.h>
+#include <xlsys.h>
 
 #include <oleprop.h>
 #include <datast.h>

@@ -34,7 +34,7 @@
 
 #define OLE_DEBUG	0
 
-#include <config.h>
+#include <xlsys.h>
 
 #include <oledoc.h>
 

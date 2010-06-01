@@ -36,7 +36,7 @@
 #ifndef ROW_H
 #define ROW_H
 
-#include <config.h>
+#include <xlsys.h>
 #include <common.h>
 #include <record.h>
 #include <extformat.h>

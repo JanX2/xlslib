@@ -34,7 +34,7 @@
 #ifndef TOSTR_H
 #define TOSTR_H
 
-#include <config.h>
+#include <xlsys.h>
 
 #include <string>
 #include <sstream>

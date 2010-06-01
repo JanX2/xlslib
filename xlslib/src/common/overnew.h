@@ -35,7 +35,7 @@
 #ifndef OVERNEW_H
 #define OVERNEW_H
 
-#include <config.h>
+#include <xlsys.h>
 #include <systype.h>
 
 /********************************************************************

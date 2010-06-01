@@ -32,7 +32,7 @@
 #ifndef WORKBOOK_H
 #define WORKBOOK_H 
 
-#include <config.h>
+#include <xlsys.h>
 
 #include <common.h>
 #include <oledoc.h>

@@ -35,7 +35,7 @@
 #ifndef CELL_H
 #define CELL_H
 
-#include <config.h>
+#include <xlsys.h>
 #include"common.h"
 
 #include <unit.h>

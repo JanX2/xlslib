@@ -35,7 +35,7 @@
 #ifndef SHEETREC_H
 #define SHEETREC_H
 
-#include <config.h>
+#include <xlsys.h>
 #include <common.h>
 #include <unit.h>
 #include <biffsection.h>

@@ -33,7 +33,7 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 
-#include <config.h>
+#include <xlsys.h>
 
 #include <range.h>
 #include <extformat.h>

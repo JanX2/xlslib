@@ -18,7 +18,7 @@
 #ifndef DOCSUMMARYINFO_H
 #define DOCSUMMARYINFO_H 
 
-#include <config.h>
+#include <xlsys.h>
 #include <common.h>
 #include <datast.h>
 #include <HPSF.h>

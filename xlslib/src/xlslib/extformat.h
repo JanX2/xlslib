@@ -35,7 +35,7 @@
 #ifndef EXTFORMAT_H
 #define EXTFORMAT_H
 
-#include <config.h>
+#include <xlsys.h>
 #include <common.h>
 #include <rectypes.h>
 #include <record.h>

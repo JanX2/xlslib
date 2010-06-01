@@ -32,7 +32,7 @@
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-#include <config.h>
+#include <xlsys.h>
 
 #include <datast.h>
 #include <systype.h>  // XTRACE2()      [i_a]

@@ -30,7 +30,7 @@
  *
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-#include <config.h>
+#include <xlsys.h>
 
 #include <colors.h>
 #include <datast.h>

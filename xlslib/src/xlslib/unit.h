@@ -35,7 +35,7 @@
 #ifndef UNIT_H
 #define UNIT_H
 
-#include <config.h>
+#include <xlsys.h>
 #include <common.h>
 
 #include <xlstypes.h>

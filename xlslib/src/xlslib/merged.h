@@ -35,7 +35,7 @@
 #ifndef MERGED_H
 #define MERGED_H
 
-#include <config.h>
+#include <xlsys.h>
 #include <common.h>
 #include <rectypes.h>
 #include <record.h>

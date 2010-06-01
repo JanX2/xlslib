@@ -62,8 +62,7 @@
 
 #if _MSC_VER >= 1400
 
-
-// Studio 2008 (and maybe earlier versions too?)
+// Studio 2008 (and maybe earlier versions too?)
 #define _CRTDBG_MAP_ALLOC
 
 #include "crtdbg.h"
@@ -92,8 +91,6 @@
 #endif // _MSC_VER >= 1400
 
 #include "ac-config.win32.h"
-
-#define HAVE_PRAGMA_PACK_PUSH_POP  1
 
 #endif // defined(_MSC_VER) && defined(WIN32)
 

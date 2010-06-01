@@ -30,7 +30,7 @@
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-#include <config.h>
+#include <xlsys.h>
 
 #include <olefs.h>
 #include <string>

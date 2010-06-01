@@ -36,7 +36,7 @@
 #ifndef RECORD_H
 #define RECORD_H
 
-#include <config.h>
+#include <xlsys.h>
 #include <common.h>
 #include <rectypes.h>
 #include <unit.h>

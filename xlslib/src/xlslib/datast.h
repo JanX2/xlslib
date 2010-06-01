@@ -37,7 +37,7 @@
 #ifndef DATAST_H
 #define DATAST_H 
 
-#include <config.h>
+#include <xlsys.h>
 #include <common.h>
 #include <unit.h>
 #include <row.h>

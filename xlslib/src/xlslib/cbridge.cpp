@@ -31,7 +31,7 @@
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-#include <config.h>
+#include <xlsys.h>
 
 #include <sys/types.h>
 #include <string>

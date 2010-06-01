@@ -36,7 +36,7 @@
 #define RANGE_H
 
 
-#include <config.h>
+#include <xlsys.h>
 #include <common.h>
 
 

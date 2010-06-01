@@ -35,7 +35,7 @@
 #ifndef OLEPROP_H
 #define OLEPROP_H
 
-#include <config.h>
+#include <xlsys.h>
 
 #include <list>
 #include <string>

@@ -83,7 +83,8 @@
  * pedwards@jaj.com  May 1999
  */
 
-#include <config.h>
+#include <xlsys.h>
+
 #include <string>
 #include <cstring>    // for strchr
 

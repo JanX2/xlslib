@@ -35,7 +35,7 @@
 #ifndef GLOBALREC_H
 #define GLOBALREC_H
 
-#include <config.h>
+#include <xlsys.h>
 #include <common.h>
 #include <biffsection.h>
 #include <font.h>

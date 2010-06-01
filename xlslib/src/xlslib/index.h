@@ -36,7 +36,7 @@
 #ifndef INDEX_H
 #define INDEX_H
 
-#include <config.h>
+#include <xlsys.h>
 #include <common.h>
 #include <record.h>
 

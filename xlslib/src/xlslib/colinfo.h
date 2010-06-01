@@ -35,7 +35,7 @@
 #ifndef COLINFO_H
 #define COLINFO_H
 
-#include <config.h>
+#include <xlsys.h>
 #include <common.h>
 #include <record.h>
 #include <extformat.h>

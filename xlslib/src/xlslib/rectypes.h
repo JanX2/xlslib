@@ -39,7 +39,7 @@
   sed -e 's/\(^\([A-Z0-9]*\)\:.*$\)/\/\* \1 \*\/\n#define RECTYPE_\2 \\/' biff_records_alpha.txt  | sed -e 's/^ \([A-F0-9]*\)\h$/                                              0x\1/' >recordtypes.h
 */
 
-#include <config.h>
+#include <xlsys.h>
 #include <systype.h>
 
 // SIZES

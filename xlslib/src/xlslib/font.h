@@ -35,7 +35,7 @@
 #ifndef FONT_H
 #define FONT_H
 
-#include <config.h>
+#include <xlsys.h>
 #include <common.h>
 #include <rectypes.h>
 #include <record.h>

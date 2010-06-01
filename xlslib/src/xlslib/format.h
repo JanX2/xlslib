@@ -36,7 +36,7 @@
 #ifndef FORMAT_H
 #define FORMAT_H
 
-#include <config.h>
+#include <xlsys.h>
 #include <common.h>
 #include <rectypes.h>
 #include <record.h>
