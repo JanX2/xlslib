@@ -65,7 +65,7 @@
 				WarningLevel="4"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
-				DisableSpecificWarnings="4267,4244,4127,4100,4706,4018,4389"
+				DisableSpecificWarnings="4267,4244,4127,4100,4706,4018,4389,4103"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -153,7 +153,7 @@
 				WarningLevel="4"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
-				DisableSpecificWarnings="4267,4244,4127,4100,4706,4018,4389"
+				DisableSpecificWarnings="4267,4244,4127,4100,4706,4018,4389,4103"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -241,7 +241,7 @@
 				WarningLevel="4"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
-				DisableSpecificWarnings="4267,4244,4127,4100,4706,4018,4389"
+				DisableSpecificWarnings="4267,4244,4127,4100,4706,4018,4389,4103"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -331,7 +331,7 @@
 				WarningLevel="4"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
-				DisableSpecificWarnings="4267,4244,4127,4100,4706,4018,4389"
+				DisableSpecificWarnings="4267,4244,4127,4100,4706,4018,4389,4103"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -423,7 +423,7 @@
 				WarningLevel="4"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
-				DisableSpecificWarnings="4267,4244,4127,4100,4706,4018,4389"
+				DisableSpecificWarnings="4267,4244,4127,4100,4706,4018,4389,4103"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -515,7 +515,7 @@
 				WarningLevel="4"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
-				DisableSpecificWarnings="4267,4244,4127,4100,4706,4018,4389"
+				DisableSpecificWarnings="4267,4244,4127,4100,4706,4018,4389,4103"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -727,10 +727,6 @@
 				Name="common"
 				>
 				<File
-					RelativePath="..\..\src\common\config.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\src\common\overnew.h"
 					>
 				</File>
@@ -772,6 +768,10 @@
 				</File>
 				<File
 					RelativePath="..\..\src\common\xlstypes.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\common\xlsys.h"
 					>
 				</File>
 			</Filter>

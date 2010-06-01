@@ -1,5 +1,5 @@
 /* ac-config.win32.h.  Generated from ac-config.h.in by configure.  Patched by [i_a] to make it work for MSVC2005.  */
-/* ac-config.h.in.  Generated from configure.in by autoheader.  */
+/* src/common/xlconfig.h.in.  Generated from configure.ac by autoheader.  */
 
 
 #ifndef WIN32
@@ -14,16 +14,6 @@
 #define __WIN32
 #endif
 
-
-
-/* Define if building universal (internal helper macro) */
-/* #undef AC_APPLE_UNIVERSAL_BUILD */
-
-/* Define to 1 if the `closedir' function returns void instead of `int'. */
-/* #undef CLOSEDIR_VOID */
-
-/* Berkeley DB 1.8x comatibility */
-/* #undef DB_COMPATIBILITY_API */
 
 /* Define if you want to compile with extra debug development checks */
 #if defined(_DEBUG) || defined(DEBUG) /* [i_a] this is done in the MSVC2005 project: different builds available */
@@ -44,44 +34,9 @@
 #define HAVE_CTYPE_H 1
 
 
-/* Define if you want to compile with extra pavuk function debugging/analysis
-   features */
-#define HAVE_DEBUG_FEATURES 1
-
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #undef HAVE_DLFCN_H
 
-
-/* Define to 1 if you have the <endian.h> header file. */
-#undef HAVE_ENDIAN_H 
-
-/* Define to 1 if you have the <errno.h> header file. */
-#define HAVE_ERRNO_H 1
-
-/* Define to 1 if you have the `fcntl' function. */
-#undef HAVE_FCNTL 
-
-/* Define to 1 if you have the <fcntl.h> header file. */
-#define HAVE_FCNTL_H 1
-
-
-/* Define to 1 if you have the <getopt_ex.h> header file. */
-#define HAVE_GETOPT_EX_H 1
-
-/* Define to 1 if you have the <getopt.h> header file. */
-#undef HAVE_GETOPT_H 
-
-/* Define to 1 if you have the `getpid' function. */
-#define HAVE_GETPID 1 /* MSVC2005 */
-
-/* Define to 1 if you have the `gettimeofday' function. */
-#undef HAVE_GETTIMEOFDAY
-
-/* have tm_gmtoff inside struct tm */
-#undef HAVE_GMTOFF
-
-/* GNU REs */
-/* #undef HAVE_GNU_REGEX */
 
 /* Define if you have the iconv() function. */
 #undef HAVE_ICONV
@@ -90,130 +45,6 @@
 /* Define to 1 if you have the <inttypes.h> header file. */
 #define HAVE_INTTYPES_H 1
 
-
-/* Define to 1 if you have the <jsdebug.h> header file. */
-#define HAVE_JSDEBUG_H 1
-
-/* Define to 1 if you have the <jsemit.h> header file. */
-#define HAVE_JSEMIT_H 1
-
-/* Define to 1 if you have the <jsfun.h> header file. */
-#define HAVE_JSFUN_H 1
-
-/* Define to 1 if you have the <jsgc.h> header file. */
-#define HAVE_JSGC_H 1
-
-/* Define to 1 if you have the <jslock.h> header file. */
-#define HAVE_JSLOCK_H 1
-
-/* Define to 1 if you have the <jsnum.h> header file. */
-#define HAVE_JSNUM_H 1
-
-/* Define to 1 if you have the <jsobj.h> header file. */
-#define HAVE_JSOBJ_H 1
-
-/* Define to 1 if you have the <jsopcode.h> header file. */
-#define HAVE_JSOPCODE_H 1
-
-/* Define to 1 if you have the <jsparse.h> header file. */
-#define HAVE_JSPARSE_H 1
-
-/* Define to 1 if you have the <jsprf.h> header file. */
-#define HAVE_JSPRF_H 1
-
-/* Define to 1 if you have the <jspubtd.h> header file. */
-#define HAVE_JSPUBTD_H 1
-
-/* Define to 1 if you have the <jsscope.h> header file. */
-#define HAVE_JSSCOPE_H 1
-
-/* Define to 1 if you have the <jsscript.h> header file. */
-#define HAVE_JSSCRIPT_H 1
-
-/* Define to 1 if you have the <jsstddef.h> header file. */
-#define HAVE_JSSTDDEF_H 1
-
-/* Define to 1 if you have the <jstypes.h> header file. */
-#define HAVE_JSTYPES_H 1
-
-/* Define to 1 if you have the <jsutil.h> header file. */
-#define HAVE_JSUTIL_H 1
-
-/* Define to 1 if you have the `JS_BeginRequest' function. */
-#define HAVE_JS_BEGINREQUEST 1
-
-/* Define to 1 if you have the `JS_EncodeString' function. */
-#define HAVE_JS_ENCODESTRING 1 /* latest SpiderMonkey */
-
-/* Define to 1 if you have the `JS_EndRequest' function. */
-#define HAVE_JS_ENDREQUEST 1
-
-/* Define to 1 if you have the `JS_SetContextCallback' function. */
-#define HAVE_JS_SETCONTEXTCALLBACK 1
-
-/* Define to 1 if you have the `JS_SetContextThread' function. */
-#define HAVE_JS_SETCONTEXTTHREAD 1
-
-/* Define to 1 if you have the `JS_SetOperationCallback' function. */
-#define HAVE_JS_SETOPERATIONCALLBACK 1
-
-/* Define to 1 if you have the `JS_SetScriptStackQuota' function. */
-#define HAVE_JS_SETSCRIPTSTACKQUOTA 1
-
-/* Define to 1 if you have the `JS_SetVersion' function. */
-#define HAVE_JS_SETVERSION 1
-
-/* Define to 1 if you have the `JS_YieldRequest' function. */
-#define HAVE_JS_YIELDREQUEST 1
-
-/* Define to 1 if you have the `db' library (-ldb). */
-/* #undef HAVE_LIBDB */
-
-/* Define to 1 if you have the <libintl.h> header file. */
-#undef HAVE_LIBINTL_H 
-
-/* Define to 1 if you have the `m' library (-lm). */
-#undef HAVE_LIBM 
-
-/* Define to 1 if you have the `nsl' library (-lnsl). */
-#undef HAVE_LIBNSL 
-
-/* Define to 1 if you have the `socket' library (-lsocket). */
-/* #undef HAVE_LIBSOCKET */
-
-/* Define to 1 if you have the <limits.h> header file. */
-#define HAVE_LIMITS_H 1
-
-/* Define to 1 if you have the `link' function. */
-#undef HAVE_LINK
-
-/* Define to 1 if you have the `llseek' function. */
-#undef HAVE_LLSEEK
-
-/* Define to 1 if you have the <lmcons.h> header file. */
-#define HAVE_LMCONS_H 1
-
-/* Define to 1 if you have the <locale.h> header file. */
-#define HAVE_LOCALE_H 1
-
-/* Define to 1 if you support file names longer than 14 characters. */
-#define HAVE_LONG_FILE_NAMES 1
-
-/* Define to 1 if the system has the type `long long int'. */
-#define HAVE_LONG_LONG_INT 1
-
-/* Define to 1 if you have the `lseek64' function. */
-#undef HAVE_LSEEK64
-
-/* Define to 1 if you have the `lstat' function. */
-#undef HAVE_LSTAT
-
-/* Define to 1 if `lstat' has the bug that it succeeds when given the
-   zero-length file name argument. */
-/* #undef HAVE_LSTAT_EMPTY_STRING_BUG */
-
-/* have libmcrypt */
-/* #undef HAVE_MCRYPT */
 
 /* Define to 1 if you have the `memchr' function. */
 #define HAVE_MEMCHR 1
@@ -227,22 +58,8 @@
 /* Define to 1 if you have the `memset' function. */
 #define HAVE_MEMSET 1
 
-/* multithreading support */
-#define HAVE_MT 1
 /* Define if you have cygwin with new paths style */
 #define HAVE_NEWSTYLE_CYGWIN 1   /* [i_a] fixup apr/2007 - native Win32 port hack to ensure the drive:/ prefix doesn't need to be fixed EVERYWHERE, leading to code chaos */
-
-/* Define to 1 if you have the <pcre.h> header file. */
-/* #undef HAVE_PCRE_H */
-
-/* PCRE REs */
-/* #undef HAVE_PCRE_REGEX */
-
-/* Define to 1 if you have the <poppack.h> header file. */
-#define HAVE_POPPACK_H 1
-
-/* POSIX REs */
-/* #undef HAVE_POSIX_REGEX */
 
 /* Define if compiler supports #pragma pack(<size>). */
 #define HAVE_PRAGMA_PACK 1
@@ -256,64 +73,17 @@
    pack(<size>). */
 #define HAVE_PRAGMA_PACK_PUSH_POP 1
 
-/* Define to 1 if you have the <pshpack1.h> header file. */
-#define HAVE_PSHPACK1_H 1
-
-/* Define to 1 if you have the <pshpack2.h> header file. */
-#define HAVE_PSHPACK2_H 1
-
-/* Define to 1 if you have the <pshpack4.h> header file. */
-#define HAVE_PSHPACK4_H 1
-
-/* Define to 1 if you have the <pwd.h> header file. */
-#undef HAVE_PWD_H
-
-/* REs support */
-#define HAVE_REGEX 1
-
-/* Define to 1 if you have the <regexp.h> header file. */
-/* #undef HAVE_REGEXP_H */
-
-/* Define to 1 if you have the <regex.h> header file. */
-#undef HAVE_REGEX_H 
-
-
-/* Define to 1 if you have the `snprintf' function. */
-#undef HAVE_SNPRINTF
-
-
-/* Define to 1 if you have the <stdarg.h> header file. */
-#define HAVE_STDARG_H 1
-
 /* Define to 1 if stdbool.h conforms to C99. */
 #undef HAVE_STDBOOL_H
-
-/* Define to 1 if you have the <stddef.h> header file. */
-#define HAVE_STDDEF_H 1
 
 /* Define to 1 if you have the <stdint.h> header file. */
 #undef HAVE_STDINT_H
 
-/* Define to 1 if you have the <stdio.h> header file. */
-#define HAVE_STDIO_H 1
-
 /* Define to 1 if you have the <stdlib.h> header file. */
 #define HAVE_STDLIB_H 1
 
-/* Define to 1 if you have the `strcasecmp' function. */
-#undef HAVE_STRCASECMP
-
 /* Define to 1 if you have the `strchr' function. */
 #define HAVE_STRCHR 1
-
-/* Define to 1 if you have the `strcmp' function. */
-#define HAVE_STRCMP 1
-
-/* Define to 1 if you have the `strftime' function. */
-#define HAVE_STRFTIME 1
-
-/* Define to 1 if cpp supports the ANSI # stringizing operator. */
-#define HAVE_STRINGIZE 1
 
 /* Define to 1 if you have the <strings.h> header file. */
 #undef HAVE_STRINGS_H
@@ -321,68 +91,20 @@
 /* Define to 1 if you have the <string.h> header file. */
 #define HAVE_STRING_H 1
 
-/* Define to 1 if you have the `strncasecmp' function. */
-#undef HAVE_STRNCASECMP
-
 /* Define to 1 if you have the <sys/stat.h> header file. */
 #define HAVE_SYS_STAT_H 1
-
-/* Define to 1 if you have the <sys/times.h> header file. */
-#define HAVE_SYS_TIMES_H 1
-
-/* Define to 1 if you have the <sys/time.h> header file. */
-#undef HAVE_SYS_TIME_H
 
 /* Define to 1 if you have the <sys/types.h> header file. */
 #define HAVE_SYS_TYPES_H 1
 
-/* Define to 1 if you have the <sys/utime.h> header file. */
-/* #undef HAVE_SYS_UTIME_H */
-
-/* Define to 1 if you have the <time.h> header file. */
-#define HAVE_TIME_H 1
-
-/* TRE REs */
-#define HAVE_TRE_REGEX 1
-
-/* Define to 1 if you have the <tre/regex.h> header file. */
-#define HAVE_TRE_REGEX_H 1
-
-/* have timezone function tzset() */
-#define HAVE_TZSET 1
-
 /* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H
-
-/* Define to 1 if you have the `utime' function. */
-#undef HAVE_UTIME
-
-/* Define to 1 if you have the <utime.h> header file. */
-#undef HAVE_UTIME_H
-
-/* SYSV 8 REs */
-/* #undef HAVE_V8_REGEX */
-
-/* SYSV 8 RE exports regsub */
-/* #undef HAVE_V8_REGSUB */
-
-/* Define to 1 if you have the <varargs.h> header file. */
-/* #undef HAVE_VARARGS_H */
-
-/* Define to 1 if you have the `vsnprintf' function. */
-#define HAVE_VSNPRINTF 1
 
 /* Define to 1 if you have the <wchar.h> header file. */
 #define HAVE_WCHAR_H 1
 
 /* Define to 1 if you have the <windows.h> header file. */
 #define HAVE_WINDOWS_H 1
-
-/* have libz */
-#define HAVE_ZLIB 1
-
-/* Define to 1 if you have the <zlib.h> header file. */
-#define HAVE_ZLIB_H 1
 
 /* Define to 1 if the system has the type `_Bool'. */
 #define HAVE__BOOL 1
@@ -417,14 +139,11 @@
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "@PACKAGE_TARNAME@"
 
+/* Define to the home page for this package. */
+#define PACKAGE_URL "@PACKAGE_URL@"
+
 /* Define to the version of this package. */
 #define PACKAGE_VERSION "@PACKAGE_VERSION@"
-
-/* enable replacement memmove if system memmove is broken or missing */
-/* #undef PREFER_PORTABLE_MEMMOVE */
-
-/* enable replacement (v)snprintf if system (v)snprintf is broken */
-/* #undef PREFER_PORTABLE_SNPRINTF */
 
 /* revision number of software */
 #define REVISION "@REVISION@"
@@ -449,31 +168,6 @@
 
 /* distribution archive filename postfix code of the software */
 #define TAR_FILENAME_POSTFIX "@TAR_FILENAME_POSTFIX@"
-
-/* Define to 1 if you can safely include both <sys/time.h> and <time.h>. */
-#undef TIME_WITH_SYS_TIME
-
-/* Enable extensions on AIX 3, Interix.  */
-#ifndef _ALL_SOURCE
-/* # undef _ALL_SOURCE  */
-#endif
-/* Enable GNU extensions on systems that have them.  */
-#ifndef _GNU_SOURCE
-/* # undef _GNU_SOURCE  */
-#endif
-/* Enable threading extensions on Solaris.  */
-#ifndef _POSIX_PTHREAD_SEMANTICS
-/* # undef _POSIX_PTHREAD_SEMANTICS  */
-#endif
-/* Enable extensions on HP NonStop.  */
-#ifndef _TANDEM_SOURCE
-/* # undef _TANDEM_SOURCE  */
-#endif
-/* Enable general extensions on Solaris.  */
-#ifndef __EXTENSIONS__
-/* # undef __EXTENSIONS__  */
-#endif
-
 
 /* Version number of package */
 #define VERSION "@VERSION@"

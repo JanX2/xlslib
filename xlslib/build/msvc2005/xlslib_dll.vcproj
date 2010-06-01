@@ -882,7 +882,7 @@
 				Name="common"
 				>
 				<File
-					RelativePath="..\..\src\common\config.h"
+					RelativePath="..\..\src\common\xlsys.h"
 					>
 				</File>
 				<File
