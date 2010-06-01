@@ -43,6 +43,9 @@ Code cleanup
 
 [GerH] create a set of 'real' 'make check' tests for xlslib. See whether we can do that using the autoconf/autom4te
        toolset.
+       
+
+[GerH] regenerate PDF from manual.xls
       
       
 
