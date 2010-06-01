@@ -60,7 +60,7 @@ using namespace xlslib_core;
 
 #define TIMESPAN_END(id,str)                                      \
    span_##id.StopClock();                                         \
-   std::cerr<<str<<" "<<span_##id.GetUsedMilliseconds()<<" ms"<<std::endl
+   std::cerr<<"      # "<<str<<" "<<span_##id.GetUsedMilliseconds()<<" ms"<<std::endl
 
 extern void StressTest(int a,int b,int c);
 extern void RandomTest(int a,int b,int c);
@@ -108,7 +108,7 @@ int main(int argc, char *argv[])
 		RandomFormatTest(1,15,10);
 	}
 
-	std::cerr << "Test finished" << std::endl;
+	std::cerr << "      # Test finished" << std::endl;
 	return 0;
 }
 
@@ -139,14 +139,14 @@ void StandardTest(void)
    sh->number(5,1,3.0);
 
 #if 0
-   printf("limit: "); 
+   printf("      # limit: "); 
    char buf[100];
    gets(buf);
    int lim = atoi(buf);
 #else
    int lim = 42;
 #endif
-   printf("\nlimit: %d\n", lim); // >= 14 --> error to load sheet #2; <= 13 = ok
+   printf("\n      # limit: %d\n", lim); // >= 14 --> error to load sheet #2; <= 13 = ok
 
    int j, k;
 	for (j = 0 ; j <= 127; j++)
@@ -161,10 +161,11 @@ void StandardTest(void)
 		}
 	}
 
+   // WARNING: column and row numbers are zero based in xlslib, but Excel starts numbering the buggers at '1' instead!
    sh->number(130,128,1.0);
    sh->number(131,172,2.0);
-   //sh->number(132,128,3.0);
-   std::string s("This tab should should show two numbers in rows 130/131 at columns 128/172 respectively");
+   sh->number(132,128,3.0);
+   std::string s("This tab should should show three numbers: two in row 131/133 + one in row 132 at columns 129(DY)/173(FQ) respectively");
    sh->label(1,1,s);
 
    wb.Dump("./testCPP.xls");
@@ -195,10 +196,12 @@ void RandomCellAndFormatTest(int sheets_sz, int rows_sz, int cols_sz)
 
       for(int row = 0; row<rows_sz; row++)
       {
-         sh->rowheight(row,GetRndNumber(10)+15);
+	     // height unit = 'twip': 1/20th of a point.
+         sh->rowheight(row,GetRndNumber(13)+20);
          for(int col = 0; col<cols_sz; col++)
          {
-            sh->colwidth(row,GetRndNumber(10)+15);
+		    // width unit = 1/256th of the width of '0'
+            sh->colwidth(row,GetRndNumber(2000)+4000);
 
             int rndcol = GetRndNumber(rows_sz);
             int rndrow = GetRndNumber(cols_sz);
@@ -239,10 +242,12 @@ void RandomCellAndFormatTestProf(int sheets_sz, int rows_sz, int cols_sz)
 
       for(int row = 0; row<rows_sz; row++)
       {
-         sh->rowheight(row,GetRndNumber(10)+15);
-         for(int col = 0; col<cols_sz; col++)
-         {
-            sh->colwidth(row,GetRndNumber(10)+15);
+		  // height unit = 'twip': 1/20th of a point.
+		  sh->rowheight(row,GetRndNumber(13)+20);
+		  for(int col = 0; col<cols_sz; col++)
+		  {
+			  // width unit = 1/256th of the width of '0'
+			  sh->colwidth(row,GetRndNumber(2000)+4000);
 
             int rndcol = GetRndNumber(rows_sz);
             int rndrow = GetRndNumber(cols_sz);
@@ -302,7 +307,7 @@ void RandomCellAndFormatTestProf(int sheets_sz, int rows_sz, int cols_sz)
       }
    }
 
-   wb.Dump("rndcellandformat.xls");
+   wb.Dump("rndcellandformat_prof.xls");
 }
 
 
@@ -325,10 +330,12 @@ void RandomFormatTest(int sheets_sz, int rows_sz, int cols_sz)
 
       for(int row = 0; row<rows_sz; row++)
       {
-         sh->rowheight(row,GetRndNumber(10)+15);
-         for(int col = 0; col<cols_sz; col++)
-         {
-            sh->colwidth(row,GetRndNumber(10)+15);
+		  // height unit = 'twip': 1/20th of a point.
+		  sh->rowheight(row,GetRndNumber(13)+20);
+		  for(int col = 0; col<cols_sz; col++)
+		  {
+			  // width unit = 1/256th of the width of '0'
+			  sh->colwidth(row,GetRndNumber(2000)+4000);
 
 			sprintf(tmp, "S%d:%d-%d", shnum, row+1, col+1);
 			string snamelabel(tmp);
