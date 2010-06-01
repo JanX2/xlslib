@@ -4,19 +4,19 @@
 # SEE IF WE REALLY NEED IT THOUGH 
 # AM_CXXFLAGS = -O2
 
-AM_CPPFLAGS		=    \
--I$(top_builddir)/src/data   \
--I$(top_builddir)/src/oledoc \
--I$(top_builddir)/src/common \
--I$(top_builddir)/src/xlslib
+AM_CPPFLAGS		=  \
+-I$(top_srcdir)/src/data   \
+-I$(top_srcdir)/src/oledoc \
+-I$(top_srcdir)/src/common \
+-I$(top_srcdir)/src/xlslib
 
 lib_LTLIBRARIES 		= libxls.la
 
 # DFH addition
 libxls_la_LDFLAGS = $(XLSLIB_LIBS)
 
-libxls_la_SOURCES 	=         \
-common/overnew.cpp            \
+libxls_la_SOURCES 	=             \
+common/overnew.cpp                    \
 xlslib/blank.cpp		      \
 xlslib/cbridge.cpp		      \
 xlslib/cell.cpp			      \
@@ -24,11 +24,11 @@ xlslib/colinfo.cpp		      \
 xlslib/colors.cpp		      \
 xlslib/continue.cpp		      \
 xlslib/datast.cpp		      \
-xlslib/docsumminfo.cpp		  \
-xlslib/extformat.cpp		  \
+xlslib/docsumminfo.cpp		      \
+xlslib/extformat.cpp		      \
 xlslib/font.cpp			      \
 xlslib/format.cpp		      \
-xlslib/globalrec.cpp		  \
+xlslib/globalrec.cpp		      \
 xlslib/HPSF.cpp			      \
 xlslib/index.cpp		      \
 xlslib/label.cpp		      \
@@ -47,24 +47,24 @@ oledoc/oledoc.cpp		      \
 oledoc/olefs.cpp		      \
 oledoc/oleprop.cpp
 
-pkginclude_HEADERS =          \
-common/xlconfig.h             \
-common/config.h			      \
+pkginclude_HEADERS =                  \
+common/xlconfig.h                     \
+common/xlsys.h			      \
 common/overnew.h		      \
 common/stringtok.h		      \
 common/systype.h		      \
-common/xlconfig.h		      \
 common/timespan.h		      \
-common/xls_poppack.h				  \
-common/xls_pshpack1.h				  \
-common/xls_pshpack2.h				  \
-common/xls_pshpack4.h				  \
-common/xlslib.h				  \
+common/xls_poppack.h		      \
+common/xls_pshpack1.h		      \
+common/xls_pshpack2.h		      \
+common/xls_pshpack4.h		      \
+common/xlslib.h		    	      \
+common/xlstypes.h		      \
 oledoc/binfile.h		      \
 oledoc/oledoc.h			      \
 oledoc/olefs.h			      \
 oledoc/oleprop.h		      \
-xlslib/biffsection.h		  \
+xlslib/biffsection.h		      \
 xlslib/blank.h			      \
 xlslib/cell.h			      \
 xlslib/colinfo.h		      \
@@ -72,7 +72,7 @@ xlslib/colors.h			      \
 xlslib/common.h			      \
 xlslib/continue.h		      \
 xlslib/datast.h			      \
-xlslib/docsumminfo.h		  \
+xlslib/docsumminfo.h		      \
 xlslib/extformat.h		      \
 xlslib/font.h			      \
 xlslib/format.h			      \
@@ -93,6 +93,6 @@ xlslib/summinfo.h		      \
 xlslib/unit.h			      \
 xlslib/workbook.h
 
-clean-local:
-	-rm -rf .deps
+#clean-local:
+#	-rm -rf .deps
 

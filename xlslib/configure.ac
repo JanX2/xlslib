@@ -7,11 +7,11 @@ AC_INIT([xlslib], [1.5.0], [dhoerl@mac.com])
 
 AC_CONFIG_AUX_DIR([config])
 # Minimum Autoconf version required.
-AC_PREREQ(2.57)
+AC_PREREQ(2.65)
 AC_CONFIG_MACRO_DIR([m4])
-AM_INIT_AUTOMAKE(xlslib, 1.5.0)
+AM_INIT_AUTOMAKE([foreign color-tests 1.11])
 AC_CONFIG_SRCDIR([src/common/systype.h])
-AM_CONFIG_HEADER([src/common/xlconfig.h])
+AC_CONFIG_HEADERS([src/common/xlconfig.h])
 
 
 # Checks for programs.
@@ -20,8 +20,12 @@ AC_PROG_CC
 # AC_PROG_RANLIB  -- rendered obsolete by LT_INIT
 LT_INIT
 
+# see also: GNU libtool docs: AC_PROG_LIBTOOL et al:
 AC_LIBTOOL_WIN32_DLL
+AC_LIBTOOL_DLOPEN
 AC_PROG_LIBTOOL
+AC_SUBST(LIBTOOL_DEPS)
+
 AC_PROG_INSTALL
 
 # Checks for libraries.
@@ -102,8 +106,8 @@ AC_CONFIG_FILES([Makefile
 		 src/Makefile
 		 targets/Makefile
 		 targets/test/Makefile
-         build/msvc2005/ac-config.win32.h
-         build/msvc2008/ac-config.win32.h
-         ])
+	         build/msvc2005/ac-config.win32.h
+        	 build/msvc2008/ac-config.win32.h
+	         ])
 AC_OUTPUT
 

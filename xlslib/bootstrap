@@ -91,15 +91,20 @@ s/^.*(\(.*\))/\1/p
 q
 }' ${configure_ac}`
 autoconf_vers_num=`echo "$autoconf_vers" | cvtver`
-# echo "detected autoconf version: " $autoconf_vers
+echo "detected minimum required autoconf version: [" $autoconf_vers "]"
 
 automake_vers=`sed -n '/^AM_INIT_AUTOMAKE(/ { 
-s/^.*(.*\([0-9]\+\.[0-9]\+\).*)/\1/p
+s/^.*([^0-9]*\([0-9]\+\.[0-9]\+\).*)/\1/p
 q
 }' ${configure_ac}`
 automake_vers_num=`echo "$automake_vers" | cvtver`
-# echo "detected automake version: " $automake_vers
-
+# echo "detected minimum required automake version: " $automake_vers
+if [ -z "$automake_vers" ]
+then
+  automake_vers=1.11
+  automake_vers_num=`echo "$automake_vers" | cvtver`
+fi
+echo "detected minimum required automake version: [" $automake_vers "]"
 
 if [ -z "$autoconf_vers" -o -z "$automake_vers" ]
 then
@@ -145,14 +150,24 @@ fi
 echo "Removing autoheader cache files first ..."
 rm -rf autom4te*.cache
 
+# also, remove the aclocal generated files, as at least here aclocal 1.11.1 does /not/ regenerate them,
+# even when forced:
+if [ -z "${FORCE}" ]
+then
+  echo "Removing old (generated) aclocal.m4 and acinclude.m4 ..."
+  rm -f acinclude.m4
+  rm -f aclocal.m4
+fi
+
 echo "libtoolize may issue a warning on the need to run aclocal - rest assured that aclocal will be run!"
 sys=`uname`
 echo "Running [g]libtoolize ${FORCE} ${ACLOCAL_FLAGS:+$ACLOCAL_FLAGS }..."
+# -c : copy instead of symlink lt* files!
 if [ $sys = "Darwin" ]
 then 
-	glibtoolize ${FORCE}  ${ACLOCAL_FLAGS:+$ACLOCAL_FLAGS }
+	glibtoolize ${FORCE} -c ${ACLOCAL_FLAGS:+$ACLOCAL_FLAGS }
 else
-	libtoolize ${FORCE}  ${ACLOCAL_FLAGS:+$ACLOCAL_FLAGS }
+	libtoolize ${FORCE} -c ${ACLOCAL_FLAGS:+$ACLOCAL_FLAGS }
 fi
 echo "Running ${ACLOCAL}${FORCE} -I m4 ${ACLOCAL_FLAGS:+$ACLOCAL_FLAGS }..."
 ${ACLOCAL}${FORCE} -I m4 ${ACLOCAL_FLAGS:+$ACLOCAL_FLAGS }
