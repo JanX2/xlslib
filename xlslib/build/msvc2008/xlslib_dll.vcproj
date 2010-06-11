@@ -596,6 +596,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\xlslib\boolean.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\xlslib\cbridge.cpp"
 				>
 			</File>
@@ -621,6 +625,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\xlslib\docsumminfo.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\xlslib\err.cpp"
 				>
 			</File>
 			<File
@@ -734,6 +742,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\xlslib\boolean.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\xlslib\cbridge.h"
 				>
 			</File>
@@ -763,6 +775,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\xlslib\docsumminfo.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\xlslib\err.h"
 				>
 			</File>
 			<File

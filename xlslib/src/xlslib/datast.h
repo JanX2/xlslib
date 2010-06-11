@@ -204,6 +204,8 @@ namespace xlslib_core
 	class CFormat;
 	class CFont;
 	class CNumber;
+	class CBoolean;
+	class CErr;
 	class CMergedCells;
 	class CLabel;
 	class CIndex;
@@ -222,6 +224,8 @@ namespace xlslib_core
 	class format_t;
 	class font_t;
 	class number_t;
+	class boolean_t;
+	class err_t;
 	class label_t;
 	struct color_entry_t;
 	struct colinfo_t;
@@ -318,6 +322,8 @@ namespace xlslib_core
 		CFormat* MakeCFormat(const format_t* formatdef);
 		CFont* MakeCFont(const font_t* fontdef);
 		CNumber* MakeCNumber(const number_t& blankdef);
+		CBoolean* MakeCBoolean(const boolean_t& booldef);
+		CErr* MakeCErr(const err_t& errdef);
 		CMergedCells* MakeCMergedCells();
 		CLabel* MakeCLabel(const label_t& labeldef);
 		CIndex* MakeCIndex(unsigned32_t firstrow, unsigned32_t lastrow);

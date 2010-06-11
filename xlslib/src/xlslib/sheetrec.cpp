@@ -703,6 +703,31 @@ cell_t* worksheet::number(unsigned32_t row, unsigned32_t col, // 536870911 >= nu
 	return num;
 }
 
+
+/*
+***********************************
+***********************************
+*/
+cell_t* worksheet::boolean(unsigned32_t row, unsigned32_t col, 
+				bool boolval, xf_t* pxformat)
+{
+	boolean_t* num = new boolean_t(m_GlobalRecords, row, col, boolval, pxformat);
+	AddCell(num);
+	return num;
+}
+
+/*
+***********************************
+***********************************
+*/
+cell_t* worksheet::error(unsigned32_t row, unsigned32_t col, 
+			  errcode_t errorcode, xf_t* pxformat)
+{
+	err_t* num = new err_t(m_GlobalRecords, row, col, errorcode, pxformat);
+	AddCell(num);
+	return num;
+}
+
 /*
 ***********************************
 ***********************************

@@ -43,6 +43,8 @@
 #include <index.h>
 #include <extformat.h>
 #include <label.h>
+#include <boolean.h>
+#include <err.h>
 #include <blank.h>
 #include <number.h>
 #include <row.h>
@@ -234,6 +236,12 @@ worksheet class declaration
 		// 536870911 >= numval >= -536870912
 		cell_t* number(unsigned32_t row, unsigned32_t col, 
 					signed32_t numval, xf_t* pxformat = NULL);
+
+		cell_t* boolean(unsigned32_t row, unsigned32_t col, 
+			bool boolval, xf_t* pxformat = NULL);
+
+		cell_t* error(unsigned32_t row, unsigned32_t col, 
+			errcode_t errorcode, xf_t* pxformat = NULL);
 	};
 
   typedef std::vector<xlslib_core::worksheet*> Sheets_Vector_t;

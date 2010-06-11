@@ -366,6 +366,8 @@ EXTERN_TYPE cell_t *xlsWorksheetBlank(worksheet *w, unsigned32_t row, unsigned32
 EXTERN_TYPE cell_t *xlsWorksheetNumberDbl(worksheet *w, unsigned32_t row, unsigned32_t col, double numval, xf_t *pxformat);
 // 536870911 >= numval >= -536870912
 EXTERN_TYPE cell_t *xlsWorksheetNumberInt(worksheet *w, unsigned32_t row, unsigned32_t col, signed32_t numval, xf_t *pxformat);
+EXTERN_TYPE cell_t *xlsWorksheetBoolean(worksheet *w, unsigned32_t row, unsigned32_t col, bool boolval, xf_t *pxformat);
+EXTERN_TYPE cell_t *xlsWorksheetError(worksheet *w, unsigned32_t row, unsigned32_t col, errcode_t errval, xf_t *pxformat);
 
 // cell: xfi
 EXTERN_TYPE void xlsCellFont(cell_t *c, font_t *fontidx);

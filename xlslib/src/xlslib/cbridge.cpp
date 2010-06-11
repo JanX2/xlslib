@@ -135,6 +135,11 @@ extern "C" {
 	cell_t *xlsWorksheetNumberInt(worksheet *w, unsigned32_t row, unsigned32_t col, signed32_t numval, xf_t *pxformat)
 																{ return w->number(row, col, numval, pxformat); }
 
+	cell_t *xlsWorksheetBoolean(worksheet *w, unsigned32_t row, unsigned32_t col, bool boolval, xf_t *pxformat)
+																{ return w->boolean(row, col, boolval, pxformat); }
+
+	cell_t *xlsWorksheetError(worksheet *w, unsigned32_t row, unsigned32_t col, errcode_t errval, xf_t *pxformat)
+																{ return w->error(row, col, errval, pxformat); }
 																
 	// Cells
 	// xf_i interface

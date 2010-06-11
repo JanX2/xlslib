@@ -43,6 +43,8 @@
 #include <font.h>
 #include <format.h>
 #include <number.h>
+#include <boolean.h>
+#include <err.h>
 #include <merged.h>
 #include <label.h>
 #include <index.h>
@@ -391,9 +393,24 @@ CFont* CDataStorage::MakeCFont(const font_t* fontdef)
 	return new CFont(*this, fontdef);
 }
 
-CNumber* CDataStorage::MakeCNumber(const number_t& blankdef)
+CNumber* CDataStorage::MakeCNumber(const number_t& numdef)
 {
-	return new CNumber(*this, blankdef);
+	return new CNumber(*this, numdef);
+}
+
+CBoolean* CDataStorage::MakeCBoolean(const boolean_t& booldef)
+{
+	return new CBoolean(*this, booldef);
+}
+
+CErr* CDataStorage::MakeCErr(const err_t& errdef)
+{
+	return new CErr(*this, errdef);
+}
+
+CNote* CDataStorage::MakeCNote(const note_t& notedef)
+{
+	return new CNote(*this, notedef);
 }
 
 CMergedCells* CDataStorage::MakeCMergedCells()
