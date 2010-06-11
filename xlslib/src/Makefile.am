@@ -18,6 +18,7 @@ libxls_la_LDFLAGS = $(XLSLIB_LIBS)
 libxls_la_SOURCES 	=             \
 common/overnew.cpp                    \
 xlslib/blank.cpp		      \
+xlslib/boolean.cpp		      \
 xlslib/cbridge.cpp		      \
 xlslib/cell.cpp			      \
 xlslib/colinfo.cpp		      \
@@ -25,6 +26,7 @@ xlslib/colors.cpp		      \
 xlslib/continue.cpp		      \
 xlslib/datast.cpp		      \
 xlslib/docsumminfo.cpp		      \
+xlslib/err.cpp			      \
 xlslib/extformat.cpp		      \
 xlslib/font.cpp			      \
 xlslib/format.cpp		      \
@@ -66,6 +68,7 @@ oledoc/olefs.h			      \
 oledoc/oleprop.h		      \
 xlslib/biffsection.h		      \
 xlslib/blank.h			      \
+xlslib/boolean.h		      \
 xlslib/cell.h			      \
 xlslib/colinfo.h		      \
 xlslib/colors.h			      \
@@ -73,6 +76,7 @@ xlslib/common.h			      \
 xlslib/continue.h		      \
 xlslib/datast.h			      \
 xlslib/docsumminfo.h		      \
+xlslib/err.h			      \
 xlslib/extformat.h		      \
 xlslib/font.h			      \
 xlslib/format.h			      \

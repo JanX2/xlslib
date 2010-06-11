@@ -292,6 +292,17 @@ typedef enum
 
 } underline_option_t;
 
+typedef enum
+{
+	XLERR_NULL  = 0x00, // #NULL!
+	XLERR_DIV0  = 0x07, // #DIV/0!
+	XLERR_VALUE = 0x0F, // #VALUE!
+	XLERR_REF   = 0x17, // #REF!
+	XLERR_NAME  = 0x1D, // #NAME?
+	XLERR_NUM   = 0x24, // #NUM!
+	XLERR_N_A   = 0x2A, // #N/A!
+} errcode_t;
+
 #endif // ifdef __cpluplus
 
 #if !(defined(__cplusplus) || defined(__OBJC__) ) || defined(CPP_BRIDGE_XLS)
