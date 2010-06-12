@@ -73,7 +73,7 @@ CBof class declaration
 #endif
 
 
-#define BOF_RECORD_SIZE  (12)								// used when computing blocks during output stage
+#define BOF_RECORD_SIZE  12								// used when computing blocks during output stage
 
 	// forward ref
 	class CDataStorage;
@@ -307,7 +307,7 @@ CStyle class declaration
     };
 
 
-  /*
+/*
 ******************************
 CBSheet class declaration
 ******************************

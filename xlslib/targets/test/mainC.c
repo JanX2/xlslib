@@ -219,7 +219,7 @@ xlsXformatGetBorderColorIdx(xf, side);
 
 // Font
 xlsFontSetName(f, name);
-xlsFontGetName(f, charbuf);
+xlsFontGetName(f, charbuf, sizeof(charbuf));
 xlsFontSetHeight(f, i16);
 xlsFontGetHeight(f);
 xlsFontSetBoldStyle(f, fntboldness);

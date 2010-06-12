@@ -181,16 +181,16 @@ font_t::font_t(CGlobalRecords& gRecords,
 		unsigned8_t family_,
 		unsigned8_t charset_) :
 	m_GlobalRecords(gRecords),
-	index(0x0000),
-	name(FONT_DFLT_FONTNAME),
-	height(FONT_DFLT_HEIGHT),
-	boldstyle(FONT_BOLDNESS_NORMAL),
-	script(FONT_SCRIPT_NONE),
-	attributes(FONT_DFLT_ATTRIBUTES),
-	color(FONT_DFLT_PALETTE),
-	underline(FONT_UNDERLINE_NONE),
-	family(FONT_DFLT_FAMILY),
-	charset(FONT_DFLT_CHARSET),
+	//index(0x0000),
+	//name(FONT_DFLT_FONTNAME),
+	//height(FONT_DFLT_HEIGHT),
+	//boldstyle(FONT_BOLDNESS_NORMAL),
+	//script(FONT_SCRIPT_NONE),
+	attributes(attributes_),
+	//color(FONT_DFLT_PALETTE),
+	//underline(FONT_UNDERLINE_NONE),
+	//family(FONT_DFLT_FAMILY),
+	//charset(FONT_DFLT_CHARSET),
 	m_usage_counter(0)
 {
    SetIndex(index_);
@@ -200,7 +200,6 @@ font_t::font_t(CGlobalRecords& gRecords,
    SetUnderlineStyle(underline_);
    SetScriptStyle(script_);
    SetColor(color_);
-   SetAttributes(attributes_);
    SetFamily(family_);
    SetCharset(charset_);
 }
@@ -384,12 +383,14 @@ unsigned16_t font_t::GetColorIdx(void) const
 }
 
 /* FONT  attributes wrappers */
+#if defined(DEPRECATED)
 void font_t::SetAttributes(unsigned16_t attr) 
 {
    attributes = attr;
 //   m_sigchanged = true;
 }
-	
+#endif
+
 unsigned16_t font_t::GetAttributes(void) const
 {
    return attributes;

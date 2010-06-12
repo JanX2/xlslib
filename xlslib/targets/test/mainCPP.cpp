@@ -196,7 +196,7 @@ void RandomCellAndFormatTest(int sheets_sz, int rows_sz, int cols_sz)
 
       for(int row = 0; row<rows_sz; row++)
       {
-	     // height unit = 'twip': 1/20th of a point.
+	     // height unit = point! Internally Excel works with 'twip': 1/20th of a point, but the interface works in /points/.
          sh->rowheight(row,GetRndNumber(13)+20);
          for(int col = 0; col<cols_sz; col++)
          {
@@ -242,7 +242,7 @@ void RandomCellAndFormatTestProf(int sheets_sz, int rows_sz, int cols_sz)
 
       for(int row = 0; row<rows_sz; row++)
       {
-		  // height unit = 'twip': 1/20th of a point.
+	     // height unit = point! Internally Excel works with 'twip': 1/20th of a point, but the interface works in /points/.
 		  sh->rowheight(row,GetRndNumber(13)+20);
 		  for(int col = 0; col<cols_sz; col++)
 		  {
@@ -330,7 +330,7 @@ void RandomFormatTest(int sheets_sz, int rows_sz, int cols_sz)
 
       for(int row = 0; row<rows_sz; row++)
       {
-		  // height unit = 'twip': 1/20th of a point.
+	     // height unit = point! Internally Excel works with 'twip': 1/20th of a point, but the interface works in /points/.
 		  sh->rowheight(row,GetRndNumber(13)+20);
 		  for(int col = 0; col<cols_sz; col++)
 		  {
@@ -540,7 +540,7 @@ void RandomFontOption(cell_t* cell, bool profile)
    {
       case OPT_FONTHEIGHT:
       {
-         unsigned16_t height = (unsigned16_t)GetRndNumber(20*40);
+         unsigned16_t height = (unsigned16_t)GetRndNumber(TWIP*40);
          cell->fontheight(height);
          if(profile) cout<<"Height "<<height<<", ";
          break;

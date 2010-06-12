@@ -242,7 +242,7 @@ xf_init_t::~xf_init_t()
 bool xf_init_t::operator==(const xf_init_t& right)
 {
 	// used by "range" in doing mass changes. Try to arrange so most
-	// likely failures occurr early
+	// likely failures occur early
 
 	if(font != right.font)					return false;
 	

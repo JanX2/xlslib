@@ -173,7 +173,7 @@ worksheet class declaration
 		DumpRowBlocksState_t	m_DumpRBState;
 		unsigned32_t			m_RowCounter;
 		unsigned32_t			m_CellCounter;
-		size_t			m_DBCellOffset;
+		size_t					m_DBCellOffset;
 		CellOffsets_Vect_t		m_CellOffsets;
 
 		//unsigned32_t			m_CurrentRowBlock;

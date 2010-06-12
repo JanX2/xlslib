@@ -133,7 +133,7 @@ CUnit& CUnit::operator=(const CUnit& right)
 }
 
 // Default destructor
-CUnit::~CUnit (  )
+CUnit::~CUnit()
 {
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 	if (m_Index != INVALID_STORE_INDEX)
@@ -178,9 +178,9 @@ signed8_t CUnit::SetValueAt8(unsigned8_t newval, unsigned32_t index)
       if (index < m_nDataSize)
          m_pData[index] = newval;
       else
-         errcode =  ERR_INVALID_INDEX;
+         errcode = ERR_INVALID_INDEX;
    } else {
-      errcode =  ERR_DATASTORAGE_EMPTY;
+      errcode = ERR_DATASTORAGE_EMPTY;
    }
   
    return errcode;
@@ -327,7 +327,7 @@ signed8_t CUnit::GetValue8From(signed8_t* data, unsigned32_t  index) const
 }
 /************************************************
  ************************************************/
-/*
+#if 0
   signed8_t CUnit::GetData(unsigned8_t** ppdata, unsigned32_t from, unsigned32_t to )
   {
   signed8_t errcode = NO_ERRORS;
@@ -337,7 +337,7 @@ signed8_t CUnit::GetValue8From(signed8_t* data, unsigned32_t  index) const
 
   return errcode;
   }
-*/
+#endif
 /************************************************
  ************************************************/
 signed8_t CUnit::AddDataArray(const unsigned8_t* newdata, size_t size)
@@ -353,7 +353,7 @@ signed8_t CUnit::AddDataArray(const unsigned8_t* newdata, size_t size)
 
 	size_t spaceleft = GetSize() - GetDataSize();
   
-   if(spaceleft < size) // allocate more space if new tobeadded array won't fit
+   if(spaceleft < size) // allocate more space if new to-be-added array won't fit
    {
       Inflate(size-spaceleft/*+1*/);  // [i_a]
    }
@@ -397,7 +397,7 @@ signed8_t CUnit::AddFixedDataArray (const unsigned8_t value, size_t size)
 
 	size_t spaceleft = GetSize() - GetDataSize();
   
-   if(spaceleft < size) // allocate more space if new tobeadded array won't fit
+   if(spaceleft < size) // allocate more space if new to-be-added array won't fit
    {
       Inflate(size-spaceleft/*+1*/);  // [i_a]
    }
@@ -475,7 +475,7 @@ signed8_t CUnit::SetArrayAt(const unsigned8_t* newdata, size_t size, unsigned32_
    signed8_t errcode = NO_ERRORS;
    size_t spaceleft = GetSize() - index;
 
-   if(spaceleft < size) // allocate more space if new tobeadded array won't fit
+   if(spaceleft < size) // allocate more space if new to-be-added array won't fit
    {
       Inflate(size-spaceleft);
    }
@@ -553,7 +553,7 @@ signed8_t CUnit::AddUnicodeString (const string* str, size_t size)
 	strSize += strLen;
 
 	spaceleft = GetSize() - GetDataSize();
-	if(spaceleft < strSize) // allocate more space if new tobeadded array won't fit
+	if(spaceleft < strSize) // allocate more space if new to-be-added array won't fit
 	{
 	  Inflate(strSize-spaceleft+1);
 	}
@@ -601,7 +601,7 @@ signed8_t CUnit::AddUnicodeString (const u16string* str16, size_t size, bool is_
 	strSize += is_ascii ? strLen : (strLen * 2);
 
 	spaceleft = GetSize() - GetDataSize();
-	if(spaceleft < strSize) // allocate more space if new tobeadded array won't fit
+	if(spaceleft < strSize) // allocate more space if new to-be-added array won't fit
 	{
 	  Inflate(strSize-spaceleft+1);
 	}
@@ -911,29 +911,24 @@ const unsigned8_t* CUnit::GetBuffer(void) const
 
 /************************************************
  ************************************************/
-/*
+#if 0
   void CUnit::SetShadow(bool shadowval)
   {
   m_ShadowUnit = shadowval;
-
-
   }
-*/
+#endif
 
 /************************************************
  ************************************************/
-/*
+#if 0
   void CUnit::CopyShadowUnit(unsigned8_t* data, unsigned32_t size)
   {
   m_Size = m_DataSize = size;
   m_pData = data;
 
   SetShadow(true);
-
-
-
   }
-*/
+#endif 
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * $Log: unit.cpp,v $

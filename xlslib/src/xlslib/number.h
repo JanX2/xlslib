@@ -73,7 +73,7 @@ namespace xlslib_core
       } num;
 
     public:
-      // idea is by passing either an int or a double, can get the proper conversion (which might be none)
+      // idea is by passing either an int or a double, we can get the proper conversion (which might be none)
       double GetNumber(double unused
 #ifdef __GNUC__
 __attribute__((unused))
@@ -104,7 +104,7 @@ __attribute__((unused))
               double num,
               const xf_t* pxfval = NULL);
 #endif
-      CNumber(CDataStorage &datastore, const number_t& blankdef);
+      CNumber(CDataStorage &datastore, const number_t& numdef);
 	private:
       virtual ~CNumber();
     };

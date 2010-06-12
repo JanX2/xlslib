@@ -160,7 +160,7 @@ worksheet* workbook::GetSheet(unsigned16_t sheetnum)
 ***********************************
 ***********************************
 */
-font_t* workbook::font(const string&  name)
+font_t* workbook::font(const string& name)
 {
    font_t* newfont = new font_t(m_GlobalRecords);
    newfont->SetName(name);
@@ -177,7 +177,7 @@ font_t* workbook::font(unsigned8_t fontnum)
 ***********************************
 ***********************************
 */
-format_t* workbook::format(const string&  formatstr)
+format_t* workbook::format(const string& formatstr)
 {
 	u16string	str16;
 	format_t* newformat;
@@ -189,7 +189,7 @@ format_t* workbook::format(const string&  formatstr)
 
 	return newformat;
 }
-format_t* workbook::format(const ustring&  formatstr)
+format_t* workbook::format(const ustring& formatstr)
 {
 	u16string	str16;
 	format_t* newformat;

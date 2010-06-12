@@ -274,7 +274,9 @@ extern "C" {
 
 // these are accessing private members. Is this intended?
 	unsigned16_t xlsFontGetAttributes(font_t *f)				{ return f->GetAttributes(); }
+#if defined(DEPRECATED)
 	void xlsFontSetAttributes(font_t *f, unsigned16_t attr)		{ f->SetAttributes(attr); }
+#endif
 	//unsigned32_t xlsXformatGetSignature(xf_t *x)				{ return x->GetSignature(); }
 	bool xlsXformatIsCell(xf_t *x)								{ return x->IsCell(); }
 	void xlsXformatSetCellMode(xf_t *x, bool cellmode)			{ x->SetCellMode(cellmode); }

@@ -464,7 +464,7 @@ CUnit* CGlobalRecords::DumpData(CDataStorage &datastore)
 #endif
 				if(format != (--m_Formats.end()))
 				{
-				  // if it was'nt the last font from the list, increment to get the next one
+				  // if it wasn't the last font from the list, increment to get the next one
 				  format++;
 				} else {
 				  // if it was the last from the list, change the DumpState
@@ -491,7 +491,7 @@ CUnit* CGlobalRecords::DumpData(CDataStorage &datastore)
 
             if(xf_dflt != (--m_DefaultXFs.end()))
             {
-			   // if it was'nt the last font from the list, increment to get the next one
+			   // if it wasn't the last font from the list, increment to get the next one
                xf_dflt++;
                repeat = false;
             } else {
@@ -545,7 +545,7 @@ CUnit* CGlobalRecords::DumpData(CDataStorage &datastore)
 
 				if(style != (--m_Styles.end()))
 				{
-				  // if it was'nt the last font from the list, increment to get the next one
+				  // if it wasn't the last font from the list, increment to get the next one
 				  style++;
 				} else {
 				 // if it was the last from the list, change the DumpState

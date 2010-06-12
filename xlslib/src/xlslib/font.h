@@ -254,8 +254,10 @@ CFont class declaration
 	public:
 #endif
 	  /* FONT  attributes wrappers */
-      void SetAttributes(unsigned16_t attr);
-      unsigned16_t GetAttributes(void) const;
+#if defined(DEPRECATED) /* [i_a] can cause reserved/illegal attribute bit combo's to be set; use SetOutline(), etc. instead. */
+		void SetAttributes(unsigned16_t attr);
+#endif
+		unsigned16_t GetAttributes(void) const;
 
     private:
       CGlobalRecords&	m_GlobalRecords;

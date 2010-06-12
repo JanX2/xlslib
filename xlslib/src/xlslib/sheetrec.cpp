@@ -350,7 +350,7 @@ CUnit* worksheet::DumpData(CDataStorage &datastore, size_t offset)
 
 		   if(m_Current_Colinfo != (--m_Colinfos.end()))
 		   {
-			  // if it was'nt the last font from the list, increment to get the next one
+			  // if it wasn't the last font from the list, increment to get the next one
 			  m_Current_Colinfo++;
 		   } else {
 			  // if it was the last from the list, change the DumpState
@@ -736,7 +736,6 @@ cell_t* worksheet::blank(unsigned32_t row, unsigned32_t col, xf_t* pxformat)
 {
    blank_t* blk = new blank_t(m_GlobalRecords, row, col, pxformat);
    AddCell(blk);
-
    return blk;
 }
 
@@ -816,12 +815,12 @@ cell_t* worksheet::FindCell(unsigned32_t row, unsigned32_t col) const
 {
    Cell_Set_CItor_t existing_cell;
    
-   // need a cell to find a cell! So create simplies possible one
+   // need a cell to find a cell! So create simplest possible one
    cell_t* cell = new blank_t(m_GlobalRecords, row, col);
    existing_cell = m_Cells.find(cell);
    delete cell;
 
-   // The find operation returns the end() itor
+   // The find operation returns the end() iterator
    // if the cell wasn't found
    if(existing_cell != m_Cells.end())
    {
@@ -991,7 +990,7 @@ bool worksheet::GetRowBlockSizes(rowblocksize_t& rbsize)
          rbsize.dbcell_size += payload;
 
          // Check the size of the data in the DBCELL record (without the header)
-         // to take in count the overhead of the CONTINUE record (4bytes/CONTrec)
+         // to take in account the overhead of the CONTINUE record (4bytes/CONTrec)
          if(payload > MAX_RECORD_SIZE)
          {
             size_t cont_overhead = ((payload + MAX_RECORD_SIZE - 1) / MAX_RECORD_SIZE); // continue payloads; account for trailing partial payloads: round up!

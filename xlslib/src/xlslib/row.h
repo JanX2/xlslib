@@ -161,7 +161,7 @@ namespace xlslib_core
   };
 
 
-  /*
+/*
 ******************************
 CDBCell class declaration
 ******************************

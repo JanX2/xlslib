@@ -112,6 +112,9 @@ namespace xlslib_core
 		void fontstrikeout(bool so);
 		void fontoutline(bool ol);
 		void fontshadow(bool sh);
+#if defined(DEPRECATED)
+		void fontattr(unsigned16_t attr);
+#endif
   };
 
   class insertsort

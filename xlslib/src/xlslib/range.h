@@ -53,6 +53,7 @@
 namespace xlslib_core
 {
   class worksheet;
+
   class range :
     public xf_i,
     public font_i,

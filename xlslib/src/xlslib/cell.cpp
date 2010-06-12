@@ -256,12 +256,14 @@ void cell_t::fontcolor(unsigned8_t fntcolor)
    SET_CELL_FONT_FUNCTION(SetColor,fntcolor);
 }
 
-#if 0
+#if defined(DEPRECATED)
 void cell_t::fontattr(unsigned16_t attr)
 {
-   SET_CELL_FONT_FUNCTION(SetAttributes,attr);
+	set_cell_font();
+   pxf->GetFont()->SetAttributes(attr);
 }
 #endif
+
 void cell_t::fontitalic(bool italic)
 {
    SET_CELL_FONT_FUNCTION(SetItalic,italic);
