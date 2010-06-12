@@ -437,7 +437,7 @@ EXTERN_TYPE unsigned16_t xlsXformatGetBorderColorIdx(xf_t *x, border_side_t side
 //EXTERN_TYPE unsigned32_t xlsXformatGetSignature(xf_t *x);
 // Font
 EXTERN_TYPE void xlsFontSetName(font_t *f, const char *name);
-EXTERN_TYPE char *xlsFontGetName(font_t *f, char *name);
+EXTERN_TYPE char *xlsFontGetName(font_t *f, char *namebuffer, size_t namebuffersize);
 EXTERN_TYPE void xlsFontSetHeight(font_t *f, unsigned16_t fntheight);
 EXTERN_TYPE unsigned16_t xlsFontGetHeight(font_t *f);
 EXTERN_TYPE void xlsFontSetBoldStyle(font_t *f, boldness_option_t fntboldness);

@@ -165,7 +165,7 @@ extern "C" {
 	//font_i interface
 	void xlsCellFontname(cell_t *c, const char *fntname)		{
 																	std::string str = fntname;
-																	return c->fontname(str);
+																	c->fontname(str);
 																}
 	void xlsCellFontheight(cell_t *c, unsigned16_t fntheight)	{ return c->fontheight(fntheight); }
 	void xlsCellFontbold(cell_t *c, boldness_option_t fntboldness)
@@ -237,13 +237,15 @@ extern "C" {
 	void xlsFontSetName(font_t *f, const char *fntname)			{
 																	std::string str = fntname;
 																	f->SetName(str);
-																	return;
 																}
-	char *xlsFontGetName(font_t *f, char *fntname)				{
-																	const char *ptr = (f->GetName())->c_str();
+	char *xlsFontGetName(font_t *f, char *dst, size_t dstsize)	{
+																	const char *ptr = f->GetName().c_str();
 																	size_t len = strlen(ptr) + 1;
-																	memcpy(fntname, ptr, len);
-																	return fntname;
+																	if (len > dstsize)
+																		len = dstsize;
+																	memcpy(dst, ptr, len);
+																	dst[dstsize - 1] = 0;
+																	return dst;
 																}										
 	/* FONT height wrappers*/
 	void xlsFontSetHeight(font_t *f, unsigned16_t fntheight)	{ return f->SetHeight(fntheight); }
