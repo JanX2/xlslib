@@ -34,9 +34,9 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-noinst_PROGRAMS = testCPP$(EXEEXT) testC$(EXEEXT)
-check_PROGRAMS = testCPP$(EXEEXT) testC$(EXEEXT)
-TESTS = testCPP$(EXEEXT) testC$(EXEEXT)
+noinst_PROGRAMS = testCPP$(EXEEXT) testC$(EXEEXT) PR2859188$(EXEEXT)
+check_PROGRAMS = testCPP$(EXEEXT) testC$(EXEEXT) PR2859188$(EXEEXT)
+TESTS = testCPP$(EXEEXT) testC$(EXEEXT) PR2859188$(EXEEXT)
 subdir = targets/test
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -51,6 +51,9 @@ CONFIG_HEADER = $(top_builddir)/src/common/xlconfig.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 PROGRAMS = $(noinst_PROGRAMS)
+am_PR2859188_OBJECTS = PR2859188.$(OBJEXT)
+PR2859188_OBJECTS = $(am_PR2859188_OBJECTS)
+PR2859188_DEPENDENCIES = $(top_builddir)/src/libxls.la
 am_testC_OBJECTS = mainC.$(OBJEXT)
 testC_OBJECTS = $(am_testC_OBJECTS)
 testC_DEPENDENCIES = $(top_builddir)/src/libxls.la
@@ -79,8 +82,9 @@ CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-SOURCES = $(testC_SOURCES) $(testCPP_SOURCES)
-DIST_SOURCES = $(testC_SOURCES) $(testCPP_SOURCES)
+SOURCES = $(PR2859188_SOURCES) $(testC_SOURCES) $(testCPP_SOURCES)
+DIST_SOURCES = $(PR2859188_SOURCES) $(testC_SOURCES) \
+	$(testCPP_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 # If stdout is a non-dumb tty, use colors.  If test -t is not supported,
@@ -229,6 +233,8 @@ testCPP_SOURCES = mainCPP.cpp
 testCPP_LDADD = $(top_builddir)/src/libxls.la 
 testC_SOURCES = mainC.c
 testC_LDADD = $(top_builddir)/src/libxls.la 
+PR2859188_SOURCES = PR2859188.cpp
+PR2859188_LDADD = $(top_builddir)/src/libxls.la 
 all: all-am
 
 .SUFFIXES:
@@ -281,6 +287,9 @@ clean-noinstPROGRAMS:
 	list=`for p in $$list; do echo "$$p"; done | sed 's/$(EXEEXT)$$//'`; \
 	echo " rm -f" $$list; \
 	rm -f $$list
+PR2859188$(EXEEXT): $(PR2859188_OBJECTS) $(PR2859188_DEPENDENCIES) 
+	@rm -f PR2859188$(EXEEXT)
+	$(CXXLINK) $(PR2859188_OBJECTS) $(PR2859188_LDADD) $(LIBS)
 testC$(EXEEXT): $(testC_OBJECTS) $(testC_DEPENDENCIES) 
 	@rm -f testC$(EXEEXT)
 	$(LINK) $(testC_OBJECTS) $(testC_LDADD) $(LIBS)
@@ -294,6 +303,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PR2859188.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mainC.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mainCPP.Po@am__quote@
 

@@ -5,15 +5,17 @@ AM_CPPFLAGS		=  \
 -I$(top_srcdir)/src/oledoc 
 
 
-noinst_PROGRAMS	= testCPP testC
+noinst_PROGRAMS	= testCPP testC PR2859188
 testCPP_SOURCES	= mainCPP.cpp
 testCPP_LDADD	= $(top_builddir)/src/libxls.la 
 testC_SOURCES	= mainC.c
-testC_LDADD	= $(top_builddir)/src/libxls.la 
+testC_LDADD	    = $(top_builddir)/src/libxls.la 
+PR2859188_SOURCES = PR2859188.cpp
+PR2859188_LDADD = $(top_builddir)/src/libxls.la 
 
-check_PROGRAMS = testCPP testC
+check_PROGRAMS = testCPP testC PR2859188
 
-TESTS = testCPP testC
+TESTS = testCPP testC PR2859188
 
 clean-local:
 	-rm -rf *.xls

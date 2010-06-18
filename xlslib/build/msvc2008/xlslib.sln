@@ -24,6 +24,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xlslib-testCPP", "xlslib-te
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xlslib_lib", "xlslib_lib.vcproj", "{9024B90A-422E-4E07-A497-992044A5B87B}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xlslib-PR2859188", "xlslib-PR2859188.vcproj", "{E755D2E2-4D43-4B1E-B694-9A1D805D2A7A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{4A077629-8590-434C-9486-0D069DF341AF} = {4A077629-8590-434C-9486-0D069DF341AF}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Itanium = Debug|Itanium
@@ -94,13 +99,25 @@ Global
 		{9024B90A-422E-4E07-A497-992044A5B87B}.Release|Win32.Build.0 = Release|Win32
 		{9024B90A-422E-4E07-A497-992044A5B87B}.Release|x64.ActiveCfg = Release|x64
 		{9024B90A-422E-4E07-A497-992044A5B87B}.Release|x64.Build.0 = Release|x64
+		{E755D2E2-4D43-4B1E-B694-9A1D805D2A7A}.Debug|Itanium.ActiveCfg = Debug|Itanium
+		{E755D2E2-4D43-4B1E-B694-9A1D805D2A7A}.Debug|Itanium.Build.0 = Debug|Itanium
+		{E755D2E2-4D43-4B1E-B694-9A1D805D2A7A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E755D2E2-4D43-4B1E-B694-9A1D805D2A7A}.Debug|Win32.Build.0 = Debug|Win32
+		{E755D2E2-4D43-4B1E-B694-9A1D805D2A7A}.Debug|x64.ActiveCfg = Debug|x64
+		{E755D2E2-4D43-4B1E-B694-9A1D805D2A7A}.Debug|x64.Build.0 = Debug|x64
+		{E755D2E2-4D43-4B1E-B694-9A1D805D2A7A}.Release|Itanium.ActiveCfg = Release|Itanium
+		{E755D2E2-4D43-4B1E-B694-9A1D805D2A7A}.Release|Itanium.Build.0 = Release|Itanium
+		{E755D2E2-4D43-4B1E-B694-9A1D805D2A7A}.Release|Win32.ActiveCfg = Release|Win32
+		{E755D2E2-4D43-4B1E-B694-9A1D805D2A7A}.Release|Win32.Build.0 = Release|Win32
+		{E755D2E2-4D43-4B1E-B694-9A1D805D2A7A}.Release|x64.ActiveCfg = Release|x64
+		{E755D2E2-4D43-4B1E-B694-9A1D805D2A7A}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{9024B90A-422E-4E07-A497-992044A5B87B} = {84D563DE-6E8D-49BC-B64D-441448DBA262}
 		{4A077629-8590-434C-9486-0D069DF341AF} = {84D563DE-6E8D-49BC-B64D-441448DBA262}
+		{9024B90A-422E-4E07-A497-992044A5B87B} = {84D563DE-6E8D-49BC-B64D-441448DBA262}
 		{10BEB970-1565-4944-8768-81BD05DD0A3A} = {B173B550-A4DC-41F7-9997-49FD3D9556E5}
 	EndGlobalSection
 EndGlobal
