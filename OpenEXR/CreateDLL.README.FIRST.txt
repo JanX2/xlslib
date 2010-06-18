@@ -1,0 +1,185 @@
+
+        IMPORTANT NOTICE FOR CreateDLL USERS 
+WHO USE THIS FOR OTHER PROJECTS (!not! OpenEXR !itself!)
+========================================================
+
+This particular copy of the CreateDLL tool is an AUGMENTED VERSION of the
+tool as it was originally provided with OpenEXR. As it proved very useful
+beyond that project, I (Ger Hobbelt) created a DROP-IN REPLACEMENT with
+ENHANCED ABILITIES, including full 64-bit platform (AMD64, Itanium) support.
+
+Hence either of the following three scenarios apply to you:
+
+1) You [also] wish to build OpenEXR from source [and use the Visual Studio 
+   project files provided at http://hebbut.net/ ]
+   
+2) You wish to build project [X] from source and you obtained Visual Studio
+   project files from me (either from http://hebbut.net/ or SourceForge).
+   
+3) You have heard about CreateDLL and wish to use it for your own cross-
+   platform projects.
+   
+I will describe the few things to mind when using CreateDLL in these 
+scenarios in the sections which follow, where each section covers a 
+single scenario.
+
+
+
+
+
+SCENARIO #1
+===========
+
+           YOU [ALSO] WISH TO BUILD OPENEXR FROM SOURCE 
+[AND USE THE VISUAL STUDIO PROJECT FILES PROVIDED AT HTTP://HEBBUT.NET/ ]
+
+The easiest possible route here is to obtain the complete set of augmented 
+Visual Studio projects from http://hebbut.net/
+
+WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING WARNING
+
+I am /not/ the maintainer of OpenEXR. The OpenEXR sources and binaries available
+at hebbut.net are a copy of our in-house [augmented] sources. Before using, you
+may wish to compare the source tree with the official distribution.
+
+One of the parts which will probably differ is our augmented CreateDLL source
+code and binary. A Visual Studio solution is included with the OpenEXR source
+code available at hebbut.net, so you should be all set with that instead (our
+copy of OpenEXR naturally includes the very latest CreateDLL sources as well!).
+
+
+
+
+If you otherwise wish to use our CreateDLL sources with the official distro, 
+simply overwrite the original ILM sources with ours and you should be good to
+go. NOTE that this subscenario has not been tested by us, so caveat emptor.
+  
+
+  
+
+
+SCENARIO #2
+===========   
+
+           YOU WISH TO BUILD PROJECT [X] FROM SOURCE 
+      AND YOU OBTAINED VISUAL STUDIO PROJECT FILES FROM ME 
+        (EITHER FROM HTTP://HEBBUT.NET/ OR SOURCEFORGE).
+
+If you use the Visual Studio solution(s) and project(s) as provided by us through
+http://hebbut.net, than all you need to do is download and extract the latest
+CreateDLL *SOURCE* archive from hebbut.net and you're good to go.
+
+The only thing you should be aware of is that we have a very strict in-house rule set
+regarding project directory hierarchy. All YOU need to do is make sure your relevant
+part of your directory hierarchy mimicks ours for CreateDLL sources to build out of 
+the box:
+
+Any project [X] comes in its own directory, e.g. 'hamsterdb' will be located in the
+
+  <devbase>/hamsterdb/
+
+directory, while CreateDLL, being part of OpenEXR, is expected to reside in the
+
+  <devbase>/OpenEXR/
+  
+directory instead. In other words: the CreateDLL source archive should be extracted
+in the 
+
+  <yourcurrentprojectroot>/../OpenEXR/
+  
+relative path.
+
+
+An example to clarify the above
+-------------------------------
+
+My local <devbase> for all my development work is 
+
+  H:/prj/3actual/
+  
+so, for instance, my htmltidy sources will be located under
+
+  H:/prj/3actual/htmltidy/
+  
+and more specifically, since the 'htmltidy' project has a solution file in the 
+relative path './build/msvc/tidy.2008.sln', its solution file will hence be 
+located in:
+
+  H:/prj/3actual/htmltidy/build/msvc/tidy.2008.sln
+  
+Of course, since htmltidy can be built as a DLL, it requires CreateDLL, which' main 
+source file CreateDLL.cpp in the OpenEXR distribution is located in that project's 
+relative path './IlmBase/vc/createDLL/createDLL.cpp', and since the base directory
+for OpenEXR is
+
+  <devbase>/OpenEXR/
+
+i.e.
+
+  H:/prj/3actual/OpenEXR/
+  
+we should find said main source file in
+
+  H:/prj/3actual/OpenEXR/IlmBase/vc/createDLL/createDLL.cpp
+  
+while we will then find the VC9 (Visual Studio 2008) project file accordingly in
+
+  H:/prj/3actual/OpenEXR/IlmBase/vc/vc9/IlmBase/createDLL/createDLL.vcproj
+  
+which is exactly where the 'htmltidy' hebbut.net solution would expect it to be!
+
+
+
+Hence the 'short version' of the above: extract the CreateDLL source/binary tree in 
+the RELATIVE path:
+
+  <yourcurrentprojectroot>/../OpenEXR/
+  
+which in this particular example is exactly the same as saying:
+
+  .../htmltidy/../OpenEXR/
+  
+and as the first directory extracted from the CreateDLL source archive is 'IlmBase', 
+the paths will then become as expected:
+
+  H:/prj/3actual/htmltidy/../OpenEXR/IlmBase/vc/...
+
+i.e.
+
+  H:/prj/3actual/OpenEXR/IlmBase/vc/...
+
+
+
+        
+   
+   
+SCENARIO #3
+===========
+
+        YOU HAVE HEARD ABOUT CreateDLL AND WISH TO USE IT 
+             FOR YOUR OWN CROSS-PLATFORM PROJECTS.
+   
+Carefully read the text for SCENARIO #2 as that one describes where you should place 
+your copy of CreateDLL preferably (of course you are free to place it somewhere else, 
+but sticking to the directory hierarchy as described in #2 will allow you to perform
+updates quickly as they become available).
+
+Assuming you did stick with the plan, then it's time to add a custom post-build action
+in your DLL project(s) like this:
+
+
+
+TBD - copy our 4 lines of cmd code here and document what needs to change - TBD
+
+
+
+   
+  
+Also be aware to comfigure your solution so that for 64-bit builds, you still set
+CreateDLL to build as a 'Win32' project! This can be done in the 'Manage Build' 
+dialog -- TBD TBD TBD
+
+
+
+
+

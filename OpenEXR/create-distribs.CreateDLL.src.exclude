@@ -1,0 +1,6 @@
+*.exe
+*.dll
+*.lib
+*.manifest
+*.res
+bin
