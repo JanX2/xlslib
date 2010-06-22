@@ -25,9 +25,14 @@
 #include <sstream>
 #include <iostream>
 #include <stdio.h>
+#include <limits.h>
 
 using namespace std;
 using namespace xlslib_core;
+
+// set to 'true' if you want cell format print-out while generating the XLS
+static const bool PRINT_CELL_FORMAT	= 0;
+
 
 #define __REPORT_TIME__
 
@@ -76,9 +81,9 @@ int RandomFormatTest(int sheets_sz, int rows_sz, int cols_sz, int random_seed, c
 
 int RandomCellAndFormatTestProf(int sheets_sz, int rows_sz, int cols_sz, int random_seed, const char *md5_checksum);
 
-int StandardTest(void);
-int StandardTest2(void);
-int BlankTest(void);
+int StandardTest(const char *md5_checksum);
+int StandardTest2(const char *md5_checksum);
+int BlankTest(const char *md5_checksum);
 
 static void SeedRndNumber(int seed);
 static int GetRndNumber(int max);
@@ -95,19 +100,19 @@ int main(int argc, char *argv[])
 	int rv = 0;
 
 	// comment and uncomment the below to try various tests
-#if 0
-	rv |= StandardTest();
+#if 01
+	rv |= StandardTest("a2fa7ad755b8bf18fd84117d1e0170db");
 #endif
-	rv |= StandardTest2();
-#if 0
-	rv |= BlankTest();
+	rv |= StandardTest2("3a939d18dd58887d153004f0210d3d6c");
+#if 01
+	rv |= BlankTest("e80a45e13f92863f0d2dffaca7c3834c");
 
-	rv |= StressTest(3,100,100, "f3c78a522b88121c9f8e032f2b3251cb");
-	rv |= StressTest(3,4,4, "b463e7f580dca459dae9f465fa79f27f");
-	rv |= RandomTest(3,200,200, 42424242, "face676ff357afd1dd55d2b9da961dc5");
-	rv |= RandomCellAndFormatTest(1,15,10, 123456789, "95d7e26af48ca0f1fea89c621535f3ef"); //(1,15,10)
-	rv |= RandomCellAndFormatTestProf(1,15,10, 987654321, "1a55232ca166e62fd3ee34923ab82b87");
-	rv |= RandomFormatTest(1,15,10, 42004200, "fbaa3e8240a0a7a7c64ddfc1cc722157");
+	rv |= StressTest(3,100,100, "8895da93f04a8334f60348233b451205");
+	rv |= StressTest(3,4,4, "be6c2c2ac695b7dd990479bd5368cab0");
+	rv |= RandomTest(3,200,200, 42424242, "4887e07fd832f92416787c7a473dfe24");
+	rv |= RandomCellAndFormatTest(1,15,10, 123456789, "3d2cbe79e866bfb0d63198c589333378");
+	rv |= RandomCellAndFormatTestProf(1,15,10, 987654321, "c207fbe4f83efe206bfc35c402661872");
+	rv |= RandomFormatTest(1,15,10, 42004200, "41f7c54d1bf00951dad103d568969667");
 #endif
 
 	std::cerr << "    # Test finished" << std::endl;
@@ -115,7 +120,7 @@ int main(int argc, char *argv[])
 	return (rv == 0 ? EXIT_SUCCESS : EXIT_FAILURE);
 }
 
-int StandardTest(void)
+int StandardTest(const char *md5_checksum)
 {
    // Get the workbook handler
    workbook wb;
@@ -178,7 +183,7 @@ int StandardTest(void)
 	   cerr << "StandardTest failed: I/O failure: " << err << std::endl;
 	   return -1;
    }
-   if (0 != check_file("./testCPP.xls", "042c01b4b5a325bca347d3830e71baa4"))
+   if (0 != check_file("./testCPP.xls", md5_checksum))
    {
 	   cerr << "StandardTest failed: MD5 of generated XLS mismatch or I/O failure." << std::endl;
 	   return -1;
@@ -188,7 +193,7 @@ int StandardTest(void)
 
 
 
-int BlankTest(void)
+int BlankTest(const char *md5_checksum)
 {
 	workbook wb;
 	wb.sheet("Sheet_01");
@@ -199,7 +204,7 @@ int BlankTest(void)
 		cerr << "BlankTest failed: I/O failure: " << err << std::endl;
 		return -1;
 	}
-	if (0 != check_file("blank.xls", "5500d521db56feeac32377436f744270"))
+	if (0 != check_file("blank.xls", md5_checksum))
 	{
 		cerr << "BlankTest failed: MD5 of generated XLS mismatch or I/O failure." << std::endl;
 		return -1;
@@ -220,7 +225,7 @@ static expression_node_t *build_formula(int row, int col, worksheet *sh3, worksh
 	return root;
 }
 
-int StandardTest2(void)
+int StandardTest2(const char *md5_checksum)
 {
 	// Get the workbook handler
 	workbook wb;
@@ -289,7 +294,7 @@ int StandardTest2(void)
 		cerr << "StandardTest2 failed: I/O failure: " << err << std::endl;
 		return -1;
 	}
-	if (0 != check_file("./testCPP2.xls", "c687c79e5e9be21620caba85fd63e10a"))
+	if (0 != check_file("./testCPP2.xls", md5_checksum))
 	{
 		cerr << "StandardTest2 failed: MD5 of generated XLS mismatch or I/O failure." << std::endl;
 		return -1;
@@ -305,11 +310,6 @@ static void SeedRndNumber(int sv)
 }
 static int GetRndNumber(int max)
 {
-#if 0
-   int rndnum;
-   rndnum = ((int)(rand()*((double)(max+1)/RAND_MAX)));
-   return rndnum;
-#else
 	// this is NOT a good random generator but suffices for our purposes!
 	seed *= 15482893;
 	seed %= 792241;
@@ -317,8 +317,28 @@ static int GetRndNumber(int max)
 	int rndnum;
 	rndnum = (int)(seed * ((max + 1.0) / (792241 - 1.0)));
 	return rndnum;
-#endif
 }
+
+static errcode_t PickErrorCode(int value)
+{
+	static const errcode_t elist[] =
+	{
+		XLERR_NULL  , // #NULL!
+		XLERR_DIV0  , // #DIV/0!
+		XLERR_VALUE , // #VALUE!
+		XLERR_REF   , // #REF!
+		XLERR_NAME  , // #NAME?
+		XLERR_NUM   , // #NUM!
+		XLERR_N_A   , // #N/A!
+	};
+	const double divider = (sizeof(elist[0]) * (double)INT_MAX) / sizeof(elist);
+
+	value = (int)(value / divider);
+	XL_ASSERT(value >= 0);
+	XL_ASSERT(value <= sizeof(elist)/sizeof(elist[0]));
+	return elist[value];
+}
+
 
 int RandomCellAndFormatTest(int sheets_sz, int rows_sz, int cols_sz, int random_seed, const char *md5_checksum)
 {
@@ -417,7 +437,8 @@ int RandomCellAndFormatTestProf(int sheets_sz, int rows_sz, int cols_sz, int ran
 
             cell_t* cell = sh->label(rndrow, rndcol, snamelabel);
 
-#if defined(__DEBUG__) || defined(_DEBUG)
+			if (PRINT_CELL_FORMAT)
+			{
 			cout<<"CELL ";
             cout.fill('0');
             cout.width(2);
@@ -425,44 +446,32 @@ int RandomCellAndFormatTestProf(int sheets_sz, int rows_sz, int cols_sz, int ran
             cout.fill('0');
             cout.width(2);
             cout<<rndcol<<": ";
-#endif
+			}
+
 			int k, fmtries = GetRndNumber(OPT_MAX);
 
-#if defined(__DEBUG__) || defined(_DEBUG)
+			if (PRINT_CELL_FORMAT)
+			{
             cout<<endl<<"**FORMAT** ";
-#endif
-			for(k = 0; k<fmtries; k++)
-               RandomFormat(cell,
-#if defined(__DEBUG__) || defined(_DEBUG)
-				true
-#else
-				false
-#endif
-			   );
+			}
 
-#if defined(__DEBUG__) || defined(_DEBUG)
+			for(k = 0; k<fmtries; k++)
+				RandomFormat(cell, PRINT_CELL_FORMAT);
+
+			if (PRINT_CELL_FORMAT)
+			{
             cout<<endl<<"**FONT**   ";
-#endif
+			}
+
 			fmtries = GetRndNumber(OPT_FONTMAX);
             for(k = 0; k<fmtries; k++)
-               RandomFontOption(cell,
-#if defined(__DEBUG__) || defined(_DEBUG)
-				true
-#else
-				false
-#endif
-				);
+				RandomFontOption(cell, PRINT_CELL_FORMAT);
 
-            RandomFontName(cell,
-#if defined(__DEBUG__) || defined(_DEBUG)
-				true
-#else
-				false
-#endif
-				);
-#if defined(__DEBUG__) || defined(_DEBUG)
+            RandomFontName(cell,PRINT_CELL_FORMAT);
+			if (PRINT_CELL_FORMAT)
+			{
             cout<<endl;
-#endif
+			}
 		 }
       }
    }
@@ -979,8 +988,11 @@ int StressTest(int sheets_sz, int rows_sz, int cols_sz, const char *md5_checksum
 	  }
    }
 
+   char fnamebuf[128];
+   sprintf(fnamebuf, "stress%d-%d-%d.xls", sheets_sz, rows_sz, cols_sz);
+
    TIMESPAN_START(1);
-   int err = swb.Dump("stress.xls");
+   int err = swb.Dump(fnamebuf);
    TIMESPAN_END(1,"Cell-stress test:");
 
    if (err != NO_ERRORS)
@@ -988,7 +1000,7 @@ int StressTest(int sheets_sz, int rows_sz, int cols_sz, const char *md5_checksum
 	   cerr << "StressTest(" << sheets_sz << ", " << rows_sz << ", " << cols_sz << ") failed: I/O failure: " << err << std::endl;
 	   return -1;
    }
-   if (0 != check_file("stress.xls", md5_checksum))
+   if (0 != check_file(fnamebuf, md5_checksum))
    {
 	   cerr << "StressTest(" << sheets_sz << ", " << rows_sz << ", " << cols_sz << ") failed: MD5 of generated XLS mismatch or I/O failure." << std::endl;
 	   return -1;
@@ -1000,6 +1012,7 @@ int StressTest(int sheets_sz, int rows_sz, int cols_sz, const char *md5_checksum
 *********************************
 *********************************
 */
+
 int RandomTest(int sheets_sz, int rows_sz, int cols_sz, int random_seed, const char *md5_checksum)
 {
    SeedRndNumber(random_seed);
@@ -1027,8 +1040,8 @@ int RandomTest(int sheets_sz, int rows_sz, int cols_sz, int random_seed, const c
             int rndcol, rndrow;
 			int koc = GetRndNumber(6);
 
-            rndcol = (int)(rand()*((double)cols_sz/RAND_MAX));
-            rndrow = (int)(rand()*((double)rows_sz/RAND_MAX));
+            rndcol = GetRndNumber(cols_sz - 1);
+            rndrow = GetRndNumber(rows_sz - 1);
 
 			switch (koc)
 			{
@@ -1044,13 +1057,13 @@ int RandomTest(int sheets_sz, int rows_sz, int cols_sz, int random_seed, const c
 
 			case 1: // integer (most probably; depends a bit: large ints end up as float anyhow in there
 				{
-					ssh->number(rndrow,rndcol,(int)rand(),sxf1);
+					ssh->number(rndrow,rndcol,GetRndNumber(INT_MAX) - INT_MAX/2,sxf1);
 				}
 				break;
 
 			case 2: // double
 				{
-					ssh->number(rndrow,rndcol,rand()/(double)RAND_MAX,sxf1);
+					ssh->number(rndrow,rndcol,GetRndNumber(INT_MAX)* 2.0/INT_MAX - 1.0,sxf1);
 				}
 				break;
 
@@ -1060,19 +1073,17 @@ int RandomTest(int sheets_sz, int rows_sz, int cols_sz, int random_seed, const c
 				}
 				break;
 
-#if 0 // not yet here...
 			case 4: // bool
 				{
-					ssh->blank(rndrow,rndcol,(rand() >= RAND_MAX/2), sxf1);
+					ssh->boolean(rndrow,rndcol,(GetRndNumber(INT_MAX) >= INT_MAX/2), sxf1);
 				}
 				break;
 
 			case 5: // err
 				{
-					ssh->blank(rndrow,rndcol,PickErrorCode(rand()), sxf1);
+					ssh->error(rndrow,rndcol,PickErrorCode(GetRndNumber(INT_MAX)), sxf1);
 				}
 				break;
-#endif
 			}
          }
 	  }

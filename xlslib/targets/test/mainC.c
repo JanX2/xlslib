@@ -73,7 +73,7 @@ int main(int argc, char *argv[])
 		fprintf(stderr, "%s failed: I/O failure %d.\n", argv[0], ret);
 		return -1;
 	}
-	if (0 != check_file("testC.xls", "87eb96e3dbd0074d1489560aafdb47e0"))
+	if (0 != check_file("testC.xls", "ac1068824bd11d0e7d010e9ca2e63051"))
 	{
 		fprintf(stderr, "%s failed: MD5 of generated XLS mismatch or I/O failure.\n", argv[0]);
 		return -1;
@@ -87,7 +87,7 @@ int main(int argc, char *argv[])
 
 
 
-#if 0
+#if 01
 
 /*
 only to test the compile and link phase: do we have 'em all?
