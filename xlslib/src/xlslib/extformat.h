@@ -429,11 +429,12 @@ CExtFormat class declaration
 		unsigned16_t	GetFormatIndex(void) const;
         format_number_t	GetFormat(void) const;
 
-	private:
+	public:
 		void			UnMarkUsed(void);
 		void			MarkUsed(void);
 		unsigned32_t	Usage() const;
 
+	private:
       /* XF Index wrappers*/
       void				SetIndex(unsigned16_t xfidx){index = xfidx;};
 	  std::string		Description() const;
@@ -541,7 +542,7 @@ CExtFormat class declaration
       unsigned16_t index;
 
       font_t* font;
-      //format_number_t format;
+      format_t *format;
 	  unsigned16_t formatIndex;
 
       unsigned8_t halign;

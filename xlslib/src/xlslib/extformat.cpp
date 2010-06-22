@@ -279,7 +279,8 @@ xf_t::xf_t(xlslib_core::CGlobalRecords& gRecords, bool userXF, bool isCell, bool
 	index(0),
 
 	font(NULL),
-	formatIndex(0),
+	formatIndex(FMTCODE_GENERAL),
+	format(NULL),
 	halign(0),
 	valign(0),
 	indent(0),
@@ -325,7 +326,7 @@ xf_t::xf_t(xlslib_core::CGlobalRecords& gRecords, bool userXF, bool isCell, bool
 
 	is_userXF = userXF;
 	if(is_userXF) {
-		index = m_GlobalRecords.AddXFormat(this);
+		m_GlobalRecords.AddXFormat(this);
 	}
 }
 
@@ -342,6 +343,7 @@ xf_t::xf_t(const xf_t& orig) :
 
 	font(NULL),							// yes, need this as SetFont below depends on a set value
 	formatIndex(orig.formatIndex),
+	format(NULL),
 	halign(orig.halign),
 	valign(orig.valign),
 	indent(orig.indent),
@@ -362,6 +364,10 @@ xf_t::xf_t(const xf_t& orig) :
 	flags(0)
 {
     SetFont(orig.font);	// side effects
+	if (orig.format)
+	{
+		SetFormat(orig.format);	// side effects
+	}
 	
 	for(int i=0; i<_NUM_BORDERS; ++i) {
 		border_style[i]	= orig.border_style[i];
@@ -369,7 +375,7 @@ xf_t::xf_t(const xf_t& orig) :
 	}
 	
 	flags = orig.flags;
-	index = m_GlobalRecords.AddXFormat(this);
+	m_GlobalRecords.AddXFormat(this);
 }
 
 /* 
@@ -384,7 +390,8 @@ xf_t::xf_t(CGlobalRecords& gRecords, const xf_init_t& xfinit) :
 	index(0),
 
 	font(NULL),
-	formatIndex(0),
+	formatIndex(FMTCODE_GENERAL),
+	format(NULL),
 	halign(0),
 	valign(0),
 	indent(0),
@@ -405,8 +412,9 @@ xf_t::xf_t(CGlobalRecords& gRecords, const xf_init_t& xfinit) :
 	flags(0)
 {
 	SetFont(xfinit.font);	// side effects
-
+	//SetFormat(xfinit.format);	// side effects
 	SetFormatIndex(xfinit.formatIndex);
+
 	SetHAlign(xfinit.halign);
 	SetVAlign(xfinit.valign);
 	SetIndent(xfinit.indent);
@@ -422,7 +430,7 @@ xf_t::xf_t(CGlobalRecords& gRecords, const xf_init_t& xfinit) :
 		SetBorderStyle((border_side_t)i, xfinit.border_style[i]);
 		SetBorderColor((border_side_t)i, xfinit.border_color[i]);
 	}
-	index = m_GlobalRecords.AddXFormat(this);
+	m_GlobalRecords.AddXFormat(this);
 }
 
 /* 
@@ -504,8 +512,13 @@ void xf_t::UnMarkUsed(void)
    if(m_usage_counter)
       m_usage_counter--;
    
-   if(m_usage_counter == 0 && font && font->Usage())
-      font->UnMarkUsed();
+   if(m_usage_counter == 0)
+   {
+	   if (font && font->Usage())
+			font->UnMarkUsed();
+		if (format && format->Usage())
+			format->UnMarkUsed();
+   }
 }
 unsigned32_t xf_t::Usage(void) const
 {
@@ -551,36 +564,53 @@ void xf_t::SetFormatIndex(unsigned16_t formatidx)
 {
 	// Set the related flag.
 	if(formatidx != xf_t::xfiInit.formatIndex)
+	{
 		SetFlag(XF_ALIGN_ATRNUM);
-
+	}
 	formatIndex = formatidx;
+	format = NULL;
 }
-void xf_t::SetFormat(format_number_t format)
+void xf_t::SetFormat(format_number_t fmt)
 {
 	unsigned16_t	idx;
 
-	if(format > FMT_TEXT) {
-		format = FMT_GENERAL;
+	if(fmt > FMT_TEXT) 
+	{
+		fmt = FMT_GENERAL;
 	}
-	idx = format2index[format];
+	idx = format_t::format2index(fmt);
 
 	// Set the related flag.
-	if(idx != xf_t::xfiInit.formatIndex)
+	if(idx != xf_t::xfiInit.formatIndex) 
+	{
 		SetFlag(XF_ALIGN_ATRNUM);
+	}
 	formatIndex = idx;
+	format = NULL;
 }
 
 void xf_t::SetFormat(format_t *fmt)
 {
-	unsigned16_t	idx;
-	
-	idx = fmt->GetIndex();
+	if (!fmt)
+		return;
+
+	if (format)
+	{
+		format->UnMarkUsed();
+	}
+
+	unsigned16_t idx = fmt->GetIndex();
 
 	// Set the related flag.
 	if(idx != xf_t::xfiInit.formatIndex)
+	{
 		SetFlag(XF_ALIGN_ATRNUM);
+	}
 
 	formatIndex = idx;
+	format = fmt;
+	
+	format->MarkUsed();
 	//cerr << "ndx=" << formatIndex << endl << flush;
 }
 
@@ -591,10 +621,11 @@ unsigned16_t xf_t::GetFormatIndex(void) const
 
 format_number_t xf_t::GetFormat(void) const
 {
-	unsigned16_t	format;
+	int format;
 	
-	for(format=0; format<=FMT_TEXT; ++format) {
-		if(formatIndex == format2index[format])
+	for(format=FMT_GENERAL; format<=FMT_TEXT; ++format) 
+	{
+		if(formatIndex == format_t::format2index((format_number_t)format))
 			return (format_number_t)format;
 	}
 	return FMT_GENERAL;	// should never get here...

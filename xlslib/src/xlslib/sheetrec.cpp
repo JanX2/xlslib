@@ -459,7 +459,8 @@ CUnit* worksheet::RowBlocksDump(CDataStorage &datastore)
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 			  rb_record = datastore.MakeCRow(row_num, first_col, 
 											 last_col, 
-											 (*m_Current_RowHeight)->GetRowHeight());
+											 (*m_Current_RowHeight)->GetRowHeight(),
+											 (*m_Current_RowHeight)->GetXF());
 #else
 			  rb_record = (CUnit*) (new CRow(datastore, 
 											 row_num, first_col, 
@@ -668,7 +669,7 @@ cell_t* worksheet::number(unsigned32_t row, unsigned32_t col, // Deprecated
 	} 
 	else if(pxformat == NULL || pxformat->GetFormat() != fmtval) {
 		// got to add it, will create a new xf_t
-		//number->formatIndex(format2index[fmtval]);
+		//number->formatIndex(format2index(fmtval));
 		num->format(fmtval);
 	}
 	return num;

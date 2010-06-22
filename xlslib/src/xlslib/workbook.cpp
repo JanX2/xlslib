@@ -193,7 +193,7 @@ format_t* workbook::format(const string& formatstr)
 
 	m_GlobalRecords.char2str16(formatstr, str16);
 
-	newformat = new format_t(str16);
+	newformat = new format_t(m_GlobalRecords, str16);
 	m_GlobalRecords.AddFormat(newformat);
 
 	return newformat;
@@ -205,7 +205,7 @@ format_t* workbook::format(const ustring& formatstr)
 
 	m_GlobalRecords.wide2str16(formatstr, str16);
 	
-	newformat = new format_t(str16);
+	newformat = new format_t(m_GlobalRecords, str16);
 	m_GlobalRecords.AddFormat(newformat);
 
 	return newformat;
@@ -224,6 +224,23 @@ xf_t* workbook::xformat(font_t* fnt)
    newxf->SetFont(fnt);
 
    return newxf;
+}
+
+xf_t* workbook::xformat(format_t* fmt)
+{
+	xf_t* newxf = new xf_t(m_GlobalRecords, true);
+	newxf->SetFormat(fmt);
+
+	return newxf;
+}
+
+xf_t* workbook::xformat(font_t* fnt, format_t* fmt)
+{
+	xf_t* newxf = new xf_t(m_GlobalRecords, true);
+	newxf->SetFont(fnt);
+	newxf->SetFormat(fmt);
+
+	return newxf;
 }
 
 bool workbook::setColor(unsigned8_t r, unsigned8_t g, unsigned8_t b, unsigned8_t idx)

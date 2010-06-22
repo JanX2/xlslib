@@ -117,15 +117,15 @@ namespace xlslib_core
 
 
   // The attribute bit or-masks:
-#define FONT_ATTR_BOLD				0x0001
+#define FONT_ATTR_BOLD				0x0001 // documented as 'reserved' in the Microsoft Excel 2003 documentation!
 #define FONT_ATTR_ITALIC			0x0002
-#define FONT_ATTR_UNDERLINED		0x0004
+#define FONT_ATTR_UNDERLINED		0x0004 // documented as 'reserved' in the Microsoft Excel 2003 documentation!
 #define FONT_ATTR_STRIKEOUT			0x0008
 #define FONT_ATTR_OUTLINEMACH		0x0010
 #define FONT_ATTR_SHADOWMACH		0x0020
-#define FONT_ATTR_CONDENSED			0x00c0
-#define FONT_ATTR_EXTENDED			0x0080
-#define FONT_ATTR_UNUSED			0xff00
+#define FONT_ATTR_CONDENSED			0x00c0 // documented as 'reserved' in the Microsoft Excel 2003 documentation!
+#define FONT_ATTR_EXTENDED			0x0080 // documented as 'reserved' in the Microsoft Excel 2003 documentation!
+#define FONT_ATTR_UNUSED			0xff00 // documented as 'reserved' in the Microsoft Excel 2003 documentation!
 
   /* 
 ******************************

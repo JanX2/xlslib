@@ -33,14 +33,14 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 
-#include <xlsys.h>
-
 #include <format.h>
+#include <globalrec.h>
 
 using namespace std;
 using namespace xlslib_core;
 
-const unsigned16_t xlslib_core::format2index[] =
+
+static const unsigned16_t format2index_arr[] =
 {
    FMTCODE_GENERAL,
    FMTCODE_NUMBER1,
@@ -80,24 +80,52 @@ const unsigned16_t xlslib_core::format2index[] =
    FMTCODE_TEXT
 };
 
+const unsigned16_t format_t::format2index(format_number_t idx)
+{
+	if ((unsigned16_t)idx > FMT_TEXT)
+		idx = FMT_GENERAL;
+
+	return format2index_arr[idx];
+}
+
+
+
+/* 
+**********************************
+**********************************
+*/
+
+format_t::format_t(const format_t& orig) :
+m_GlobalRecords(orig.m_GlobalRecords),
+m_usage_counter(0),
+index(0),
+formatstr(orig.formatstr)
+{
+	m_GlobalRecords.AddFormat(this);
+}
+
+
+void format_t::MarkUsed(void) 
+{
+	m_usage_counter++;
+}
+void format_t::UnMarkUsed(void) 
+{
+	if(m_usage_counter)
+		m_usage_counter--;
+}
+unsigned32_t format_t::Usage(void) const
+{
+	return m_usage_counter;
+}
+
+
+
 /* 
 **********************************
 CFormat class implementation
 **********************************
 */
-#if 0
-CFormat::CFormat(CDataStorage &datastore, 
-		   u16string&  formatstr, bool isASCII, unsigned16_t index):
-		CRecord(datastore)
-{
-   SetRecordType(RECTYPE_FORMAT);
-
-   AddValue16(index);
-   AddUnicodeString(&formatstr, sizeof(unsigned16_t), isASCII);
-    
-   SetRecordLength(GetDataSize()-4);
-}
-#endif
 CFormat::CFormat(CDataStorage &datastore, const format_t* formatdef):
 		CRecord(datastore)
 {
@@ -159,29 +187,40 @@ unsigned16_t CFormat::GetIndex(void) const
 
 
 
-format_t::format_t(u16string fmtstr) :
+format_t::format_t(CGlobalRecords& gRecords, const std::string& fmtstr) :
 	index(0),
 	formatstr(),
-	isASCII(true)
+	m_GlobalRecords(gRecords),
+	m_usage_counter(0)
 {
-	u16string::const_iterator	cBegin, cEnd;
-	size_t	len;
-
-	len = fmtstr.length();
-	formatstr.reserve(len);
-
-	cBegin	= fmtstr.begin();
-	cEnd	= fmtstr.end();
-	
-	while(cBegin != cEnd) {
-		unsigned16_t	c;
-		
-		c = *cBegin++;
-		if(c > 0x7F) isASCII = false;
-
-		formatstr.push_back(c);		
-	}
+	gRecords.char2str16(fmtstr, formatstr);
 }
+
+format_t::format_t(CGlobalRecords& gRecords, const std::ustring& fmtstr) :
+index(0),
+formatstr(),
+m_GlobalRecords(gRecords),
+m_usage_counter(0)
+{
+	gRecords.wide2str16(fmtstr, formatstr);
+}
+
+format_t::format_t(CGlobalRecords& gRecords, const u16string& fmtstr) :
+index(0),
+formatstr(fmtstr),
+m_GlobalRecords(gRecords),
+m_usage_counter(0)
+{
+}
+
+
+format_t &format_t::operator =(const format_t &src)
+{
+	throw std::string("Should never have invoked the format_t copy operator!");
+}
+
+
+
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * $Log: format.cpp,v $
  * Revision 1.5  2009/03/02 04:08:43  dhoerl

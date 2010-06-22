@@ -82,7 +82,7 @@ CGlobalRecords::CGlobalRecords() :
 	font_dflt(),
 	fontIndex(0),
 	format(),
-	formatIndex(0),
+	formatIndex(FMTCODE_GENERAL),
 	xf(),
 	xf_dflt(),
 	xfIndex(0),
@@ -92,30 +92,40 @@ CGlobalRecords::CGlobalRecords() :
 	// set to what Excel 2004 on Mac outputs 12/12/2008
 
 	// Initialize default fonts
-	font_t *newfont, *font0, *font1, *font2, *font4;
+	font_t *newfont;
+	font_t *font0;
+	font_t *font1;
+	font_t *font2;
+	font_t *font4;
 
 	newfont = new font_t(*this, 0, "Verdana", 200, BOLDNESS_NORMAL, UNDERLINE_NONE, SCRIPT_NONE, ORIG_COLOR_BLACK, FONT_DFLT_ATTRIBUTES, FONT_DFLT_FAMILY, FONT_DFLT_CHARSET);
-	newfont->MarkUsed(), newfont->MarkUsed();
+	// mark as used TWICE to ensure these fonts are never discarded, even when 'unused'
+	newfont->MarkUsed();
+	newfont->MarkUsed();
 	m_DefaultFonts.push_back(newfont);
 	font0 = newfont;
 
 	newfont = new font_t(*this, 1, "Verdana", 200, BOLDNESS_BOLD, UNDERLINE_NONE, SCRIPT_NONE, ORIG_COLOR_BLACK, FONT_ATTR_BOLD, FONT_DFLT_FAMILY, FONT_DFLT_CHARSET);
-	newfont->MarkUsed(), newfont->MarkUsed();
+	newfont->MarkUsed();
+	newfont->MarkUsed();
 	m_DefaultFonts.push_back(newfont);
 	font1 = newfont;
 
 	newfont = new font_t(*this, 2, "Verdana", 200, BOLDNESS_NORMAL, UNDERLINE_NONE, SCRIPT_NONE, ORIG_COLOR_BLACK, FONT_ATTR_ITALIC, FONT_DFLT_FAMILY, FONT_DFLT_CHARSET);
-	newfont->MarkUsed(), newfont->MarkUsed();
+	newfont->MarkUsed();
+	newfont->MarkUsed();
 	m_DefaultFonts.push_back(newfont);
 	font2 = newfont;
 
 	newfont = new font_t(*this, 3, "Verdana", 200, BOLDNESS_BOLD, UNDERLINE_NONE, SCRIPT_NONE, ORIG_COLOR_BLACK, FONT_ATTR_BOLD|FONT_ATTR_ITALIC, FONT_DFLT_FAMILY, FONT_DFLT_CHARSET);
-	newfont->MarkUsed(), newfont->MarkUsed();
+	newfont->MarkUsed();
+	newfont->MarkUsed();
 	m_DefaultFonts.push_back(newfont);
 
 	// Excel spec for FONT says ignore 4
 	newfont = new font_t(*this, 5, "Verdana", 200, BOLDNESS_NORMAL, UNDERLINE_NONE, SCRIPT_NONE, ORIG_COLOR_BLACK, FONT_DFLT_ATTRIBUTES, FONT_DFLT_FAMILY, FONT_DFLT_CHARSET);
-	newfont->MarkUsed(), newfont->MarkUsed();
+	newfont->MarkUsed();
+	newfont->MarkUsed();
 	m_DefaultFonts.push_back(newfont);
 	font4 = newfont;
 
@@ -178,7 +188,9 @@ CGlobalRecords::CGlobalRecords() :
 		if(fnt == font4)		newxf->ClearFlag(XF_ALIGN_ATRFONT);	// Ask Mr Bill why...Done to make binary the same
 		if(fmt != FMT_GENERAL)	newxf->SetFormat(fmt);
 		
-		newxf->MarkUsed(), newxf->MarkUsed();
+		// mark as used TWICE to ensure these formats are never discarded, even when 'unused'
+		newxf->MarkUsed();
+		newxf->MarkUsed();
 		m_DefaultXFs.push_back(newxf);
 		
 		if(xfIndex == XF_PROP_XF_DEFAULT_CELL) {
@@ -188,6 +200,8 @@ CGlobalRecords::CGlobalRecords() :
 		newxf->SetIndex(xfIndex);	// for debugging - not really needed here
 	}
 	XL_ASSERT(defaultXF);
+
+	formatIndex = FMT_CODE_FIRST_USER;
 
 	style_t* newstyle;
 	newstyle = new style_t;
@@ -757,11 +771,10 @@ font_t* CGlobalRecords::GetDefaultFont() const
 ****************************************
 ****************************************
 */
-unsigned16_t CGlobalRecords::AddXFormat(xf_t* xfi)
+void CGlobalRecords::AddXFormat(xf_t* xfi)
 {
+	xfi->SetIndex(xfIndex++);
 	m_XFs.push_back(xfi);
-	
-	return xfIndex++;	// how xf_t's get their index
 }
 
 /*

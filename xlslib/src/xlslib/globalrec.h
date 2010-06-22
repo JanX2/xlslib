@@ -98,8 +98,7 @@ CGlobalRecords class declaration
       void			AddBoundingSheet(boundsheet_t* bsheetdef);
       void			AddFont(font_t* newfont);
       void			AddFormat(format_t*);
-
-      unsigned16_t	AddXFormat(xf_t* xf);
+      void			AddXFormat(xf_t* xf);
 
       bool			SetColor(unsigned8_t r, unsigned8_t g, unsigned8_t b, unsigned8_t idx);
 

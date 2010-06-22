@@ -57,10 +57,10 @@ namespace xlslib_core
 #define FMTCODE_NUMBER2            0x0002
 #define FMTCODE_NUMBER3            0x0003
 #define FMTCODE_NUMBER4            0x0004
-#define FMTCODE_CURRENCY1          0x0005
-#define FMTCODE_CURRENCY2          0x0006
-#define FMTCODE_CURRENCY3          0x0007
-#define FMTCODE_CURRENCY4          0x0008
+#define FMTCODE_CURRENCY1          0x0005 // ends up 'customized' in XLS
+#define FMTCODE_CURRENCY2          0x0006 // ends up 'customized' in XLS
+#define FMTCODE_CURRENCY3          0x0007 // ends up 'customized' in XLS
+#define FMTCODE_CURRENCY4          0x0008 // ends up 'customized' in XLS
 #define FMTCODE_PERCENT1           0x0009
 #define FMTCODE_PERCENT2           0x000a
 #define FMTCODE_SCIENTIFIC1        0x000b
@@ -79,17 +79,17 @@ namespace xlslib_core
 #define FMTCODE_ACCOUNTING2        0x0026
 #define FMTCODE_ACCOUNTING3        0x0027
 #define FMTCODE_ACCOUNTING4        0x0028
-#define FMTCODE_CURRENCY5          0x0029
-#define FMTCODE_CURRENCY6          0x002a
-#define FMTCODE_CURRENCY7          0x002b
-#define FMTCODE_CURRENCY8          0x002c
+#define FMTCODE_CURRENCY5          0x0029 // ends up 'customized' in XLS
+#define FMTCODE_CURRENCY6          0x002a // ends up 'customized' in XLS
+#define FMTCODE_CURRENCY7          0x002b // ends up 'customized' in XLS
+#define FMTCODE_CURRENCY8          0x002c // ends up 'customized' in XLS
 #define FMTCODE_HOUR5              0x002d
 #define FMTCODE_HOUR6              0x002e
 #define FMTCODE_HOUR7              0x002f
 #define FMTCODE_SCIENTIFIC2        0x0030
 #define FMTCODE_TEXT               0x0031
 
-#define FMT_CODE_FIRST_USER			164
+#define FMT_CODE_FIRST_USER			164 /* 0xA4 - the first index used by Excel2003 for any user defined format */
 
 // good resource for format strings: http://www.mvps.org/dmcritchie/excel/formula.htm
 // Good explanation of custom formats: http://www.ozgrid.com/Excel/CustomFormats.htm
@@ -135,38 +135,56 @@ typedef enum
   FMT_TEXT          			// @
 } format_number_t;
 
-extern const unsigned16_t format2index[];
 
-  /* 
+class CGlobalRecords;
+
+/* 
 ******************************
 CFormat class declaration
 ******************************
 */
-
-  class format_t
+class format_t
 {
 	  friend class workbook;
 	  friend class CGlobalRecords;
 
     private:
-      format_t(u16string fmtstr);
-      ~format_t(){};
+  	  format_t(const format_t& orig);
+	  format_t(CGlobalRecords& gRecords, const std::string& fmtstr);
+	  format_t(CGlobalRecords& gRecords, const std::ustring& fmtstr);
+      format_t(CGlobalRecords& gRecords, const u16string& fmtstr);
+      virtual ~format_t(){};
+	  /* MSVC2005: C4512: 'xlslib_core::format_t' : assignment operator could not be generated */
+	  format_t &operator =(const format_t &src);
    
     public:
-      unsigned16_t GetIndex() const {return index;};
+		static format_t* formatDup(const format_t* orig)
+		{
+			format_t* fmt = new format_t(*orig);
+			return fmt;
+		}
+		void MarkUsed();
+		void UnMarkUsed();
+		unsigned32_t Usage() const;
+
+	  unsigned16_t GetIndex() const {return index;};
       void SetIndex(unsigned16_t idx) {index = idx;};
       
 	  // good resource for format strings: http://www.mvps.org/dmcritchie/excel/formula.htm
-      const u16string *GetFormatStr(void) const {return &formatstr;};
-      void SetFormatStr(u16string& fmtstr) {formatstr = fmtstr;};
+      const u16string& GetFormatStr(void) const {return formatstr;};
+      void SetFormatStr(const u16string& fmtstr) {formatstr = fmtstr;};
 
-      bool GetIsASCII() const { return isASCII; };
+	public:
+		static const unsigned16_t format2index(format_number_t idx);
 
     private:
       unsigned16_t index;
       u16string formatstr;
-	  bool isASCII;
-      //unsigned32_t m_usage_counter;    
+      unsigned32_t m_usage_counter;    
+	  CGlobalRecords& m_GlobalRecords;
+
+	public:
+		CGlobalRecords& GetGlobalRecords(void) const { return m_GlobalRecords; }; 
   };
 	
   typedef std::vector<xlslib_core::format_t* XLSLIB_DFLT_ALLOCATOR> Format_Vect_t;

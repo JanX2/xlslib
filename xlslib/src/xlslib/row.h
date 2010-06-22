@@ -69,10 +69,10 @@ namespace xlslib_core
   class rowheight_t
     {
     public:
-      rowheight_t() : num(0), height(0), xformat(NULL) {};
-      rowheight_t(unsigned32_t rownum, unsigned16_t rowheight, xf_t *pxformat) 
+      rowheight_t() : num(0), height(ROW_DFLT_HEIGHT), xformat(NULL) {};
+      rowheight_t(unsigned32_t rownum, unsigned16_t rowheight = ROW_DFLT_HEIGHT, xf_t *pxformat = NULL) 
         : num(rownum), height(rowheight), xformat(pxformat) {}
-      ~rowheight_t() {} // TODO: ?? {if(xformat)xformat->UnMarkUsed();};
+      ~rowheight_t() {if(xformat) xformat->UnMarkUsed();};
 
       unsigned32_t GetRowNum() {return num;};
       void SetRowNum(unsigned32_t rownum) {num = rownum;};

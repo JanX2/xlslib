@@ -35,6 +35,7 @@
 #include <xlsys.h>
 
 #include <label.h>
+#include <globalrec.h>
 #include <datast.h>
 
 
@@ -48,30 +49,25 @@ label_t class implementation
 */
 xlslib_core::label_t::label_t(CGlobalRecords& gRecords, 
 		unsigned32_t rowval, unsigned32_t colval, const u16string& labelstrval, xf_t* pxfval) :
-	cell_t(gRecords, rowval, colval),
-	strLabel(),
-	isASCII(true)
+	cell_t(gRecords, rowval, colval, pxfval),
+	strLabel(labelstrval)
 {
-	u16string::const_iterator cBegin, cEnd;
-	size_t	len;
-	
-	SetXF(pxfval);
+}
 
-	len = labelstrval.length();
-	strLabel.reserve(len);
+xlslib_core::label_t::label_t(CGlobalRecords& gRecords, 
+							  unsigned32_t rowval, unsigned32_t colval, const std::string& labelstrval, xf_t* pxfval) :
+cell_t(gRecords, rowval, colval, pxfval),
+	strLabel()
+{
+	gRecords.char2str16(labelstrval, strLabel);
+}
 
-	cBegin = labelstrval.begin();
-	cEnd = labelstrval.end();
-	
-	while(cBegin != cEnd) 
-	{
-		unsigned16_t	c;
-		
-		c = *cBegin++;
-		if(c > 0x7F) isASCII = false;
-
-		strLabel.push_back(c);		
-	}
+xlslib_core::label_t::label_t(CGlobalRecords& gRecords, 
+							  unsigned32_t rowval, unsigned32_t colval, const std::ustring& labelstrval, xf_t* pxfval) :
+cell_t(gRecords, rowval, colval, pxfval),
+strLabel()
+{
+	gRecords.wide2str16(labelstrval, strLabel);
 }
 
 

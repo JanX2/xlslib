@@ -56,7 +56,7 @@ namespace xlslib_core
 		friend class worksheet;
 
     protected:
-		cell_t(CGlobalRecords& gRecord, unsigned32_t row, unsigned32_t col);
+		cell_t(CGlobalRecords& gRecord, unsigned32_t row, unsigned32_t col, xf_t* pxfval);
 		virtual ~cell_t();	// "C++ Coding Standards" rule 50 (protected and non-virtual)     [i_a] MUST be virtual or you'll get blown out of the sky by memleaks (label_t instances in cell_t lists)
 
     private:

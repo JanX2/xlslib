@@ -41,10 +41,10 @@
 
 using namespace xlslib_core;
 
-cell_t::cell_t(CGlobalRecords& gRecord, unsigned32_t rowNum, unsigned32_t colNum) :
+cell_t::cell_t(CGlobalRecords& gRecord, unsigned32_t rowNum, unsigned32_t colNum, xf_t* pxfval) :
    m_GlobalRecords(gRecord),
    row(rowNum), col(colNum),
-   pxf(gRecord.GetDefaultXF())
+   pxf(pxfval ? pxfval : gRecord.GetDefaultXF())
 {
 	XL_ASSERT(pxf);
 	pxf->MarkUsed();

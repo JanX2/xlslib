@@ -51,20 +51,18 @@ number_t::number_t(CGlobalRecords& gRecords,
 		unsigned32_t colval, 
 		double numval, 
 		xf_t* pxfval) :
-	cell_t(gRecords, rowval, colval),
+	cell_t(gRecords, rowval, colval, pxfval),
 	isDouble(true),
 	num()
 {
 	num.dblNum = numval;
-
-	SetXF(pxfval);
 }
 number_t::number_t(CGlobalRecords& gRecords, 
 		unsigned32_t rowval, 
 		unsigned32_t colval, 
 		signed32_t numval, 
 		xf_t* pxfval) :
-	cell_t(gRecords, rowval, colval),
+	cell_t(gRecords, rowval, colval, pxfval),
 	isDouble(false),
 	num()
 {
@@ -75,8 +73,6 @@ number_t::number_t(CGlobalRecords& gRecords,
 		isDouble	= true;
 		num.dblNum	= (double)numval;	// original value
 	}
-
-	SetXF(pxfval);
 }
 
 CUnit* number_t::GetData(CDataStorage &datastore) const
