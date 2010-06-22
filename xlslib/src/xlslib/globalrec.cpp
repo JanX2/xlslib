@@ -593,12 +593,12 @@ CUnit* CGlobalRecords::DumpData(CDataStorage &datastore)
 			{
 				// First check if the list of sheets is not empty...
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
-				m_pCurrentData = datastore.MakeCBSheet(*bsheet);
+				m_pCurrentData = (*bsheet)->SetSheetData(datastore.MakeCBSheet(*bsheet));
 #else
 				//Delete_Pointer(m_pCurrentData);
 				m_pCurrentData = (CUnit*)(new CBSheet(datastore, *bsheet));
+				(*bsheet)->SetSheetData((CBSheet *)m_pCurrentData);
 #endif
-				(*bsheet)->sheetData = (CBSheet *)m_pCurrentData;
 
 				if(bsheet != (--m_BoundSheets.end()))
 				{

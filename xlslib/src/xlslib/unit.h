@@ -106,13 +106,17 @@ namespace xlslib_core
 	CUnit&   operator+=(const CUnit& from);
     CUnit&   operator+=(unsigned8_t from);
 
+  public:
     size_t GetSize(void) const;
     size_t GetDataSize(void) const;
-    unsigned8_t* GetBuffer(void);
     const unsigned8_t* GetBuffer(void) const;
-    signed8_t Init (unsigned8_t* data, 
-                    const size_t size, 
-                    const unsigned32_t datasz);
+//  protected:
+//    unsigned8_t* GetBuffer(void);
+
+  protected:
+    signed8_t Init(const unsigned8_t* data, 
+                   const size_t size, 
+                   const unsigned32_t datasz);
 
   public:
     signed8_t AddDataArray(const unsigned8_t* newdata, size_t size);
@@ -134,7 +138,6 @@ namespace xlslib_core
     signed8_t GetValue32From(signed32_t* val, unsigned32_t index) const;
     signed8_t GetValue8From(signed8_t* data, unsigned32_t  index) const;
 	
-  protected:
     signed8_t Append(const CUnit& newunit);
 
     signed8_t AddValue8(unsigned8_t newdata);
@@ -150,8 +153,11 @@ namespace xlslib_core
     signed8_t SetArrayAt(const unsigned8_t* newdata, size_t size, unsigned32_t index);
     //  signed8_t GetData(unsigned8_t** data, unsigned32_t from, unsigned32_t to );
 
+  public:
     signed8_t RemoveTrailData(size_t remove_size);
+  protected:
     signed8_t InitFill(unsigned8_t data, size_t size);
+  public:
     signed8_t Inflate(size_t increase = 0);
   };
 }
