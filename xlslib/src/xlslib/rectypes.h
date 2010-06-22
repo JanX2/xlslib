@@ -261,7 +261,7 @@
 /* FONT: Font Description */
 // NOTE: Changed temporarilly to 31h (the manual says is 231h)
 #define RECTYPE_FONT                            \
-  0x31
+  0x231
  
 /* FOOTER: Print Footer on Each Page */
 #define RECTYPE_FOOTER                          \
@@ -273,7 +273,7 @@
  
 /* FORMULA: Cell Formula */
 #define RECTYPE_FORMULA                         \
-  0x406
+  0x06 // also known under 0x406 but MS Spec says it's 0x06!
  
 /* GCW: Global Column-Width Flags */
 #define RECTYPE_GCW                             \
