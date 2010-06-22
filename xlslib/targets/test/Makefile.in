@@ -51,13 +51,13 @@ CONFIG_HEADER = $(top_builddir)/src/common/xlconfig.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 PROGRAMS = $(noinst_PROGRAMS)
-am_PR2859188_OBJECTS = PR2859188.$(OBJEXT)
+am_PR2859188_OBJECTS = PR2859188.$(OBJEXT) md5.$(OBJEXT)
 PR2859188_OBJECTS = $(am_PR2859188_OBJECTS)
 PR2859188_DEPENDENCIES = $(top_builddir)/src/libxls.la
-am_testC_OBJECTS = mainC.$(OBJEXT)
+am_testC_OBJECTS = mainC.$(OBJEXT) md5.$(OBJEXT)
 testC_OBJECTS = $(am_testC_OBJECTS)
 testC_DEPENDENCIES = $(top_builddir)/src/libxls.la
-am_testCPP_OBJECTS = mainCPP.$(OBJEXT)
+am_testCPP_OBJECTS = mainCPP.$(OBJEXT) md5.$(OBJEXT)
 testCPP_OBJECTS = $(am_testCPP_OBJECTS)
 testCPP_DEPENDENCIES = $(top_builddir)/src/libxls.la
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)/src/common
@@ -229,11 +229,11 @@ AM_CPPFLAGS = \
 -I$(top_srcdir)/src/xlslib \
 -I$(top_srcdir)/src/oledoc 
 
-testCPP_SOURCES = mainCPP.cpp
+testCPP_SOURCES = mainCPP.cpp md5.c
 testCPP_LDADD = $(top_builddir)/src/libxls.la 
-testC_SOURCES = mainC.c
+testC_SOURCES = mainC.c md5.c
 testC_LDADD = $(top_builddir)/src/libxls.la 
-PR2859188_SOURCES = PR2859188.cpp
+PR2859188_SOURCES = PR2859188.cpp md5.c
 PR2859188_LDADD = $(top_builddir)/src/libxls.la 
 all: all-am
 
@@ -306,6 +306,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PR2859188.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mainC.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mainCPP.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/md5.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<

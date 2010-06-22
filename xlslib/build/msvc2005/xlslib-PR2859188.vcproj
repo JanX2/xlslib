@@ -3,6 +3,7 @@
 	ProjectType="Visual C++"
 	Version="8.00"
 	Name="xlslib-PR2859188"
+	ProjectGUID="{E755D2E2-4D43-4B1E-B694-9A1D805D2A7A}"
 	RootNamespace="xlslib-PR2859188"
 	Keyword="Win32Proj"
 	>
@@ -586,6 +587,14 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath="..\..\targets\test\md5.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\targets\test\md5.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\targets\test\PR2859188.cpp"
 				>
 			</File>
@@ -735,10 +744,6 @@
 				Name="common"
 				>
 				<File
-					RelativePath="..\..\src\common\xlsys.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\src\common\overnew.h"
 					>
 				</File>
@@ -780,6 +785,10 @@
 				</File>
 				<File
 					RelativePath="..\..\src\common\xlstypes.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\common\xlsys.h"
 					>
 				</File>
 			</Filter>
@@ -834,4 +843,3 @@
 	<Globals>
 	</Globals>
 </VisualStudioProject>
-                                                                                                                                                                                                           

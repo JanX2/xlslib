@@ -16,7 +16,7 @@
 
 
 /* Define if you want to compile with extra debug development checks */
-#if defined(_DEBUG) || defined(DEBUG) /* [i_a] this is done in the MSVC2005 project: different builds available */
+#if defined(_DEBUG) || defined(DEBUG) || defined(__DEBUG__) /* [i_a] this is done in the MSVC2005 project: different builds available */
 #undef DEBUG 
 #define DEBUG 1
 #else
@@ -43,7 +43,7 @@
 
 
 /* Define to 1 if you have the <inttypes.h> header file. */
-#define HAVE_INTTYPES_H 1
+#undef HAVE_INTTYPES_H
 
 
 /* Define to 1 if you have the `memchr' function. */
@@ -144,12 +144,6 @@
 
 /* Define to the version of this package. */
 #define PACKAGE_VERSION "@PACKAGE_VERSION@"
-
-/* revision number of software */
-#define REVISION "@REVISION@"
-
-/* revision date of software YYYY-MM-DDTHH:MM */
-#define REVISION_DATE "@REVISION_DATE@"
 
 /* The size of `int', as computed by sizeof. */
 #define SIZEOF_INT sizeof(int)  /* 4 */
@@ -294,4 +288,7 @@ typedef unsigned __int8 uint8_t;
    such a type exists and the standard includes do not define it. */
 /* #undef uint8_t */
 
-/* Define to empty if the keyword `vola
+/* Define to empty if the keyword `volatile' does not work. Warning: valid
+   code using `volatile' can become incorrect without. Disable with care. */
+/* #undef volatile */
+
