@@ -42,6 +42,67 @@
 using namespace std;
 using namespace xlslib_core;
 
+
+
+boundsheet_t::boundsheet_t(CGlobalRecords& gRecords) : 
+streampos(0),
+sheetname(),
+sheetData(NULL),
+m_GlobalRecords(gRecords)
+{
+	SetAttributes(0);
+}
+boundsheet_t::boundsheet_t(CGlobalRecords& gRecords, const u16string& sn, unsigned16_t attributes, unsigned32_t sp) :
+streampos(sp),
+sheetname(sn),
+sheetData(NULL),
+m_GlobalRecords(gRecords)
+{
+	SetAttributes(attributes);
+}
+
+boundsheet_t::~boundsheet_t()
+{
+
+}
+
+void boundsheet_t::SetAttributes(unsigned16_t attributes)
+{
+	worksheet = ((attributes & BSHEET_ATTR_WORKSHEET  ) == BSHEET_ATTR_WORKSHEET );
+	ex4macro = ((attributes & BSHEET_ATTR_EX4MACRO   ) == BSHEET_ATTR_EX4MACRO  );
+	chart = ((attributes & BSHEET_ATTR_CHART      ) == BSHEET_ATTR_CHART     );
+	vbmodule = ((attributes & BSHEET_ATTR_VBMODULE   ) == BSHEET_ATTR_VBMODULE  );
+	visible = ((attributes & BSHEET_ATTR_VISIBLE    ) == BSHEET_ATTR_VISIBLE   );
+	hidden = ((attributes & BSHEET_ATTR_HIDDEN     ) == BSHEET_ATTR_HIDDEN    );
+	veryhidden = ((attributes & BSHEET_ATTR_VERYHIDDEN ) == BSHEET_ATTR_VERYHIDDEN);
+}
+
+boundsheet_t::boundsheet_t(const boundsheet_t& that) : 
+streampos(that.streampos),
+sheetname(that.sheetname),
+worksheet(that.worksheet),
+ex4macro(that.ex4macro),
+chart(that.chart),
+vbmodule(that.vbmodule),
+visible(that.visible),
+hidden(that.hidden),
+veryhidden(that.veryhidden),
+sheetData(that.sheetData),
+m_GlobalRecords(that.m_GlobalRecords)
+{
+}
+boundsheet_t& boundsheet_t::operator=(const boundsheet_t& right)
+{
+	throw std::string("Should never have invoked the boundsheet_t copy operator!");
+}
+
+void boundsheet_t::SetSheetStreamPosition(size_t offset) 
+{
+	sheetData->SetStreamPosition(offset);
+}
+
+
+
 /*
 ******************************
 CBof class implementation
@@ -358,17 +419,17 @@ CBSheet::CBSheet(CDataStorage &datastore, const boundsheet_t* bsheetdef):
 #endif
 
 	SetRecordType(RECTYPE_BOUNDSHEET);
-	AddValue32(bsheetdef->streampos);
+	AddValue32(bsheetdef->GetStreamPos());
 
 	// Set the flags in the attribute variables
 	unsigned16_t attrflags = 0;
-	attrflags |=  bsheetdef->worksheet	? BSHEET_ATTR_WORKSHEET:0;
-	attrflags |=  bsheetdef->ex4macro	? BSHEET_ATTR_EX4MACRO:0;
-	attrflags |=  bsheetdef->chart		? BSHEET_ATTR_CHART:0;
-	attrflags |=  bsheetdef->vbmodule	? BSHEET_ATTR_VBMODULE:0;
-	attrflags |=  bsheetdef->visible	? BSHEET_ATTR_VISIBLE:0;
-	attrflags |=  bsheetdef->hidden		? BSHEET_ATTR_HIDDEN:0;
-	attrflags |=  bsheetdef->veryhidden	? BSHEET_ATTR_VERYHIDDEN:0;
+	attrflags |= (bsheetdef->IsWorkSheet()	? BSHEET_ATTR_WORKSHEET:0);
+	attrflags |= (bsheetdef->IsEx4macro()	? BSHEET_ATTR_EX4MACRO:0);
+	attrflags |= (bsheetdef->IsChart()		? BSHEET_ATTR_CHART:0);
+	attrflags |= (bsheetdef->IsVBModule()	? BSHEET_ATTR_VBMODULE:0);
+	attrflags |= (bsheetdef->IsVisible()	? BSHEET_ATTR_VISIBLE:0);
+	attrflags |= (bsheetdef->IsHidden()		? BSHEET_ATTR_HIDDEN:0);
+	attrflags |= (bsheetdef->IsVeryHidden()	? BSHEET_ATTR_VERYHIDDEN:0);
 
 	AddValue16(attrflags);
 	AddUnicodeString(bsheetdef->GetGlobalRecords(), bsheetdef->GetSheetName(), LEN1_FLAGS_UNICODE);

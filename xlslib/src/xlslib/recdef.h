@@ -334,15 +334,15 @@ CBSheet class declaration
   class boundsheet_t
   {
   public:
-	boundsheet_t() : streampos(0),sheetname(),isASCII(0),worksheet(0),ex4macro(0),chart(0),
-		vbmodule(0),visible(0),hidden(0),veryhidden(0),sheetData(NULL) {}
-	~boundsheet_t() {}
+	boundsheet_t(CGlobalRecords& gRecords);
+	boundsheet_t(CGlobalRecords& gRecords, const u16string& sheetname, unsigned16_t attributes, unsigned32_t streampos);
+	virtual ~boundsheet_t();
 
   private:
 	boundsheet_t(const boundsheet_t& that);
 	boundsheet_t& operator=(const boundsheet_t& right);
 
-  public:
+  protected:
     unsigned32_t streampos;
     u16string sheetname;
     bool worksheet:1;      
@@ -358,6 +358,22 @@ CBSheet class declaration
 	CGlobalRecords& m_GlobalRecords; 
 
   public:
+	  unsigned32_t GetStreamPos(void) const { return streampos; };
+	  const u16string& GetSheetName(void) const { return sheetname; };
+
+	  void SetAttributes(unsigned16_t attributes);
+	  bool IsWorkSheet(void) const { return worksheet; };      
+	  bool IsEx4macro(void) const { return ex4macro; };
+	  bool IsChart(void) const { return chart; };
+	  bool IsVBModule(void) const { return vbmodule; };
+	  bool IsVisible(void) const { return visible; };      
+	  bool IsHidden(void) const { return hidden; };
+	  bool IsVeryHidden(void) const { return veryhidden; };
+
+	  CBSheet *SetSheetData(CBSheet *sh) { sheetData = sh; return sh; };
+	  void SetSheetStreamPosition(size_t offset);
+	  const CBSheet *GetSheetData(void) const { return sheetData; };
+
 	  CGlobalRecords& GetGlobalRecords(void) const { return m_GlobalRecords; }; 
   };
 

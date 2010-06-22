@@ -659,18 +659,7 @@ void CGlobalRecords::AddBoundingSheet(unsigned32_t streampos,
                                       unsigned16_t attributes,
                                       u16string& sheetname)
 {
-   boundsheet_t* bsheetdef = new boundsheet_t;
-
-   bsheetdef->worksheet  = (bool)((attributes & BSHEET_ATTR_WORKSHEET  ) == BSHEET_ATTR_WORKSHEET );
-   bsheetdef->ex4macro   = (bool)((attributes & BSHEET_ATTR_EX4MACRO   ) == BSHEET_ATTR_EX4MACRO  );
-   bsheetdef->chart      = (bool)((attributes & BSHEET_ATTR_CHART      ) == BSHEET_ATTR_CHART     );
-   bsheetdef->vbmodule   = (bool)((attributes & BSHEET_ATTR_VBMODULE   ) == BSHEET_ATTR_VBMODULE  );
-   bsheetdef->visible    = (bool)((attributes & BSHEET_ATTR_VISIBLE    ) == BSHEET_ATTR_VISIBLE   );
-   bsheetdef->hidden     = (bool)((attributes & BSHEET_ATTR_HIDDEN     ) == BSHEET_ATTR_HIDDEN    );
-   bsheetdef->veryhidden = (bool)((attributes & BSHEET_ATTR_VERYHIDDEN ) == BSHEET_ATTR_VERYHIDDEN);
-
-   bsheetdef->sheetname = sheetname;
-   bsheetdef->streampos  = streampos;
+   boundsheet_t* bsheetdef = new boundsheet_t(*this, sheetname, attributes, streampos);
 
    m_BoundSheets.push_back(bsheetdef);
 }

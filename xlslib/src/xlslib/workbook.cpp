@@ -409,7 +409,7 @@ CUnit* workbook::DumpData(CDataStorage &datastore)
             {
 				Boundsheet_Vect_Itor_t bs = m_GlobalRecords.GetBoundSheetAt(current_sheet);
 
-				(*bs)->sheetData->SetStreamPosition(offset);
+				(*bs)->SetSheetStreamPosition(offset);
 
 				if((current_sheet+1) < (unsigned16_t)m_Sheets.size()) // [i_a]
 				{
