@@ -52,7 +52,7 @@ namespace xlslib_core
   class number_t: public cell_t
     {
 	  friend class worksheet;
-	  friend class CNumber; // ::CNumber(number_t& blankdef);
+	  //friend class CNumber; // ::CNumber(number_t& blankdef);
 
     private:
       number_t(CGlobalRecords& gRecords, unsigned32_t rowval, unsigned32_t colval, 
@@ -84,6 +84,9 @@ __attribute__((unused))
 __attribute__((unused))
 #endif
 									) const {return isDouble ? (signed32_t)num.dblNum : num.intNum;};
+	  bool GetIsDouble() const { return isDouble; };
+	  double GetDouble() const {return isDouble ? num.dblNum : (double)num.intNum;};
+	  signed32_t GetInt() const {return isDouble ? (signed32_t)num.dblNum : num.intNum;};
     };
 
 

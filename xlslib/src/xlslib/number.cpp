@@ -94,24 +94,24 @@ CNumber::CNumber(CDataStorage &datastore, const number_t& numdef):
 {
 	unsigned16_t type;
 
-	type = numdef.isDouble ? RECTYPE_NUMBER : RECTYPE_RK;
+	type = numdef.GetIsDouble() ? RECTYPE_NUMBER : RECTYPE_RK;
 
 	SetRecordType(type);
 
-	AddValue16((unsigned16_t)numdef.row);
-	AddValue16((unsigned16_t)numdef.col);
+	AddValue16(numdef.GetRow());
+	AddValue16(numdef.GetCol());
 	AddValue16(numdef.GetXFIndex());
 
 	if(type == RECTYPE_RK) {
 		unsigned32_t val;
 
-		val = (unsigned32_t)numdef.num.intNum << 2;		// lower two bits for flags
+		val = (unsigned32_t)numdef.GetInt() << 2;		// lower two bits for flags
 		val |= 0x2;										// Integral type
 		AddValue32(val);
-		//cerr << "RK: " <<  numdef.num.intNum << " (" << hex << val << ") " << dec << endl << flush;
 	} else {
-		AddValue64((unsigned64_t*)&numdef.num.dblNum);
-		//cerr << "DBL: val=" << numdef.num.dblNum << endl << flush;
+		double val = numdef.GetDouble();
+
+		AddValue64((unsigned64_t*)&val);
 	}
 
 	SetRecordLength(GetDataSize()-4);
