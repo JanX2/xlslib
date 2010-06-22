@@ -57,6 +57,7 @@ workbook class implementation
 */
 workbook::workbook() :
 	m_GlobalRecords(),
+	m_ExprFactory(m_GlobalRecords),
 	m_SummaryInfo(),
 	m_DocSummaryInfo(),
 	m_Sheets(),
