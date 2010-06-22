@@ -38,7 +38,6 @@
 #include <rectypes.h>
 #include <datast.h>
 
-using namespace std;
 using namespace xlslib_core;
 
 /* 
@@ -785,7 +784,7 @@ CUnit& CUnit::operator +=(unsigned8_t from)
 /************************************************
  ************************************************/
 
-signed8_t CUnit::Init (unsigned8_t* data, const size_t size, const unsigned32_t datasz)
+signed8_t CUnit::Init(const unsigned8_t* data, const size_t size, const unsigned32_t datasz)
 {
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 

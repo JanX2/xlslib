@@ -103,7 +103,7 @@ namespace xlslib_core
 
     unsigned8_t& operator[](const size_t index) const;
 	CUnit&   operator+=(const CUnit& from);
-    CUnit&   operator+= (unsigned8_t from);
+    CUnit&   operator+=(unsigned8_t from);
 
     size_t GetSize(void) const;
     size_t GetDataSize(void) const;

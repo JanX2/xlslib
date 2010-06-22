@@ -70,13 +70,13 @@ CRecord class declaration
   
     public:
       void SetRecordType(unsigned16_t rtype);
-      unsigned16_t GetRecordType();
+      unsigned16_t GetRecordType() const;
 
       void SetRecordLength(size_t);
-      size_t GetRecordLength();
+      size_t GetRecordLength() const;
 
-      unsigned8_t* GetRecordDataBuffer();
-      size_t GetRecordDataSize();
+      const unsigned8_t* GetRecordDataBuffer() const;
+      size_t GetRecordDataSize() const;
 
       //void SetStreamPos(size_t pos) { streamPos = pos; };
       //size_t GetStreamPos() { return streamPos; };

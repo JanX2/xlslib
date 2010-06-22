@@ -155,7 +155,7 @@ CFont class declaration
 	font_i() { }
 	virtual ~font_i() { }
 
-    virtual void fontname(std::string fntname) = 0;
+    virtual void fontname(const std::string& fntname) = 0;
     virtual void fontheight(unsigned16_t fntheight) = 0;
     virtual void fontbold(boldness_option_t fntboldness) = 0;
     virtual void fontunderline(underline_option_t fntunderline) = 0;
@@ -178,7 +178,7 @@ CFont class declaration
       font_t(CGlobalRecords& gRecords);
       font_t(const font_t& right);
       font_t(CGlobalRecords& gRecords,
-		unsigned16_t index, std::string name,
+		unsigned16_t index, const std::string& name,
 		unsigned16_t height, boldness_option_t boldstyle,
 		underline_option_t underline, script_option_t script,
 		color_name_t color, unsigned16_t attributes,
@@ -202,8 +202,8 @@ CFont class declaration
       unsigned16_t GetIndex(void) const;
 
       /* FONT Index wrappers*/
-      void   SetName(std::string fntname);
-      const std::string *GetName(void) const;
+      void   SetName(const std::string& fntname);
+      const std::string& GetName(void) const;
 
       /* FONT height wrappers*/
       void         SetHeight(unsigned16_t fntheight);

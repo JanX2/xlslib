@@ -73,9 +73,10 @@ void CRecord::SetRecordType(unsigned16_t rtype)
 ******************************
 ******************************
 */
-unsigned16_t CRecord::GetRecordType()
+unsigned16_t CRecord::GetRecordType() const
 {
    signed16_t value;
+
    GetValue16From(&value, 0);
 
    return value;
@@ -96,9 +97,10 @@ void CRecord::SetRecordLength(size_t rlength)
 ******************************
 */
 
-size_t CRecord::GetRecordLength()
+size_t CRecord::GetRecordLength() const
 {
    unsigned16_t value;
+
    GetValue16From((signed16_t*)&value, 2);
 
    return value;
@@ -109,7 +111,7 @@ size_t CRecord::GetRecordLength()
 ******************************
 ******************************
 */
-unsigned8_t* CRecord::GetRecordDataBuffer()
+const unsigned8_t* CRecord::GetRecordDataBuffer() const
 {
    return GetBuffer() + 4;
 }
@@ -119,7 +121,7 @@ unsigned8_t* CRecord::GetRecordDataBuffer()
 ******************************
 ******************************
 */
-size_t CRecord::GetRecordDataSize()
+size_t CRecord::GetRecordDataSize() const
 {
    size_t len = GetDataSize() - 4;
    return len;

@@ -35,7 +35,6 @@
 #include <font.h>
 #include <globalrec.h>
 
-using namespace std;
 using namespace xlslib_core;
 
 /* 
@@ -170,7 +169,7 @@ font_t::font_t(const font_t& right) :
 // only used by globalRec for defaults
 font_t::font_t(CGlobalRecords& gRecords,
 		unsigned16_t index_,
-		string name_,
+		const std::string& name_,
 		unsigned16_t height_,
 		boldness_option_t boldstyle_,
 		underline_option_t underline_,
@@ -205,7 +204,7 @@ font_t::font_t(CGlobalRecords& gRecords,
 
 font_t &font_t::operator =(const font_t &src)
 {
-	throw string("Should never have invoked the font_t copy operator!");
+	throw std::string("Should never have invoked the font_t copy operator!");
 
 #if 0   // historical interest
 	this->m_GlobalRecords = src.m_GlobalRecords;
@@ -310,7 +309,7 @@ unsigned16_t font_t::GetIndex(void) const
 }
 
 /* FONT Index wrappers*/
-void font_t::SetName(string fntname) 
+void font_t::SetName(const std::string& fntname) 
 {
    name = fntname;
  //  m_sigchanged = true;
@@ -419,7 +418,7 @@ unsigned8_t font_t::GetCharset(void) const
    return charset;
 }
 
-const std::string *font_t::GetName(void) const { return &name;};
+const std::string& font_t::GetName(void) const {return name;};
 bool font_t::GetItalic() const {return (attributes & FONT_ATTR_ITALIC) ? true : false; };
 bool font_t::GetStrikeout() const {return (attributes & FONT_ATTR_STRIKEOUT) ? true : false; }
 bool font_t::GetOutline() const {return (attributes & FONT_ATTR_OUTLINEMACH) ? true : false; };

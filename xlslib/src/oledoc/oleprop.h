@@ -94,14 +94,14 @@ COleProp class declaration
       Tree_Level_Vect_t m_Child_List;
 
       COleProp();
-      COleProp(signed32_t node_index, std::string& name, CDataStorage* data = NULL);
+      COleProp(signed32_t node_index, const std::string& name, CDataStorage* data = NULL);
       COleProp(signed32_t node_index, const char *name, CDataStorage* data = NULL);
       ~COleProp();
 
-      int Init(signed32_t node_index, std::string& name, CDataStorage* data = NULL);
+      int Init(signed32_t node_index, const std::string& name, CDataStorage* data = NULL);
 
-      int SetName(std::string name);
-      std::string GetName(void) const;
+      int SetName(const std::string& name);
+      const std::string& GetName(void) const;
 
       int SetIndex(signed32_t newindex);
       inline signed32_t GetIndex(void) const {return m_nIndex;}

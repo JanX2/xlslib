@@ -42,7 +42,6 @@ COleProp class Implementation
 ***********************************
 */
 
-using namespace std;
 using namespace xlslib_core;
 
 COleProp::COleProp() :
@@ -67,7 +66,7 @@ COleProp::COleProp() :
 	m_Child_List()
 {
 }
-COleProp::COleProp(signed32_t node_index, string& name, CDataStorage* data) :
+	COleProp::COleProp(signed32_t node_index, const std::string& name, CDataStorage* data) :
 	m_sName(name),
 	m_nNameSize(0),
 	m_nPropType(0),
@@ -126,7 +125,7 @@ COleProp::~COleProp()
 ***********************************
 */
 
-int COleProp::Init(signed32_t node_index, string& name, CDataStorage* data)
+int COleProp::Init(signed32_t node_index, const std::string& name, CDataStorage* data)
 {
    int errcode = NO_ERRORS;
 
@@ -143,7 +142,7 @@ int COleProp::Init(signed32_t node_index, string& name, CDataStorage* data)
 ***********************************
 */
 
-int COleProp::SetName(string name)
+int COleProp::SetName(const std::string& name)
 {
    int errcode = NO_ERRORS;
   
@@ -158,7 +157,7 @@ int COleProp::SetName(string name)
 ***********************************
 */
 
-string COleProp::GetName(void) const
+const std::string& COleProp::GetName(void) const
 {
    return m_sName;
 }

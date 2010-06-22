@@ -69,7 +69,7 @@ namespace xlslib_core
 	  bool		isASCII;
 
     public:
-      const u16string		*GetStrLabel() const { return &strLabel; };
+      const u16string& GetStrLabel() const { return strLabel; };
       bool					GetIsASCII() const { return isASCII; };
 
       virtual size_t GetSize(void) const;

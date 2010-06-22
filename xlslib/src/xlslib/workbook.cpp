@@ -442,7 +442,7 @@ CUnit* workbook::DumpData(CDataStorage &datastore)
                //Delete_Pointer(m_pContinueRecord);
 
                // Get a pointer to the next chunk of data
-               unsigned8_t* pdata = (((CRecord*)m_pCurrentData)->GetRecordDataBuffer()) + m_ContinueIndex*MAX_RECORD_SIZE;
+               const unsigned8_t* pdata = (((CRecord*)m_pCurrentData)->GetRecordDataBuffer()) + m_ContinueIndex*MAX_RECORD_SIZE;
 
                // Get the size of the chunk of data (that is the MAX_REC_SIZE except by the last one)
                size_t csize = 0;

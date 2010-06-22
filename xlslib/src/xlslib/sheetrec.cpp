@@ -408,9 +408,10 @@ CUnit* worksheet::RowBlocksDump(CDataStorage &datastore)
    bool repeat = false;
    CUnit* rb_record = NULL;
 
-   do {
-
-	 switch(m_DumpRBState) {
+   do 
+   {
+	 switch(m_DumpRBState) 
+	 {
 	 case RB_INIT:
 		m_DumpRBState = RB_ROWS;
 		//m_CurrentRowBlock = 0;

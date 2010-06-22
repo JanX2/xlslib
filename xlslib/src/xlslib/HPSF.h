@@ -139,7 +139,7 @@ namespace xlslib_core
 			//unsigned32_t	NumProperties() const {return numProperties;};
 			unsigned64_t unix2mstime(time_t unixTime);
 
-			void DumpData();
+			void DumpData(void);
 
 		private:
 			docType_t		docType;

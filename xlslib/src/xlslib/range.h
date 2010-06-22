@@ -97,7 +97,7 @@ namespace xlslib_core
 		void bordercolor(border_side_t side, color_name_t color);
 
     public: // font_i interface declaration
-		void fontname(std::string fntname);
+		void fontname(const std::string& fntname);
 		void fontheight(unsigned16_t fntheight);
 		void fontbold(boldness_option_t fntboldness);
 		void fontunderline(underline_option_t fntunderline);

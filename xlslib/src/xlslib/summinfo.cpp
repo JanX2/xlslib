@@ -73,7 +73,7 @@ CSummaryInfo::CSummaryInfo()
 	hpsf = new HPSFdoc(*this, HPSF_SUMMARY);
 #endif
 
-	msTime =  hpsf->unix2mstime(time(NULL));
+	msTime = hpsf->unix2mstime(time(NULL));
 
 	hpsf->addItem(SumInfo_Unknown, (unsigned16_t)1200);					// Excel 2004 on Mac writes this	// 0xfde9
 	hpsf->addItem(SumInfo_CreateTime_Date, msTime);						// should be "right now"

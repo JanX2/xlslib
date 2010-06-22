@@ -69,7 +69,7 @@ CDocSummaryInfo class declaration
 		virtual ~CDocSummaryInfo();
 		
 		bool property(property_t prop, const std::string& content);
-		void DumpData();
+		void DumpData(void);
 
 	private:
 		CDocSummaryInfo(const CDocSummaryInfo& that);

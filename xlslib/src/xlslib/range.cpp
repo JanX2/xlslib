@@ -40,7 +40,6 @@
 
 #ifdef RANGE_FEATURE
 
-using namespace std;
 using namespace xlslib_core;
 
 range::range(unsigned32_t row1,
@@ -72,11 +71,12 @@ void range::cellcolor(color_name_t color)
 	unsigned32_t					r,c;
 	xf_Pair_Set_t					prSet;
 	xf_t							*xf;
-	pair<xf_Pair_Set_Itor_t, bool>	ret;
+	std::pair<xf_Pair_Set_Itor_t, bool>	ret;
 	xf_Pair_Set_Itor_t				prIter;
 	borderedXft						dummy;
 
-	for(r = first_row; r <= last_row; r++) {
+	for(r = first_row; r <= last_row; r++) 
+	{
 		for(c = first_col; c <= last_col; c++)
 		{
 			cell_t* cell = m_pWorkSheet->FindCellOrMakeBlank(r,c);
@@ -126,11 +126,12 @@ void range::boxer(border_style_t borderStyle, fill_option_t fillStyle, color_nam
 	unsigned32_t					r,c;
 	xf_Pair_Set_t					prSet;
 	xf_t							*xf;
-	pair<xf_Pair_Set_Itor_t, bool>	ret;
+	std::pair<xf_Pair_Set_Itor_t, bool>	ret;
 	xf_Pair_Set_Itor_t				prIter;
 	borderedXft						bxtf;
 
-	for(r = first_row; r <= last_row; r++) {
+	for(r = first_row; r <= last_row; r++) 
+	{
 		for(c = first_col; c <= last_col; c++)
 		{
 			// Set 1: figure out the border since it varies the most
@@ -303,7 +304,7 @@ void range::wrap(bool wrap_opt)
    font_i interface implementation for range class
    * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-void range::fontname(string fntname)
+void range::fontname(const std::string& fntname)
 {
    SET_RANGE_FUNCTION(fontname,fntname);
 }

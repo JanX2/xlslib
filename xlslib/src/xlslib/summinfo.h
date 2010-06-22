@@ -105,7 +105,7 @@ CSummaryInfo class declaration
 		virtual ~CSummaryInfo();
 		
 		bool property(property_t prop, const std::string& content);
-		void DumpData();
+		void DumpData(void);
 
 	private:
 		CSummaryInfo(const CSummaryInfo& that);

@@ -35,7 +35,6 @@
 
 #include "HPSF.h"
 
-using namespace std;
 using namespace xlslib_core;
 
 const unsigned32_t xlslib_core::summaryFormat[] = {
@@ -58,13 +57,13 @@ const unsigned32_t xlslib_core::hpsfValues[] = {
 	64,		// HPSF_INT64
 };
 
-HPSFitem::HPSFitem(unsigned16_t v, const string& str) :
+HPSFitem::HPSFitem(unsigned16_t v, const std::string& str) :
 	propID(v),
 	variant(HPSF_STRING),
 	value(),
 	offset(0)
 {
-	value.str = new string(str);
+	value.str = new std::string(str);
 }
 HPSFitem::HPSFitem(unsigned16_t v, bool val) :
 	propID(v),
@@ -162,7 +161,7 @@ void HPSFdoc::insert(HPSFitem *item)
 
 	do 
 	{
-		pair<HPSF_Set_Itor_t, bool> ret = itemList.insert(item);
+		std::pair<HPSF_Set_Itor_t, bool> ret = itemList.insert(item);
 		success = ret.second;
 		
 		if(!success) 
@@ -188,7 +187,7 @@ unsigned64_t HPSFdoc::unix2mstime(time_t unixTime)
 // http://poi.apache.org/hpsf/internals.html
 // or google "DocumentSummaryInformation and UserDefined Property Sets" and look for MSDN hits
 //
-void HPSFdoc::DumpData()
+void HPSFdoc::DumpData(void)
 {
 	HPSF_Set_Itor_t		hBegin, hEnd, hIter;
 	const unsigned32_t	*fmt;
@@ -230,7 +229,8 @@ void HPSFdoc::DumpData()
 	itemOffset	= 8 + numProperties * 8;	// where I am now, then allow for propertyLists
 	hBegin		= itemList.begin();
 	hEnd		= itemList.end();
-	for(hIter=hBegin; hIter != hEnd; ++hIter) {
+	for(hIter=hBegin; hIter != hEnd; ++hIter) 
+	{
 		HPSFitem	*item = *hIter;
 		
 		item->SetOffset(itemOffset);

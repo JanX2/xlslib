@@ -96,7 +96,7 @@ CGlobalRecords class declaration
                             u16string& sheetname
 							);
       void			AddBoundingSheet(boundsheet_t* bsheetdef);
-      void			AddFont(font_t* newfont );
+      void			AddFont(font_t* newfont);
       void			AddFormat(format_t*);
 
       unsigned16_t	AddXFormat(xf_t* xf);
