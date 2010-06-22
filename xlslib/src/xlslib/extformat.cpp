@@ -1221,7 +1221,8 @@ void CExtFormat::SetFillPattern(unsigned8_t pattern)
 */
 void CExtFormat::SetBorder(border_side_t border, unsigned16_t style, unsigned16_t color)
 {
-	switch(border) {
+	switch(border) 
+	{
 	case BORDER_BOTTOM:
 		{
 		 signed32_t value, color32 = color, style32 = style;

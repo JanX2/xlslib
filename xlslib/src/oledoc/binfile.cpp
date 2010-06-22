@@ -50,7 +50,7 @@ CBinFile::CBinFile() :
 	m_File()
 {
 }
-CBinFile::~CBinFile ()
+CBinFile::~CBinFile()
 {
    Close();
 
@@ -65,7 +65,7 @@ int CBinFile::Open(const string& file_name)
    Close();
    m_File.open(file_name.c_str(),ios_base::binary|ios_base::out);
 
-   return m_File.good()? NO_ERRORS: FILE_ERROR;
+   return m_File.good() ? NO_ERRORS : FILE_ERROR;
 }
 
 /* 
@@ -100,9 +100,10 @@ unsigned32_t CBinFile::Position (  )
 */
 int CBinFile::Write(unsigned8_t * data, size_t size)
 {
-   int errcode = NO_ERRORS;
+   int errcode;
 
-   write_service((const char*)data, size);
+   errcode = write_service((const char*)data, size);
+
    return errcode;
 }
 
@@ -113,9 +114,10 @@ int CBinFile::Write(unsigned8_t * data, size_t size)
 */
 int CBinFile::Write(CUnit& data_unit)
 {
+   int errcode;
 
-   int errcode = NO_ERRORS;
-   write_service((const char*)data_unit.GetBuffer(), data_unit.GetDataSize());
+   errcode = write_service((const char*)data_unit.GetBuffer(), data_unit.GetDataSize());
+
    return errcode;
 }
 
@@ -125,9 +127,10 @@ int CBinFile::Write(CUnit& data_unit)
 */
 int CBinFile::WriteByte(unsigned8_t byte)
 {
+   int errcode;
 
-   int errcode = NO_ERRORS;
-   write_service((const char*)&byte, 1);
+   errcode = write_service((const char*)&byte, 1);
+
    return errcode;
 }
 
@@ -192,8 +195,10 @@ int CBinFile::WriteSigned32(signed32_t data)
 
 int CBinFile::WriteByteArray(const unsigned8_t *data, size_t size)
 {
-   int errcode = NO_ERRORS;
-   write_service((const char*)data, size);
+   int errcode;
+   
+   errcode = write_service((const char*)data, size);
+   
    return errcode;
 }
 
@@ -229,7 +234,7 @@ int CBinFile::write_service(const char *buffer, size_t size)
             m_File.put(*buffer);
       }
    }
-   return 0;
+   return NO_ERRORS;
 }
 
 
