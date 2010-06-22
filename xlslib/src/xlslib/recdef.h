@@ -329,6 +329,7 @@ CBSheet class declaration
 #define BSHEET_ATTR_VERYHIDDEN  0x0200
 
   class CBSheet;
+  class CGlobalRecords;
 
   class boundsheet_t
   {
@@ -344,7 +345,6 @@ CBSheet class declaration
   public:
     unsigned32_t streampos;
     u16string sheetname;
-    bool isASCII :1;
     bool worksheet:1;      
     bool ex4macro:1;
     bool chart:1;
@@ -354,7 +354,13 @@ CBSheet class declaration
     bool veryhidden:1;
 	
 	CBSheet	*sheetData;
+	
+	CGlobalRecords& m_GlobalRecords; 
+
+  public:
+	  CGlobalRecords& GetGlobalRecords(void) const { return m_GlobalRecords; }; 
   };
+
   typedef std::vector<xlslib_core::boundsheet_t* XLSLIB_DFLT_ALLOCATOR> Boundsheet_Vect_t;
   typedef Boundsheet_Vect_t::iterator Boundsheet_Vect_Itor_t;
 
@@ -365,14 +371,6 @@ CBSheet class declaration
 #endif
 
     protected:
-#if 0
-      CBSheet(CDataStorage &datastore, 
-			  unsigned32_t streampos,
-              unsigned16_t attributes,
-              u16string& sheetname,
-			  bool is_ascii
-		);
-#endif
       CBSheet(CDataStorage &datastore, const boundsheet_t* bsheetdef);
 	private:
       virtual ~CBSheet();

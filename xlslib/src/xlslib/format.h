@@ -201,18 +201,9 @@ class format_t
 #endif
 
     protected:
-      //CFormat(CDataStorage &datastore, u16string&  formatstr, bool isASCII, unsigned16_t index);
       CFormat(CDataStorage &datastore, const format_t* formatdef);
 	private:
       virtual ~CFormat();
-
-	public:
-
-     // int SetFormatStr(u16string& formatstr);
-      //int GetFormatStr(u16string& formatstr) const;
-
-     // int SetIndex(unsigned16_t index);
-     // unsigned16_t GetIndex(void) const;
     };
 
 }

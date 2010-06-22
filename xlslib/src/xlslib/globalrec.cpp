@@ -655,29 +655,6 @@ CUnit* CGlobalRecords::DumpData(CDataStorage &datastore)
 ****************************************
 ****************************************
 */
-#if 0
-void CGlobalRecords::AddBoundingSheet(unsigned32_t streampos,
-                                      unsigned16_t attributes,
-                                      string& sheetname)
-{
-
-   boundsheet_t* bsheetdef = new boundsheet_t;
-
-   bsheetdef->worksheet  = (bool)((attributes & BSHEET_ATTR_WORKSHEET  ) == BSHEET_ATTR_WORKSHEET );
-   bsheetdef->ex4macro   = (bool)((attributes & BSHEET_ATTR_EX4MACRO   ) == BSHEET_ATTR_EX4MACRO  );
-   bsheetdef->chart      = (bool)((attributes & BSHEET_ATTR_CHART      ) == BSHEET_ATTR_CHART     );
-   bsheetdef->vbmodule   = (bool)((attributes & BSHEET_ATTR_VBMODULE   ) == BSHEET_ATTR_VBMODULE  );
-   bsheetdef->visible    = (bool)((attributes & BSHEET_ATTR_VISIBLE    ) == BSHEET_ATTR_VISIBLE   );
-   bsheetdef->hidden     = (bool)((attributes & BSHEET_ATTR_HIDDEN     ) == BSHEET_ATTR_HIDDEN    );
-   bsheetdef->veryhidden = (bool)((attributes & BSHEET_ATTR_VERYHIDDEN ) == BSHEET_ATTR_VERYHIDDEN);
-
-   bsheetdef->asheetname = sheetname;
-   bsheetdef->streampos  = streampos;
-
-   m_BoundSheets.push_back(bsheetdef);
-
-}
-#endif
 void CGlobalRecords::AddBoundingSheet(unsigned32_t streampos,
                                       unsigned16_t attributes,
                                       u16string& sheetname)
@@ -806,6 +783,33 @@ font_t* CGlobalRecords::fontdup(unsigned8_t fontnum) const
 ***********************************
 ***********************************
 */
+
+void CGlobalRecords::str16toascii(const u16string& str1, std::string& str2)
+{
+	u16string::const_iterator cBegin, cEnd;
+
+	str2.clear();
+
+	size_t len = str1.length();
+	str2.reserve(len);
+
+
+	cBegin	= str1.begin();
+	cEnd	= str1.end();
+
+	while(cBegin != cEnd) 
+	{
+		unsigned16_t c = *cBegin++;		
+
+		if (c > 0x7F)
+		{
+			c = '?';
+		}
+		str2.push_back(c);
+	}
+}
+
+
 #ifdef HAVE_ICONV
 void  CGlobalRecords::wide2str16(const ustring& str1, u16string& str2)
 {
@@ -879,6 +883,40 @@ void  CGlobalRecords::char2str16(const string& str1, u16string& str2)
 	while(cBegin != cEnd) {
 		str2.push_back((unsigned16_t)*cBegin++);		
 	}
+}
+
+bool CGlobalRecords::IsASCII(const std::string& str)
+{
+	std::string::const_iterator cBegin, cEnd;
+
+	cBegin	= str.begin();
+	cEnd	= str.end();
+
+	unsigned16_t c = 0;
+
+	while(cBegin != cEnd) 
+	{
+		c |= *cBegin++;		
+	}
+
+	return (c <= 0x7F);
+}
+
+bool CGlobalRecords::IsASCII(const u16string& str)
+{
+	u16string::const_iterator cBegin, cEnd;
+
+	cBegin	= str.begin();
+	cEnd	= str.end();
+
+	unsigned16_t c = 0;
+
+	while(cBegin != cEnd) 
+	{
+		c |= *cBegin++;		
+	}
+
+	return (c <= 0x7F);
 }
 
 

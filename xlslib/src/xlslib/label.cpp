@@ -85,7 +85,7 @@ size_t xlslib_core::label_t::GetSize(void) const
 
 	size = 10;		// empty Unicode string has a flags byte
 	size += 
-      (sizeof(unsigned16_t) + 1 + strLabel.size() * (isASCII ? sizeof(unsigned8_t) : sizeof(unsigned16_t)));
+		(sizeof(unsigned16_t) + 1 + strLabel.size() * (CGlobalRecords::IsASCII(strLabel) ? sizeof(unsigned8_t) : sizeof(unsigned16_t)));
 	  
 	return size;
 }
@@ -107,34 +107,6 @@ CUnit* xlslib_core::label_t::GetData(CDataStorage &datastore) const
 CLabel class implementation
 ******************************
 */
-#if 0
-CLabel::CLabel(CDataStorage &datastore, 
-		   unsigned32_t row,	  
-	       unsigned32_t col,	  
-	       const u16string& strlabel,
-		   bool isASCII,
-		   const xf_t* pxfval):
-		CRecord(datastore)
-{
-	unsigned16_t xfindex;
-
-	SetRecordType(RECTYPE_LABEL);
-	AddValue16((unsigned16_t)row);
-	AddValue16((unsigned16_t)col);
-
-	if(pxfval != NULL)
-		xfindex = pxfval->GetIndex();
-	else
-		xfindex = XF_PROP_XF_DEFAULT_CELL;
-
-	AddValue16(xfindex);	  
-
-	AddUnicodeString(&strlabel, sizeof(unsigned16_t), isASCII);
-
-	SetRecordLength(GetDataSize()-4);
-}
-#endif
-
 CLabel::CLabel(CDataStorage &datastore, const label_t& labeldef):
 		CRecord(datastore)
 {
@@ -143,7 +115,7 @@ CLabel::CLabel(CDataStorage &datastore, const label_t& labeldef):
 	AddValue16((unsigned16_t)labeldef.GetCol());
 	AddValue16(labeldef.GetXFIndex());
 
-	AddUnicodeString(labeldef.GetStrLabel(), sizeof(unsigned16_t), labeldef.GetIsASCII());
+	AddUnicodeString(labeldef.GetGlobalRecords(), labeldef.GetStrLabel(), LEN2_FLAGS_UNICODE);
 
 	SetRecordLength(GetDataSize()-4);
 }

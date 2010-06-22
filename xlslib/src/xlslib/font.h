@@ -259,6 +259,9 @@ CFont class declaration
 #endif
 		unsigned16_t GetAttributes(void) const;
 
+	public:
+		CGlobalRecords& GetGlobalRecords(void) const { return m_GlobalRecords; }; 
+
     private:
       CGlobalRecords&	m_GlobalRecords;
       unsigned16_t		index;

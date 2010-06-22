@@ -66,71 +66,71 @@ const unsigned8_t font_t::UNDERLINE_OPTION_TABLE[] = {
 const unsigned8_t font_t::COLOR_OPTION_TABLE[] =
 {
 	0,	// Black as used in the default fonts
-	(unsigned8_t)COLOR_CODE_BLACK,
-	(unsigned8_t)COLOR_CODE_BROWN,
-	(unsigned8_t)COLOR_CODE_OLIVE_GREEN,
-	(unsigned8_t)COLOR_CODE_DARK_GREEN,
-	(unsigned8_t)COLOR_CODE_DARK_TEAL,
-	(unsigned8_t)COLOR_CODE_DARK_BLUE,
-	(unsigned8_t)COLOR_CODE_INDIGO,
-	(unsigned8_t)COLOR_CODE_GRAY80,
+	COLOR_CODE_BLACK,
+	COLOR_CODE_BROWN,
+	COLOR_CODE_OLIVE_GREEN,
+	COLOR_CODE_DARK_GREEN,
+	COLOR_CODE_DARK_TEAL,
+	COLOR_CODE_DARK_BLUE,
+	COLOR_CODE_INDIGO,
+	COLOR_CODE_GRAY80,
 
-	(unsigned8_t)COLOR_CODE_DARK_RED,
-	(unsigned8_t)COLOR_CODE_ORANGE,
-	(unsigned8_t)COLOR_CODE_DARK_YELLOW,
-	(unsigned8_t)COLOR_CODE_GREEN,
-	(unsigned8_t)COLOR_CODE_TEAL,
-	(unsigned8_t)COLOR_CODE_BLUE,
-	(unsigned8_t)COLOR_CODE_BLUE_GRAY,
-	(unsigned8_t)COLOR_CODE_GRAY50,
+	COLOR_CODE_DARK_RED,
+	COLOR_CODE_ORANGE,
+	COLOR_CODE_DARK_YELLOW,
+	COLOR_CODE_GREEN,
+	COLOR_CODE_TEAL,
+	COLOR_CODE_BLUE,
+	COLOR_CODE_BLUE_GRAY,
+	COLOR_CODE_GRAY50,
 
-	(unsigned8_t)COLOR_CODE_RED,
-	(unsigned8_t)COLOR_CODE_LIGHT_ORANGE,
-	(unsigned8_t)COLOR_CODE_LIME,
-	(unsigned8_t)COLOR_CODE_SEA_GREEN,
-	(unsigned8_t)COLOR_CODE_AQUA,
-	(unsigned8_t)COLOR_CODE_LIGHT_BLUE,
-	(unsigned8_t)COLOR_CODE_VIOLET,
-	(unsigned8_t)COLOR_CODE_GRAY40,
+	COLOR_CODE_RED,
+	COLOR_CODE_LIGHT_ORANGE,
+	COLOR_CODE_LIME,
+	COLOR_CODE_SEA_GREEN,
+	COLOR_CODE_AQUA,
+	COLOR_CODE_LIGHT_BLUE,
+	COLOR_CODE_VIOLET,
+	COLOR_CODE_GRAY40,
 
-	(unsigned8_t)COLOR_CODE_PINK,
-	(unsigned8_t)COLOR_CODE_GOLD,
-	(unsigned8_t)COLOR_CODE_YELLOW,
-	(unsigned8_t)COLOR_CODE_BRIGHT_GREEN,
-	(unsigned8_t)COLOR_CODE_TURQUOISE,
-	(unsigned8_t)COLOR_CODE_SKY_BLUE,
-	(unsigned8_t)COLOR_CODE_PLUM,
-	(unsigned8_t)COLOR_CODE_GRAY25,
+	COLOR_CODE_PINK,
+	COLOR_CODE_GOLD,
+	COLOR_CODE_YELLOW,
+	COLOR_CODE_BRIGHT_GREEN,
+	COLOR_CODE_TURQUOISE,
+	COLOR_CODE_SKY_BLUE,
+	COLOR_CODE_PLUM,
+	COLOR_CODE_GRAY25,
 
-	(unsigned8_t)COLOR_CODE_ROSE,
-	(unsigned8_t)COLOR_CODE_TAN,
-	(unsigned8_t)COLOR_CODE_LIGHT_YELLOW,
-	(unsigned8_t)COLOR_CODE_LIGHT_GREEN,
-	(unsigned8_t)COLOR_CODE_LIGHT_TURQUOISE,
-	(unsigned8_t)COLOR_CODE_PALEBLUE,
-	(unsigned8_t)COLOR_CODE_LAVENDER,
-	(unsigned8_t)COLOR_CODE_WHITE,
+	COLOR_CODE_ROSE,
+	COLOR_CODE_TAN,
+	COLOR_CODE_LIGHT_YELLOW,
+	COLOR_CODE_LIGHT_GREEN,
+	COLOR_CODE_LIGHT_TURQUOISE,
+	COLOR_CODE_PALEBLUE,
+	COLOR_CODE_LAVENDER,
+	COLOR_CODE_WHITE,
 
-	(unsigned8_t)COLOR_CODE_PERIWINKLE,
-	(unsigned8_t)COLOR_CODE_DARK_BLUE2,
-	(unsigned8_t)COLOR_CODE_PLUM2,
-	(unsigned8_t)COLOR_CODE_PINK2,
-	(unsigned8_t)COLOR_CODE_IVORY,
-	(unsigned8_t)COLOR_CODE_YELLOW2,
-	(unsigned8_t)COLOR_CODE_LIGHT_TURQUOISE2,
-	(unsigned8_t)COLOR_CODE_TURQUOISE2,
+	COLOR_CODE_PERIWINKLE,
+	COLOR_CODE_DARK_BLUE2,
+	COLOR_CODE_PLUM2,
+	COLOR_CODE_PINK2,
+	COLOR_CODE_IVORY,
+	COLOR_CODE_YELLOW2,
+	COLOR_CODE_LIGHT_TURQUOISE2,
+	COLOR_CODE_TURQUOISE2,
 
-	(unsigned8_t)COLOR_CODE_DARK_PURPLE,
-	(unsigned8_t)COLOR_CODE_VIOLET2,
-	(unsigned8_t)COLOR_CODE_CORAL,
-	(unsigned8_t)COLOR_CODE_DARK_RED2,
-	(unsigned8_t)COLOR_CODE_OCEAN_BLUE,
-	(unsigned8_t)COLOR_CODE_TEAL2,
-	(unsigned8_t)COLOR_CODE_ICE_BLUE,
-	(unsigned8_t)COLOR_CODE_BLUE2,
+	COLOR_CODE_DARK_PURPLE,
+	COLOR_CODE_VIOLET2,
+	COLOR_CODE_CORAL,
+	COLOR_CODE_DARK_RED2,
+	COLOR_CODE_OCEAN_BLUE,
+	COLOR_CODE_TEAL2,
+	COLOR_CODE_ICE_BLUE,
+	COLOR_CODE_BLUE2,
 
-	(unsigned8_t)COLOR_CODE_SYS_WIND_FG,
-	(unsigned8_t)COLOR_CODE_SYS_WIND_BG
+	COLOR_CODE_SYS_WIND_FG,
+	COLOR_CODE_SYS_WIND_BG
 };
 
 
@@ -429,36 +429,6 @@ bool font_t::GetShadow() const {return (attributes & FONT_ATTR_SHADOWMACH) ? tru
 CFont class implementation
 **********************************
 */
-#if 0
-CFont::CFont(CDataStorage &datastore, 
-			string	name,			
-	     unsigned16_t height, 
-	     unsigned16_t boldstyle,
-	     unsigned8_t  underline,
-	     unsigned16_t script, 
-	     unsigned16_t color,	 
-	     unsigned16_t attributes,
-	     unsigned8_t  family, 
-	     unsigned8_t  charset):
-		CRecord(datastore)
-{
-	SetRecordType(RECTYPE_FONT);
-
-	AddValue16(height);
-	AddValue16(attributes);
-	AddValue16(color);
-	AddValue16(boldstyle);
-	AddValue16(script);
-	AddValue8(underline);
-	AddValue8(family);
-	AddValue8(charset);
-	AddValue8(FONT_RESERVED);
-	AddUnicodeString(&name, sizeof(unsigned8_t));
-
-	SetRecordLength(GetDataSize()-4);
-}
-#endif
-
 CFont::CFont(CDataStorage &datastore, const font_t* fontdef):
 		CRecord(datastore)
 {
@@ -473,7 +443,7 @@ CFont::CFont(CDataStorage &datastore, const font_t* fontdef):
 	AddValue8(fontdef->GetFamily());
 	AddValue8(fontdef->GetCharset());
 	AddValue8(FONT_RESERVED);
-	AddUnicodeString(fontdef->GetName(), sizeof(unsigned8_t));
+	AddUnicodeString(fontdef->GetGlobalRecords(), fontdef->GetName(), LEN1_NOFLAGS_ASCII);
 
 	SetRecordLength(GetDataSize()-4);
 }

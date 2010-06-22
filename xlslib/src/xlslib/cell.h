@@ -118,6 +118,9 @@ namespace xlslib_core
 #if defined(DEPRECATED)
 		void fontattr(unsigned16_t attr);
 #endif
+
+  public:
+	  CGlobalRecords& GetGlobalRecords(void) const { return m_GlobalRecords; }; 
   };
 
   class insertsort

@@ -35,6 +35,7 @@
 #include <xlsys.h>
 
 #include <unit.h>
+#include <globalrec.h>
 #include <rectypes.h>
 #include <datast.h>
 
@@ -538,17 +539,57 @@ signed8_t CUnit::AddValue8(unsigned8_t newdata)
    return NO_ERRORS;
 }
 
-signed8_t CUnit::AddUnicodeString (const string* str, size_t size)
+signed8_t CUnit::AddUnicodeString(CGlobalRecords& gRecords, const std::string& str, XlsUnicodeStringFormat_t fmt)
 {
-	string::const_iterator	cBegin, cEnd;
+	std::string::const_iterator	cBegin, cEnd;
 	signed8_t				errcode = NO_ERRORS;
-	size_t strSize, strLen;
-	size_t					spaceleft;
+	size_t strSize = 0;
+	size_t strLen;
+	size_t spaceleft;
+	bool isASCII = CGlobalRecords::IsASCII(str);
 
-	strLen = str->length();
+	if (!isASCII)
+	{
+		u16string s16;
+
+		XL_ASSERT(!"Should never happen!");
+
+		gRecords.char2str16(str, s16);
+		return AddUnicodeString(gRecords, s16, fmt);
+	}
+
+	strLen = str.length();
 	
-	strSize = (size == sizeof(unsigned8_t) ? 1 : 2);
-	strSize += 1;	// flags byte
+	switch (fmt)
+	{
+	case LEN1_NOFLAGS_ASCII: // RECTYPE_FONT
+		strSize = 1;
+		break;
+
+	case LEN2_FLAGS_UNICODE: // RECTYPE_FORMAT, RECTYPE_LABEL -- 'regular'
+		strSize = 2;
+		strSize += 1;	// flags byte
+		break;
+
+	case LEN2_NOFLAGS_PADDING_UNICODE: // RECTYPE_NOTE (RECTYPE_TXO)
+		strSize = 2;
+		strSize += (strLen % 1);	// padding byte
+		break;
+
+	case LEN1_FLAGS_UNICODE: // RECTYPE_BOUNDSHEET
+		strSize = 1;
+		strSize += 1;	// flags byte
+		break;
+
+	case NOLEN_FLAGS_UNICODE: // RECTYPE_NAME
+		strSize = 0;
+		strSize += 1;	// flags byte
+		break;
+
+	default:
+		XL_ASSERT(!"should never go here!");
+		break;
+	}
 	strSize += strLen;
 
 	spaceleft = GetSize() - GetDataSize();
@@ -565,18 +606,47 @@ signed8_t CUnit::AddUnicodeString (const string* str, size_t size)
 
 #endif
 
-	if(size == sizeof(unsigned8_t)) {
-		m_pData[m_nDataSize++] = (unsigned8_t)strLen;
-	} else {
-		m_pData[m_nDataSize++] = strLen & 0xFF;
-		m_pData[m_nDataSize++] = (strLen >> 8) & 0xFF;
-	}
-	m_pData[m_nDataSize++] = 0x00;	// ASCII
+   switch (fmt)
+   {
+   case LEN1_NOFLAGS_ASCII: // RECTYPE_FONT
+	   m_pData[m_nDataSize++] = strLen & 0xFF;
+	   break;
+
+   case LEN2_FLAGS_UNICODE: // RECTYPE_FORMAT, RECTYPE_LABEL -- 'regular'
+	   m_pData[m_nDataSize++] = strLen & 0xFF;
+	   m_pData[m_nDataSize++] = (strLen >> 8) & 0xFF;
+	   m_pData[m_nDataSize++] = 0x00;	// ASCII
+	   break;
+
+   case LEN2_NOFLAGS_PADDING_UNICODE: // RECTYPE_NOTE (RECTYPE_TXO)
+	   m_pData[m_nDataSize++] = strLen & 0xFF;
+	   m_pData[m_nDataSize++] = (strLen >> 8) & 0xFF;
+	   // the string is padded to be word-aligned with NUL bytes /preceding/ the text:
+	   if (strLen % 1)
+	   {
+		   m_pData[m_nDataSize++] = 0x00;	// padding
+	   }
+	   break;
+
+   case LEN1_FLAGS_UNICODE: // RECTYPE_BOUNDSHEET
+	   m_pData[m_nDataSize++] = strLen & 0xFF;
+	   m_pData[m_nDataSize++] = 0x00;	// ASCII
+	   break;
+
+   case NOLEN_FLAGS_UNICODE: // RECTYPE_NAME
+	   m_pData[m_nDataSize++] = 0x00;	// ASCII
+	   break;
+
+   default:
+	   XL_ASSERT(!"should never go here!");
+	   break;
+   }
 	
-	cBegin	= str->begin();
-	cEnd	= str->end();
+	cBegin	= str.begin();
+	cEnd	= str.end();
 	
-	while(cBegin != cEnd) {
+	while(cBegin != cEnd) 
+	{
 		m_pData[m_nDataSize++] = *cBegin++;
 	}
 
@@ -586,18 +656,67 @@ signed8_t CUnit::AddUnicodeString (const string* str, size_t size)
 
    return errcode;
 }
-signed8_t CUnit::AddUnicodeString (const u16string* str16, size_t size, bool is_ascii)
+signed8_t CUnit::AddUnicodeString(CGlobalRecords& gRecords, const u16string& str16, XlsUnicodeStringFormat_t fmt)
 {
 	u16string::const_iterator	cBegin, cEnd;
 	signed8_t					errcode = NO_ERRORS;
-	size_t strSize, strLen;
-	size_t						spaceleft;
+	size_t strSize = 0;
+	size_t strLen;
+	size_t spaceleft;
+	bool isASCII = CGlobalRecords::IsASCII(str16);
 
-	strLen = str16->length();
+	strLen = str16.length();
 	
-	strSize = (size == sizeof(unsigned8_t) ? 1 : 2);
-	strSize += 1;	// flags byte
-	strSize += is_ascii ? strLen : (strLen * 2);
+	switch (fmt)
+	{
+	case LEN1_NOFLAGS_ASCII: // RECTYPE_FONT
+		strSize = 1;
+		break;
+
+	case LEN2_FLAGS_UNICODE: // RECTYPE_FORMAT, RECTYPE_LABEL -- 'regular'
+		strSize = 2;
+		strSize += 1;	// flags byte
+		if (!isASCII)
+		{
+			strSize += strLen;	// UTF16 takes 2 bytes per char
+		}
+		break;
+
+	case LEN2_NOFLAGS_PADDING_UNICODE: // RECTYPE_NOTE (RECTYPE_TXO)
+		strSize = 2;
+		if (isASCII)
+		{
+			strSize += (strLen % 1);	// padding byte
+		}
+		else // if (!isASCII)
+		{
+			strSize += strLen;	// UTF16 takes 2 bytes per char
+		}
+		break;
+
+	case LEN1_FLAGS_UNICODE: // RECTYPE_BOUNDSHEET
+		strSize = 1;
+		strSize += 1;	// flags byte
+		if (!isASCII)
+		{
+			strSize += strLen;	// UTF16 takes 2 bytes per char
+		}
+		break;
+
+	case NOLEN_FLAGS_UNICODE: // RECTYPE_NAME
+		strSize = 0;
+		strSize += 1;	// flags byte
+		if (!isASCII)
+		{
+			strSize += strLen;	// UTF16 takes 2 bytes per char
+		}
+		break;
+
+	default:
+		XL_ASSERT(!"should never go here!");
+		break;
+	}
+	strSize += strLen; // hence: count 1 byte per char for ASCII, 2 bytes per char for UTF16
 
 	spaceleft = GetSize() - GetDataSize();
 	if(spaceleft < strSize) // allocate more space if new to-be-added array won't fit
@@ -613,29 +732,86 @@ signed8_t CUnit::AddUnicodeString (const u16string* str16, size_t size, bool is_
 
 #endif
 
-	if(size == sizeof(unsigned8_t)) {
-		m_pData[m_nDataSize++] = (unsigned8_t)strLen;
-	} else {
-		m_pData[m_nDataSize++] = strLen & 0xFF;
-		m_pData[m_nDataSize++] = (strLen >> 8) & 0xFF;
-	}
-	m_pData[m_nDataSize++] = (is_ascii ? 0x00 : 0x01);	// ASCII or UTF-16
+   switch (fmt)
+   {
+   case LEN1_NOFLAGS_ASCII: // RECTYPE_FONT
+	   m_pData[m_nDataSize++] = strLen & 0xFF;
+	   if (!isASCII)
+	   {
+		   std::string s;
+
+		   gRecords.str16toascii(str16, s);
+		   
+		   std::string::const_iterator	b, e;
+
+		   b = s.begin();
+		   e = s.end();
+
+		   while(b != e) 
+		   {
+			   unsigned8_t c = *b++;
+
+			   m_pData[m_nDataSize++] = c;
+		   }
+		   goto string_dump_done;
+	   }
+	   break;
+
+   case LEN2_FLAGS_UNICODE: // RECTYPE_FORMAT, RECTYPE_LABEL -- 'regular'
+	   m_pData[m_nDataSize++] = strLen & 0xFF;
+	   m_pData[m_nDataSize++] = (strLen >> 8) & 0xFF;
+	   m_pData[m_nDataSize++] = (isASCII ? 0x00 : 0x01);	// ASCII or UTF-16
+	   break;
+
+   case LEN2_NOFLAGS_PADDING_UNICODE: // RECTYPE_NOTE (RECTYPE_TXO)
+	   m_pData[m_nDataSize++] = strLen & 0xFF;
+	   m_pData[m_nDataSize++] = (strLen >> 8) & 0xFF;
+	   // the string is padded to be word-aligned with NUL bytes /preceding/ the text:
+	   if (isASCII && (strLen % 1))
+	   {
+		   m_pData[m_nDataSize++] = 0x00;	// padding
+	   }
+	   break;
+
+   case LEN1_FLAGS_UNICODE: // RECTYPE_BOUNDSHEET
+	   m_pData[m_nDataSize++] = strLen & 0xFF;
+	   m_pData[m_nDataSize++] = (isASCII ? 0x00 : 0x01);	// ASCII or UTF-16
+	   break;
+
+   case NOLEN_FLAGS_UNICODE: // RECTYPE_NAME
+	   m_pData[m_nDataSize++] = (isASCII ? 0x00 : 0x01);	// ASCII or UTF-16
+	   break;
+
+   default:
+	   XL_ASSERT(!"should never go here!");
+	   break;
+   }
+
 	
-	cBegin	= str16->begin();
-	cEnd	= str16->end();
+	cBegin	= str16.begin();
+	cEnd	= str16.end();
 	
-	while(cBegin != cEnd) {
-		unsigned16_t	c;
-		
-		c = *cBegin++;
-		
-		if(is_ascii) {
+	if (isASCII)
+	{
+		while(cBegin != cEnd) 
+		{
+			unsigned16_t c = *cBegin++;
+
 			m_pData[m_nDataSize++] = static_cast<unsigned8_t>(c);
-		} else {
+		}
+	}
+	else
+	{
+		while(cBegin != cEnd) 
+		{
+			unsigned16_t c = *cBegin++;
+
 			m_pData[m_nDataSize++] = c & 0xFF;
 			m_pData[m_nDataSize++] = (c >> 8) & 0xFF;
 		}
 	}
+
+string_dump_done:
 
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
    m_Store[m_Index].SetDataSize(m_nDataSize);

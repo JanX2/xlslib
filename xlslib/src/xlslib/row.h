@@ -60,7 +60,7 @@ namespace xlslib_core
 #define ROW_OFFSET_FIRSTCOL    6
 #define ROW_OFFSET_LASTCOL     8
 #define ROW_MASK_STDHEIGHT     0x0108
-#define ROW_RECORD_SIZE        (20)
+#define ROW_RECORD_SIZE        20
 
 
 	// forward ref
@@ -146,18 +146,9 @@ namespace xlslib_core
            unsigned32_t lastcol,
            unsigned16_t rowheight  = ROW_DFLT_HEIGHT,
 		   const xf_t* xformat = NULL);
-      //CRow(row_t& rowdef);
+
 	private:
       virtual ~CRow();
-
-    public:
-
-#if 0
-	  void SetFirstCol(unsigned32_t firstrow);
-      void SetLastCol(unsigned32_t lastrow);
-      unsigned32_t GetFirstCol(void);
-      unsigned32_t GetLastCol(void);
-#endif
   };
 
 

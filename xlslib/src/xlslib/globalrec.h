@@ -55,10 +55,10 @@ CGlobalRecords class declaration
 ***********************************
 */
 
-#define GLOBAL_NUM_DEFAULT_FONT    (5)
-#define GLOBAL_NUM_DEFAULT_FORMATS (8)
-#define GLOBAL_NUM_DEFAULT_XFS     (16)
-#define GLOBAL_NUM_DEFAULT_STYLES  (6)
+#define GLOBAL_NUM_DEFAULT_FONT    5
+#define GLOBAL_NUM_DEFAULT_FORMATS 8
+#define GLOBAL_NUM_DEFAULT_XFS     16
+#define GLOBAL_NUM_DEFAULT_STYLES  6
 
   class xf_t;
   
@@ -123,6 +123,10 @@ CGlobalRecords class declaration
 
       void wide2str16(const std::ustring& str1, u16string& str2);
       void char2str16(const std::string& str1, u16string& str2);
+	  void str16toascii(const u16string& str1, std::string& str2);
+
+	  static bool IsASCII(const std::string& str);
+	  static bool IsASCII(const u16string& str);
 
 	private:
 		CGlobalRecords(const CGlobalRecords& that);

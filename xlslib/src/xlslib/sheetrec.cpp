@@ -615,12 +615,9 @@ void worksheet::MakeActive() { m_GlobalRecords.GetWindow1().SetActiveSheet(sheet
 cell_t* worksheet::label(unsigned32_t row, unsigned32_t col, 
                          const string& strlabel, xf_t* pxformat)
 {
-	u16string	str16;
 	label_t* lbl;
 
-	m_GlobalRecords.char2str16(strlabel, str16);
-
-	lbl = new label_t(m_GlobalRecords, row, col, str16, pxformat);
+	lbl = new label_t(m_GlobalRecords, row, col, strlabel, pxformat);
 	AddCell(lbl);
 
 	return lbl;
@@ -628,11 +625,9 @@ cell_t* worksheet::label(unsigned32_t row, unsigned32_t col,
 cell_t* worksheet::label(unsigned32_t row, unsigned32_t col, 
                          const ustring& strlabel, xf_t* pxformat)
 {
-	u16string str16;
 	label_t* lbl;
 
-	m_GlobalRecords.wide2str16(strlabel, str16);
-	lbl = new label_t(m_GlobalRecords, row, col, str16, pxformat);
+	lbl = new label_t(m_GlobalRecords, row, col, strlabel, pxformat);
 
 	AddCell(lbl);
 
@@ -778,22 +773,6 @@ void worksheet::AddCell(cell_t* pcell)
 
 	//SortCells(); does nothing now
 
-#if 0 // original
-	Cell_Set_Itor_t		existing_cell;
-	// lookup the cell
-	existing_cell = m_Cells.find(pcell);
-	if(existing_cell != m_Cells.end())
-	{
-		if((*existing_cell)->GetXF())
-			(*existing_cell)->GetXF()->UnMarkUsed();
-		
-		delete (*existing_cell);
-		m_Cells.erase(existing_cell);
-	}
-	m_Cells.insert(pcell);
-#endif
-
-#if 1 // first try
 	bool success;
 	do {
 		Cell_Set_Itor_t		ret;
@@ -823,7 +802,6 @@ void worksheet::AddCell(cell_t* pcell)
 			cellHint = pcell;
 		}
 	} while(!success);
-#endif
 
 	/*m_CellsSorted = false; */                  
 	m_SizesCalculated = false;                   
@@ -859,80 +837,9 @@ cell_t* worksheet::FindCellOrMakeBlank(unsigned32_t row, unsigned32_t col)
 	return cell ? cell : blank(row,col);
 }
 
-/*
-  void worksheet::AddCell(cell_t* pcell, bool overwrite)
-  {
-
-  #if STORAGE_CELL == LIST_CONTAINER
-  m_Cells.push_back(pcell);
-
-  #elif STORAGE_CELL == SET_CONTAINER
-  m_Cells.insert(pcell);
-  #endif
-  MARK_CELLS_UNSORTED();
-  }
-*/
 
 
 
-#if 0
-/*
-***********************************
-***********************************
-*/
-unsigned32_t worksheet::Get-Size()
-{
-   unsigned32_t numrb;
-   unsigned16_t merged_size;
-   unsigned16_t colinfo_size;
-   
-   m_CurrentSizeCell = m_Cells.begin();
-      
-   numrb = GetNumRowBlocks();
-	
-   // The size of the merged cells record (if any) has to be taken in count
-   if(!m_MergedRanges.empty())
-   {
-      //            [HEADER] + [NUMRANGESFIELD] + [RANGES]
-      merged_size =  4       +  2               +  m_MergedRanges.size()*8; 
-   } else {
-      merged_size = 0;
-   }
-   
-   // The size of the Colinfo records (if any) has to be taken in count
-   if(!m_Colinfos.empty())
-   {
-      colinfo_size =  m_Colinfos.size()*16;		// was 14
-   } else {
-      colinfo_size = 0;
-   }
-
-	unsigned32_t size =
-		BOF_SIZE + 
-		RB_INDEX_MINSIZE + 
-		4*numrb          + 
-		merged_size      +
-		colinfo_size     +
-		WINDOW2_SIZE     +
-		DIMENSION_SIZE   +
-		EOF_SIZE;
-   
-   for(unsigned32_t rb = 0; rb < numrb; rb++)
-   {
-      // Get sizes of next RowBlock
-      unsigned32_t rowandcell_size, dbcell_size;
-      GetRowBlockSizes( &rowandcell_size, &dbcell_size);
-
-      // Update the offset accumulator and cerate the next DBCELL's offset
-      size += rowandcell_size;
-      size += dbcell_size;
-   }
-
-   m_CurrentSizeCell = m_Cells.begin();
-   
-   return size;
-}
-#endif
 /*
 ***********************************
 Returns FALSE when the last row block was processed (and the cursors have been reset

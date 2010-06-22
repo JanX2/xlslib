@@ -349,22 +349,6 @@ CStyle::~CStyle()
 CBSheet class implementation
 ******************************
 */
-#if 0
-CBSheet::CBSheet(unsigned32_t streampos, 
-                 unsigned16_t attributes, 
-                 u16string& sheetname,
-				 bool is_ascii):
-		CRecord(datastore)
-{
-	SetRecordType(RECTYPE_BOUNDSHEET);
-	streamposOffset = GetDataSize();	// no work
-	AddValue32(streampos);
-	AddValue16(attributes);
-	AddUnicodeString(&sheetname, sizeof(unsigned8_t), is_ascii);
-
-	SetRecordLength(GetDataSize()-4);
-}
-#endif
 CBSheet::CBSheet(CDataStorage &datastore, const boundsheet_t* bsheetdef):
 		CRecord(datastore)
 {
@@ -387,8 +371,7 @@ CBSheet::CBSheet(CDataStorage &datastore, const boundsheet_t* bsheetdef):
 	attrflags |=  bsheetdef->veryhidden	? BSHEET_ATTR_VERYHIDDEN:0;
 
 	AddValue16(attrflags);
-
-	AddUnicodeString(&bsheetdef->sheetname, sizeof(unsigned8_t), bsheetdef->isASCII );
+	AddUnicodeString(bsheetdef->GetGlobalRecords(), bsheetdef->GetSheetName(), LEN1_FLAGS_UNICODE);
 
 	SetRecordLength(GetDataSize()-4);   
 }

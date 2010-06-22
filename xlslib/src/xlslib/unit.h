@@ -61,6 +61,7 @@ namespace xlslib_core
 
 	// forward ref
 	class CDataStorage;
+	class CGlobalRecords;
 
   class CUnit {
     // Attributes
@@ -113,14 +114,22 @@ namespace xlslib_core
                     const size_t size, 
                     const unsigned32_t datasz);
 
-    signed8_t AddDataArray (const unsigned8_t* newdata, size_t size);
-    signed8_t AddFixedDataArray (const unsigned8_t value, size_t size);
-    signed8_t AddUnicodeString (const std::string* str, size_t size);
-    signed8_t AddUnicodeString (const u16string* newdata, size_t size, bool is_ascii);	// size is the string length, 1 or 2
-    /*
-      void SetShadow(bool shadowval);
-      void CopyShadowUnit(unsigned8_t* data, unsigned32_t size);
-    */
+  public:
+    signed8_t AddDataArray(const unsigned8_t* newdata, size_t size);
+    signed8_t AddFixedDataArray(const unsigned8_t value, size_t size);
+
+	enum XlsUnicodeStringFormat_t
+	{
+		LEN1_NOFLAGS_ASCII, // RECTYPE_FONT
+		LEN2_FLAGS_UNICODE, // RECTYPE_FORMAT, RECTYPE_LABEL
+		LEN2_NOFLAGS_PADDING_UNICODE, // RECTYPE_NOTE (RECTYPE_TXO)
+		LEN1_FLAGS_UNICODE, // RECTYPE_BOUNDSHEET
+		NOLEN_FLAGS_UNICODE, // RECTYPE_NAME
+	};
+
+	signed8_t AddUnicodeString(CGlobalRecords& gRecords, const std::string& str, XlsUnicodeStringFormat_t fmt /* = LEN2_FLAGS_UNICODE */ );
+    signed8_t AddUnicodeString(CGlobalRecords& gRecords, const u16string& newdata, XlsUnicodeStringFormat_t fmt /* = LEN2_FLAGS_UNICODE */ );
+
     signed8_t GetValue16From(signed16_t* val, unsigned32_t index) const;
     signed8_t GetValue32From(signed32_t* val, unsigned32_t index) const;
     signed8_t GetValue8From(signed8_t* data, unsigned32_t  index) const;

@@ -62,15 +62,15 @@ namespace xlslib_core
 
     private:
       label_t(CGlobalRecords& gRecords, unsigned32_t rowval, unsigned32_t colval, const u16string& labelstrval, xf_t* pxfval = NULL);
+	  label_t(CGlobalRecords& gRecords, unsigned32_t rowval, unsigned32_t colval, const std::string& labelstrval, xf_t* pxfval = NULL);
+	  label_t(CGlobalRecords& gRecords, unsigned32_t rowval, unsigned32_t colval, const std::ustring& labelstrval, xf_t* pxfval = NULL);
       virtual ~label_t();
 
     private:
 	  u16string	strLabel;
-	  bool		isASCII;
 
     public:
       const u16string& GetStrLabel() const { return strLabel; };
-      bool					GetIsASCII() const { return isASCII; };
 
       virtual size_t GetSize(void) const;
       virtual CUnit* GetData(CDataStorage &datastore) const;
@@ -83,14 +83,6 @@ namespace xlslib_core
 #endif
 
     protected:
-#if 0
-		CLabel(CDataStorage &datastore, 
-			 unsigned32_t row,
-             unsigned32_t col,
-             const u16string& strlabel,
-			 bool isASCII,
-             const xf_t* pxfval = NULL);
-#endif
 		CLabel(CDataStorage &datastore, const label_t& labeldef);
 	private:
       virtual ~CLabel();
