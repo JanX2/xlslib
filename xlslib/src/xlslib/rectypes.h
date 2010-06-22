@@ -259,9 +259,9 @@
   0x9A
  
 /* FONT: Font Description */
-// NOTE: Changed temporarilly to 31h (the manual says is 231h)
+// NOTE: Changed temporarily to 31h (the manual says is 231h) -- [i_a] inspection of the generated XLS files shows that 0x31 displays the fonts in Excel2003/2007, while 0x231 does /not/.
 #define RECTYPE_FONT                            \
-  0x231
+  0x31
  
 /* FOOTER: Print Footer on Each Page */
 #define RECTYPE_FOOTER                          \
