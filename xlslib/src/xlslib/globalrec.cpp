@@ -42,24 +42,12 @@
 using namespace std;
 using namespace xlslib_core;
 
-#if 0
-static CGlobalRecords	*m_pGlobalRecords;
-#endif
 
 /*
 **********************************************************************
 CGlobalRecords class implementation
 **********************************************************************
 */
-#if 0
-CGlobalRecords& CGlobalRecords::Instance()
-{
-	if(m_pGlobalRecords == NULL)
-		m_pGlobalRecords = new CGlobalRecords();
-	
-	return *m_pGlobalRecords;
-}
-#endif
 
 CGlobalRecords::CGlobalRecords() :
 	m_Fonts(),
@@ -299,15 +287,6 @@ CGlobalRecords::~CGlobalRecords()
       m_BoundSheets.clear();
    }
 }
-#if 0
-void CGlobalRecords::Clean()
-{	
-	if(m_pGlobalRecords == NULL) return;
-
-	delete m_pGlobalRecords;
-	m_pGlobalRecords = NULL;
-}
-#endif
 
 /*
 ****************************************

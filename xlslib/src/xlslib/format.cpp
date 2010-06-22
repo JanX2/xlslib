@@ -143,47 +143,6 @@ CFormat::~CFormat()
 {
 }
 
-#if 0	// if you ever need this, account for flag bit, also, is the string ascii or unicode
-/* 
-**********************************
-**********************************
-*/
-int CFormat::GetFormatStr(u16string& formatstr) const
-{
-   int errcode = NO_ERRORS;
-
-   signed16_t formatsize;
-   GetValue16From(&formatsize, FORMAT_OFFSET_NAMELENGTH);
-
-   formatstr.resize(0);
-   formatstr.reserve(formatsize);
-
-   for(int i=0; i<formatsize; i++)
-      formatstr += operator[](FORMAT_OFFSET_NAME+i);
-
-   return errcode;
-}
-/* 
-**********************************
-**********************************
-*/
-int CFormat::SetIndex(unsigned16_t index)
-{
-   return (SetValueAt16((unsigned16_t)index, FORMAT_OFFSET_INDEX));
-}
-
-/* 
-**********************************
-**********************************
-*/
-unsigned16_t CFormat::GetIndex(void) const
-{
-   unsigned16_t indexval;
-   GetValue16From((signed16_t*)&indexval, FORMAT_OFFSET_INDEX);
-
-   return(indexval);
-}
-#endif
 
 
 

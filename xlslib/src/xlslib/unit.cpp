@@ -325,19 +325,7 @@ signed8_t CUnit::GetValue8From(signed8_t* data, unsigned32_t  index) const
    return errcode;
 
 }
-/************************************************
- ************************************************/
-#if 0
-  signed8_t CUnit::GetData(unsigned8_t** ppdata, unsigned32_t from, unsigned32_t to )
-  {
-  signed8_t errcode = NO_ERRORS;
 
-  // Simply make the external pointer point to the local storage data
-  *ppdata = m_pData;
-
-  return errcode;
-  }
-#endif
 /************************************************
  ************************************************/
 signed8_t CUnit::AddDataArray(const unsigned8_t* newdata, size_t size)
@@ -492,17 +480,6 @@ signed8_t CUnit::SetArrayAt(const unsigned8_t* newdata, size_t size, unsigned32_
    {
       for(size_t i=0; i<size; i++)
       {
-#if 0 // [i_a] condition is never hit: Inflate() took care of that
-		 /*
-         // The following code adds needed space to the whole allocated array
-         if (index > m_nDataSize) m_nDataSize = index+1;
-         else if(index==m_nDataSize) m_nDataSize++;
-         m_pData[index++] = newdata[i];
-         */
-         // The following code truncates the array if it exceeds DataSize
-         if(index==m_nDataSize) break;
-#endif
-
          m_pData[index++] = newdata[i];
       }
    } else {
@@ -1059,20 +1036,6 @@ size_t CUnit::GetDataSize(void) const
 /************************************************
  ************************************************/
 
-unsigned8_t* CUnit::GetBuffer(void)
-{
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
-   XL_ASSERT(m_Index != INVALID_STORE_INDEX);
-   return m_Store[m_Index].GetBuffer();
-#else
-   return m_pData;
-#endif
-}
-
-
-/************************************************
- ************************************************/
-
 const unsigned8_t* CUnit::GetBuffer(void) const
 {
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
@@ -1083,27 +1046,6 @@ const unsigned8_t* CUnit::GetBuffer(void) const
 #endif
 }
 
-
-/************************************************
- ************************************************/
-#if 0
-  void CUnit::SetShadow(bool shadowval)
-  {
-  m_ShadowUnit = shadowval;
-  }
-#endif
-
-/************************************************
- ************************************************/
-#if 0
-  void CUnit::CopyShadowUnit(unsigned8_t* data, unsigned32_t size)
-  {
-  m_Size = m_DataSize = size;
-  m_pData = data;
-
-  SetShadow(true);
-  }
-#endif 
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * $Log: unit.cpp,v $

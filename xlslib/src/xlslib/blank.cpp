@@ -66,20 +66,6 @@ blank_t::~blank_t()
 CBlank class implementation
 *********************************
 */
-#if 0
-CBlank::CBlank(CDataStorage &datastore, 
-		   unsigned32_t row, unsigned32_t col, const xf_t* pxfval):
-		CRecord(datastore)
-{
-   SetRecordType(RECTYPE_BLANK);
-   AddValue16((unsigned16_t)row);
-   AddValue16((unsigned16_t)col);
-   AddValue16(pxfval ? pxfval->GetIndex() : XF_PROP_XF_DEFAULT_CELL);  
-
-   SetRecordLength(GetDataSize()-4);
-}
-#endif
-
 CBlank::CBlank(CDataStorage &datastore, const blank_t& blankdef):
 		CRecord(datastore)
 {

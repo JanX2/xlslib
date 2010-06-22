@@ -384,21 +384,6 @@ CStyle::CStyle(CDataStorage &datastore, const style_t* styledef):
    SetRecordLength(GetDataSize()-4);
 }
 
-#if 0
-CStyle::CStyle(CDataStorage &datastore, 
-		   unsigned16_t xfindex, unsigned8_t builtintype, unsigned8_t level):
-		CRecord(datastore)
-{
-   // TODO: Implement user-defined styles. So far only built-in are used.
-   SetRecordType(RECTYPE_STYLE);
-
-   AddValue16(xfindex|STYLE_BUILTIN_BIT);
-   AddValue8(builtintype);
-   AddValue8(level);
-
-   SetRecordLength(GetDataSize()-4);
-}
-#endif
 
 
 CStyle::~CStyle()

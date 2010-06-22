@@ -304,21 +304,5 @@ void HPSFdoc::DumpData(void)
 	XL_ASSERT(GetDataSize() <= SUMMARY_SIZE);
 	AddFixedDataArray(0, SUMMARY_SIZE - GetDataSize());
 	XL_ASSERT(GetDataSize() <= GetSize());
-
-#if 0
-	// printf("YEAH!\n");
-	for(int i=0; i<4096; ) {
-		unsigned8_t *p = m_pData + i;
-		
-		_printf("  ");
-		for(int j=0; j<16; ++j) {
-			if(j == 8) _printf(" ");
-			_printf("0x%2.2x, ", *p++);
-		}
-		_printf("\n");
-		i+=16;
-	}
-#endif
-
 }
 

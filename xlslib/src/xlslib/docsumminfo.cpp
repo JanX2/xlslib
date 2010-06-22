@@ -71,37 +71,6 @@ CDocSummaryInfo::CDocSummaryInfo()
 #endif
 
 	hpsf->addItem(DocSumInfo_CodePage, (unsigned16_t)1200);				// UTF-16
-#if 0
-      ---------
-      propID=23 offset=100
-      propType=3
-      wordVal=b0502
-      ---------
-      propID=11 offset=108
-      propType=11
-      UNKNOWN!
-      ---------
-      propID=16 offset=116
-      propType=11
-      UNKNOWN!
-      ---------
-      propID=19 offset=124
-      propType=11
-      UNKNOWN!
-      ---------
-      propID=22 offset=132
-      propType=11
-      UNKNOWN!
-      ---------
-      propID=13 offset=140
-      propType=4126
-      UNKNOWN!
-      ---------
-      propID=12 offset=181
-      propType=4108
-      UNKNOWN!
-
-#endif
 }
 
 CDocSummaryInfo::~CDocSummaryInfo()
@@ -109,10 +78,6 @@ CDocSummaryInfo::~CDocSummaryInfo()
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 	/* hpsf gets deleted from within the CDataStorage destructor as it is part of the m_FlushList. */
 #else
-#if 0
-	if(hpsf) 
-		delete hpsf;
-#endif
 #endif
 }
 
@@ -139,17 +104,8 @@ void CDocSummaryInfo::DumpData(void)
 {
    XTRACE("CDocSummaryInfo::DumpData");
 
-#if 1
    	hpsf->DumpData();
 	(*this) += hpsf;
-#if 0
-	hpsf = NULL;	// DataStore owns it now
-#endif
-#else
-	CUnit* ptraildata = new CUnit;
-	ptraildata->AddDataArray(CDocSummaryInfo::doc_summ_info_data, sizeof(CDocSummaryInfo::doc_summ_info_data));
-	(*this) += ptraildata;
-#endif
 }
 
 

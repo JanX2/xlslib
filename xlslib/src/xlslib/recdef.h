@@ -298,9 +298,6 @@ CStyle class declaration
 #endif
 
     protected:
-#if 0
-		CStyle(CDataStorage &datastore, unsigned16_t xfindex, unsigned8_t builtintype, unsigned8_t level);
-#endif
 		CStyle(CDataStorage &datastore, const style_t* styledef);
 	private:
       virtual ~CStyle();

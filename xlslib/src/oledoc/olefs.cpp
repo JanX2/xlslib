@@ -262,40 +262,6 @@ int COleFileSystem::AddNode(COleProp* base_node, StringList_t& path_list)
       unsigned8_t base_node_type = base_node->GetType();
       if(base_node_type == PTYPE_DIRECTORY || base_node_type == PTYPE_ROOT)
       {
-
-#if 0
-         COleProp newnode(++m_nProperty_Count, *path_list.begin());
-
-         bool was_firstborn = false;
-
-         if((base_node->m_Child_List).empty()) //if this is the first child of the node...
-         {
-            base_node->SetChildIndex(m_nProperty_Count); // the new one is the child
-            newnode.SetPreviousIndex(PLINK_EMPTY); // there is no previous
-            was_firstborn = true;// mark for later
-         }
-    
-         // The next-index of the new node shall to point to nowhere
-         newnode.SetNextIndex(PLINK_EMPTY);
-         (base_node->m_Child_List).push_back(newnode);       
-      
-         // Get the just added node
-         Tree_Level_Itor_t nodeadded = (base_node->m_Child_List).end();
-         nodeadded--;
-    
-         // Get the previous to the just added node
-         Tree_Level_Itor_t prev_to_nodeadded = (base_node->m_Child_List).end();
-         prev_to_nodeadded--;prev_to_nodeadded--;
-    
-
-         if(!was_firstborn)
-            nodeadded->SetPreviousIndex(prev_to_nodeadded->GetIndex());
-
-         // Set the next-index of the previous node to point to the newone
-         prev_to_nodeadded->SetNextIndex(nodeadded->GetIndex());
-
-#else
-////////////
          COleProp* newnode = new COleProp(++m_nProperty_Count, **path_list.begin());
          size_t childnum = (base_node->m_Child_List).size();
 
@@ -323,7 +289,7 @@ int COleFileSystem::AddNode(COleProp* base_node, StringList_t& path_list)
          }
 
          (base_node->m_Child_List).push_back(newnode);
-#endif
+
          errcode = FS_NO_ERRORS;
       } else {
          errcode = FS_NODE_NOT_A_DIRECTORY;
@@ -360,39 +326,6 @@ void COleFileSystem::GetAllNodesList(NodeList_t& node_list, COleProp* base_node)
    }
 }
 
-#if 0
-/* 
-***********************************
-An horribly inefficient sorting routine....
-... until I find the way of using the list<T>::sort() function so
-I can specify the sorting criteria (for this case, a member variable
-of the elements of the list.
-DFH NOTE: only sorts documents, so hardly an issue - ONLY 3 documents in this file!
-***********************************
-*/
-void COleFileSystem::SortList(NodeList_t& node_list)
-{
-   NodeList_t node_list_shadow = node_list;
-
-   node_list.erase(node_list.begin(), node_list.end());
-
-   NodeList_Itor_t i;
-   int index = 1;
-
-   do {
-      for(i = node_list_shadow.begin();  i != node_list_shadow.end(); i++)
-      {
-         if(index == (*i)->GetIndex())
-         {
-            node_list.push_back(*i);
-            node_list_shadow.erase(i);
-            index++;
-            break;
-         }
-      }
-   } while(!node_list_shadow.empty());
-}
-#else
 static inline bool oleCompare (const COleProp *left, const COleProp *right)
 {
 	return (left->GetIndex() < right->GetIndex());
@@ -403,7 +336,6 @@ void COleFileSystem::SortList(NodeList_t& node_list)
 	//printf("sort len = %d\n", node_list.size() );
 	sort(node_list.begin(), node_list.end(), oleCompare);		// stable_sort Compare
 }
-#endif
 
 /* 
 ***********************************

@@ -95,12 +95,6 @@ worksheet::worksheet(CGlobalRecords& gRecords, unsigned16_t idx) :
 
 worksheet::~worksheet()
 {
-#if 0 // [i_a] not needed any longer due to new dump preparation/estimation logic
-	if(!m_RBSizes.empty())
-      for(RBSize_Vect_Itor_t rbs = m_RBSizes.begin(); rbs != m_RBSizes.end(); rbs++)
-	     delete *rbs;
-#endif
-
    // Delete the dynamically created cell objects (pointers)
    if(!m_Cells.empty())
    {
@@ -170,17 +164,6 @@ worksheet::~worksheet()
 }
 
 
-
-#if 0
-/*
-***********************************
-***********************************
-*/
-void worksheet::SortCells()
-{
-// Set containers don't need sorting
-}
-#endif
 
 /*
 ***********************************
@@ -638,18 +621,6 @@ cell_t* worksheet::label(unsigned32_t row, unsigned32_t col,
 ***********************************
 ***********************************
 */
-#if 0 // no good - forces a format and thus xf_t
-cell_t* worksheet::number(unsigned32_t row, unsigned32_t col, 
-                          double numval, format_number_t fmtval,
-                          xf_t* pxformat)
-{
-   number_t* number = new number_t(row, col, numval, pxformat);
-   AddCell(number);
-   number->format(fmtval);
-
-   return number;
-}
-#endif
 cell_t* worksheet::number(unsigned32_t row, unsigned32_t col, // Deprecated
                           double numval, format_number_t fmtval,
                           xf_t* pxformat)
@@ -966,35 +937,6 @@ bool worksheet::GetRowBlockSizes(rowblocksize_t& rbsize)
 }
 
 
-#if 0
-/*
-***********************************
-***********************************
-*/
-void  worksheet::GetFirstLastRows(unsigned32_t* first_row, unsigned32_t* last_row)
-{
-   // First check that the m_Cells list is not empty, so we won't dereference
-   // an empty iterator.
-   if(!m_Cells.empty())
-   {
-      //SortCells();
-
-      cell_t* pcell;
-      pcell = *(m_Cells.begin());
-      *first_row = pcell->GetRow();
-
-      pcell = *(--m_Cells.end());
-      *last_row = pcell->GetRow();
-   } else {
-      // If there is no cells in the list the first/last rows
-      // are defaulted to zero.
-      *first_row = 0;
-      *last_row = 0;
-   }
-}
-#endif
-
-
 /*
 ***********************************
 ***********************************
@@ -1096,18 +1038,7 @@ size_t worksheet::GetNumRowBlocks(rowblocksize_t* rbsize_ref)
 		rbsize_ref->rows_sofar += rb1.rows_sofar;
    } while(cont);
 
-/*
-  Cell_Vect_t temp_cell_list = m_Cells;
-  temp_cell_list.sort();
-  temp_cell_list.unique();
-*/
-
-#if 0
-	   // take trailing partial chunk into account: round up!
-      numrb = (rbsize_ref->rows_sofar + MAX_ROWBLOCK_SIZE - 1) / MAX_ROWBLOCK_SIZE;
-#else
 	  numrb = m_RBSizes.size();
-#endif
    } 
    else 
    {

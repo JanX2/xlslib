@@ -71,12 +71,6 @@ namespace xlslib_core
 #endif
 
     protected:
-#if 0
-		CBlank(CDataStorage &datastore, 
-			 unsigned32_t row,
-             unsigned32_t col,
-             const xf_t* pxfval = NULL);
-#endif
       CBlank(CDataStorage &datastore, const blank_t& blankdef);
 	private:
       virtual ~CBlank();

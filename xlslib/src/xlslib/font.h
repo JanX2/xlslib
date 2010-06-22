@@ -301,18 +301,6 @@ CFont class declaration
 #endif
 
     protected:
-#if 0
-      CFont(CDataStorage &datastore, 
-			std::string name		= FONT_DFLT_FONTNAME,
-            unsigned16_t height		= FONT_DFLT_HEIGHT,
-            unsigned16_t boldstyle  = FONT_BOLDNESS_NORMAL,
-            unsigned8_t underline	= FONT_UNDERLINE_NONE,
-            unsigned16_t script		= FONT_SCRIPT_NONE,
-            unsigned16_t color		= FONT_DFLT_PALETTE,
-            unsigned16_t attributes	= FONT_DFLT_ATTRIBUTES,
-            unsigned8_t family		= FONT_DFLT_FAMILY,
-            unsigned8_t charset		= FONT_DFLT_CHARSET   );
-#endif
 	  CFont(CDataStorage &datastore, 
 			const font_t* fontdef);
 	private:

@@ -72,21 +72,6 @@ unsigned32_t cell_t::GetCol(void) const {return col;}
 
 // This is why the default formats get marked used twice! (see test for > 1)
 
-#if 0
-#define SET_XF_COMMON_OLD											\
-	xf_t* currentxf = pxf;											\
-																	\
-	if(pxf == NULL) {												\
-		pxf = new xf_t(m_GlobalRecords, true);						\
-		pxf->MarkUsed();											\
-	} else															\
-	if(pxf->Usage() > 1) {				/* not sole user	*/		\
-		pxf->UnMarkUsed();											\
-		pxf = xf_t::xfDup(currentxf);								\
-		pxf->MarkUsed();											\
-	}
-#endif
-
 void cell_t::set_xf_common(void)
 {
 	if(pxf->Usage() > 1) 

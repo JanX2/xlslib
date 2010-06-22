@@ -344,34 +344,6 @@ void MD5Transform(unsigned32_t buf[4], unsigned32_t const in[16])
     buf[3] += d;
 }
 
-#if 0
-
-/*
- * This part was added by Brian Costello <btx@calyx.net>
- * For citadel's APOP auth - makes a lower case (as per APOP RFC)
- * md5 string
- */
-
-char *make_apop_string(char *realpass, char *nonce, char *buffer, size_t n)
-{
-   struct MD5Context ctx;
-   u_char rawdigest[MD5_DIGEST_LEN];
-   int i;
-   
-   MD5Init(&ctx);
-   MD5Update(&ctx, (u_char*)nonce, strlen(nonce));
-   MD5Update(&ctx, (u_char*)realpass, strlen(realpass));
-   MD5Final(rawdigest, &ctx);
-   for (i=0; i<MD5_DIGEST_LEN; i++)
-   {
-      snprintf(&buffer[i*2], n - i*2, "%02X", (unsigned char) (rawdigest[i] & 0xff));
-      buffer[i*2] = tolower(buffer[i*2]);
-      buffer[(i*2)+1] = tolower(buffer[(i*2)+1]);
-   }
-   return buffer;
-}
-
-#endif
 
 int load_file(unsigned8_t **buf_ref, size_t *buflen_ref, const char *filepath)
 {

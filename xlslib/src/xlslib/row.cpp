@@ -85,84 +85,11 @@ CRow::CRow(CDataStorage &datastore,
 	SetRecordLength(GetDataSize()-4);
 }
 
-#if 0
-// NOTE: row_t has not a height field
-CRow::CRow(row_t& rowdef)
-{
-	SetRecordType(RECTYPE_ROW);
-	AddValue16(rowdef.rownum);
-	AddValue16(rowdef.firstcol);
-	AddValue16(rowdef.lastcol+1);
-	AddValue16(ROW_DFLT_HEIGHT);
-
-	// A field used by MS for "optimizing" (?) the loading of a file.
-	// Doc says it shall be set to 0 if I'm creating a BIFF...
-	AddValue16((unsigned16_t)0);
-	// A reserved value:
-	AddValue16((unsigned16_t)0);
-
-	// TODO: The following flag-word can be used for outline cells.
-	// As a default the GhostDirty flag is set, so the row has a default
-	// format (set by the index of byte 18).
-	AddValue16(ROW_DFLT_GRBIT|ROW_GRBIT_UNSYNC);
-	if(rowdef.xformat == NULL) {
-		AddValue16((unsigned16_t)ROW_DFLT_IXFE);
-	} else {
-		AddValue16((unsigned16_t)rowdef.xformat->GetIndex());
-	}
-
-	SetRecordLength(GetDataSize()-4);
-}
-#endif
 
 CRow::~CRow()
 {
 }
 
-#if 0
-/*
-******************************
-******************************
-*/
-void CRow::SetFirstCol(unsigned32_t firstcol)
-{
-   SetValueAt16((unsigned16_t)firstcol, ROW_OFFSET_FIRSTCOL);
-}
-
-/*
-******************************
-******************************
-*/
-void CRow::SetLastCol(unsigned32_t lastcol)
-{
-   SetValueAt16((unsigned16_t)(lastcol+1), ROW_OFFSET_LASTCOL);
-}
-  
-/*
-******************************
-******************************
-*/
-unsigned32_t CRow::GetFirstCol(void)
-{
-
-   signed16_t firstcol;
-   GetValue16From(&firstcol,ROW_OFFSET_FIRSTCOL);
-   return (unsigned16_t)firstcol;
-
-}
-
-/*
-******************************
-******************************
-*/
-unsigned32_t CRow::GetLastCol(void)
-{
-   signed16_t lastcol;
-   GetValue16From(&lastcol,ROW_OFFSET_LASTCOL);
-   return (unsigned16_t)lastcol-1;
-}
-
-#endif
 
 /*
 ******************************

@@ -50,13 +50,6 @@ CBinFile::CBinFile() :
 	m_File()
 {
 }
-#if 0
-CBinFile::CBinFile(const string& name)
-	: m_File()
-{
-   Open(name);
-}
-#endif
 CBinFile::~CBinFile ()
 {
    Close();

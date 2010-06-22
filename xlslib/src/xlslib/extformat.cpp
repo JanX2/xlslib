@@ -732,38 +732,6 @@ xf_t& xf_t::operator=(const xf_t& right)
 bool xf_t::operator==(const xf_t& right)
 {
 	return this->xfi == right.xfi;
-	
-#if 0   // here for historical reference...
-	// used by "range" in doing mass changes. Try to arrange so most
-	// likely failures occurr early
-
-	if(flags != right.flags)	return false;
-	if(font != right.font)		return false;
-	
-	if(fill_fgcolor != right.fill_fgcolor)	return false;
-	if(fill_bgcolor != right.fill_bgcolor)	return false;
-	if(fillstyle != right.fillstyle)		return false;
-	
-	for(int i=0; i<_NUM_BORDERS; ++i) {
-		if(border_style[i] != right.border_style[i]) return false;
-		if(border_color[i] != right.border_color[i]) return false;
-	}
-	
-	if(halign != right.halign)	return false;
-	if(valign != right.valign)	return false;
-	
-	if(indent != right.indent)	return false;
-	
-	if(txt_orient != right.txt_orient) return false;
-
-	if(locked != right.locked)			return false;
-	if(hidden != right.hidden)			return false;
-	if(wrap != right.wrap)				return false;
-	if(is_cell != right.is_cell)		return false;
-	if(is_userXF != right.is_userXF)	return false;
- 
-	return true;
-#endif
 }
 
 /* Horizontal Align option wrappers*/
@@ -972,69 +940,6 @@ CExtFormat::CExtFormat(CDataStorage &datastore, const xf_t* xfdef):
 			 xfdef->GetBorderColorIdx(BORDER_RIGHT));
 
 	SetFlags(xfdef->GetFlags());
-
-#if 0
-
-//#pragma pack(1)
-typedef struct XF8
-{
-    unsigned16_t	font;
-    unsigned16_t	format;
-    unsigned16_t	type;
-    unsigned8_t	align;
-    unsigned8_t	rotation;
-    unsigned8_t	ident;
-    unsigned8_t	usedattr;
-    unsigned32_t	linestyle;
-    unsigned32_t	linecolor;
-    unsigned16_t	groundcolor;
-}
-XF8;
-
-{
-static int flop;
-	printf("----------------------------------------\n");
-if(flop == 21) flop = 0;
-    printf("      INDEX: %u size=%d dataSize=%d SIZE=%d\n",flop++, (int)m_nSize, (int)m_nDataSize, (int)sizeof(XF8));
-	
-
-#if 0
-uint8_t *p = (m_pData + 4);
-uint16_t s;
-uint32_t w;
-
-	s = *p++, s |= *p++ << 8;
-    printf("       Font: %i\n",s);
-	s = *p++, s |= *p++ << 8;
-    printf("     Format: %i\n",s);
-	s = *p++, s |= *p++ << 8;
-    printf("       Type: 0x%x\n",s);
-    printf("      Align: 0x%x\n",*p++);
-    printf("   Rotation: 0x%x\n",*p++);
-    printf("      Ident: 0x%x\n",*p++);
-    printf("   UsedAttr: 0x%x\n",*p++);
-	w = *p++, w |= *p++ << 8, w |= *p++ << 16, w |= *p++  << 24;
-    printf("  LineStyle: 0x%x\n",w);
-	w = *p++, w |= *p++ << 8, w |= *p++ << 16, w |= *p++  << 24;
-    printf("  Linecolor: 0x%x\n",w);
-	s = *p++, s |= *p++ << 8;
-    printf("GroundColor: 0x%x\n",s);
-#else
-XF8 *xf = (XF8 *)(m_pData + 4);
-    printf("       Font: %i\n",xf->font);
-    printf("     Format: %i\n",xf->format);
-    printf("       Type: 0x%x\n",xf->type);
-    printf("      Align: 0x%x\n",xf->align);
-    printf("   Rotation: 0x%x\n",xf->rotation);
-    printf("      Ident: 0x%x\n",xf->ident);
-    printf("   UsedAttr: 0x%x\n",xf->usedattr);
-    printf("  LineStyle: 0x%x\n",xf->linestyle);
-    printf("  Linecolor: 0x%x\n",xf->linecolor);
-    printf("GroundColor: 0x%x\n",xf->groundcolor);
-#endif
-}
-#endif
-
 }
 
 CExtFormat::~CExtFormat()
@@ -1316,13 +1221,6 @@ void CExtFormat::SetFillPattern(unsigned8_t pattern)
 */
 void CExtFormat::SetBorder(border_side_t border, unsigned16_t style, unsigned16_t color)
 {
-#if 0
-signed32_t valueA0, valueA1, val;
-signed32_t valueB0, valueB1;
-
-GetValue32From((signed32_t*)&valueA0, XF_OFFSET_BORDERA);
-GetValue32From((signed32_t*)&valueB0, XF_OFFSET_BORDERB);
-#endif
 	switch(border) {
 	case BORDER_BOTTOM:
 		{
@@ -1390,12 +1288,6 @@ GetValue32From((signed32_t*)&valueB0, XF_OFFSET_BORDERB);
 	default:
 		break;
 	}
-#if 0
-GetValue32From((signed32_t*)&valueA1, XF_OFFSET_BORDERA);
-GetValue32From((signed32_t*)&valueB1, XF_OFFSET_BORDERB);
-printf("StartA: %8.8x End: %8.8x\n", valueA1, valueA1, val);
-printf("StartB: %8.8x End: %8.8x\n", valueB1, valueB1, val);
-#endif
 }
 
 /* 
@@ -1413,31 +1305,6 @@ void CExtFormat::SetFlags(unsigned8_t flags)
    SetValueAt32((unsigned32_t)value, XF_OFFSET_ALIGN);
 }
 
-
-#if 0
-/* 
-**********************************
-**********************************
-*/
-void CExtFormat::SetXFParent(unsigned16_t parent)
-{
-   if(IsCell())
-   {
-      unsigned16_t value;
-      
-      // Set the cell's style parent to Normal
-      GetValue16From((signed16_t*)&value, XF_OFFSET_PROP);
-      value = (value&(~XF_PROP_XFPARENT))|((parent<<XF_PROP_SHIFTPOS_PARENT) & XF_PROP_XFPARENT);
-      SetValueAt16((unsigned16_t)value, XF_OFFSET_PROP);
-   } else {
-      /*Do nothing: Styles don't have parent... but still clear the flags...*/
-   }
-
-   ClearFlag(XF_ALIGN_ATRNUM|XF_ALIGN_ATRFONT|XF_ALIGN_ATRALC|
-			 XF_ALIGN_ATRBDR|XF_ALIGN_ATRPAT|XF_ALIGN_ATRPROT);
-
-}
-#endif
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * $Log: extformat.cpp,v $

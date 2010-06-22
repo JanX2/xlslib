@@ -120,19 +120,6 @@ namespace xlslib_core
   typedef std::set<xlslib_core::rowheight_t*,rowheightsort XLSLIB_DFLT_ALLOCATOR> RowHeight_Vect_t;
   typedef RowHeight_Vect_t::iterator RowHeight_Vect_Itor_t;
 
-#if 0
-  // NOTE: row_t has no height field
-  typedef struct
-  {
-    unsigned32_t rownum;
-    unsigned32_t firstcol;
-    unsigned32_t lastcol;
-	xf_t		 *xformat;
-  } row_t;
-  typedef std::vector<xlslib_core::row_t* XLSLIB_DFLT_ALLOCATOR> Row_Vect_t;
-  typedef Row_Vect_t::iterator Row_Vect_Itor_t;
-#endif
-
   class CRow: public CRecord
     {
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)

@@ -100,13 +100,6 @@ __attribute__((unused))
 #endif
 
     protected:
-#if 0
-      CNumber(CDataStorage &datastore, 
-			  unsigned32_t row,
-              unsigned32_t col,
-              double num,
-              const xf_t* pxfval = NULL);
-#endif
       CNumber(CDataStorage &datastore, const number_t& numdef);
 	private:
       virtual ~CNumber();
