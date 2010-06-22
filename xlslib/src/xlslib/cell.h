@@ -63,6 +63,9 @@ namespace xlslib_core
 		cell_t(const cell_t& that);
 		cell_t& operator=(const cell_t& right);
 
+		void set_xf_common(void);
+		void set_cell_font(void);
+
     public:
 		unsigned16_t GetXFIndex(void) const;
 		unsigned32_t GetRow(void) const;

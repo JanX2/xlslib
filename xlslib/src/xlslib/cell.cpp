@@ -39,7 +39,6 @@
 #include <format.h>
 #include <globalrec.h>
 
-using namespace std;
 using namespace xlslib_core;
 
 cell_t::cell_t(CGlobalRecords& gRecord, unsigned32_t rowNum, unsigned32_t colNum) :
@@ -88,172 +87,182 @@ unsigned32_t cell_t::GetCol(void) const {return col;}
 	}
 #endif
 
-#define SET_XF_COMMON												\
-	if(pxf->Usage() > 1) {				/* not sole user	*/		\
-		pxf->UnMarkUsed();											\
-		pxf = xf_t::xfDup(pxf);										\
-		pxf->MarkUsed();											\
+void cell_t::set_xf_common(void)
+{
+	if(pxf->Usage() > 1) 
+	{				
+		/* not sole user	*/		
+		pxf->UnMarkUsed();											
+		pxf = xf_t::xfDup(pxf);										
+		pxf->MarkUsed();											
 	}
+}
 
-#define SET_XF_CELL_FUNCTION(function, value)						\
-{																	\
-	SET_XF_COMMON													\
-																	\
-	pxf->function(value);											\
-}
-#define SET_XF_CELL_FUNCTION2(function,val1,val2)					\
-{																	\
-	SET_XF_COMMON													\
-																	\
-	pxf->function(val1,val2);									\
-}
-#define SET_XF_CELL_FUNCTION3(function,val1,val2,val3)				\
-{																	\
-	SET_XF_COMMON													\
-																	\
-	pxf->function(val1,val2,val3);									\
-}
 
 void cell_t::borderstyle(border_side_t side, border_style_t style)
 {
-   SET_XF_CELL_FUNCTION2(SetBorderStyle, side, style);
+   set_xf_common();
+   pxf->SetBorderStyle(side, style);
 }
 void cell_t::bordercolor(border_side_t side, color_name_t color)
 {
-   SET_XF_CELL_FUNCTION2(SetBorderColor, side, color);
+	set_xf_common();
+   pxf->SetBorderColor(side, color);
 }
 void cell_t::bordercolor(border_side_t side, unsigned8_t color)
 {
-   SET_XF_CELL_FUNCTION2(SetBorderColor, side, color);
+	set_xf_common();
+   pxf->SetBorderColor(side, color);
 }
 
 void cell_t::font(font_t* fnt)
 {
-   SET_XF_CELL_FUNCTION(SetFont, fnt);
+	set_xf_common();
+   pxf->SetFont(fnt);
 }
 void cell_t::format(format_number_t formatidx)
 {
-   SET_XF_CELL_FUNCTION(SetFormat, formatidx);
+	set_xf_common();
+	pxf->SetFormat(formatidx);
 }
 void cell_t::format(format_t* fmt)
 {
-   SET_XF_CELL_FUNCTION(SetFormat, fmt);
+	set_xf_common();
+   pxf->SetFormat(fmt);
 }
 void cell_t::halign(halign_option_t ha_option)
 {
-   SET_XF_CELL_FUNCTION(SetHAlign,ha_option);
+	set_xf_common();
+   pxf->SetHAlign(ha_option);
 }
 
 void cell_t::valign(valign_option_t va_option)
 {
-   SET_XF_CELL_FUNCTION(SetVAlign,va_option);
+	set_xf_common();
+   pxf->SetVAlign(va_option);
 }
 
 void cell_t::indent(indent_option_t indent_option)
 {
-   SET_XF_CELL_FUNCTION(SetIndent,indent_option);
+	set_xf_common();
+   pxf->SetIndent(indent_option);
 }
 
 void cell_t::orientation(txtori_option_t ori_option)
 {
-   SET_XF_CELL_FUNCTION(SetTxtOrientation,ori_option);
+	set_xf_common();
+   pxf->SetTxtOrientation(ori_option);
 }
 
 void cell_t::fillfgcolor(color_name_t color)
 {
-   SET_XF_CELL_FUNCTION(SetFillFGColor,color);
+	set_xf_common();
+   pxf->SetFillFGColor(color);
 }
 
 void cell_t::fillfgcolor(unsigned8_t color)
 {
-   SET_XF_CELL_FUNCTION(SetFillFGColor,color);
+	set_xf_common();
+	pxf->SetFillFGColor(color);
 }
 
 void cell_t::fillbgcolor(color_name_t color)
 {
-   SET_XF_CELL_FUNCTION(SetFillBGColor,color);
+   	set_xf_common();
+		pxf->SetFillBGColor(color);
 }
 
 void cell_t::fillbgcolor(unsigned8_t color)
 {
-   SET_XF_CELL_FUNCTION(SetFillBGColor,color);
+   	set_xf_common();
+		pxf->SetFillBGColor(color);
 }
 
 void cell_t::fillstyle(fill_option_t fill)
 {
-   SET_XF_CELL_FUNCTION(SetFillStyle,fill);
+   set_xf_common();
+   pxf->SetFillStyle(fill);
 }
 
 void cell_t::locked(bool locked_opt)
 {
-   SET_XF_CELL_FUNCTION(SetLocked,locked_opt);
+   set_xf_common();
+   pxf->SetLocked(locked_opt);
 }
 
 void cell_t::hidden(bool hidden_opt)
 {
-   SET_XF_CELL_FUNCTION(SetHidden,hidden_opt);
+	set_xf_common();
+   pxf->SetHidden(hidden_opt);
 }
 
 void cell_t::wrap(bool wrap_opt)
 {
-   SET_XF_CELL_FUNCTION(SetWrap,wrap_opt);
+	set_xf_common();
+   pxf->SetWrap(wrap_opt);
 }
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // Implementation of the FONT record interface (font_i pure virtual interface)
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
-#define SET_CELL_FONT_FUNCTION(function, value)						\
-{																	\
-	SET_XF_COMMON													\
-																	\
-	font_t* currentfont = pxf->GetFont();							\
-																	\
-	if(currentfont == NULL)	{										\
-		currentfont = m_GlobalRecords.GetDefaultFont();				\
-		font_t* fntnew = font_t::fontDup(currentfont);				\
-		pxf->SetFont(fntnew);										\
-	} else															\
-	if(currentfont->Usage() > 1)									\
-	{																\
-		font_t* fntnew = font_t::fontDup(currentfont);				\
-		pxf->SetFont(fntnew);										\
-	}																\
-	pxf->GetFont()->function(value);								\
+void cell_t::set_cell_font(void)
+{																	
+	set_xf_common();												
+																	
+	font_t* currentfont = pxf->GetFont();							
+																	
+	if(currentfont == NULL)	{										
+		currentfont = m_GlobalRecords.GetDefaultFont();				
+		font_t* fntnew = font_t::fontDup(currentfont);				
+		pxf->SetFont(fntnew);										
+	} 
+	else if(currentfont->Usage() > 1)									
+	{																
+		font_t* fntnew = font_t::fontDup(currentfont);				
+		pxf->SetFont(fntnew);										
+	}																
 }
 
-void cell_t::fontname(string fntname)
+void cell_t::fontname(const std::string& fntname)
 {
-   SET_CELL_FONT_FUNCTION(SetName, fntname);
+	set_cell_font();
+   pxf->GetFont()->SetName(fntname);
 }
 
 void cell_t::fontheight(unsigned16_t fntheight)
 {
-   SET_CELL_FONT_FUNCTION(SetHeight,fntheight);
+	set_cell_font();
+   pxf->GetFont()->SetHeight(fntheight);
 }
 
 void cell_t::fontbold(boldness_option_t fntboldness)
 {
-   SET_CELL_FONT_FUNCTION(SetBoldStyle,fntboldness);
+	set_cell_font();
+   pxf->GetFont()->SetBoldStyle(fntboldness);
 }
 
 void cell_t::fontunderline(underline_option_t fntunderline)
 {
-   SET_CELL_FONT_FUNCTION(SetUnderlineStyle,fntunderline);
+	set_cell_font();
+   pxf->GetFont()->SetUnderlineStyle(fntunderline);
 }
 
 void cell_t::fontscript(script_option_t fntscript)
 {
-   SET_CELL_FONT_FUNCTION(SetScriptStyle,fntscript);
+	set_cell_font();
+   pxf->GetFont()->SetScriptStyle(fntscript);
 }
 
 void cell_t::fontcolor(color_name_t fntcolor)
 {
-   SET_CELL_FONT_FUNCTION(SetColor,fntcolor);
+	set_cell_font();
+   pxf->GetFont()->SetColor(fntcolor);
 }
 void cell_t::fontcolor(unsigned8_t fntcolor)
 {
-   SET_CELL_FONT_FUNCTION(SetColor,fntcolor);
+	set_cell_font();
+   pxf->GetFont()->SetColor(fntcolor);
 }
 
 #if defined(DEPRECATED)
@@ -266,22 +275,26 @@ void cell_t::fontattr(unsigned16_t attr)
 
 void cell_t::fontitalic(bool italic)
 {
-   SET_CELL_FONT_FUNCTION(SetItalic,italic);
+	set_cell_font();
+   pxf->GetFont()->SetItalic(italic);
 }
 
 void cell_t::fontstrikeout(bool so)
 {
-   SET_CELL_FONT_FUNCTION(SetStrikeout,so);
+	set_cell_font();
+   pxf->GetFont()->SetStrikeout(so);
 }
 
 void cell_t::fontoutline(bool ol)
 {
-   SET_CELL_FONT_FUNCTION(SetOutline,ol);
+	set_cell_font();
+   pxf->GetFont()->SetOutline(ol);
 }
 
 void cell_t::fontshadow(bool sh)
 {
-   SET_CELL_FONT_FUNCTION(SetShadow,sh);
+	set_cell_font();
+   pxf->GetFont()->SetShadow(sh);
 }
 
 void cell_t::SetXF(xf_t* pxfval)

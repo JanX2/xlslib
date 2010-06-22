@@ -199,6 +199,19 @@ void range::boxer(border_style_t borderStyle, fill_option_t fillStyle, color_nam
          }															\
    }
 
+#define SET_RANGE_FUNCTION2(function, v1, v2)						\
+{																	\
+	unsigned32_t r,c;												\
+	for(r = first_row; r <= last_row; r++)							\
+	{																\
+		for(c = first_col; c <= last_col; c++)						\
+		{															\
+			cell_t* cell = m_pWorkSheet->FindCellOrMakeBlank(r,c);	\
+			cell->function(v1, v2);									\
+		}															\
+	}																\
+}
+
 void range::font(font_t* fontidx)
 {
    SET_RANGE_FUNCTION(font, fontidx);
@@ -213,33 +226,15 @@ void range::format(format_t* fmt)
 }
 void range::borderstyle(border_side_t side, border_style_t style)
 {
-   unsigned32_t r,c;
-   for(r = first_row; r <= last_row; r++)
-      for(c = first_col; c <= last_col; c++)
-      {
-         cell_t* cell = m_pWorkSheet->FindCellOrMakeBlank(r,c);
-         cell->borderstyle(side, style);
-      }
+	SET_RANGE_FUNCTION2(borderstyle, side, style);
 }          
 void range::bordercolor(border_side_t side, color_name_t color)
 {
-   unsigned32_t r,c;
-   for(r = first_row; r <= last_row; r++)
-      for(c = first_col; c <= last_col; c++)
-      {
-         cell_t* cell = m_pWorkSheet->FindCellOrMakeBlank(r,c);
-         cell->bordercolor(side, color);
-      }
+	SET_RANGE_FUNCTION2(bordercolor, side, color);
 }          
 void range::bordercolor(border_side_t side, unsigned8_t color)
 {
-   unsigned32_t r,c;
-   for(r = first_row; r <= last_row; r++)
-      for(c = first_col; c <= last_col; c++)
-      {
-         cell_t* cell = m_pWorkSheet->FindCellOrMakeBlank(r,c);
-         cell->bordercolor(side, color);
-      }
+	SET_RANGE_FUNCTION2(bordercolor, side, color);
 }          
 
 void range::halign(halign_option_t ha_option)

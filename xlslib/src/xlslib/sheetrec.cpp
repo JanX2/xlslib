@@ -43,29 +43,11 @@
 using namespace std;
 using namespace xlslib_core;
 
-/*
- * LOCAL MODULE MACROS
- */
-#if 1
 
-#define MARK_CELLS_UNSORTED() {                 \
-   m_SizesCalculated = false;                   \
-   m_RBSizes.clear();                           \
-}
+#define MAX_ROWBLOCK_SIZE 16 // was: 32, but CONTINUE-d DBCELLs are not liked by 2003 ???
 
-#else
-
-#define MARK_CELLS_UNSORTED() {                 \
-   /*m_CellsSorted = false; */                  \
-   m_SizesCalculated = false;                   \
-   m_RBSizes.clear();                           \
-}
-#endif
-
-#define MAX_ROWBLOCK_SIZE (16) // was: 32, but CONTINUE-d DBCELLs are not liked by 2003 ???
-
-#define RB_DBCELL_MINSIZE          (8)
-#define RB_DBCELL_CELLSIZEOFFSET   (2)
+#define RB_DBCELL_MINSIZE          8
+#define RB_DBCELL_CELLSIZEOFFSET   2
 
 #define MAX_COLUMNS_PER_ROW			256 // Excel 2003 limit: 256 columns per row. (Update this when we upgrade this lib to support BIFF12 !)
 
@@ -842,7 +824,9 @@ void worksheet::AddCell(cell_t* pcell)
 	} while(!success);
 #endif
 
-	MARK_CELLS_UNSORTED();
+	/*m_CellsSorted = false; */                  
+	m_SizesCalculated = false;                   
+	m_RBSizes.clear();                           
 }
 
 /*
