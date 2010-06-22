@@ -115,8 +115,8 @@ size_t HPSFitem::GetSize()
 		size = value.str->length() + 1 + 4;         // 1 for null terminator, 4 for length field
 		// round up to the next 4-byte boundary:
 		size = (size + 4 - 1) & ~3;
-		assert(size >= 4);
-		assert((size % 4) == 0);
+		XL_ASSERT(size >= 4);
+		XL_ASSERT((size % 4) == 0);
 		break;
 	case HPSF_BOOL:
 		size = 2 + 2; // 2 + 2 padding
@@ -268,8 +268,8 @@ void HPSFdoc::DumpData()
 			// round up to the next 4-byte boundary to determine the padding; 
 			// take the mandatory NUL sentinel into account as well:
 			padding = 1 + ((4 - len) & 3);
-			assert(padding + len - 1 >= 4);
-			assert((padding + len - 1) % 4 == 0);
+			XL_ASSERT(padding + len - 1 >= 4);
+			XL_ASSERT((padding + len - 1) % 4 == 0);
 			AddValue32((unsigned32_t)len);
 			AddDataArray((const unsigned8_t *)value.str->c_str(), len-1);
 			break;
@@ -300,10 +300,10 @@ void HPSFdoc::DumpData()
 #endif
 
 	//printf("Actual size = %d\n", m_nDataSize - sectionListOffset);
-	assert(GetDataSize() <= GetSize());
-	assert(GetDataSize() <= SUMMARY_SIZE);
+	XL_ASSERT(GetDataSize() <= GetSize());
+	XL_ASSERT(GetDataSize() <= SUMMARY_SIZE);
 	AddFixedDataArray(0, SUMMARY_SIZE - GetDataSize());
-	assert(GetDataSize() <= GetSize());
+	XL_ASSERT(GetDataSize() <= GetSize());
 
 #if 0
 	// printf("YEAH!\n");

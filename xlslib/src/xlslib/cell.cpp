@@ -47,7 +47,7 @@ cell_t::cell_t(CGlobalRecords& gRecord, unsigned32_t rowNum, unsigned32_t colNum
    row(rowNum), col(colNum),
    pxf(gRecord.GetDefaultXF())
 {
-	assert(pxf);
+	XL_ASSERT(pxf);
 	pxf->MarkUsed();
 
 	//cerr << "INITIAL XFT" << endl << pxf->Description() << endl;
@@ -59,7 +59,7 @@ cell_t::~cell_t()
 
 unsigned16_t cell_t::GetXFIndex() const
 {
-	assert(pxf);
+	XL_ASSERT(pxf);
    //return pxf ? pxf->GetIndex() : XF_PROP_XF_DEFAULT_CELL;
    return pxf->GetIndex();
 }
@@ -288,7 +288,7 @@ void cell_t::SetXF(xf_t* pxfval)
 {
 	if(!pxfval) return;
 	
-	assert(pxf);
+	XL_ASSERT(pxf);
 	pxfval->MarkUsed();
 	pxf->UnMarkUsed();
 	pxf = pxfval;

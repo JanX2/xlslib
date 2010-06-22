@@ -117,7 +117,7 @@ namespace xlslib_core
 
 		inline unsigned8_t *GetBuffer(void)
 		{
-			assert(m_is_in_use);
+			XL_ASSERT(m_is_in_use);
 			if (!m_varying_width)
 			{
 				return s.fixed.m_pData;
@@ -129,7 +129,7 @@ namespace xlslib_core
 		}
 		inline const unsigned8_t *GetBuffer(void) const
 		{
-			assert(m_is_in_use);
+			XL_ASSERT(m_is_in_use);
 			if (!m_varying_width)
 			{
 				return s.fixed.m_pData;
@@ -141,13 +141,13 @@ namespace xlslib_core
 		}
 		inline void SetDataSize(size_t len)
 		{
-			assert(m_is_in_use);
-			assert(len <= GetSize());
+			XL_ASSERT(m_is_in_use);
+			XL_ASSERT(len <= GetSize());
 			m_nDataSize = len;
 		}
 		inline size_t GetSize(void) const
 		{
-			assert(m_is_in_use);
+			XL_ASSERT(m_is_in_use);
 			if (!m_varying_width)
 			{
 				return FIXEDWIDTH_STORAGEUNIT_SIZE;
@@ -159,17 +159,17 @@ namespace xlslib_core
 		}
 		inline size_t GetDataSize(void) const
 		{
-			assert(m_is_in_use);
+			XL_ASSERT(m_is_in_use);
 			return m_nDataSize;
 		}
 		inline bool IsSticky(void) const
 		{
-			assert(m_is_in_use);
+			XL_ASSERT(m_is_in_use);
 			return m_is_sticky;
 		}
 		inline void MakeSticky(void)
 		{
-			assert(m_is_in_use);
+			XL_ASSERT(m_is_in_use);
 			m_is_sticky = 1;
 		}
 	};
@@ -244,9 +244,9 @@ namespace xlslib_core
 		size_t m_DataSize;
    
     public:
-		CDataStorage ();
-		CDataStorage (size_t blobs);
-		virtual ~CDataStorage ();
+		CDataStorage();
+		CDataStorage(size_t blobs);
+		virtual ~CDataStorage();
 
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 
@@ -265,7 +265,6 @@ namespace xlslib_core
 		CDataStorage& operator=(const CDataStorage& right);
 
     public:
-		
 		void operator+=(CUnit* from);
 		size_t GetDataSize() const;
 

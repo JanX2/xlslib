@@ -33,7 +33,6 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 #include <font.h>
-
 #include <globalrec.h>
 
 using namespace std;
@@ -336,6 +335,8 @@ void font_t::SetBoldStyle(boldness_option_t fntboldness)
 }
 void font_t::_SetBoldStyle(unsigned16_t fntboldness) 
 {
+	XL_ASSERT(fntboldness >= 100);
+	XL_ASSERT(fntboldness <= 1000);
    boldstyle = fntboldness;
  //  m_sigchanged = true;
 }

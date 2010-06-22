@@ -51,8 +51,8 @@ range::range(unsigned32_t row1,
 	m_pWorkSheet(pws),
 	m_Atomic(false)
 {
-	assert(row2>=row1);
-	assert(col2>=col1);
+	XL_ASSERT(row2>=row1);
+	XL_ASSERT(col2>=col1);
 	
 	// cannot do in initializer list, since these are inherited
 	first_row	= row1;

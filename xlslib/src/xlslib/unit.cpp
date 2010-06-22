@@ -79,7 +79,7 @@ CUnit::CUnit(CDataStorage &datastore) :
 #endif
 {
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
-	assert(m_Index == INVALID_STORE_INDEX);
+	XL_ASSERT(m_Index == INVALID_STORE_INDEX);
 	if (orig.m_Index != INVALID_STORE_INDEX)
 	{
 		m_Index = m_Store.RequestIndex(orig.GetDataSize());
@@ -109,7 +109,7 @@ CUnit& CUnit::operator=(const CUnit& right)
 	{
 		m_Store[m_Index].Resize(len);
 	}
-	assert(right.m_Index != INVALID_STORE_INDEX ? m_Index != INVALID_STORE_INDEX : 1);
+	XL_ASSERT(right.m_Index != INVALID_STORE_INDEX ? m_Index != INVALID_STORE_INDEX : 1);
 	if (right.m_Index != INVALID_STORE_INDEX)
 	{
 		memcpy(m_Store[m_Index].GetBuffer(), right.GetBuffer(), len);
@@ -138,8 +138,8 @@ CUnit::~CUnit()
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 	if (m_Index != INVALID_STORE_INDEX)
 	{
-		assert(m_Index >= 0 ? !m_Store[m_Index].IsSticky() : 1);
-		assert(m_Index < 0 ? m_Store[m_Index].IsSticky() : 1);
+		XL_ASSERT(m_Index >= 0 ? !m_Store[m_Index].IsSticky() : 1);
+		XL_ASSERT(m_Index < 0 ? m_Store[m_Index].IsSticky() : 1);
 		if (m_Index >= 0)
 		{
 			m_Store[m_Index].Reset();
@@ -167,7 +167,7 @@ signed8_t CUnit::SetValueAt8(unsigned8_t newval, unsigned32_t index)
 
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 
-   assert(m_Index != INVALID_STORE_INDEX);
+   XL_ASSERT(m_Index != INVALID_STORE_INDEX);
    unsigned8_t *m_pData = m_Store[m_Index].GetBuffer();
    size_t m_nDataSize = m_Store[m_Index].GetDataSize();
 
@@ -304,7 +304,7 @@ signed8_t CUnit::GetValue8From(signed8_t* data, unsigned32_t  index) const
 
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 
-   assert(m_Index != INVALID_STORE_INDEX);
+   XL_ASSERT(m_Index != INVALID_STORE_INDEX);
    unsigned8_t *m_pData = m_Store[m_Index].GetBuffer();
    size_t m_nDataSize = m_Store[m_Index].GetDataSize();
 
@@ -360,7 +360,7 @@ signed8_t CUnit::AddDataArray(const unsigned8_t* newdata, size_t size)
 
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 
-   assert(m_Index != INVALID_STORE_INDEX);
+   XL_ASSERT(m_Index != INVALID_STORE_INDEX);
    unsigned8_t *m_pData = m_Store[m_Index].GetBuffer();
    size_t m_nDataSize = m_Store[m_Index].GetDataSize();
 
@@ -384,7 +384,7 @@ signed8_t CUnit::AddDataArray(const unsigned8_t* newdata, size_t size)
    return errcode;
 }
 
-signed8_t CUnit::AddFixedDataArray (const unsigned8_t value, size_t size)
+signed8_t CUnit::AddFixedDataArray(const unsigned8_t value, size_t size)
 {
    signed8_t errcode = NO_ERRORS;
 
@@ -404,7 +404,7 @@ signed8_t CUnit::AddFixedDataArray (const unsigned8_t value, size_t size)
 
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 
-   assert(m_Index != INVALID_STORE_INDEX);
+   XL_ASSERT(m_Index != INVALID_STORE_INDEX);
    unsigned8_t *m_pData = m_Store[m_Index].GetBuffer();
    size_t m_nDataSize = m_Store[m_Index].GetDataSize();
 
@@ -435,7 +435,7 @@ signed8_t CUnit::RemoveTrailData(size_t remove_size)
 
    size_t newlen = GetDataSize() + remove_size;
 
-   assert(m_Index != INVALID_STORE_INDEX);
+   XL_ASSERT(m_Index != INVALID_STORE_INDEX);
    m_Store[m_Index].Resize(newlen);
    memset(m_Store[m_Index].GetBuffer() + m_Store[m_Index].GetDataSize(), 0, remove_size);
    m_Store[m_Index].SetDataSize(newlen);
@@ -482,7 +482,7 @@ signed8_t CUnit::SetArrayAt(const unsigned8_t* newdata, size_t size, unsigned32_
 
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 
-   assert(m_Index != INVALID_STORE_INDEX);
+   XL_ASSERT(m_Index != INVALID_STORE_INDEX);
    unsigned8_t *m_pData = m_Store[m_Index].GetBuffer();
    //size_t m_nDataSize = m_Store[m_Index].GetDataSize();
 
@@ -524,7 +524,7 @@ signed8_t CUnit::AddValue8(unsigned8_t newdata)
 
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 
-   assert(m_Index != INVALID_STORE_INDEX);
+   XL_ASSERT(m_Index != INVALID_STORE_INDEX);
    unsigned8_t *m_pData = m_Store[m_Index].GetBuffer();
    size_t m_nDataSize = m_Store[m_Index].GetDataSize();
 
@@ -560,7 +560,7 @@ signed8_t CUnit::AddUnicodeString (const string* str, size_t size)
 
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 
-   assert(m_Index != INVALID_STORE_INDEX);
+   XL_ASSERT(m_Index != INVALID_STORE_INDEX);
    unsigned8_t *m_pData = m_Store[m_Index].GetBuffer();
    size_t m_nDataSize = m_Store[m_Index].GetDataSize();
 
@@ -608,7 +608,7 @@ signed8_t CUnit::AddUnicodeString (const u16string* str16, size_t size, bool is_
 
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 
-   assert(m_Index != INVALID_STORE_INDEX);
+   XL_ASSERT(m_Index != INVALID_STORE_INDEX);
    unsigned8_t *m_pData = m_Store[m_Index].GetBuffer();
    size_t m_nDataSize = m_Store[m_Index].GetDataSize();
 
@@ -678,7 +678,7 @@ signed8_t CUnit::Inflate(size_t increase)
 		   }
 	   }
 
-	   assert(m_Index != INVALID_STORE_INDEX);
+	   XL_ASSERT(m_Index != INVALID_STORE_INDEX);
 	   m_Store[m_Index].Resize(GetSize() + increase);
    }
 
@@ -731,19 +731,19 @@ signed8_t CUnit::Inflate(size_t increase)
 /************************************************
  ************************************************/
 
-unsigned8_t& CUnit::operator[] ( const size_t index ) const
+unsigned8_t& CUnit::operator[](const size_t index) const
 {
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 
-   assert(m_Index != INVALID_STORE_INDEX);
+   XL_ASSERT(m_Index != INVALID_STORE_INDEX);
    unsigned8_t *m_pData = m_Store[m_Index].GetBuffer();
    //size_t m_nDataSize = m_Store[m_Index].GetDataSize();
 
 #endif
 
 #if 1
-   assert(index < GetSize());	// DFH: need to read ahead when setting bits in 32bit words
-   assert(index < GetDataSize());	// [i_a]
+   XL_ASSERT(index < GetSize());	// DFH: need to read ahead when setting bits in 32bit words
+   XL_ASSERT(index < GetDataSize());	// [i_a]
    //if(index >= m_nDataSize) printf("ERROR: Short read!! \n");
 #else
    // this old code really bad - get bad data and never know it!
@@ -756,7 +756,7 @@ unsigned8_t& CUnit::operator[] ( const size_t index ) const
 /************************************************
  ************************************************/
 
-CUnit& CUnit::operator+= (const CUnit& from)
+CUnit& CUnit::operator +=(const CUnit& from)
 {
    if(&from != this)
    {
@@ -774,7 +774,7 @@ CUnit& CUnit::operator+= (const CUnit& from)
 /************************************************
  ************************************************/
 
-CUnit& CUnit::operator+= ( unsigned8_t from )
+CUnit& CUnit::operator +=(unsigned8_t from)
 {
    AddValue8(from);
 
@@ -789,7 +789,7 @@ signed8_t CUnit::Init (unsigned8_t* data, const size_t size, const unsigned32_t 
 {
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 
-   assert(m_Index != INVALID_STORE_INDEX);
+   XL_ASSERT(m_Index != INVALID_STORE_INDEX);
    m_Store[m_Index].Init(data, size, datasz);
 
 #else
@@ -797,7 +797,7 @@ signed8_t CUnit::Init (unsigned8_t* data, const size_t size, const unsigned32_t 
    m_nSize		= size;
    m_nDataSize	= datasz;
 
-   assert(m_pData == NULL);
+   XL_ASSERT(m_pData == NULL);
    if(m_pData)
       delete[] m_pData;
 
@@ -833,7 +833,7 @@ signed8_t CUnit::InitFill (unsigned8_t data, size_t size)
 {
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 
-   assert(m_Index != INVALID_STORE_INDEX);
+   XL_ASSERT(m_Index != INVALID_STORE_INDEX);
    return m_Store[m_Index].InitWithValue(data, size);
 
 #else
@@ -861,7 +861,7 @@ signed8_t CUnit::InitFill (unsigned8_t data, size_t size)
 size_t CUnit::GetSize (void) const
 {
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
-   assert(m_Index != INVALID_STORE_INDEX);
+   XL_ASSERT(m_Index != INVALID_STORE_INDEX);
    return m_Store[m_Index].GetSize();
 #else
    return m_nSize;
@@ -871,10 +871,10 @@ size_t CUnit::GetSize (void) const
 /************************************************
  ************************************************/
 
-size_t CUnit::GetDataSize (void) const
+size_t CUnit::GetDataSize(void) const
 {
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
-   assert(m_Index != INVALID_STORE_INDEX);
+   XL_ASSERT(m_Index != INVALID_STORE_INDEX);
    return m_Store[m_Index].GetDataSize();
 #else
    return m_nDataSize;
@@ -887,7 +887,7 @@ size_t CUnit::GetDataSize (void) const
 unsigned8_t* CUnit::GetBuffer(void)
 {
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
-   assert(m_Index != INVALID_STORE_INDEX);
+   XL_ASSERT(m_Index != INVALID_STORE_INDEX);
    return m_Store[m_Index].GetBuffer();
 #else
    return m_pData;
@@ -901,7 +901,7 @@ unsigned8_t* CUnit::GetBuffer(void)
 const unsigned8_t* CUnit::GetBuffer(void) const
 {
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
-   assert(m_Index != INVALID_STORE_INDEX);
+   XL_ASSERT(m_Index != INVALID_STORE_INDEX);
    return m_Store[m_Index].GetBuffer();
 #else
    return m_pData;

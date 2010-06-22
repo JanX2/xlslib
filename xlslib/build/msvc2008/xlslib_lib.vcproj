@@ -487,6 +487,10 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath="..\..\src\xlslib\assert_assist.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\xlslib\blank.cpp"
 				>
 			</File>

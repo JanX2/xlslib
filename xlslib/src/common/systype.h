@@ -71,7 +71,7 @@
 #include <set>
 #include <algorithm>
 #endif
-#include <assert.h>
+//#include <assert.h>
 
 //#define INLINE inline
 
@@ -236,6 +236,66 @@ typedef StringList_t::const_iterator StringListItor_t;
 
 #endif
 
+
+#if defined(__cplusplus)
+extern "C"
+{
+#endif
+
+/**
+Custom ASSERT macro; since we create a library, we'ld better allow the user of that
+lib to set up how [s]he wants to have her/his assertion failures reported.
+
+stdlib's version, which dumps to stderr and calls abort() isn't exactly what you'd 
+wish for in a UI or other non-UNIX/WIN-consolish environment!
+
+@note
+Users of xlslib may want to call xlslib_register_assert_reporter() at program initialization.
+
+@note
+The macro is constructed in such a way that the expression is only evaluated once (no
+side effects from double invocations) and consumes the semicolon which follows it, so
+that code like this will compile as expected in all conditions:
+
+  if (cond)
+	XL_ASSERT(some_expression);
+  else
+    do_something();
+
+*/
+#define XL_ASSERT(expr)																\
+	do																				\
+	{																				\
+		if (!(expr))																\
+		{																			\
+			xlslib_report_failed_assertion(#expr, __FILE__, __LINE__, __FUNCTION__);\
+		}																			\
+	}  while (0)
+
+/*
+override for 'release' type builds: the compiler optimizer will make sure this
+empty statement will be discarded, while we still ensure the trailing semicolon 
+will be properly 'munched'.
+*/
+#if !defined(WITH_DEBUGGING)
+
+#undef XL_ASSERT
+#define XL_ASSERT(expr)																\
+	(void)0
+
+#endif
+
+typedef void xlslib_userdef_assertion_reporter(const char *expr, const char *fname, int lineno, const char *funcname);
+
+void xlslib_report_failed_assertion(const char *expr, const char *fname, int lineno, const char *funcname);
+/**
+override the default (C++ exception throwing) assertion failure reporting function within xlslib.
+*/
+void xlslib_register_assert_reporter(xlslib_userdef_assertion_reporter *user_func);
+
+#if defined(__cplusplus)
+};
+#endif
 
 #endif //SYSTYPE_H
 

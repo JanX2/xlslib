@@ -187,6 +187,7 @@ CGlobalRecords::CGlobalRecords() :
 		}
 		newxf->SetIndex(xfIndex);	// for debugging - not really needed here
 	}
+	XL_ASSERT(defaultXF);
 
 	style_t* newstyle;
 	newstyle = new style_t;
@@ -742,7 +743,7 @@ void CGlobalRecords::AddFormat(format_t* newformat)
 ****************************************
 ****************************************
 */
-void CGlobalRecords::AddFont(font_t* newfont )
+void CGlobalRecords::AddFont(font_t* newfont)
 {
 	newfont->SetIndex(fontIndex++);
 	m_Fonts.push_back(newfont);

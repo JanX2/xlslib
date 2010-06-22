@@ -76,8 +76,8 @@ namespace Private
  
 
 // forward declaration
-template< class type>
-inline typename Private::return_from_write_to_stream< type>::return_type operator<< ( const str_stream & streamOut, const type & value);
+template<class type>
+inline typename Private::return_from_write_to_stream<type>::return_type operator<< (const str_stream & streamOut, const type & value);
 
 // str_stream - allow stream usage, and then conversion to string
 class str_stream
@@ -87,8 +87,8 @@ class str_stream
   str_stream(){}
  
   // allow to_string like usage
-  template< class type>
-  str_stream( const type & value)
+  template<class type>
+  str_stream(const type & value)
   {
 	 *this << value;
   }

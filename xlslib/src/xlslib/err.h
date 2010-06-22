@@ -46,7 +46,6 @@
 
 namespace xlslib_core
 {
-
 	typedef enum
 	{
 		XLERR_NULL  = 0x00, // #NULL!

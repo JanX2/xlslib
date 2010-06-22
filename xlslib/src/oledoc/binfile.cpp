@@ -105,7 +105,7 @@ unsigned32_t CBinFile::Position (  )
 ******************************
 ******************************
 */
-int CBinFile::Write(unsigned8_t * data, size_t size )
+int CBinFile::Write(unsigned8_t * data, size_t size)
 {
    int errcode = NO_ERRORS;
 
@@ -118,7 +118,7 @@ int CBinFile::Write(unsigned8_t * data, size_t size )
 ******************************
 ******************************
 */
-int CBinFile::Write ( CUnit& data_unit )
+int CBinFile::Write(CUnit& data_unit)
 {
 
    int errcode = NO_ERRORS;
@@ -231,7 +231,7 @@ int CBinFile::write_service(const char *buffer, size_t size)
       if(m_File.is_open())
       {
          if(size > 1)
-            m_File.write((const char*)buffer, static_cast<streamsize>(size));
+            m_File.write(buffer, static_cast<streamsize>(size));
          else if(size == 1)
             m_File.put(*buffer);
       }

@@ -263,7 +263,7 @@ CUnit* worksheet::DumpData(CDataStorage &datastore, size_t offset)
 			   // Get sizes of next RowBlock
 			   rowblocksize_t rbsize;
 			   bool state = GetRowBlockSizes(rbsize);
-			   assert(rb == numrb - 1 ? state == false : state == true);
+			   XL_ASSERT(rb == numrb - 1 ? state == false : state == true);
 
 			   // Update the offset accumulator and create the next DBCELL's offset
 			   rb_size_acc += rbsize.rowandcell_size;
@@ -423,10 +423,11 @@ CUnit* worksheet::RowBlocksDump(CDataStorage &datastore)
 		repeat = true;
 
 		break;
+
 	 case RB_FIRST_ROW:
 		repeat = true;
    
-		assert(!m_Cells.empty());
+		XL_ASSERT(!m_Cells.empty());
 		if(m_CurrentCell != m_Cells.end())  // [i_a]
 		{
 		   m_Starting_RBCell = m_CurrentCell;      
@@ -499,9 +500,10 @@ CUnit* worksheet::RowBlocksDump(CDataStorage &datastore)
 		}
 
 		m_DBCellOffset += ROW_RECORD_SIZE;
+		XL_ASSERT(rb_record->GetDataSize() == ROW_RECORD_SIZE);
 
 		// If the current row-block is full OR there are no more cells
-		if(++m_RowCounter >= MAX_ROWBLOCK_SIZE ||  m_CurrentCell == m_Cells.end())
+		if(++m_RowCounter >= MAX_ROWBLOCK_SIZE || m_CurrentCell == m_Cells.end())
 		{
 		   if (m_CurrentCell == (--m_Cells.end()))
 			  m_CellCounter++;
@@ -673,7 +675,7 @@ cell_t* worksheet::number(unsigned32_t row, unsigned32_t col, // Deprecated
                           xf_t* pxformat)
 {
 	// this routine cannot handle greater values
-	assert(fmtval <= FMT_TEXT);
+	XL_ASSERT(fmtval <= FMT_TEXT);
 
 	number_t* num = new number_t(m_GlobalRecords, row, col, numval, pxformat);
 	AddCell(num);
@@ -1086,8 +1088,8 @@ void worksheet::GetFirstLastRowsAndColumns(unsigned32_t* first_row, unsigned32_t
 		  cell_t *f = *m_Cells.begin();      // .front()
 		  cell_t *l = *(--m_Cells.end());  // .back()
 
-		  assert(f);
-		  assert(l);
+		  XL_ASSERT(f);
+		  XL_ASSERT(l);
 
 		  if (first_row) 
 			*first_row = f->GetRow();

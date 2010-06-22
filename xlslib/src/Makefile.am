@@ -17,6 +17,7 @@ libxls_la_LDFLAGS = $(XLSLIB_LIBS)
 
 libxls_la_SOURCES 	=             \
 common/overnew.cpp                    \
+xlslib/assert_assist.cpp      \
 xlslib/blank.cpp		      \
 xlslib/boolean.cpp		      \
 xlslib/cbridge.cpp		      \
@@ -99,4 +100,5 @@ xlslib/workbook.h
 
 #clean-local:
 #	-rm -rf .deps
+
 

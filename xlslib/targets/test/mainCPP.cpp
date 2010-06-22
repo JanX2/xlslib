@@ -62,7 +62,7 @@ using namespace xlslib_core;
 
 #define TIMESPAN_END(id,str)                                      \
    span_##id.StopClock();                                         \
-   std::cerr<<"      # "<<str<<" "<<span_##id.GetUsedMilliseconds()<<" ms"<<std::endl
+   std::cerr<<"    # "<<str<<" "<<span_##id.GetUsedMilliseconds()<<" ms"<<std::endl
 
 int StressTest(int a,int b,int c, const char *md5_checksum);
 int RandomTest(int a,int b,int c, int random_seed, const char *md5_checksum);
@@ -110,7 +110,7 @@ int main(int argc, char *argv[])
 	rv |= RandomFormatTest(1,15,10, 42004200, "fbaa3e8240a0a7a7c64ddfc1cc722157");
 #endif
 
-	std::cerr << "      # Test finished" << std::endl;
+	std::cerr << "    # Test finished" << std::endl;
 
 	return (rv == 0 ? EXIT_SUCCESS : EXIT_FAILURE);
 }
@@ -142,14 +142,14 @@ int StandardTest(void)
    sh->number(5,1,3.0);
 
 #if 0
-   printf("      # limit: "); 
+   printf("    # limit: "); 
    char buf[100];
    gets(buf);
    int lim = atoi(buf);
 #else
    int lim = 42;
 #endif
-   printf("\n      # limit: %d\n", lim); // >= 14 --> error to load sheet #2; <= 13 = ok
+   printf("\n    # limit: %d\n", lim); // >= 14 --> error to load sheet #2; <= 13 = ok
 
    int j, k;
 	for (j = 0 ; j <= 127; j++)

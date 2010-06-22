@@ -529,7 +529,7 @@ int check_file(const char *filepath, const char *md5_checksum)
 	if (rv != 0)
 		return -256;
 
-	printf("     # md5: %s -- %s\n", digest, md5_checksum);
+	printf("    # md5: %s -- %s\n", digest, md5_checksum);
 	return strcasecmp(digest, md5_checksum);
 }
 

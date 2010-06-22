@@ -138,7 +138,7 @@ namespace xlslib_core
     signed8_t SetValueAt16(unsigned16_t newval, unsigned32_t index);
     signed8_t SetValueAt32(unsigned32_t newval, unsigned32_t index);
 
-    signed8_t SetArrayAt (const unsigned8_t* newdata, size_t size, unsigned32_t index);
+    signed8_t SetArrayAt(const unsigned8_t* newdata, size_t size, unsigned32_t index);
     //  signed8_t GetData(unsigned8_t** data, unsigned32_t from, unsigned32_t to );
 
     signed8_t RemoveTrailData(size_t remove_size);

@@ -199,7 +199,7 @@ int  COleDoc::DumpHeader(blocks bks, size_t total_data_size)
 	std::cerr << "Position=0x" << std::hex << Position() << std::dec << std::endl;
 #endif
 
-	assert(Position() == (HEAD_SIZE + (bks.msat_count*BIG_BLOCK_SIZE)));
+	XL_ASSERT(Position() == (HEAD_SIZE + (bks.msat_count*BIG_BLOCK_SIZE)));
 
    return errcode;
 }
@@ -222,8 +222,8 @@ int  COleDoc::DumpData(void)
 		  for(StoreList_Itor_t j = (*i)->GetDataPointer()->begin(); 
              j != (*i)->GetDataPointer()->end(); j++)
          {
-			 assert(j->GetBuffer() != NULL);
-			 //assert(j->GetDataSize() > 0);
+			 XL_ASSERT(j->GetBuffer() != NULL);
+			 //XL_ASSERT(j->GetDataSize() > 0);
             WriteByteArray(j->GetBuffer(), j->GetDataSize());
          }
 #else
@@ -323,7 +323,7 @@ int  COleDoc::DumpDepots(blocks bks)
    std::cerr << "bat_entries=" << bks.bat_entries << " actual=" << bks._bat_entries << std::endl;
 #endif
 
-   assert(bks.bat_entries == bks._bat_entries);
+   XL_ASSERT(bks.bat_entries == bks._bat_entries);
 
    return errcode;
 }
@@ -366,16 +366,16 @@ int  COleDoc::DumpOleFile(void)
    size_t total_data_size = GetTotalDataSize();
 
    errcode |= DumpHeader(bks, total_data_size);
-   assert((Position() % 512) == 0 /*1*/);
+   XL_ASSERT((Position() % 512) == 0 /*1*/);
 
    errcode |= DumpData();
-   assert((Position() % 512) == 0 /*2*/);
+   XL_ASSERT((Position() % 512) == 0 /*2*/);
 
    errcode |= DumpDepots(bks);
-   assert((Position() % 512) == 0 /*3*/);
+   XL_ASSERT((Position() % 512) == 0 /*3*/);
 
    errcode |= DumpFileSystem();
-   assert((Position() % 512) == 0 /*3*/);
+   XL_ASSERT((Position() % 512) == 0 /*3*/);
 
    return errcode;
 }
@@ -394,7 +394,7 @@ blocks COleDoc::GetBATCount()
 	memset(&bks, 0, sizeof(bks));
 
 	data_bat_entries = GetTotalDataSize()/BIG_BLOCK_SIZE; //  + GetNumDataFiles(); //terminator???
-	assert(GetTotalDataSize() == (data_bat_entries * BIG_BLOCK_SIZE) );
+	XL_ASSERT(GetTotalDataSize() == (data_bat_entries * BIG_BLOCK_SIZE) );
 
 	// Block allocation strategy. Within the OLE header are 109 slots for BAT Sectors.
 	// But, when the file gets big, you run out (127 sectors in each BAT Sector). So,
@@ -509,7 +509,7 @@ int COleDoc::DumpNode(COleProp& node)
    WriteByteArray((const unsigned8_t*)name_unicode, size_name);
 
    // Fill the rest of the name field with 0x00
-   assert(PPTPOS_NAMELENGTH > size_name);
+   XL_ASSERT(PPTPOS_NAMELENGTH > size_name);
    SerializeFixedArray(PROPERTY_DFLT_NOTUSED, PPTPOS_NAMELENGTH - size_name);
 
    // [40] NAME_SIZE

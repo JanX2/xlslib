@@ -65,7 +65,7 @@ int main(int argc, char *argv[])
 	xlsWorksheetNumberDbl(ws, (unsigned16_t)3, (unsigned16_t)1, 3.0, NULL);
 	ret =  xlsWorkbookDump(w, "testC.xls");
 
-	printf("      # saved it ret=%d!\n", ret);
+	printf("    # saved it ret=%d!\n", ret);
 	xlsDeleteWorkbook(w);
 
 	if (0 != check_file("testC.xls", "87eb96e3dbd0074d1489560aafdb47e0"))

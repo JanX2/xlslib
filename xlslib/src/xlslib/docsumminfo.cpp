@@ -125,7 +125,7 @@ bool CDocSummaryInfo::property(property_t prop, const string& content)
 	signed32_t	val;
 	
 	val = property2docSummary[prop];
-	assert(val > 0);
+	XL_ASSERT(val > 0);
 	hpsf->addItem((unsigned16_t)val, content);
 	return true;
 }
