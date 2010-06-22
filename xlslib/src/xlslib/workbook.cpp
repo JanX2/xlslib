@@ -160,6 +160,15 @@ worksheet* workbook::GetSheet(unsigned16_t sheetnum)
 ***********************************
 ***********************************
 */
+expression_node_factory_t& workbook::GetFormulaFactory(void)
+{
+	return m_ExprFactory;
+}
+
+/*
+***********************************
+***********************************
+*/
 font_t* workbook::font(const string& name)
 {
    font_t* newfont = new font_t(m_GlobalRecords);

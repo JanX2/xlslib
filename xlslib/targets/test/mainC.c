@@ -167,6 +167,10 @@ c =  xlsWorksheetBlank(s, row, col, xf);
 c =  xlsWorksheetNumberDbl(s, row, col, numval, xf);
 // 536870911 >= numval >= -536870912
 c =  xlsWorksheetNumberInt(s, row, col, 0, xf);
+c = xlsWorksheetError(s, row, col, XLERR_VALUE, xf);
+c = xlsWorksheetNote(s, row, col, name, name, xf);
+c = xlsWorksheetNoteW(s, row, col, uname, uname, xf);
+//c = xlsWorksheetFormula(s, row, col, expr, xf);
 
 // cell: xfi
 xlsCellFont(c, f);

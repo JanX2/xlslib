@@ -208,6 +208,17 @@ int BlankTest(void)
 }
 
 
+static expression_node_t *build_formula(int row, int col, worksheet *sh3, worksheet *sh4, int val, workbook &wb)
+{
+	expression_node_factory_t& maker = wb.GetFormulaFactory();
+
+	cell_t *cref = sh4->FindCellOrMakeBlank(row+1, col+1);
+	assert(cref);
+	//expression_node_t *root = maker.op(OP_ADD, maker.integer(val), maker.cell_ref(*cref, sh4, CELLREF_RELATIVE_A1));
+	expression_node_t *root = maker.integer(val);
+
+	return root;
+}
 
 int StandardTest2(void)
 {
@@ -260,6 +271,8 @@ int StandardTest2(void)
 			bool v2 = (((j + k) / 10) % 7 > 3) ^ ((j + k) % 129 == 1);
 			sh2->boolean(j + 4, k, v2);
 
+			expression_node_t *ast = build_formula(j, k, sh3, sh4, v, wb);
+			sh3->formula(j + 4, k, ast, true);
 
 			char buf[256];
 			sprintf(buf, "Remark item %d/%d/%d", j, k, v);

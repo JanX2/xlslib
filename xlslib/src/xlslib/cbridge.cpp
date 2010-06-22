@@ -140,6 +140,21 @@ extern "C" {
 
 	cell_t *xlsWorksheetError(worksheet *w, unsigned32_t row, unsigned32_t col, errcode_t errval, xf_t *pxformat)
 																{ return w->error(row, col, errval, pxformat); }
+
+	cell_t *xlsWorksheetNote(worksheet *w, unsigned32_t row, unsigned32_t col, const char *remark, const char *author, xf_t *pxformat)
+																{ 
+																	std::string cmt = remark;
+																	std::string auth = author;
+
+																	return w->note(row, col, cmt, auth, pxformat); 
+																}
+	cell_t *xlsWorksheetNoteW(worksheet *w, unsigned32_t row, unsigned32_t col, const unichar_t *remark, const unichar_t *author, xf_t *pxformat)
+																{ 
+																	std::ustring cmt = remark;
+																	std::ustring auth = author;
+
+																	return w->note(row, col, cmt, auth, pxformat); 
+																}
 																
 	// Cells
 	// xf_i interface

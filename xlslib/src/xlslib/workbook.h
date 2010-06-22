@@ -42,6 +42,7 @@
 #include <continue.h>
 #include <summinfo.h>
 #include <docsumminfo.h>
+#include <formula.h>
 
 #define XLSLIB_VERSION PACKAGE_VERSION // "2.0.0"
 
@@ -76,6 +77,8 @@ namespace xlslib_core
 		worksheet*	sheet(const std::ustring& sheetname);
 		worksheet*	GetSheet(unsigned16_t sheetnum);
 
+		expression_node_factory_t& GetFormulaFactory(void);
+
 		font_t*		font(unsigned8_t fontnum);			// use as a way to get a font to modify
 		font_t*		font(const std::string& name);
 		format_t*	format(const std::string& formatstr);
@@ -108,6 +111,7 @@ namespace xlslib_core
 
     private:
 		CGlobalRecords			m_GlobalRecords;
+		expression_node_factory_t m_ExprFactory;
 		
 		CSummaryInfo			m_SummaryInfo;
 		CDocSummaryInfo			m_DocSummaryInfo;

@@ -368,6 +368,15 @@ EXTERN_TYPE cell_t *xlsWorksheetNumberDbl(worksheet *w, unsigned32_t row, unsign
 EXTERN_TYPE cell_t *xlsWorksheetNumberInt(worksheet *w, unsigned32_t row, unsigned32_t col, signed32_t numval, xf_t *pxformat);
 EXTERN_TYPE cell_t *xlsWorksheetBoolean(worksheet *w, unsigned32_t row, unsigned32_t col, bool boolval, xf_t *pxformat);
 EXTERN_TYPE cell_t *xlsWorksheetError(worksheet *w, unsigned32_t row, unsigned32_t col, errcode_t errval, xf_t *pxformat);
+EXTERN_TYPE cell_t *xlsWorksheetNote(worksheet *w, unsigned32_t row, unsigned32_t col, const char *remark, const char *author, xf_t *pxformat);
+EXTERN_TYPE cell_t *xlsWorksheetNoteW(worksheet *w, unsigned32_t row, unsigned32_t col, const unichar_t *remark, const unichar_t *author, xf_t *pxformat);
+#if 0
+/*
+The 'C' interface CANNOT support a 'formula' cell type as the formula expression is constructed
+from a C++ object hierarchy (abstract syntax tree).
+*/
+EXTERN_TYPE cell_t *xlsWorksheetFormula(worksheet *w, unsigned32_t row, unsigned32_t col, expression_node_t *formula, bool auto_destruct_expression_tree, xf_t *pxformat);
+#endif
 
 // cell: xfi
 EXTERN_TYPE void xlsCellFont(cell_t *c, font_t *fontidx);

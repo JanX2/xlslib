@@ -31,11 +31,13 @@ xlslib/err.cpp			      \
 xlslib/extformat.cpp		      \
 xlslib/font.cpp			      \
 xlslib/format.cpp		      \
+xlslib/formula.cpp		      \
 xlslib/globalrec.cpp		      \
 xlslib/HPSF.cpp			      \
 xlslib/index.cpp		      \
 xlslib/label.cpp		      \
 xlslib/merged.cpp		      \
+xlslib/note.cpp			      \
 xlslib/number.cpp		      \
 xlslib/range.cpp		      \
 xlslib/recdef.cpp		      \
@@ -82,11 +84,13 @@ xlslib/extformat.h		      \
 xlslib/font.h			      \
 xlslib/format.h			      \
 xlslib/formtags.h		      \
+xlslib/formula.h		      \
 xlslib/globalrec.h		      \
 xlslib/HPSF.h			      \
 xlslib/index.h			      \
 xlslib/label.h			      \
 xlslib/merged.h			      \
+xlslib/note.h			      \
 xlslib/number.h			      \
 xlslib/range.h			      \
 xlslib/recdef.h			      \

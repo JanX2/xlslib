@@ -735,6 +735,41 @@ cell_t* worksheet::error(unsigned32_t row, unsigned32_t col,
 ***********************************
 ***********************************
 */
+cell_t* worksheet::note(unsigned32_t row, unsigned32_t col, 
+						const std::string& remark, const std::string& author, xf_t* pxformat)
+{
+	note_t* note = new note_t(m_GlobalRecords, row, col, remark, author, pxformat);
+	AddCell(note);
+	return note;
+}
+
+cell_t* worksheet::note(unsigned32_t row, unsigned32_t col, 
+						const std::ustring& remark, const std::ustring& author, xf_t* pxformat)
+{
+	note_t* note = new note_t(m_GlobalRecords, row, col, remark, author, pxformat);
+	AddCell(note);
+	return note;
+}
+
+
+/*
+***********************************
+***********************************
+*/
+cell_t* worksheet::formula(unsigned32_t row, unsigned32_t col, 
+						 expression_node_t* expression_root, 
+						 bool auto_destruct_expression_tree,
+						 xf_t* pxformat)
+{
+	formula_t* expr = new formula_t(m_GlobalRecords, row, col, expression_root, auto_destruct_expression_tree, pxformat);
+	AddCell(expr);
+	return expr;
+}
+
+/*
+***********************************
+***********************************
+*/
 cell_t* worksheet::blank(unsigned32_t row, unsigned32_t col, xf_t* pxformat)
 {
    blank_t* blk = new blank_t(m_GlobalRecords, row, col, pxformat);

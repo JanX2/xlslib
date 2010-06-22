@@ -79,11 +79,12 @@ am__base_list = \
 am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(pkgincludedir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libxls_la_LIBADD =
-am_libxls_la_OBJECTS = overnew.lo blank.lo cbridge.lo cell.lo \
-	colinfo.lo colors.lo continue.lo datast.lo docsumminfo.lo \
-	extformat.lo font.lo format.lo globalrec.lo HPSF.lo index.lo \
-	label.lo merged.lo number.lo range.lo recdef.lo record.lo \
-	row.lo sheetrec.lo summinfo.lo unit.lo workbook.lo binfile.lo \
+am_libxls_la_OBJECTS = overnew.lo assert_assist.lo blank.lo boolean.lo \
+	cbridge.lo cell.lo colinfo.lo colors.lo continue.lo datast.lo \
+	docsumminfo.lo err.lo extformat.lo font.lo format.lo \
+	formula.lo globalrec.lo HPSF.lo index.lo label.lo merged.lo \
+	note.lo number.lo range.lo recdef.lo record.lo row.lo \
+	sheetrec.lo summinfo.lo unit.lo workbook.lo binfile.lo \
 	oledoc.lo olefs.lo oleprop.lo
 libxls_la_OBJECTS = $(am_libxls_la_OBJECTS)
 libxls_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
@@ -241,7 +242,9 @@ lib_LTLIBRARIES = libxls.la
 libxls_la_LDFLAGS = $(XLSLIB_LIBS)
 libxls_la_SOURCES = \
 common/overnew.cpp                    \
+xlslib/assert_assist.cpp      \
 xlslib/blank.cpp		      \
+xlslib/boolean.cpp		      \
 xlslib/cbridge.cpp		      \
 xlslib/cell.cpp			      \
 xlslib/colinfo.cpp		      \
@@ -249,14 +252,17 @@ xlslib/colors.cpp		      \
 xlslib/continue.cpp		      \
 xlslib/datast.cpp		      \
 xlslib/docsumminfo.cpp		      \
+xlslib/err.cpp			      \
 xlslib/extformat.cpp		      \
 xlslib/font.cpp			      \
 xlslib/format.cpp		      \
+xlslib/formula.cpp		      \
 xlslib/globalrec.cpp		      \
 xlslib/HPSF.cpp			      \
 xlslib/index.cpp		      \
 xlslib/label.cpp		      \
 xlslib/merged.cpp		      \
+xlslib/note.cpp			      \
 xlslib/number.cpp		      \
 xlslib/range.cpp		      \
 xlslib/recdef.cpp		      \
@@ -290,6 +296,7 @@ oledoc/olefs.h			      \
 oledoc/oleprop.h		      \
 xlslib/biffsection.h		      \
 xlslib/blank.h			      \
+xlslib/boolean.h		      \
 xlslib/cell.h			      \
 xlslib/colinfo.h		      \
 xlslib/colors.h			      \
@@ -297,15 +304,18 @@ xlslib/common.h			      \
 xlslib/continue.h		      \
 xlslib/datast.h			      \
 xlslib/docsumminfo.h		      \
+xlslib/err.h			      \
 xlslib/extformat.h		      \
 xlslib/font.h			      \
 xlslib/format.h			      \
 xlslib/formtags.h		      \
+xlslib/formula.h		      \
 xlslib/globalrec.h		      \
 xlslib/HPSF.h			      \
 xlslib/index.h			      \
 xlslib/label.h			      \
 xlslib/merged.h			      \
+xlslib/note.h			      \
 xlslib/number.h			      \
 xlslib/range.h			      \
 xlslib/recdef.h			      \
@@ -392,8 +402,10 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/HPSF.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/assert_assist.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/binfile.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/blank.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/boolean.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cbridge.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cell.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/colinfo.Plo@am__quote@
@@ -401,13 +413,16 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/continue.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/datast.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/docsumminfo.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/err.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/extformat.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/font.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/format.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/formula.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/globalrec.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/index.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/label.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/merged.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/note.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/number.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/oledoc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/olefs.Plo@am__quote@
@@ -450,12 +465,26 @@ overnew.lo: common/overnew.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o overnew.lo `test -f 'common/overnew.cpp' || echo '$(srcdir)/'`common/overnew.cpp
 
+assert_assist.lo: xlslib/assert_assist.cpp
+@am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT assert_assist.lo -MD -MP -MF $(DEPDIR)/assert_assist.Tpo -c -o assert_assist.lo `test -f 'xlslib/assert_assist.cpp' || echo '$(srcdir)/'`xlslib/assert_assist.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/assert_assist.Tpo $(DEPDIR)/assert_assist.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='xlslib/assert_assist.cpp' object='assert_assist.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o assert_assist.lo `test -f 'xlslib/assert_assist.cpp' || echo '$(srcdir)/'`xlslib/assert_assist.cpp
+
 blank.lo: xlslib/blank.cpp
 @am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT blank.lo -MD -MP -MF $(DEPDIR)/blank.Tpo -c -o blank.lo `test -f 'xlslib/blank.cpp' || echo '$(srcdir)/'`xlslib/blank.cpp
 @am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/blank.Tpo $(DEPDIR)/blank.Plo
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='xlslib/blank.cpp' object='blank.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o blank.lo `test -f 'xlslib/blank.cpp' || echo '$(srcdir)/'`xlslib/blank.cpp
+
+boolean.lo: xlslib/boolean.cpp
+@am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT boolean.lo -MD -MP -MF $(DEPDIR)/boolean.Tpo -c -o boolean.lo `test -f 'xlslib/boolean.cpp' || echo '$(srcdir)/'`xlslib/boolean.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/boolean.Tpo $(DEPDIR)/boolean.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='xlslib/boolean.cpp' object='boolean.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o boolean.lo `test -f 'xlslib/boolean.cpp' || echo '$(srcdir)/'`xlslib/boolean.cpp
 
 cbridge.lo: xlslib/cbridge.cpp
 @am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT cbridge.lo -MD -MP -MF $(DEPDIR)/cbridge.Tpo -c -o cbridge.lo `test -f 'xlslib/cbridge.cpp' || echo '$(srcdir)/'`xlslib/cbridge.cpp
@@ -506,6 +535,13 @@ docsumminfo.lo: xlslib/docsumminfo.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o docsumminfo.lo `test -f 'xlslib/docsumminfo.cpp' || echo '$(srcdir)/'`xlslib/docsumminfo.cpp
 
+err.lo: xlslib/err.cpp
+@am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT err.lo -MD -MP -MF $(DEPDIR)/err.Tpo -c -o err.lo `test -f 'xlslib/err.cpp' || echo '$(srcdir)/'`xlslib/err.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/err.Tpo $(DEPDIR)/err.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='xlslib/err.cpp' object='err.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o err.lo `test -f 'xlslib/err.cpp' || echo '$(srcdir)/'`xlslib/err.cpp
+
 extformat.lo: xlslib/extformat.cpp
 @am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT extformat.lo -MD -MP -MF $(DEPDIR)/extformat.Tpo -c -o extformat.lo `test -f 'xlslib/extformat.cpp' || echo '$(srcdir)/'`xlslib/extformat.cpp
 @am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/extformat.Tpo $(DEPDIR)/extformat.Plo
@@ -526,6 +562,13 @@ format.lo: xlslib/format.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='xlslib/format.cpp' object='format.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o format.lo `test -f 'xlslib/format.cpp' || echo '$(srcdir)/'`xlslib/format.cpp
+
+formula.lo: xlslib/formula.cpp
+@am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT formula.lo -MD -MP -MF $(DEPDIR)/formula.Tpo -c -o formula.lo `test -f 'xlslib/formula.cpp' || echo '$(srcdir)/'`xlslib/formula.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/formula.Tpo $(DEPDIR)/formula.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='xlslib/formula.cpp' object='formula.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o formula.lo `test -f 'xlslib/formula.cpp' || echo '$(srcdir)/'`xlslib/formula.cpp
 
 globalrec.lo: xlslib/globalrec.cpp
 @am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT globalrec.lo -MD -MP -MF $(DEPDIR)/globalrec.Tpo -c -o globalrec.lo `test -f 'xlslib/globalrec.cpp' || echo '$(srcdir)/'`xlslib/globalrec.cpp
@@ -561,6 +604,13 @@ merged.lo: xlslib/merged.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='xlslib/merged.cpp' object='merged.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o merged.lo `test -f 'xlslib/merged.cpp' || echo '$(srcdir)/'`xlslib/merged.cpp
+
+note.lo: xlslib/note.cpp
+@am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT note.lo -MD -MP -MF $(DEPDIR)/note.Tpo -c -o note.lo `test -f 'xlslib/note.cpp' || echo '$(srcdir)/'`xlslib/note.cpp
+@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/note.Tpo $(DEPDIR)/note.Plo
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='xlslib/note.cpp' object='note.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -c -o note.lo `test -f 'xlslib/note.cpp' || echo '$(srcdir)/'`xlslib/note.cpp
 
 number.lo: xlslib/number.cpp
 @am__fastdepCXX_TRUE@	$(LIBTOOL)  --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS) -MT number.lo -MD -MP -MF $(DEPDIR)/number.Tpo -c -o number.lo `test -f 'xlslib/number.cpp' || echo '$(srcdir)/'`xlslib/number.cpp

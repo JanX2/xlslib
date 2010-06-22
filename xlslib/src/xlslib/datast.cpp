@@ -45,6 +45,8 @@
 #include <number.h>
 #include <boolean.h>
 #include <err.h>
+#include <note.h>
+#include <formula.h>
 #include <merged.h>
 #include <label.h>
 #include <index.h>
@@ -411,6 +413,11 @@ CErr* CDataStorage::MakeCErr(const err_t& errdef)
 CNote* CDataStorage::MakeCNote(const note_t& notedef)
 {
 	return new CNote(*this, notedef);
+}
+
+CFormula* CDataStorage::MakeCFormula(const formula_t& fdef)
+{
+	return new CFormula(*this, fdef);
 }
 
 CMergedCells* CDataStorage::MakeCMergedCells()

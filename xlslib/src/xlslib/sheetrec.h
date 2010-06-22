@@ -47,6 +47,8 @@
 #include <err.h>
 #include <blank.h>
 #include <number.h>
+#include <note.h>
+#include <formula.h>
 #include <row.h>
 #include <merged.h>
 #include <colinfo.h>
@@ -242,6 +244,15 @@ worksheet class declaration
 
 		cell_t* error(unsigned32_t row, unsigned32_t col, 
 			errcode_t errorcode, xf_t* pxformat = NULL);
+
+		cell_t* note(unsigned32_t row, unsigned32_t col, 
+			const std::string& remark, const std::string& author, xf_t* pxformat = NULL);
+		cell_t* note(unsigned32_t row, unsigned32_t col, 
+			const std::ustring& remark, const std::ustring& author, xf_t* pxformat = NULL);
+
+		cell_t* formula(unsigned32_t row, unsigned32_t col, 
+			expression_node_t* expression_root, bool auto_destruct_expression_tree = false,
+			xf_t* pxformat = NULL);
 	};
 
   typedef std::vector<xlslib_core::worksheet*> Sheets_Vector_t;
