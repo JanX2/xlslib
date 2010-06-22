@@ -541,12 +541,13 @@ CUnit* worksheet::RowBlocksDump(CDataStorage &datastore)
 	    {
 			repeat = false;
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
-			rb_record = datastore.MakeCDBCell(m_DBCellOffset);
+			CDBCell* rec = datastore.MakeCDBCell(m_DBCellOffset);
+			rb_record = rec;
 #else
 #endif
 			CellOffsets_Vect_Itor_t celloffset;
 			for(celloffset = m_CellOffsets.begin(); celloffset != m_CellOffsets.end(); celloffset++)
-			   ((CDBCell*)rb_record)->AddRowOffset(*celloffset);
+			   rec->AddRowOffset(*celloffset);
 
 			if(m_CurrentCell == (--m_Cells.end()) )
 			   m_DumpRBState = RB_FINISH;
