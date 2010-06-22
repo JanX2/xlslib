@@ -47,9 +47,8 @@ blank_t class implementation
 *********************************
 */
 blank_t::blank_t(CGlobalRecords& gRecords, unsigned32_t rowval, unsigned32_t colval, xf_t* pxfval) :
-	cell_t(gRecords, rowval, colval)
+	cell_t(gRecords, rowval, colval, pxfval)
 {
-   SetXF(pxfval);
 }
 CUnit* blank_t::GetData(CDataStorage &datastore) const {
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
