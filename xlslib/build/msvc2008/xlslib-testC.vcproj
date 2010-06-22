@@ -572,14 +572,10 @@
 			<File
 				RelativePath="..\..\targets\test\mainC.c"
 				>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						CompileAs="1"
-					/>
-				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\targets\test\md5.c"
+				>
 			</File>
 		</Filter>
 		<Filter
@@ -657,6 +653,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\xlslib\label.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\targets\test\md5.h"
 				>
 			</File>
 			<File

@@ -45,7 +45,7 @@ AX_CC_PRAGMA_PACK
 
 # Checks for library functions.
 AC_HEADER_STDC
-AC_CHECK_FUNCS([memset strchr])
+AC_CHECK_FUNCS([memset strchr strcasecmp stricmp])
 
 # Taken from libxml - DFH
 WITH_ICONV=0

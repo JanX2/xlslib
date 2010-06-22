@@ -49,7 +49,7 @@
 				Optimization="0"
 				EnableIntrinsicFunctions="true"
 				AdditionalIncludeDirectories="..\..\..\xlslib\src\xlslib;..\..\..\xlslib\src\oledoc;..\..\..\xlslib\src\common;..\..\..\xlslib\build\msvc2005"
-				PreprocessorDefinitions="XP_WIN;WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE"
+				PreprocessorDefinitions="_DLL;XP_WIN;WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE"
 				StringPooling="true"
 				MinimalRebuild="false"
 				BasicRuntimeChecks="3"
@@ -62,7 +62,7 @@
 				WarningLevel="4"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
-				DisableSpecificWarnings="4267,4244,4127,4100,4706,4018,4389,4351"
+				DisableSpecificWarnings="4267,4244,4127,4100,4706,4018,4389,4351,4103"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -157,7 +157,7 @@
 				WarningLevel="4"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
-				DisableSpecificWarnings="4267,4244,4127,4100,4706,4018,4389"
+				DisableSpecificWarnings="4267,4244,4127,4100,4706,4018,4389,4351,4103"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -181,101 +181,6 @@
 				EnableCOMDATFolding="2"
 				LinkTimeCodeGeneration="1"
 				TargetMachine="17"
-				Profile="true"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-				Description="process $(TargetPath) and copy it to $(SolutionDir)bin\$(PlatformName)_MSVC2005.$(ConfigurationName)\$(TargetFileName)"
-				CommandLine="echo $(SolutionDir)bin\Win32_MSVC2005.$(ConfigurationName)\createDLL  -M$(PlatformName) -n$(OutDir)\$(ProjectName).map -l$(IntDir) -i$(OutDir)\$(ProjectName).lib&#x0D;&#x0A;$(SolutionDir)bin\Win32_MSVC2005.$(ConfigurationName)\createDLL  -M$(PlatformName) -n$(OutDir)\$(ProjectName).map -l$(IntDir) -i$(OutDir)\$(ProjectName).lib&#x0D;&#x0A;&#x0D;&#x0A;if not exist &quot;$(SolutionDir)bin\$(PlatformName)_MSVC2005.$(ConfigurationName)&quot; mkdir &quot;$(SolutionDir)bin\$(PlatformName)_MSVC2005.$(ConfigurationName)&quot;&#x0D;&#x0A;copy &quot;$(TargetPath)&quot; &quot;$(SolutionDir)bin\$(PlatformName)_MSVC2005.$(ConfigurationName)\$(TargetFileName)&quot;&#x0D;&#x0A;"
-			/>
-		</Configuration>
-		<Configuration
-			Name="Debug|Itanium"
-			OutputDirectory="$(ProjectName)_$(PlatformName)_MSVC2005.$(ConfigurationName)"
-			IntermediateDirectory="$(ProjectName)_$(PlatformName)_MSVC2005.$(ConfigurationName)"
-			ConfigurationType="2"
-			CharacterSet="2"
-			WholeProgramOptimization="1"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-				TargetEnvironment="2"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="0"
-				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="..\..\..\xlslib\src\xlslib;..\..\..\xlslib\src\oledoc;..\..\..\xlslib\src\common;..\..\..\xlslib\build\msvc2005"
-				PreprocessorDefinitions="WIN64;_WIN64;XP_WIN;WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE"
-				StringPooling="true"
-				MinimalRebuild="false"
-				BasicRuntimeChecks="3"
-				RuntimeLibrary="3"
-				EnableFunctionLevelLinking="true"
-				EnableEnhancedInstructionSet="1"
-				FloatingPointExceptions="false"
-				UsePrecompiledHeader="0"
-				BrowseInformation="1"
-				WarningLevel="4"
-				Detect64BitPortabilityProblems="true"
-				DebugInformationFormat="3"
-				DisableSpecificWarnings="4267,4244,4127,4100,4706,4018,4389"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-				AdditionalDependencies=""
-				OutputFile="$(OutDir)\$(ProjectName).dll"
-				LinkIncremental="1"
-				GenerateDebugInformation="true"
-				GenerateMapFile="true"
-				MapExports="true"
-				SubSystem="1"
-				OptimizeReferences="1"
-				EnableCOMDATFolding="2"
-				LinkTimeCodeGeneration="1"
-				TargetMachine="5"
 				Profile="true"
 			/>
 			<Tool
@@ -338,7 +243,7 @@
 				EnableFiberSafeOptimizations="true"
 				WholeProgramOptimization="true"
 				AdditionalIncludeDirectories="..\..\..\xlslib\src\xlslib;..\..\..\xlslib\src\oledoc;..\..\..\xlslib\src\common;..\..\..\xlslib\build\msvc2005"
-				PreprocessorDefinitions="STATIC_JS_API;XP_WIN;WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE"
+				PreprocessorDefinitions="_DLL;XP_WIN;WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE"
 				StringPooling="true"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="true"
@@ -499,6 +404,101 @@
 			/>
 		</Configuration>
 		<Configuration
+			Name="Debug|Itanium"
+			OutputDirectory="$(ProjectName)_$(PlatformName)_MSVC2005.$(ConfigurationName)"
+			IntermediateDirectory="$(ProjectName)_$(PlatformName)_MSVC2005.$(ConfigurationName)"
+			ConfigurationType="2"
+			CharacterSet="2"
+			WholeProgramOptimization="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				TargetEnvironment="2"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				EnableIntrinsicFunctions="true"
+				AdditionalIncludeDirectories="..\..\..\xlslib\src\xlslib;..\..\..\xlslib\src\oledoc;..\..\..\xlslib\src\common;..\..\..\xlslib\build\msvc2005"
+				PreprocessorDefinitions="WIN64;_WIN64;XP_WIN;WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE"
+				StringPooling="true"
+				MinimalRebuild="false"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				EnableFunctionLevelLinking="true"
+				EnableEnhancedInstructionSet="1"
+				FloatingPointExceptions="false"
+				UsePrecompiledHeader="0"
+				BrowseInformation="1"
+				WarningLevel="4"
+				Detect64BitPortabilityProblems="true"
+				DebugInformationFormat="3"
+				DisableSpecificWarnings="4267,4244,4127,4100,4706,4018,4389,4351,4103"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies=""
+				OutputFile="$(OutDir)\$(ProjectName).dll"
+				LinkIncremental="1"
+				GenerateDebugInformation="true"
+				GenerateMapFile="true"
+				MapExports="true"
+				SubSystem="1"
+				OptimizeReferences="1"
+				EnableCOMDATFolding="2"
+				LinkTimeCodeGeneration="1"
+				TargetMachine="5"
+				Profile="true"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+				Description="process $(TargetPath) and copy it to $(SolutionDir)bin\$(PlatformName)_MSVC2005.$(ConfigurationName)\$(TargetFileName)"
+				CommandLine="echo $(SolutionDir)bin\Win32_MSVC2005.$(ConfigurationName)\createDLL  -M$(PlatformName) -n$(OutDir)\$(ProjectName).map -l$(IntDir) -i$(OutDir)\$(ProjectName).lib&#x0D;&#x0A;$(SolutionDir)bin\Win32_MSVC2005.$(ConfigurationName)\createDLL  -M$(PlatformName) -n$(OutDir)\$(ProjectName).map -l$(IntDir) -i$(OutDir)\$(ProjectName).lib&#x0D;&#x0A;&#x0D;&#x0A;if not exist &quot;$(SolutionDir)bin\$(PlatformName)_MSVC2005.$(ConfigurationName)&quot; mkdir &quot;$(SolutionDir)bin\$(PlatformName)_MSVC2005.$(ConfigurationName)&quot;&#x0D;&#x0A;copy &quot;$(TargetPath)&quot; &quot;$(SolutionDir)bin\$(PlatformName)_MSVC2005.$(ConfigurationName)\$(TargetFileName)&quot;&#x0D;&#x0A;"
+			/>
+		</Configuration>
+		<Configuration
 			Name="Release|Itanium"
 			OutputDirectory="$(ProjectName)_$(PlatformName)_MSVC2005.$(ConfigurationName)"
 			IntermediateDirectory="$(ProjectName)_$(PlatformName)_MSVC2005.$(ConfigurationName)"
@@ -543,7 +543,7 @@
 				WarningLevel="4"
 				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="3"
-				DisableSpecificWarnings="4267,4244,4127,4100,4706,4018,4389"
+				DisableSpecificWarnings="4267,4244,4127,4100,4706,4018,4389,4351,4103"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -613,6 +613,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\xlslib\boolean.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\xlslib\cbridge.cpp"
 				>
 			</File>
@@ -641,6 +645,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\xlslib\err.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\xlslib\extformat.cpp"
 				>
 			</File>
@@ -650,6 +658,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\xlslib\format.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\xlslib\formula.cpp"
 				>
 			</File>
 			<File
@@ -670,6 +682,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\xlslib\merged.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\xlslib\note.cpp"
 				>
 			</File>
 			<File
@@ -751,6 +767,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\xlslib\boolean.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\xlslib\cbridge.h"
 				>
 			</File>
@@ -783,6 +803,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\xlslib\err.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\xlslib\extformat.h"
 				>
 			</File>
@@ -796,6 +820,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\xlslib\formtags.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\xlslib\formula.h"
 				>
 			</File>
 			<File
@@ -816,6 +844,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\xlslib\merged.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\xlslib\note.h"
 				>
 			</File>
 			<File
@@ -882,10 +914,6 @@
 				Name="common"
 				>
 				<File
-					RelativePath="..\..\src\common\xlsys.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\src\common\overnew.h"
 					>
 				</File>
@@ -927,6 +955,10 @@
 				</File>
 				<File
 					RelativePath="..\..\src\common\xlstypes.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\src\common\xlsys.h"
 					>
 				</File>
 			</Filter>

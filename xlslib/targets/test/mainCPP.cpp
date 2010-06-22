@@ -19,6 +19,8 @@
 
 #include <timespan.h>
 
+#include "md5.h"
+
 #include <string>
 #include <sstream>
 #include <iostream>
@@ -62,57 +64,58 @@ using namespace xlslib_core;
    span_##id.StopClock();                                         \
    std::cerr<<"      # "<<str<<" "<<span_##id.GetUsedMilliseconds()<<" ms"<<std::endl
 
-extern void StressTest(int a,int b,int c);
-extern void RandomTest(int a,int b,int c);
+int StressTest(int a,int b,int c, const char *md5_checksum);
+int RandomTest(int a,int b,int c, int random_seed, const char *md5_checksum);
 
-extern void RandomCellAndFormatTest(int sheets_sz, int rows_sz, int cols_sz);
-extern void RandomFormat(cell_t* cell, bool profile = false);
-extern void RandomFontName(cell_t* cell, bool profile = false);
-extern void RandomFontOption(cell_t* cell, bool profile = false);
+int RandomCellAndFormatTest(int sheets_sz, int rows_sz, int cols_sz, int random_seed, const char *md5_checksum);
+static void RandomFormat(cell_t* cell, bool profile = false);
+static void RandomFontName(cell_t* cell, bool profile = false);
+static void RandomFontOption(cell_t* cell, bool profile = false);
 
-extern void RandomFormatTest(int sheets_sz, int rows_sz, int cols_sz);
+int RandomFormatTest(int sheets_sz, int rows_sz, int cols_sz, int random_seed, const char *md5_checksum);
 
-extern void RandomCellAndFormatTestProf(int sheets_sz, int rows_sz, int cols_sz);
+int RandomCellAndFormatTestProf(int sheets_sz, int rows_sz, int cols_sz, int random_seed, const char *md5_checksum);
 
-extern void StandardTest(void);
-extern int GetRndNumber(int max);
+int StandardTest(void);
+int StandardTest2(void);
+int BlankTest(void);
+
+static void SeedRndNumber(int seed);
+static int GetRndNumber(int max);
 
 /*
 *********************************
 ********************************* 
 */
 
-static char tmp[256];
 
 
 int main(int argc, char *argv[])
 {
-
-/*
-   workbook wb;
-   wb.sheet("Sheet_01");
-   wb.Dump("blank.xls");
-   exit(0);
- */
+	int rv = 0;
 
 	// comment and uncomment the below to try various tests
-	StandardTest();
+#if 0
+	rv |= StandardTest();
+#endif
+	rv |= StandardTest2();
+#if 0
+	rv |= BlankTest();
 
-	//if (argc > 1) /* [i_a] */
-	{
-		StressTest(3,100,100);
-		StressTest(3,4,4);
-		RandomTest(3,200,200);
-		RandomCellAndFormatTest(1,15,10); //(1,15,10)
-		RandomCellAndFormatTestProf(1,15,10);
-		RandomFormatTest(1,15,10);
-	}
+	rv |= StressTest(3,100,100, "f3c78a522b88121c9f8e032f2b3251cb");
+	rv |= StressTest(3,4,4, "b463e7f580dca459dae9f465fa79f27f");
+	rv |= RandomTest(3,200,200, 42424242, "face676ff357afd1dd55d2b9da961dc5");
+	rv |= RandomCellAndFormatTest(1,15,10, 123456789, "95d7e26af48ca0f1fea89c621535f3ef"); //(1,15,10)
+	rv |= RandomCellAndFormatTestProf(1,15,10, 987654321, "1a55232ca166e62fd3ee34923ab82b87");
+	rv |= RandomFormatTest(1,15,10, 42004200, "fbaa3e8240a0a7a7c64ddfc1cc722157");
+#endif
 
 	std::cerr << "      # Test finished" << std::endl;
-	return 0;
+
+	return (rv == 0 ? EXIT_SUCCESS : EXIT_FAILURE);
 }
 
-void StandardTest(void)
+int StandardTest(void)
 {
    // Get the workbook handler
    workbook wb;
@@ -169,26 +172,139 @@ void StandardTest(void)
    sh->label(1,1,s);
 
    wb.Dump("./testCPP.xls");
+
+   if (0 != check_file("./testCPP.xls", "042c01b4b5a325bca347d3830e71baa4"))
+   {
+	   cerr << "StandardTest failed: MD5 of generated XLS mismatch or I/O failure.\n";
+	   return -1;
+   }
+	return 0;
 }
 
-int GetRndNumber(int max)
+
+
+int BlankTest(void)
 {
+	workbook wb;
+	wb.sheet("Sheet_01");
+	wb.Dump("blank.xls");
+
+	if (0 != check_file("blank.xls", "5500d521db56feeac32377436f744270"))
+	{
+		cerr << "BlankTest failed: MD5 of generated XLS mismatch or I/O failure.\n";
+		return -1;
+	}
+	return 0;
+}
+
+
+
+int StandardTest2(void)
+{
+	// Get the workbook handler
+	workbook wb;
+	worksheet* sh1 = wb.sheet("error");
+	worksheet* sh2 = wb.sheet("boolean");
+	worksheet* sh3 = wb.sheet("formula");
+	worksheet* sh4 = wb.sheet("notes");
+
+	// Title
+	sh1->label(1,1,"test1");
+	sh1->rowheight(1,100);
+	sh1->rowheight(2,150);
+
+	// Title
+	sh2->label(1,1,"test2");
+	sh2->rowheight(1,100);
+	sh2->rowheight(2,150);
+	
+	sh3->label(1,1,"test3");
+	sh3->rowheight(1,100);
+	sh3->rowheight(2,150);
+
+	sh4->label(2,1,"test4");
+	sh4->rowheight(1,100);
+	sh4->rowheight(2,150);
+
+	// WARNING: column and row numbers are zero based in xlslib, but Excel starts numbering the buggers at '1' instead!
+
+	int j, k;
+	for (j = 0 ; j <= 127; j++)
+	{
+		for (k = 0; k <= 128; k++)
+		{
+			static const errcode_t errcvt[] =
+			{
+				XLERR_NULL, // #NULL!
+				XLERR_DIV0, // #DIV/0!
+				XLERR_VALUE, // #VALUE!
+				XLERR_REF, // #REF!
+				XLERR_NAME, // #NAME?
+				XLERR_NUM, // #NUM!
+				XLERR_N_A, // #N/A!
+			};
+
+			int v = (j + k) % (sizeof(errcvt)/sizeof(errcvt[0]));
+			sh1->error(j + 4, k, errcvt[v]);
+
+			bool v2 = (((j + k) / 10) % 7 > 3) ^ ((j + k) % 129 == 1);
+			sh2->boolean(j + 4, k, v2);
+
+
+			char buf[256];
+			sprintf(buf, "Remark item %d/%d/%d", j, k, v);
+
+			sh4->number(j + 4, k, v);
+			//sh4->note(j + 4, k, buf, "GHO");
+		}
+	}
+
+	wb.Dump("./testCPP2.xls");
+
+	if (0 != check_file("./testCPP2.xls", "c687c79e5e9be21620caba85fd63e10a"))
+	{
+		cerr << "StandardTest2 failed: MD5 of generated XLS mismatch or I/O failure.\n";
+		return -1;
+	}
+	return 0;
+}
+
+static unsigned32_t seed = 0;
+
+static void SeedRndNumber(int sv)
+{
+	seed = sv;
+}
+static int GetRndNumber(int max)
+{
+#if 0
    int rndnum;
    rndnum = ((int)(rand()*((double)(max+1)/RAND_MAX)));
    return rndnum;
+#else
+	// this is NOT a good random generator but suffices for our purposes!
+	seed *= 15482893;
+	seed %= 792241;
+
+	int rndnum;
+	rndnum = (int)(seed * ((max + 1.0) / (792241 - 1.0)));
+	return rndnum;
+#endif
 }
 
-void RandomCellAndFormatTest(int sheets_sz, int rows_sz, int cols_sz)
+int RandomCellAndFormatTest(int sheets_sz, int rows_sz, int cols_sz, int random_seed, const char *md5_checksum)
 {
    workbook wb;
    worksheet* sh;
 
-   srand(time(0));
+   SeedRndNumber(random_seed);
 
    TIMESPAN_START(1);
 
    for(int shnum = 0; shnum < sheets_sz; shnum++)
    {
+	   char tmp[256];
+
 	  sprintf(tmp, "DUH_%d", shnum);
 	  string snamesheet(tmp);
 
@@ -226,15 +342,26 @@ void RandomCellAndFormatTest(int sheets_sz, int rows_sz, int cols_sz)
 
    wb.Dump("rndcellandformat.xls");
    TIMESPAN_END(1,"Random Cell and Format test:");
+
+   if (0 != check_file("rndcellandformat.xls", md5_checksum))
+   {
+	   cerr << "RandomCellAndFormatTest failed: MD5 of generated XLS mismatch or I/O failure.\n";
+	   return -1;
+   }
+   return 0;
 }
 
-void RandomCellAndFormatTestProf(int sheets_sz, int rows_sz, int cols_sz)
+int RandomCellAndFormatTestProf(int sheets_sz, int rows_sz, int cols_sz, int random_seed, const char *md5_checksum)
 {
    workbook wb;
    worksheet* sh;
 
+   SeedRndNumber(random_seed);
+
    for(int shnum = 0; shnum < sheets_sz; shnum++)
    {
+	   char tmp[256];
+
 	  sprintf(tmp, "DUH_%d", shnum);
 	  string snamesheet(tmp);
 
@@ -308,13 +435,19 @@ void RandomCellAndFormatTestProf(int sheets_sz, int rows_sz, int cols_sz)
    }
 
    wb.Dump("rndcellandformat_prof.xls");
+
+   if (0 != check_file("rndcellandformat_prof.xls", md5_checksum))
+   {
+	   cerr << "RandomCellAndFormatTestProf failed: MD5 of generated XLS mismatch or I/O failure.\n";
+	   return -1;
+   }
+   return 0;
 }
 
 
-void RandomFormatTest(int sheets_sz, int rows_sz, int cols_sz)
+int RandomFormatTest(int sheets_sz, int rows_sz, int cols_sz, int random_seed, const char *md5_checksum)
 {
-
-   srand(time(0));
+   SeedRndNumber(random_seed);
 
    TIMESPAN_START(1);
 
@@ -323,6 +456,8 @@ void RandomFormatTest(int sheets_sz, int rows_sz, int cols_sz)
 
    for(int shnum = 0; shnum < sheets_sz; shnum++)
    {
+	   char tmp[256];
+
 	  sprintf(tmp, "DUH_%d", shnum);
 	  string snamesheet(tmp);
 
@@ -357,6 +492,13 @@ void RandomFormatTest(int sheets_sz, int rows_sz, int cols_sz)
 
    wb.Dump("rndformat.xls");
    TIMESPAN_END(1,"Random Format test:");
+
+   if (0 != check_file("rndformat.xls", md5_checksum))
+   {
+	   cerr << "RandomFormatTest failed: MD5 of generated XLS mismatch or I/O failure.\n";
+	   return -1;
+   }
+   return 0;
 }
 
 
@@ -378,7 +520,7 @@ void RandomFormatTest(int sheets_sz, int rows_sz, int cols_sz)
 #define OPT_FNTNAME_WINGDINGS         15
 #define OPT_FNTNAME_MAX               15
 
-void RandomFontName(cell_t* cell, bool profile)
+static void RandomFontName(cell_t* cell, bool profile)
 {
    switch(GetRndNumber(OPT_FNTNAME_MAX))
    {
@@ -534,7 +676,7 @@ string COLOR[] =
    "WHITE"
 };
 
-void RandomFontOption(cell_t* cell, bool profile)
+static void RandomFontOption(cell_t* cell, bool profile)
 {
    switch(GetRndNumber(OPT_FONTMAX))
    {
@@ -677,7 +819,7 @@ string BORDERSIDE[] =
 
 
 
-void RandomFormat(cell_t* cell, bool profile)
+static void RandomFormat(cell_t* cell, bool profile)
 {
    switch(GetRndNumber(OPT_MAX))
    {
@@ -760,7 +902,7 @@ void RandomFormat(cell_t* cell, bool profile)
 *********************************
 *********************************
 */
-void StressTest(int sheets_sz, int rows_sz, int cols_sz)
+int StressTest(int sheets_sz, int rows_sz, int cols_sz, const char *md5_checksum)
 {
    // Get the workbook handler
    workbook swb;
@@ -797,15 +939,22 @@ void StressTest(int sheets_sz, int rows_sz, int cols_sz)
    TIMESPAN_START(1);
    swb.Dump("stress.xls");
    TIMESPAN_END(1,"Cell-stress test:");
+
+   if (0 != check_file("stress.xls", md5_checksum))
+   {
+	   cerr << "StressTest(" << sheets_sz << ", " << rows_sz << ", " << cols_sz << ") failed: MD5 of generated XLS mismatch or I/O failure.\n";
+	   return -1;
+   }
+   return 0;
 }
 
 /*
 *********************************
 *********************************
 */
-void RandomTest(int sheets_sz, int rows_sz, int cols_sz)
+int RandomTest(int sheets_sz, int rows_sz, int cols_sz, int random_seed, const char *md5_checksum)
 {
-   srand(time(0));
+   SeedRndNumber(random_seed);
    TIMESPAN_START(1);
    // Get the workbook handler
    workbook swb;
@@ -883,6 +1032,15 @@ void RandomTest(int sheets_sz, int rows_sz, int cols_sz)
 
    swb.Dump("random.xls");
    TIMESPAN_END(1,"Random cell test:");
+
+   // cannot MD5 the file; not a real unit test, this one...
+
+   if (0 != check_file("random.xls", md5_checksum))
+   {
+	   cerr << "RandomTest failed: MD5 of generated XLS mismatch or I/O failure.\n";
+	   return -1;
+   }
+   return 0;
 }
 
 

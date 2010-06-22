@@ -43,7 +43,7 @@
 #include <summinfo.h>
 #include <docsumminfo.h>
 
-#define XLSLIB_VERSION "2.0.0"
+#define XLSLIB_VERSION PACKAGE_VERSION // "2.0.0"
 
 
 #include <xls_pshpack2.h>

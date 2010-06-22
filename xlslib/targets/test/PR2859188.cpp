@@ -35,15 +35,22 @@ book.Dump("test.xls");
 
 Does the trick, but it's inconvenient to explicitly set format cells if custom format were used at least (only) once. Also I should take attention that custom date format didn't override "3.14" format, as it did in earlier example.
 
-It's a question what cell_t::format() is needed for, or how to create format without setting it globaly (reminding that format_t ctor is private).
+It's a question what cell_t::format() is needed for, or how to create format without setting it globally (reminding that format_t ctor is private).
 
 So either I do not know something, it's a specific design decision or a bug in workbook::format(). Or a mix of all of that.
 */
 
-#define RANGE_FEATURE
+//#define RANGE_FEATURE
 #include <xlslib.h>
 
+#include <iostream>
+#include <fstream>
+
+#include "md5.h"
+
+using namespace std;
 using namespace xlslib_core;
+
 
 
 int test1(void) 
@@ -52,6 +59,12 @@ int test1(void)
 	worksheet* sheet = book.sheet("test1");
 	sheet->number(0, 1, 40065.0, FMT_DATE1, 0)->format(book.format("yyyy-mm-dd"));
 	book.Dump("PR2859188-1.xls");
+
+	if (0 != check_file("PR2859188-1.xls", "d0f5c265f9f9ed7892263520ee970477"))
+	{
+		cerr << "test1 failed: MD5 of generated XLS mismatch or I/O failure.\n";
+		return -1;
+	}
 
 	return 0;
 }
@@ -64,6 +77,12 @@ int test2(void)
 	sheet->number(0, 0, 3.14);
 	sheet->number(0, 1, 40065.0, FMT_DATE1, 0)->format(book.format("yyyy-mm-dd"));
 	book.Dump("PR2859188-2.xls");
+
+	if (0 != check_file("PR2859188-2.xls", "55befa27b461f6611ea8f960d9882172"))
+	{
+		cerr << "test2 failed: MD5 of generated XLS mismatch or I/O failure.\n";
+		return -1;
+	}
 
 	return 0;
 }
@@ -84,15 +103,23 @@ int test3(void)
 
 	book.Dump("PR2859188-3.xls");
 
+	if (0 != check_file("PR2859188-3.xls", "a7f1dfe12d7f865986c777376b6ea971"))
+	{
+		cerr << "test3 failed: MD5 of generated XLS mismatch or I/O failure.\n";
+		return -1;
+	}
+
 	return 0;
 }
 
 int main(int argc, char *argv[]) 
 {
-	test1();
-	test2();
-	test3();
+	int rv = 0;
 
-	return 0;
+	rv |= test1();
+	rv |= test2();
+	rv |= test3();
+
+	return (rv == 0 ? EXIT_SUCCESS : EXIT_FAILURE);
 }
 

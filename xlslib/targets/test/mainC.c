@@ -35,17 +35,24 @@ typedef enum
 	true = 1
 } bool;
 #endif
+#ifdef HAVE_WCHAR_H
 #include <wchar.h>
+#endif
+#ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
+#endif
 
-#define RANGE_FEATURE
+
+//#define RANGE_FEATURE
 #include <xlslib.h>
 
+#include "md5.h"
 
-wchar_t foo;
 
 
-int main(int argc, char *argv[]) {
+
+int main(int argc, char *argv[]) 
+{
 	workbook *w;
 	worksheet *ws;
 	int ret;
@@ -60,6 +67,12 @@ int main(int argc, char *argv[]) {
 
 	printf("      # saved it ret=%d!\n", ret);
 	xlsDeleteWorkbook(w);
+
+	if (0 != check_file("testC.xls", "87eb96e3dbd0074d1489560aafdb47e0"))
+	{
+		fprintf(stderr, "%s failed: MD5 of generated XLS mismatch or I/O failure.\n", argv[0]);
+		return -1;
+	}
 
 	return 0;
 }
@@ -232,7 +245,9 @@ xlsFontSetColor(f, *color);
 xlsFontGetColorIdx(f);
 xlsFontSetItalic(f, b);
 xlsFontSetStrikeout(f, b);
+#if defined(DEPRECATED)
 xlsFontSetAttributes(f, i16);
+#endif
 xlsFontGetAttributes(f);
 xlsFontSetOutline(f, b);
 xlsFontSetShadow(f, b);

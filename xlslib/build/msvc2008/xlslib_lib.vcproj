@@ -539,6 +539,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\xlslib\formula.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\xlslib\globalrec.cpp"
 				>
 			</File>
@@ -556,6 +560,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\xlslib\merged.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\xlslib\note.cpp"
 				>
 			</File>
 			<File
@@ -693,6 +701,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\xlslib\formula.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\xlslib\globalrec.h"
 				>
 			</File>
@@ -710,6 +722,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\xlslib\merged.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\xlslib\note.h"
 				>
 			</File>
 			<File

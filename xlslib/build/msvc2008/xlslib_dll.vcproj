@@ -50,7 +50,7 @@
 				Optimization="0"
 				EnableIntrinsicFunctions="true"
 				AdditionalIncludeDirectories="..\..\..\xlslib\src\xlslib;..\..\..\xlslib\src\oledoc;..\..\..\xlslib\src\common;..\..\..\xlslib\build\msvc2008"
-				PreprocessorDefinitions="XP_WIN;WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE"
+				PreprocessorDefinitions="_DLL;XP_WIN;WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE"
 				StringPooling="true"
 				MinimalRebuild="false"
 				BasicRuntimeChecks="3"
@@ -644,6 +644,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\xlslib\formula.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\xlslib\globalrec.cpp"
 				>
 			</File>
@@ -661,6 +665,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\xlslib\merged.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\xlslib\note.cpp"
 				>
 			</File>
 			<File
@@ -798,6 +806,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\xlslib\formula.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\xlslib\globalrec.h"
 				>
 			</File>
@@ -815,6 +827,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\xlslib\merged.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\xlslib\note.h"
 				>
 			</File>
 			<File

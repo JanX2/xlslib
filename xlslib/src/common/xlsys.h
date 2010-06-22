@@ -60,7 +60,9 @@
 
 #if defined(_MSC_VER) && defined(WIN32)
 
-#if _MSC_VER >= 1400
+#if (_MSC_VER >= 1400)
+
+#if defined(WANT_MICROSOFT_MEMDBG)
 
 // Studio 2008 (and maybe earlier versions too?)
 #define _CRTDBG_MAP_ALLOC
@@ -78,6 +80,8 @@
 
 #define new_dbg		new(_CLIENT_BLOCK, __FILE__, __LINE__)
 #define new			new_dbg
+
+#endif
 
 #endif
 

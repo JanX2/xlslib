@@ -54,17 +54,26 @@
 #ifdef HAVE_STDINT_H	// DONT_HAVE_STDINT_H
 #include <stdint.h>
 #endif
+#ifdef HAVE_INTTYPES_H
+#include <inttypes.h>
+#endif
+#if defined(__cplusplus)					// ALL C++ users
 #include <cstring>
 #include <string>
+#endif
+#ifdef HAVE_STRING_H
 #include <string.h>	// DFH 10-2-08
+#endif
+#if defined(__cplusplus)					// ALL C++ users
 #include <iostream>
 #include <fstream>  // [i_a] MSVC needs this for cerr (XTRACE() et al)
 #include <list>
 #include <set>
 #include <algorithm>
+#endif
 #include <assert.h>
 
-#define INLINE inline
+//#define INLINE inline
 
 //#define NULL ((void*)(0))
 
@@ -102,9 +111,12 @@
 
 
 
+#if defined(__cplusplus)					// ALL C++ users
 
 typedef std::list<std::string* XLSLIB_DFLT_ALLOCATOR> StringList_t;
 typedef StringList_t::const_iterator StringListItor_t;
+
+#endif
 
 // Macros
 # define MASK_BYTE0 0x00000000000000ff

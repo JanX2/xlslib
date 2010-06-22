@@ -450,7 +450,9 @@ EXTERN_TYPE void xlsFontSetColor(font_t *f, color_name_t fntcolor);
 EXTERN_TYPE unsigned16_t xlsFontGetColorIdx(font_t *f);
 EXTERN_TYPE void xlsFontSetItalic(font_t *f, bool italic);
 EXTERN_TYPE void xlsFontSetStrikeout(font_t *f, bool so);
+#if defined(DEPRECATED)
 EXTERN_TYPE void xlsFontSetAttributes(font_t *f, unsigned16_t attr);
+#endif
 EXTERN_TYPE unsigned16_t xlsFontGetAttributes(font_t *f);
 EXTERN_TYPE void xlsFontSetOutline(font_t *f, bool ol);
 EXTERN_TYPE void xlsFontSetShadow(font_t *f, bool sh);

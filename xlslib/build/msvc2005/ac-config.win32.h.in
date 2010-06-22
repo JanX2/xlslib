@@ -294,7 +294,4 @@ typedef unsigned __int8 uint8_t;
    such a type exists and the standard includes do not define it. */
 /* #undef uint8_t */
 
-/* Define to empty if the keyword `volatile' does not work. Warning: valid
-   code using `volatile' can become incorrect without. Disable with care. */
-/* #undef volatile */
-
+/* Define to empty if the keyword `vola
