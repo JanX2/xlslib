@@ -79,7 +79,7 @@ CSummaryInfo::CSummaryInfo()
 	hpsf->addItem(SumInfo_CreateTime_Date, msTime);						// should be "right now"
 	hpsf->addItem(SumInfo_LastSavedTime_Date, msTime);					// should be "right now"
 	hpsf->addItem(SumInfo_Security, (unsigned32_t)0);					// Default
-	hpsf->addItem(SumInfo_NameofCreatingApplication, s = "xlsLib");		// Default
+	hpsf->addItem(SumInfo_NameofCreatingApplication, s = PACKAGE_NAME);	// Default
 }
 
 CSummaryInfo::~CSummaryInfo()
