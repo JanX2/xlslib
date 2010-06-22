@@ -833,7 +833,6 @@ void  CGlobalRecords::wide2str16(const ustring& str1, u16string& str2)
 	} else {
 		str2.assign(origOutbuf, outbuf - origOutbuf);
 	}
-	return;
 }
 #else
 void  CGlobalRecords::wide2str16(const ustring& str1, u16string& str2)
@@ -849,6 +848,8 @@ void  CGlobalRecords::wide2str16(const ustring& str1, u16string& str2)
 	}
 #endif
 	
+	str2.clear();
+
 	len = str1.length();
 	str2.reserve(len);
 
@@ -858,14 +859,17 @@ void  CGlobalRecords::wide2str16(const ustring& str1, u16string& str2)
 	while(cBegin != cEnd) {
 		str2.push_back((unsigned16_t)*cBegin++);		
 	}
-	return;
 }
+
 #endif
+
 void  CGlobalRecords::char2str16(const string& str1, u16string& str2)
 {
 	string::const_iterator	cBegin, cEnd;
 	size_t	len;
 	
+	str2.clear();
+
 	len = str1.length();
 	str2.reserve(len);
 
@@ -875,8 +879,8 @@ void  CGlobalRecords::char2str16(const string& str1, u16string& str2)
 	while(cBegin != cEnd) {
 		str2.push_back((unsigned16_t)*cBegin++);		
 	}
-	return;
 }
+
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * $Log: globalrec.cpp,v $

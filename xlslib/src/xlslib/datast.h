@@ -86,9 +86,9 @@ namespace xlslib_core
 
 	private:
 		// 32-bits:
-		unsigned m_varying_width: 1;		
-		unsigned m_is_in_use: 1;		// used to flag a 'deleted' unit store
-		unsigned m_is_sticky: 1;		// used to flag a 'sticky' unit store: that's a store which will remain after the accompanying CUnit is deleted. It will only be discarded by the time the CDataStorage container is deleted.
+		bool m_varying_width: 1;		
+		bool m_is_in_use: 1;		// used to flag a 'deleted' unit store
+		bool m_is_sticky: 1;		// used to flag a 'sticky' unit store: that's a store which will remain after the accompanying CUnit is deleted. It will only be discarded by the time the CDataStorage container is deleted.
 		unsigned m_nDataSize: 29;		// Actual use
 
 		union

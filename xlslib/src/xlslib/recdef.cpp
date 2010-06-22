@@ -241,8 +241,8 @@ CDimension::~CDimension()
 */
 void CWindow2::SetSelected()
 {
-   unsigned16_t grbitval;
-   GetValue16From((signed16_t*)&grbitval, W2_OFFSET_GRBIT);
+   signed16_t grbitval;
+   GetValue16From(&grbitval, W2_OFFSET_GRBIT);
 
    grbitval |= W2_GRBITMASK_SELECTED;
 

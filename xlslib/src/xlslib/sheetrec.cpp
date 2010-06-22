@@ -800,7 +800,7 @@ void worksheet::AddCell(cell_t* pcell)
 		
 		if(cellHint && pcell->row >= cellHint->row) {
 			ret		= m_Cells.insert(cellIterHint, pcell);
-			success	= *ret == pcell ? true : false;
+			success	= (*ret == pcell);
 		} else {
 			pair<Cell_Set_Itor_t, bool> pr;
 			

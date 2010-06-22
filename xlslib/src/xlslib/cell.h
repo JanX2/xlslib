@@ -126,9 +126,9 @@ namespace xlslib_core
 		bool operator() (cell_t* a, cell_t* b) const
 		{
 			if(a->row != b->row) {
-				return a->row < b->row ? true : false;
+				return a->row < b->row;
 			} else {
-				return a->col < b->col ? true : false;
+				return a->col < b->col;
 			}
 		}
   };

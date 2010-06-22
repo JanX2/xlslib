@@ -57,7 +57,7 @@ CIndex::CIndex(CDataStorage &datastore,
 #else
 #endif
 
-	SetRecordType((signed32_t)RECTYPE_INDEX);
+	SetRecordType(RECTYPE_INDEX);
 
 	AddValue32(INDEX_DFLT_RESERVED);
 

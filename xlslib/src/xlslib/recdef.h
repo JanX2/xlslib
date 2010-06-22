@@ -144,7 +144,7 @@ CWindow1 class declaration
 
     public:
 		window1();
-		~window1();
+		virtual ~window1();
 
 		// access from workBook
 		void SetPosition(unsigned16_t horz, unsigned16_t vert) { horzPos=horz; vertPos=vert;}
