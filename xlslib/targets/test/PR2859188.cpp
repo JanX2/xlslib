@@ -58,11 +58,16 @@ int test1(void)
 	workbook book;
 	worksheet* sheet = book.sheet("test1");
 	sheet->number(0, 1, 40065.0, FMT_DATE1, 0)->format(book.format("yyyy-mm-dd"));
-	book.Dump("PR2859188-1.xls");
+	int err = book.Dump("PR2859188-1.xls");
 
+	if (err != NO_ERRORS)
+	{
+		cerr << "test1 failed: I/O failure: " << err << std::endl;
+		return -1;
+	}
 	if (0 != check_file("PR2859188-1.xls", "d0f5c265f9f9ed7892263520ee970477"))
 	{
-		cerr << "test1 failed: MD5 of generated XLS mismatch or I/O failure.\n";
+		cerr << "test1 failed: MD5 of generated XLS mismatch or I/O failure." << std::endl;
 		return -1;
 	}
 
@@ -76,11 +81,16 @@ int test2(void)
 	worksheet* sheet = book.sheet("test");
 	sheet->number(0, 0, 3.14);
 	sheet->number(0, 1, 40065.0, FMT_DATE1, 0)->format(book.format("yyyy-mm-dd"));
-	book.Dump("PR2859188-2.xls");
+	int err = book.Dump("PR2859188-2.xls");
 
+	if (err != NO_ERRORS)
+	{
+		cerr << "test2 failed: I/O failure: " << err << std::endl;
+		return -1;
+	}
 	if (0 != check_file("PR2859188-2.xls", "55befa27b461f6611ea8f960d9882172"))
 	{
-		cerr << "test2 failed: MD5 of generated XLS mismatch or I/O failure.\n";
+		cerr << "test2 failed: MD5 of generated XLS mismatch or I/O failure." << std::endl;
 		return -1;
 	}
 
@@ -101,11 +111,16 @@ int test3(void)
 	format_t *datefmt = book.format("yyyy-mm-dd");
 	sheet->number(0, 3, 40066.0, FMT_GENERAL, 0)->format(datefmt); /* must be show in custom date format */
 
-	book.Dump("PR2859188-3.xls");
+	int err = book.Dump("PR2859188-3.xls");
 
+	if (err != NO_ERRORS)
+	{
+		cerr << "test3 failed: I/O failure: " << err << std::endl;
+		return -1;
+	}
 	if (0 != check_file("PR2859188-3.xls", "a7f1dfe12d7f865986c777376b6ea971"))
 	{
-		cerr << "test3 failed: MD5 of generated XLS mismatch or I/O failure.\n";
+		cerr << "test3 failed: MD5 of generated XLS mismatch or I/O failure." << std::endl;
 		return -1;
 	}
 

@@ -58,16 +58,21 @@ int main(int argc, char *argv[])
 	int ret;
 
 	w = xlsNewWorkbook();
-	ws =  xlsWorkbookSheet(w, "xlslib C");
+	ws = xlsWorkbookSheet(w, "xlslib C");
 
 	xlsWorksheetNumberDbl(ws, (unsigned16_t)1, (unsigned16_t)1, 1.0, NULL);  
 	xlsWorksheetNumberDbl(ws, (unsigned16_t)2, (unsigned16_t)1, 2.0, NULL);
 	xlsWorksheetNumberDbl(ws, (unsigned16_t)3, (unsigned16_t)1, 3.0, NULL);
-	ret =  xlsWorkbookDump(w, "testC.xls");
+	ret = xlsWorkbookDump(w, "testC.xls");
 
 	printf("    # saved it ret=%d!\n", ret);
 	xlsDeleteWorkbook(w);
 
+	if (ret != NO_ERRORS)
+	{
+		fprintf(stderr, "%s failed: I/O failure %d.\n", argv[0], ret);
+		return -1;
+	}
 	if (0 != check_file("testC.xls", "87eb96e3dbd0074d1489560aafdb47e0"))
 	{
 		fprintf(stderr, "%s failed: MD5 of generated XLS mismatch or I/O failure.\n", argv[0]);

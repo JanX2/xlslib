@@ -171,11 +171,16 @@ int StandardTest(void)
    std::string s("This tab should should show three numbers: two in row 131/133 + one in row 132 at columns 129(DY)/173(FQ) respectively");
    sh->label(1,1,s);
 
-   wb.Dump("./testCPP.xls");
+   int err = wb.Dump("./testCPP.xls");
 
+   if (err != NO_ERRORS)
+   {
+	   cerr << "StandardTest failed: I/O failure: " << err << std::endl;
+	   return -1;
+   }
    if (0 != check_file("./testCPP.xls", "042c01b4b5a325bca347d3830e71baa4"))
    {
-	   cerr << "StandardTest failed: MD5 of generated XLS mismatch or I/O failure.\n";
+	   cerr << "StandardTest failed: MD5 of generated XLS mismatch or I/O failure." << std::endl;
 	   return -1;
    }
 	return 0;
@@ -187,11 +192,16 @@ int BlankTest(void)
 {
 	workbook wb;
 	wb.sheet("Sheet_01");
-	wb.Dump("blank.xls");
+	int err = wb.Dump("blank.xls");
 
+	if (err != NO_ERRORS)
+	{
+		cerr << "BlankTest failed: I/O failure: " << err << std::endl;
+		return -1;
+	}
 	if (0 != check_file("blank.xls", "5500d521db56feeac32377436f744270"))
 	{
-		cerr << "BlankTest failed: MD5 of generated XLS mismatch or I/O failure.\n";
+		cerr << "BlankTest failed: MD5 of generated XLS mismatch or I/O failure." << std::endl;
 		return -1;
 	}
 	return 0;
@@ -259,11 +269,16 @@ int StandardTest2(void)
 		}
 	}
 
-	wb.Dump("./testCPP2.xls");
+	int err = wb.Dump("./testCPP2.xls");
 
+	if (err != NO_ERRORS)
+	{
+		cerr << "StandardTest2 failed: I/O failure: " << err << std::endl;
+		return -1;
+	}
 	if (0 != check_file("./testCPP2.xls", "c687c79e5e9be21620caba85fd63e10a"))
 	{
-		cerr << "StandardTest2 failed: MD5 of generated XLS mismatch or I/O failure.\n";
+		cerr << "StandardTest2 failed: MD5 of generated XLS mismatch or I/O failure." << std::endl;
 		return -1;
 	}
 	return 0;
@@ -340,12 +355,17 @@ int RandomCellAndFormatTest(int sheets_sz, int rows_sz, int cols_sz, int random_
       }
    }
 
-   wb.Dump("rndcellandformat.xls");
+   int err = wb.Dump("rndcellandformat.xls");
    TIMESPAN_END(1,"Random Cell and Format test:");
 
+   if (err != NO_ERRORS)
+   {
+	   cerr << "RandomCellAndFormatTest failed: I/O failure: " << err << std::endl;
+	   return -1;
+   }
    if (0 != check_file("rndcellandformat.xls", md5_checksum))
    {
-	   cerr << "RandomCellAndFormatTest failed: MD5 of generated XLS mismatch or I/O failure.\n";
+	   cerr << "RandomCellAndFormatTest failed: MD5 of generated XLS mismatch or I/O failure." << std::endl;
 	   return -1;
    }
    return 0;
@@ -434,11 +454,16 @@ int RandomCellAndFormatTestProf(int sheets_sz, int rows_sz, int cols_sz, int ran
       }
    }
 
-   wb.Dump("rndcellandformat_prof.xls");
+   int err = wb.Dump("rndcellandformat_prof.xls");
 
+   if (err != NO_ERRORS)
+   {
+	   cerr << "RandomCellAndFormatTestProf failed: I/O failure: " << err << std::endl;
+	   return -1;
+   }
    if (0 != check_file("rndcellandformat_prof.xls", md5_checksum))
    {
-	   cerr << "RandomCellAndFormatTestProf failed: MD5 of generated XLS mismatch or I/O failure.\n";
+	   cerr << "RandomCellAndFormatTestProf failed: MD5 of generated XLS mismatch or I/O failure." << std::endl;
 	   return -1;
    }
    return 0;
@@ -490,12 +515,17 @@ int RandomFormatTest(int sheets_sz, int rows_sz, int cols_sz, int random_seed, c
       }
    }
 
-   wb.Dump("rndformat.xls");
+   int err = wb.Dump("rndformat.xls");
    TIMESPAN_END(1,"Random Format test:");
 
+   if (err != NO_ERRORS)
+   {
+	   cerr << "RandomFormatTest failed: I/O failure: " << err << std::endl;
+	   return -1;
+   }
    if (0 != check_file("rndformat.xls", md5_checksum))
    {
-	   cerr << "RandomFormatTest failed: MD5 of generated XLS mismatch or I/O failure.\n";
+	   cerr << "RandomFormatTest failed: MD5 of generated XLS mismatch or I/O failure." << std::endl;
 	   return -1;
    }
    return 0;
@@ -937,12 +967,17 @@ int StressTest(int sheets_sz, int rows_sz, int cols_sz, const char *md5_checksum
    }
 
    TIMESPAN_START(1);
-   swb.Dump("stress.xls");
+   int err = swb.Dump("stress.xls");
    TIMESPAN_END(1,"Cell-stress test:");
 
+   if (err != NO_ERRORS)
+   {
+	   cerr << "StressTest(" << sheets_sz << ", " << rows_sz << ", " << cols_sz << ") failed: I/O failure: " << err << std::endl;
+	   return -1;
+   }
    if (0 != check_file("stress.xls", md5_checksum))
    {
-	   cerr << "StressTest(" << sheets_sz << ", " << rows_sz << ", " << cols_sz << ") failed: MD5 of generated XLS mismatch or I/O failure.\n";
+	   cerr << "StressTest(" << sheets_sz << ", " << rows_sz << ", " << cols_sz << ") failed: MD5 of generated XLS mismatch or I/O failure." << std::endl;
 	   return -1;
    }
    return 0;
@@ -1030,14 +1065,19 @@ int RandomTest(int sheets_sz, int rows_sz, int cols_sz, int random_seed, const c
 	  }
    }
 
-   swb.Dump("random.xls");
+   int err = swb.Dump("random.xls");
    TIMESPAN_END(1,"Random cell test:");
 
    // cannot MD5 the file; not a real unit test, this one...
 
+   if (err != NO_ERRORS)
+   {
+	   cerr << "RandomTest failed: I/O failure: " << err << std::endl;
+	   return -1;
+   }
    if (0 != check_file("random.xls", md5_checksum))
    {
-	   cerr << "RandomTest failed: MD5 of generated XLS mismatch or I/O failure.\n";
+	   cerr << "RandomTest failed: MD5 of generated XLS mismatch or I/O failure." << std::endl;
 	   return -1;
    }
    return 0;
