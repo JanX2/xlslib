@@ -53,7 +53,7 @@ using namespace xlslib_core;
 
 
 
-int test1(void) 
+int test1(const char *md5_checksum) 
 {
 	workbook book;
 	worksheet* sheet = book.sheet("test1");
@@ -65,7 +65,7 @@ int test1(void)
 		cerr << "test1 failed: I/O failure: " << err << std::endl;
 		return -1;
 	}
-	if (0 != check_file("PR2859188-1.xls", "192f5802704154692cc13c16916caf02"))
+	if (0 != check_file("PR2859188-1.xls", md5_checksum))
 	{
 		cerr << "test1 failed: MD5 of generated XLS mismatch or I/O failure." << std::endl;
 		return -1;
@@ -74,7 +74,7 @@ int test1(void)
 	return 0;
 }
 
-int test2(void) 
+int test2(const char *md5_checksum) 
 {
 	/* both cells formatted as date ??? */
 	workbook book;
@@ -88,7 +88,7 @@ int test2(void)
 		cerr << "test2 failed: I/O failure: " << err << std::endl;
 		return -1;
 	}
-	if (0 != check_file("PR2859188-2.xls", "561aa69db9027c0f22aedac16dd13edf"))
+	if (0 != check_file("PR2859188-2.xls", md5_checksum))
 	{
 		cerr << "test2 failed: MD5 of generated XLS mismatch or I/O failure." << std::endl;
 		return -1;
@@ -97,7 +97,7 @@ int test2(void)
 	return 0;
 }
 
-int test3(void) 
+int test3(const char *md5_checksum) 
 {
 	workbook book;
 	worksheet* sheet = book.sheet("test2");
@@ -118,7 +118,7 @@ int test3(void)
 		cerr << "test3 failed: I/O failure: " << err << std::endl;
 		return -1;
 	}
-	if (0 != check_file("PR2859188-3.xls", "c0b8bd7e8f8b8421cc3637c2f29b7915"))
+	if (0 != check_file("PR2859188-3.xls", md5_checksum))
 	{
 		cerr << "test3 failed: MD5 of generated XLS mismatch or I/O failure." << std::endl;
 		return -1;
@@ -131,9 +131,9 @@ int main(int argc, char *argv[])
 {
 	int rv = 0;
 
-	rv |= test1();
-	rv |= test2();
-	rv |= test3();
+	rv |= test1("6423d098b4025eed9277a4919281849d");
+	rv |= test2("d882ef1e426be85ef3ccb857309ad7dd");
+	rv |= test3("00607d4cca34d636718a1dd6b3fbe53d");
 
 	return (rv == 0 ? EXIT_SUCCESS : EXIT_FAILURE);
 }

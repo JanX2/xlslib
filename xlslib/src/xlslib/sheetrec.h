@@ -196,7 +196,7 @@ worksheet class declaration
 		size_t EstimateNumBiffUnitsNeeded(void);
 
 		void					AddCell(cell_t* pcell);
-		CUnit*					DumpData(CDataStorage &datastore, size_t offset);
+		CUnit*					DumpData(CDataStorage &datastore, size_t offset, size_t writeLen, size_t &Last_BOF_offset);
 		
     private:
 		worksheet( const worksheet& that);

@@ -73,7 +73,7 @@ int main(int argc, char *argv[])
 		fprintf(stderr, "%s failed: I/O failure %d.\n", argv[0], ret);
 		return -1;
 	}
-	if (0 != check_file("testC.xls", "ac1068824bd11d0e7d010e9ca2e63051"))
+	if (0 != check_file("testC.xls", "a38b19e5ef2076e96146070c70a7bf13"))
 	{
 		fprintf(stderr, "%s failed: MD5 of generated XLS mismatch or I/O failure.\n", argv[0]);
 		return -1;

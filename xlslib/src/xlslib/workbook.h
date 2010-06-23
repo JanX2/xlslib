@@ -132,6 +132,9 @@ namespace xlslib_core
 		
 		unsigned16_t			current_sheet;
 		size_t			offset;              
+
+		// INDEX / DBCELL assistant variables:
+		size_t			Last_BOF_offset;
     };
 
 }

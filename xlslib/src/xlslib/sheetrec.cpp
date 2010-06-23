@@ -172,7 +172,7 @@ worksheet::~worksheet()
 
 #define RB_INDEX_MINSIZE 20
 
-CUnit* worksheet::DumpData(CDataStorage &datastore, size_t offset)
+CUnit* worksheet::DumpData(CDataStorage &datastore, size_t offset, size_t writeLen, size_t &Last_BOF_offset)
 {
    bool repeat = false;
 
@@ -200,6 +200,7 @@ CUnit* worksheet::DumpData(CDataStorage &datastore, size_t offset)
 		//Delete_Pointer(m_pCurrentData);
 		m_pCurrentData = (CUnit*)(new CBof(datastore, BOF_TYPE_WORKSHEET));
 #endif
+		Last_BOF_offset = offset + writeLen;
 		m_DumpState = SHEET_INDEX;
 		break;
 
@@ -228,12 +229,15 @@ CUnit* worksheet::DumpData(CDataStorage &datastore, size_t offset)
 			   // Get sizes of next RowBlock
 			   rowblocksize_t rbsize;
 #if defined(XL_WITH_ASSERTIONS)
-			   bool state = GetRowBlockSizes(rbsize);
-			   XL_ASSERT(rb == numrb - 1 ? state == false : state == true);
+			   bool state = 
+#else
+			   (void)
 #endif
+				   GetRowBlockSizes(rbsize);
+			   XL_ASSERT(rb == numrb - 1 ? state == false : state == true);
 			   // Update the offset accumulator and create the next DBCELL's offset
 			   rb_size_acc += rbsize.rowandcell_size;
-			   size_t dbcelloffset = offset + BOF_RECORD_SIZE + index_size + rb_size_acc;
+			   size_t dbcelloffset = offset - Last_BOF_offset + BOF_RECORD_SIZE + index_size + rb_size_acc;
 			   ((CIndex*)m_pCurrentData)->AddDBCellOffset(dbcelloffset);
 
 			   // Update the offset for the next DBCELL's offset

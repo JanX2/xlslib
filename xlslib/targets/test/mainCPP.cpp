@@ -100,20 +100,16 @@ int main(int argc, char *argv[])
 	int rv = 0;
 
 	// comment and uncomment the below to try various tests
-#if 01
-	rv |= StandardTest("a2fa7ad755b8bf18fd84117d1e0170db");
-#endif
-	rv |= StandardTest2("10cf918df1ff423f6d182c791b1f0d85");
-#if 01
+	rv |= StandardTest("d3c30e1d2d9a1e572984ca7f9aed4fb3");
+	rv |= StandardTest2("02111efe116b500a089e3e7da7899877");
 	rv |= BlankTest("e80a45e13f92863f0d2dffaca7c3834c");
 
-	rv |= StressTest(3,100,100, "8895da93f04a8334f60348233b451205");
-	rv |= StressTest(3,4,4, "be6c2c2ac695b7dd990479bd5368cab0");
-	rv |= RandomTest(3,200,200, 42424242, "4887e07fd832f92416787c7a473dfe24");
-	rv |= RandomCellAndFormatTest(1,15,10, 123456789, "3d2cbe79e866bfb0d63198c589333378");
-	rv |= RandomCellAndFormatTestProf(1,15,10, 987654321, "c207fbe4f83efe206bfc35c402661872");
-	rv |= RandomFormatTest(1,15,10, 42004200, "41f7c54d1bf00951dad103d568969667");
-#endif
+	rv |= StressTest(3,100,100, "6d356960d22057ebee73aa910eb0a772");
+	rv |= StressTest(3,4,4, "b4fd13d503b1cf2dc0838aaef81cb65b");
+	rv |= RandomTest(3,200,200, 42424242, "1c7a539513c5833e66b422d0206ae076");
+	rv |= RandomCellAndFormatTest(1,15,10, 123456789, "4e0439306a18cfb4c6a28441c33f2b04");
+	rv |= RandomCellAndFormatTestProf(1,15,10, 987654321, "1a06208b4746a23a2442c4c06e75cdef");
+	rv |= RandomFormatTest(1,15,10, 42004200, "bd94fbe9ce77addc02cba876fc6e4d9b");
 
 	std::cerr << "    # Test finished" << std::endl;
 

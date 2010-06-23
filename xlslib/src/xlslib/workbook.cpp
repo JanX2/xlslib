@@ -69,7 +69,8 @@ workbook::workbook() :
 	m_pContinueRecord(NULL),
 	m_ContinueIndex(0),
 	current_sheet(0),
-	offset(0)
+	offset(0),
+	Last_BOF_offset(0)
 {
 #if HAVE_ICONV
 	m_GlobalRecords.SetIconvCode("wchar_t");
@@ -376,6 +377,7 @@ CUnit* workbook::DumpData(CDataStorage &datastore)
 			writeLen = 0;
             current_sheet = 0;
 			offset = 0;
+			Last_BOF_offset = 0;
 
             CHANGE_DUMPSTATE(WB_GLOBALRECORDS);
 
@@ -391,6 +393,7 @@ CUnit* workbook::DumpData(CDataStorage &datastore)
             {
 				offset = writeLen;
 				writeLen = 0;
+				Last_BOF_offset = 0;
 			   
 				repeat = true;
 				CHANGE_DUMPSTATE(WB_SHEETS);
@@ -405,7 +408,7 @@ CUnit* workbook::DumpData(CDataStorage &datastore)
          {
             XTRACE("\tSHEETS");
 
-            m_pCurrentData = m_Sheets[current_sheet]->DumpData(datastore, offset);
+            m_pCurrentData = m_Sheets[current_sheet]->DumpData(datastore, offset, writeLen, Last_BOF_offset);
             if(m_pCurrentData == NULL)
             {
 				Boundsheet_Vect_Itor_t bs = m_GlobalRecords.GetBoundSheetAt(current_sheet);
