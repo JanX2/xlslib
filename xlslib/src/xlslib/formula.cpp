@@ -1563,28 +1563,30 @@ signed8_t text_value_node_t::DumpData(CUnit &dst, bool include_subtree) const
 }
 
 
-cell_ref_node_t::cell_ref_node_t(CGlobalRecords& gRecords, const cell_t& v, cell_ref_attr_t opt) :
+cell_deref_node_t::cell_deref_node_t(CGlobalRecords& gRecords, const cell_t& v, cell_addr_mode_t opt, cell_op_class_t opclass) :
 		terminal_node_t(gRecords),
 		value(&v),
 		worksheet_ref(NULL),
-		attr(opt)
+		attr(opt),
+		operand_class(opclass)
 {
 
 }
-cell_ref_node_t::cell_ref_node_t(CGlobalRecords& gRecords, const cell_t& v, const worksheet* ws, cell_ref_attr_t opt) :
+cell_deref_node_t::cell_deref_node_t(CGlobalRecords& gRecords, const cell_t& v, const worksheet* ws, cell_addr_mode_t opt, cell_op_class_t opclass) :
 		terminal_node_t(gRecords),
 		value(&v),
 		worksheet_ref(ws),
-		attr(opt)
+		attr(opt),
+		operand_class(opclass)
 {
 
 }
-cell_ref_node_t::~cell_ref_node_t()
+cell_deref_node_t::~cell_deref_node_t()
 {
 
 }
 
-void cell_ref_node_t::GetResultEstimate(estimated_formula_result_t &dst) const
+void cell_deref_node_t::GetResultEstimate(estimated_formula_result_t &dst) const
 {
 	/*
 	We don't want to spend the effort to 'know' (~ make this code aware) which cell reference produces what result, neither in value nor in type, so we
@@ -1595,17 +1597,19 @@ void cell_ref_node_t::GetResultEstimate(estimated_formula_result_t &dst) const
 	dst.SetErrorCode(XLERR_VALUE);
 }
 
-size_t cell_ref_node_t::GetSize(bool include_subtree) const
+size_t cell_deref_node_t::GetSize(bool include_subtree) const
 {
 	return 1+2+2;
 }
-signed8_t cell_ref_node_t::DumpData(CUnit &dst, bool include_subtree) const
+signed8_t cell_deref_node_t::DumpData(CUnit &dst, bool include_subtree) const
 {
 	signed8_t errcode;
 
-	errcode = dst.AddValue8(OP_REFV); // value reference!
+	errcode = dst.AddValue8(OP_REF | operand_class); // OP_REF, OP_REFV, OP_REFA
+
+	// BIFF8 format!
 	errcode |= dst.AddValue16((unsigned16_t)value->GetRow());
-	
+
 	unsigned16_t col = (unsigned16_t)value->GetCol() & 0x3FFF;
 
 	XL_ASSERT((attr & ~0xC000) == 0);
@@ -1614,6 +1618,69 @@ signed8_t cell_ref_node_t::DumpData(CUnit &dst, bool include_subtree) const
 
 	return errcode;
 }
+
+
+
+
+
+cellarea_deref_node_t::cellarea_deref_node_t(CGlobalRecords& gRecords, const cell_t& u_l_c, const cell_t& l_r_c, cell_addr_mode_t attr, cell_op_class_t opclass) :
+cell_deref_node_t(gRecords, u_l_c, attr, opclass),
+lower_right_corner(&l_r_c)
+{
+
+}
+cellarea_deref_node_t::cellarea_deref_node_t(CGlobalRecords& gRecords, const cell_t& u_l_c, const cell_t& l_r_c, const worksheet* ws, cell_addr_mode_t attr, cell_op_class_t opclass) :
+cell_deref_node_t(gRecords, u_l_c, ws, attr, opclass),
+lower_right_corner(&l_r_c)
+{
+
+}
+cellarea_deref_node_t::~cellarea_deref_node_t()
+{
+
+}
+
+size_t cellarea_deref_node_t::GetSize(bool include_subtree) const
+{
+	return 1+2*(2+2);
+}
+signed8_t cellarea_deref_node_t::DumpData(CUnit &dst, bool include_subtree) const
+{
+	signed8_t errcode;
+
+	errcode = dst.AddValue8(OP_AREA | operand_class); // OP_AREA. OP_AREAV, OP_AREAA
+
+	// BIFF8 format!
+	errcode |= dst.AddValue16((unsigned16_t)upper_left_corner()->GetRow());
+	errcode |= dst.AddValue16((unsigned16_t)lower_right_corner->GetRow());
+
+	unsigned16_t col = (unsigned16_t)upper_left_corner()->GetCol() & 0x3FFF;
+
+	XL_ASSERT((attr & ~0xC000) == 0);
+	col |= ((unsigned16_t)attr) & 0xC000;
+	errcode |= dst.AddValue16(col);
+
+	col = (unsigned16_t)lower_right_corner->GetCol() & 0x3FFF;
+
+	XL_ASSERT((attr & ~0xC000) == 0);
+	col |= ((unsigned16_t)attr) & 0xC000;
+	errcode |= dst.AddValue16(col);
+
+	return errcode;
+}
+
+void cellarea_deref_node_t::GetResultEstimate(estimated_formula_result_t &dst) const
+{
+	/*
+	We don't want to spend the effort to 'know' (~ make this code aware) which cell reference produces what result, neither in value nor in type, so we
+	fake it and make it easy to ourselves: we 'guestimate' the cell/reference will return an
+	error code and we mark the expression as 'calc on load' to mask our ignorance.
+	*/
+	dst.SetCalcOnLoad();
+	dst.SetErrorCode(XLERR_VALUE);
+}
+
+
 
 
 
@@ -1648,7 +1715,19 @@ unary_op_node_t::unary_op_node_t(CGlobalRecords& gRecords, expr_operator_code_t 
 operator_basenode_t(gRecords, op),
 arg(a)
 {
+	XL_ASSERT(a);
 
+	switch (op)
+	{
+	default:
+		throw std::string("Not a valid unary operator");
+
+	case OP_UPLUS: // Unary Plus 
+	case OP_UMINUS: // Unary Minus 
+	case OP_PERCENT: // Percent Sign 
+		// okay
+		break;
+	}
 }
 unary_op_node_t::~unary_op_node_t()
 {
@@ -1657,22 +1736,51 @@ unary_op_node_t::~unary_op_node_t()
 
 expression_node_t* unary_op_node_t::GetChild(unsigned16_t index) const
 {
-	return arg;
+	if (index == 0)
+		return arg;
+	return NULL;
 }
 unsigned16_t unary_op_node_t::GetNumberOfChilds(void) const
 {
-				return 1;
+	return 1;
 }
 
 size_t unary_op_node_t::GetSize(bool include_subtree) const
 {
-	return 0;
+	size_t len = 1;
+
+	if (include_subtree)
+	{
+		XL_ASSERT(GetChild(0));
+		len += GetChild(0)->GetSize(include_subtree);
+	}
+	return len;
 }
 signed8_t unary_op_node_t::DumpData(CUnit &dst, bool include_subtree) const
 {
 	signed8_t errcode = NO_ERRORS;
 
-	errcode |= dst.AddValue8(OP_STR);
+	if (include_subtree)
+	{
+		XL_ASSERT(GetChild(0));
+		errcode |= GetChild(0)->DumpData(dst, include_subtree);
+	}
+
+	errcode |= dst.AddValue8(op);
+
+#ifdef XL_WITH_ASSERTIONS
+	switch (op)
+	{
+	default:
+		XL_ASSERT(!"Should never get here!");
+
+	case OP_UPLUS: // Unary Plus 
+	case OP_UMINUS: // Unary Minus 
+	case OP_PERCENT: // Percent Sign 
+		// okay
+		break;
+	}
+#endif
 
 	return errcode;
 }
@@ -1685,6 +1793,30 @@ operator_basenode_t(gRecords, op)
 {
 	args[0] = arg1;
 	args[1] = arg2;
+
+	switch (op)
+	{
+	default:
+		throw std::string("Not a valid binary operator");
+
+	case OP_ADD: 
+	case OP_SUB: 
+	case OP_MUL: 
+	case OP_DIV: 
+	case OP_POWER: 
+	case OP_CONCAT: 
+	case OP_LE: 
+	case OP_LT: 
+	case OP_EQ: 
+	case OP_GE: 
+	case OP_GT: 
+	case OP_NE: 
+	case OP_ISECT:  // intersection ~ Excel 'space' operator
+	case OP_UNION:  // union ~ Excel 'comma' operator
+	case OP_RANGE:  // minimal bounding rectangle ~ Excel 'colon' operator
+		// okay
+		break;
+	}
 }
 binary_op_node_t::~binary_op_node_t()
 {
@@ -1693,7 +1825,9 @@ binary_op_node_t::~binary_op_node_t()
 
 expression_node_t* binary_op_node_t::GetChild(unsigned16_t index) const
 {
-	return args[index];
+	if (index <= 1)
+		return args[index];
+	return NULL;
 }
 unsigned16_t binary_op_node_t::GetNumberOfChilds(void) const
 {
@@ -1702,17 +1836,607 @@ unsigned16_t binary_op_node_t::GetNumberOfChilds(void) const
 
 size_t binary_op_node_t::GetSize(bool include_subtree) const
 {
-	return 0;
+	size_t len = 1;
+
+	if (include_subtree)
+	{
+		XL_ASSERT(GetChild(0));
+		len += GetChild(0)->GetSize(include_subtree);
+		XL_ASSERT(GetChild(1));
+		len += GetChild(1)->GetSize(include_subtree);
+	}
+	return len;
 }
 signed8_t binary_op_node_t::DumpData(CUnit &dst, bool include_subtree) const
 {
 	signed8_t errcode = NO_ERRORS;
 
-	errcode |= dst.AddValue8(OP_STR);
+	if (include_subtree)
+	{
+		XL_ASSERT(GetChild(0));
+		errcode |= GetChild(0)->DumpData(dst, include_subtree);
+		XL_ASSERT(GetChild(1));
+		errcode |= GetChild(1)->DumpData(dst, include_subtree);
+	}
+
+	errcode |= dst.AddValue8(op);
+
+#ifdef XL_WITH_ASSERTIONS
+	switch (op)
+	{
+	default:
+		XL_ASSERT(!"Not a valid binary operator");
+
+	case OP_ADD: 
+	case OP_SUB: 
+	case OP_MUL: 
+	case OP_DIV: 
+	case OP_POWER: 
+	case OP_CONCAT: 
+	case OP_LE: 
+	case OP_LT: 
+	case OP_EQ: 
+	case OP_GE: 
+	case OP_GT: 
+	case OP_NE: 
+	case OP_ISECT:  // intersection ~ Excel 'space' operator
+	case OP_UNION:  // union ~ Excel 'comma' operator
+	case OP_RANGE:  // minimal bounding rectangle ~ Excel 'colon' operator
+		// okay
+		break;
+	}
+#endif
 
 	return errcode;
 }
 
+
+
+
+
+
+
+int xlslib_core::KnownNumberOfArgsForExcelFunction(expr_function_code_t func)
+{
+	switch (func)
+	{
+	default:
+		XL_ASSERT(!"Shouldn't get here!");
+		break;
+
+	case FUNC_UDF :                      break;
+	case FUNC_COUNT :                    break;
+	case FUNC_ISNA :                     return 1;
+	case FUNC_ISERROR :                  return 1;
+	case FUNC_SUM :                      break;
+	case FUNC_AVERAGE :                  break;
+	case FUNC_MIN :                      break;
+	case FUNC_MAX :                      break;
+	case FUNC_ROW :                      break;
+	case FUNC_COLUMN :                   break;
+	case FUNC_NA :                       break;
+	case FUNC_NPV :                      break;
+	case FUNC_STDEV :                    break;
+	case FUNC_DOLLAR :                   break;
+	case FUNC_FIXED :                    break;
+	case FUNC_SIN :                      return 1;
+	case FUNC_COS :                      return 1;
+	case FUNC_TAN :                      return 1;
+	case FUNC_ATAN :                     break;
+	case FUNC_PI :                       break;
+	case FUNC_SQRT :                     return 1;
+	case FUNC_EXP :                      return 1;
+	case FUNC_LN :                       return 1;
+	case FUNC_LOG10 :                    return 1;
+	case FUNC_ABS :                      return 1;
+	case FUNC_INT :                      return 1;
+	case FUNC_SIGN :                     return 1;
+	case FUNC_ROUND :                    break;
+	case FUNC_LOOKUP :                   break;
+	case FUNC_INDEX :                    break;
+	case FUNC_REPT :                     break;
+	case FUNC_MID :                      break;
+	case FUNC_LEN :                      break;
+	case FUNC_VALUE :                    break;
+	case FUNC_TRUE :                     break;
+	case FUNC_FALSE :                    break;
+	case FUNC_AND :                      break;
+	case FUNC_OR :                       break;
+	case FUNC_NOT :                      break;
+	case FUNC_MOD :                      break;
+	case FUNC_DCOUNT :                   break;
+	case FUNC_DSUM :                     break;
+	case FUNC_DAVERAGE :                 break;
+	case FUNC_DMIN :                     break;
+	case FUNC_DMAX :                     break;
+	case FUNC_DSTDEV :                   break;
+	case FUNC_VAR :                      break;
+	case FUNC_DVAR :                     break;
+	case FUNC_TEXT :                     break;
+	case FUNC_LINEST :                   break;
+	case FUNC_TREND :                    break;
+	case FUNC_LOGEST :                   break;
+	case FUNC_GROWTH :                   break;
+	case FUNC_GOTO :                     break;
+	case FUNC_HALT :                     break;
+	case FUNC_PV :                       break;
+	case FUNC_FV :                       break;
+	case FUNC_NPER :                     break;
+	case FUNC_PMT :                      break;
+	case FUNC_RATE :                     break;
+	case FUNC_MIRR :                     break;
+	case FUNC_IRR :                      break;
+	case FUNC_RAND :                     break;
+	case FUNC_MATCH :                    break;
+	case FUNC_DATE :                     break;
+	case FUNC_TIME :                     break;
+	case FUNC_DAY :                      break;
+	case FUNC_MONTH :                    break;
+	case FUNC_YEAR :                     break;
+	case FUNC_WEEKDAY :                  break;
+	case FUNC_HOUR :                     break;
+	case FUNC_MINUTE :                   break;
+	case FUNC_SECOND :                   break;
+	case FUNC_NOW :                      break;
+	case FUNC_AREAS :                    break;
+	case FUNC_ROWS :                     break;
+	case FUNC_COLUMNS :                  break;
+	case FUNC_OFFSET :                   break;
+	case FUNC_ABSREF :                   break;
+	case FUNC_RELREF :                   break;
+	case FUNC_ARGUMENT :                 break;
+	case FUNC_SEARCH :                   break;
+	case FUNC_TRANSPOSE :                break;
+	case FUNC_ERROR :                    break;
+	case FUNC_STEP :                     break;
+	case FUNC_TYPE :                     break;
+	case FUNC_ECHO :                     break;
+	case FUNC_SETNAME :                  break;
+	case FUNC_CALLER :                   break;
+	case FUNC_DEREF :                    break;
+	case FUNC_WINDOWS :                  break;
+	case FUNC_SERIES :                   break;
+	case FUNC_DOCUMENTS :                break;
+	case FUNC_ACTIVECELL :               break;
+	case FUNC_SELECTION :                break;
+	case FUNC_RESULT :                   break;
+	case FUNC_ATAN2 :                    break;
+	case FUNC_ASIN :                     return 1;
+	case FUNC_ACOS :                     return 1;
+	case FUNC_CHOOSE :                   break;
+	case FUNC_HLOOKUP :                  break;
+	case FUNC_VLOOKUP :                  break;
+	case FUNC_LINKS :                    break;
+	case FUNC_INPUT :                    break;
+	case FUNC_ISREF :                    break;
+	case FUNC_GETFORMULA :               break;
+	case FUNC_GETNAME :                  break;
+	case FUNC_SETVALUE :                 break;
+	case FUNC_LOG :                      break;
+	case FUNC_EXEC :                     break;
+	case FUNC_CHAR :                     break;
+	case FUNC_LOWER :                    break;
+	case FUNC_UPPER :                    break;
+	case FUNC_PROPER :                   break;
+	case FUNC_LEFT :                     break;
+	case FUNC_RIGHT :                    break;
+	case FUNC_EXACT :                    break;
+	case FUNC_TRIM :                     break;
+	case FUNC_REPLACE :                  break;
+	case FUNC_SUBSTITUTE :               break;
+	case FUNC_CODE :                     break;
+	case FUNC_NAMES :                    break;
+	case FUNC_DIRECTORY :                break;
+	case FUNC_FIND :                     break;
+	case FUNC_CELL :                     break;
+	case FUNC_ISERR :                    return 1;
+	case FUNC_ISTEXT :                   return 1;
+	case FUNC_ISNUMBER :                 return 1;
+	case FUNC_ISBLANK :                  return 1;
+	case FUNC_T :                        break;
+	case FUNC_N :                        break;
+	case FUNC_FOPEN :                    break;
+	case FUNC_FCLOSE :                   break;
+	case FUNC_FSIZE :                    break;
+	case FUNC_FREADLN :                  break;
+	case FUNC_FREAD :                    break;
+	case FUNC_FWRITELN :                 break;
+	case FUNC_FWRITE :                   break;
+	case FUNC_FPOS :                     break;
+	case FUNC_DATEVALUE :                break;
+	case FUNC_TIMEVALUE :                break;
+	case FUNC_SLN :                      break;
+	case FUNC_SYD :                      break;
+	case FUNC_DDB :                      break;
+	case FUNC_GETDEF :                   break;
+	case FUNC_REFTEXT :                  break;
+	case FUNC_TEXTREF :                  break;
+	case FUNC_INDIRECT :                 break;
+	case FUNC_REGISTER :                 break;
+	case FUNC_CALL :                     break;
+	case FUNC_ADDBAR :                   break;
+	case FUNC_ADDMENU :                  break;
+	case FUNC_ADDCOMMAND :               break;
+	case FUNC_ENABLECOMMAND :            break;
+	case FUNC_CHECKCOMMAND :             break;
+	case FUNC_RENAMECOMMAND :            break;
+	case FUNC_SHOWBAR :                  break;
+	case FUNC_DELETEMENU :               break;
+	case FUNC_DELETECOMMAND :            break;
+	case FUNC_GETCHARTITEM :             break;
+	case FUNC_DIALOGBOX :                break;
+	case FUNC_CLEAN :                    break;
+	case FUNC_MDETERM :                  break;
+	case FUNC_MINVERSE :                 break;
+	case FUNC_MMULT :                    break;
+	case FUNC_FILES :                    break;
+	case FUNC_IPMT :                     break;
+	case FUNC_PPMT :                     break;
+	case FUNC_COUNTA :                   break;
+	case FUNC_CANCELKEY :                break;
+	case FUNC_INITIATE :                 break;
+	case FUNC_REQUEST :                  break;
+	case FUNC_POKE :                     break;
+	case FUNC_EXECUTE :                  break;
+	case FUNC_TERMINATE :                break;
+	case FUNC_RESTART :                  break;
+	case FUNC_HELP :                     break;
+	case FUNC_GETBAR :                   break;
+	case FUNC_PRODUCT :                  break;
+	case FUNC_FACT :                     break;
+	case FUNC_GETCELL :                  break;
+	case FUNC_GETWORKSPACE :             break;
+	case FUNC_GETWINDOW :                break;
+	case FUNC_GETDOCUMENT :              break;
+	case FUNC_DPRODUCT :                 break;
+	case FUNC_ISNONTEXT :                break;
+	case FUNC_GETNOTE :                  break;
+	case FUNC_NOTE :                     break;
+	case FUNC_STDEVP :                   break;
+	case FUNC_VARP :                     break;
+	case FUNC_DSTDEVP :                  break;
+	case FUNC_DVARP :                    break;
+	case FUNC_TRUNC :                    break;
+	case FUNC_ISLOGICAL :                return 1;
+	case FUNC_DCOUNTA :                  break;
+	case FUNC_DELETEBAR :                break;
+	case FUNC_UNREGISTER :               break;
+	case FUNC_USDOLLAR :                 break;
+	case FUNC_FINDB :                    break;
+	case FUNC_SEARCHB :                  break;
+	case FUNC_REPLACEB :                 break;
+	case FUNC_LEFTB :                    break;
+	case FUNC_RIGHTB :                   break;
+	case FUNC_MIDB :                     break;
+	case FUNC_LENB :                     break;
+	case FUNC_ROUNDUP :                  break;
+	case FUNC_ROUNDDOWN :                break;
+	case FUNC_ASC :                      break;
+	case FUNC_DBCS :                     break;
+	case FUNC_RANK :                     break;
+	case FUNC_ADDRESS :                  break;
+	case FUNC_DAYS360 :                  break;
+	case FUNC_TODAY :                    break;
+	case FUNC_VDB :                      break;
+	case FUNC_MEDIAN :                   break;
+	case FUNC_SUMPRODUCT :               break;
+	case FUNC_SINH :                     return 1;
+	case FUNC_COSH :                     return 1;
+	case FUNC_TANH :                     return 1;
+	case FUNC_ASINH :                    return 1;
+	case FUNC_ACOSH :                    return 1;
+	case FUNC_ATANH :                    break;
+	case FUNC_DGET :                     break;
+	case FUNC_CREATEOBJECT :             break;
+	case FUNC_VOLATILE :                 break;
+	case FUNC_LASTERROR :                break;
+	case FUNC_CUSTOMUNDO :               break;
+	case FUNC_CUSTOMREPEAT :             break;
+	case FUNC_FORMULACONVERT :           break;
+	case FUNC_GETLINKINFO :              break;
+	case FUNC_TEXTBOX :                  break;
+	case FUNC_INFO :                     break;
+	case FUNC_GROUP :                    break;
+	case FUNC_GETOBJECT :                break;
+	case FUNC_DB :                       break;
+	case FUNC_PAUSE :                    break;
+	case FUNC_RESUME :                   break;
+	case FUNC_FREQUENCY :                break;
+	case FUNC_ADDTOOLBAR :               break;
+	case FUNC_DELETETOOLBAR :            break;
+	case FUNC_RESETTOOLBAR :             break;
+	case FUNC_EVALUATE :                 break;
+	case FUNC_GETTOOLBAR :               break;
+	case FUNC_GETTOOL :                  break;
+	case FUNC_SPELLINGCHECK :            break;
+	case FUNC_ERRORTYPE :                return 1;
+	case FUNC_APPTITLE :                 break;
+	case FUNC_WINDOWTITLE :              break;
+	case FUNC_SAVETOOLBAR :              break;
+	case FUNC_ENABLETOOL :               break;
+	case FUNC_PRESSTOOL :                break;
+	case FUNC_REGISTERID :               break;
+	case FUNC_GETWORKBOOK :              break;
+	case FUNC_AVEDEV :                   break;
+	case FUNC_BETADIST :                 break;
+	case FUNC_GAMMALN :                  break;
+	case FUNC_BETAINV :                  break;
+	case FUNC_BINOMDIST :                break;
+	case FUNC_CHIDIST :                  break;
+	case FUNC_CHIINV :                   break;
+	case FUNC_COMBIN :                   break;
+	case FUNC_CONFIDENCE :               break;
+	case FUNC_CRITBINOM :                break;
+	case FUNC_EVEN :                     break;
+	case FUNC_EXPONDIST :                break;
+	case FUNC_FDIST :                    break;
+	case FUNC_FINV :                     break;
+	case FUNC_FISHER :                   break;
+	case FUNC_FISHERINV :                break;
+	case FUNC_FLOOR :                    return 1;
+	case FUNC_GAMMADIST :                break;
+	case FUNC_GAMMAINV :                 break;
+	case FUNC_CEILING :                  return 1;
+	case FUNC_HYPGEOMDIST :              break;
+	case FUNC_LOGNORMDIST :              break;
+	case FUNC_LOGINV :                   break;
+	case FUNC_NEGBINOMDIST :             break;
+	case FUNC_NORMDIST :                 break;
+	case FUNC_NORMSDIST :                break;
+	case FUNC_NORMINV :                  break;
+	case FUNC_NORMSINV :                 break;
+	case FUNC_STANDARDIZE :              break;
+	case FUNC_ODD :                      break;
+	case FUNC_PERMUT :                   break;
+	case FUNC_POISSON :                  break;
+	case FUNC_TDIST :                    break;
+	case FUNC_WEIBULL :                  break;
+	case FUNC_SUMXMY2 :                  break;
+	case FUNC_SUMX2MY2 :                 break;
+	case FUNC_SUMX2PY2 :                 break;
+	case FUNC_CHITEST :                  break;
+	case FUNC_CORREL :                   break;
+	case FUNC_COVAR :                    break;
+	case FUNC_FORECAST :                 break;
+	case FUNC_FTEST :                    break;
+	case FUNC_INTERCEPT :                break;
+	case FUNC_PEARSON :                  break;
+	case FUNC_RSQ :                      break;
+	case FUNC_STEYX :                    break;
+	case FUNC_SLOPE :                    break;
+	case FUNC_TTEST :                    break;
+	case FUNC_PROB :                     break;
+	case FUNC_DEVSQ :                    break;
+	case FUNC_GEOMEAN :                  break;
+	case FUNC_HARMEAN :                  break;
+	case FUNC_SUMSQ :                    break;
+	case FUNC_KURT :                     break;
+	case FUNC_SKEW :                     break;
+	case FUNC_ZTEST :                    break;
+	case FUNC_LARGE :                    break;
+	case FUNC_SMALL :                    break;
+	case FUNC_QUARTILE :                 break;
+	case FUNC_PERCENTILE :               break;
+	case FUNC_PERCENTRANK :              break;
+	case FUNC_MODE :                     break;
+	case FUNC_TRIMMEAN :                 break;
+	case FUNC_TINV :                     break;
+	case FUNC_MOVIECOMMAND :             break;
+	case FUNC_GETMOVIE :                 break;
+	case FUNC_CONCATENATE :              break;
+	case FUNC_POWER :                    break;
+	case FUNC_PIVOTADDDATA :             break;
+	case FUNC_GETPIVOTTABLE :            break;
+	case FUNC_GETPIVOTFIELD :            break;
+	case FUNC_GETPIVOTITEM :             break;
+	case FUNC_RADIANS :                  break;
+	case FUNC_DEGREES :                  break;
+	case FUNC_SUBTOTAL :                 break;
+	case FUNC_SUMIF :                    break;
+	case FUNC_COUNTIF :                  break;
+	case FUNC_COUNTBLANK :               break;
+	case FUNC_SCENARIOGET :              break;
+	case FUNC_OPTIONSLISTSGET :          break;
+	case FUNC_ISPMT :                    break;
+	case FUNC_DATEDIF :                  break;
+	case FUNC_DATESTRING :               break;
+	case FUNC_NUMBERSTRING :             break;
+	case FUNC_ROMAN :                    break;
+	case FUNC_OPENDIALOG :               break;
+	case FUNC_SAVEDIALOG :               break;
+	case FUNC_VIEWGET :                  break;
+	case FUNC_GETPIVOTDATA :             break;
+	case FUNC_HYPERLINK :                break;
+	case FUNC_PHONETIC :                 break;
+	case FUNC_AVERAGEA :                 break;
+	case FUNC_MAXA :                     break;
+	case FUNC_MINA :                     break;
+	case FUNC_STDEVPA :                  break;
+	case FUNC_VARPA :                    break;
+	case FUNC_STDEVA :                   break;
+	case FUNC_VARA :                     break;
+	case FUNC_BAHTTEXT :                 break;
+	case FUNC_THAIDAYOFWEEK :            break;
+	case FUNC_THAIDIGIT :                break;
+	case FUNC_THAIMONTHOFYEAR :          break;
+	case FUNC_THAINUMSOUND :             break;
+	case FUNC_THAINUMSTRING :            break;
+	case FUNC_THAISTRINGLENGTH :         break;
+	case FUNC_ISTHAIDIGIT :              return 1;
+	case FUNC_ROUNDBAHTDOWN :            break;
+	case FUNC_ROUNDBAHTUP :              break;
+	case FUNC_THAIYEAR :                 break;
+	case FUNC_RTD :                      break;
+	case FUNC_CUBEVALUE :                break;
+	case FUNC_CUBEMEMBER :               break;
+	case FUNC_CUBEMEMBERPROPERTY :       break;
+	case FUNC_CUBERANKEDMEMBER :         break;
+	case FUNC_HEX2BIN :                  break;
+	case FUNC_HEX2DEC :                  break;
+	case FUNC_HEX2OCT :                  break;
+	case FUNC_DEC2BIN :                  break;
+	case FUNC_DEC2HEX :                  break;
+	case FUNC_DEC2OCT :                  break;
+	case FUNC_OCT2BIN :                  break;
+	case FUNC_OCT2HEX :                  break;
+	case FUNC_OCT2DEC :                  break;
+	case FUNC_BIN2DEC :                  break;
+	case FUNC_BIN2OCT :                  break;
+	case FUNC_BIN2HEX :                  break;
+	case FUNC_IMSUB :                    break;
+	case FUNC_IMDIV :                    break;
+	case FUNC_IMPOWER :                  break;
+	case FUNC_IMABS :                    break;
+	case FUNC_IMSQRT :                   break;
+	case FUNC_IMLN :                     break;
+	case FUNC_IMLOG2 :                   break;
+	case FUNC_IMLOG10 :                  break;
+	case FUNC_IMSIN :                    break;
+	case FUNC_IMCOS :                    break;
+	case FUNC_IMEXP :                    break;
+	case FUNC_IMARGUMENT :               break;
+	case FUNC_IMCONJUGATE :              break;
+	case FUNC_IMAGINARY :                break;
+	case FUNC_IMREAL :                   break;
+	case FUNC_COMPLEX :                  break;
+	case FUNC_IMSUM :                    break;
+	case FUNC_IMPRODUCT :                break;
+	case FUNC_SERIESSUM :                break;
+	case FUNC_FACTDOUBLE :               break;
+	case FUNC_SQRTPI :                   break;
+	case FUNC_QUOTIENT :                 break;
+	case FUNC_DELTA :                    break;
+	case FUNC_GESTEP :                   break;
+	case FUNC_ISEVEN :                   return 1;
+	case FUNC_ISODD :                    return 1;
+	case FUNC_MROUND :                   break;
+	case FUNC_ERF :                      break;
+	case FUNC_ERFC :                     break;
+	case FUNC_BESSELJ :                  break;
+	case FUNC_BESSELK :                  break;
+	case FUNC_BESSELY :                  break;
+	case FUNC_BESSELI :                  break;
+	case FUNC_XIRR :                     break;
+	case FUNC_XNPV :                     break;
+	case FUNC_PRICEMAT :                 break;
+	case FUNC_YIELDMAT :                 break;
+	case FUNC_INTRATE :                  break;
+	case FUNC_RECEIVED :                 break;
+	case FUNC_DISC :                     break;
+	case FUNC_PRICEDISC :                break;
+	case FUNC_YIELDDISC :                break;
+	case FUNC_TBILLEQ :                  break;
+	case FUNC_TBILLPRICE :               break;
+	case FUNC_TBILLYIELD :               break;
+	case FUNC_PRICE :                    break;
+	case FUNC_YIELD :                    break;
+	case FUNC_DOLLARDE :                 break;
+	case FUNC_DOLLARFR :                 break;
+	case FUNC_NOMINAL :                  break;
+	case FUNC_EFFECT :                   break;
+	case FUNC_CUMPRINC :                 break;
+	case FUNC_CUMIPMT :                  break;
+	case FUNC_EDATE :                    break;
+	case FUNC_EOMONTH :                  break;
+	case FUNC_YEARFRAC :                 break;
+	case FUNC_COUPDAYBS :                break;
+	case FUNC_COUPDAYS :                 break;
+	case FUNC_COUPDAYSNC :               break;
+	case FUNC_COUPNCD :                  break;
+	case FUNC_COUPNUM :                  break;
+	case FUNC_COUPPCD :                  break;
+	case FUNC_DURATION :                 break;
+	case FUNC_MDURATION :                break;
+	case FUNC_ODDLPRICE :                break;
+	case FUNC_ODDLYIELD :                break;
+	case FUNC_ODDFPRICE :                break;
+	case FUNC_ODDFYIELD :                break;
+	case FUNC_RANDBETWEEN :              break;
+	case FUNC_WEEKNUM :                  break;
+	case FUNC_AMORDEGRC :                break;
+	case FUNC_AMORLINC :                 break;
+	case FUNC_CONVERT :                  break;
+	case FUNC_ACCRINT :                  break;
+	case FUNC_ACCRINTM :                 break;
+	case FUNC_WORKDAY :                  break;
+	case FUNC_NETWORKDAYS :              break;
+	case FUNC_GCD :                      break;
+	case FUNC_MULTINOMIAL :              break;
+	case FUNC_LCM :                      break;
+	case FUNC_FVSCHEDULE :               break;
+	case FUNC_CUBEKPIMEMBER :            break;
+	case FUNC_CUBESET :                  break;
+	case FUNC_CUBESETCOUNT :             break;
+	case FUNC_IFERROR :                  break;
+	case FUNC_COUNTIFS :                 break;
+	case FUNC_SUMIFS :                   break;
+	case FUNC_AVERAGEIF :                break;
+	case FUNC_AVERAGEIFS :               break;
+	case FUNC_AGGREGATE :                break;
+	case FUNC_BINOM_DIST :               break;
+	case FUNC_BINOM_INV :                break;
+	case FUNC_CONFIDENCE_NORM :          break;
+	case FUNC_CONFIDENCE_T :             break;
+	case FUNC_CHISQ_TEST :               break;
+	case FUNC_F_TEST :                   break;
+	case FUNC_COVARIANCE_P :             break;
+	case FUNC_COVARIANCE_S :             break;
+	case FUNC_EXPON_DIST :               break;
+	case FUNC_GAMMA_DIST :               break;
+	case FUNC_GAMMA_INV :                break;
+	case FUNC_MODE_MULT :                break;
+	case FUNC_MODE_SNGL :                break;
+	case FUNC_NORM_DIST :                break;
+	case FUNC_NORM_INV :                 break;
+	case FUNC_PERCENTILE_EXC :           break;
+	case FUNC_PERCENTILE_INC :           break;
+	case FUNC_PERCENTRANK_EXC :          break;
+	case FUNC_PERCENTRANK_INC :          break;
+	case FUNC_POISSON_DIST :             break;
+	case FUNC_QUARTILE_EXC :             break;
+	case FUNC_QUARTILE_INC :             break;
+	case FUNC_RANK_AVG :                 break;
+	case FUNC_RANK_EQ :                  break;
+	case FUNC_STDEV_S :                  break;
+	case FUNC_STDEV_P :                  break;
+	case FUNC_T_DIST :                   break;
+	case FUNC_T_DIST_2T :                break;
+	case FUNC_T_DIST_RT :                break;
+	case FUNC_T_INV :                    break;
+	case FUNC_T_INV_2T :                 break;
+	case FUNC_VAR_S :                    break;
+	case FUNC_VAR_P :                    break;
+	case FUNC_WEIBULL_DIST :             break;
+	case FUNC_NETWORKDAYS_INTL :         break;
+	case FUNC_WORKDAY_INTL :             break;
+	case FUNC_ECMA_CEILING :             break;
+	case FUNC_ISO_CEILING :              break;
+	case FUNC_BETA_DIST :                break;
+	case FUNC_BETA_INV :                 break;
+	case FUNC_CHISQ_DIST :               break;
+	case FUNC_CHISQ_DIST_RT :            break;
+	case FUNC_CHISQ_INV :                break;
+	case FUNC_CHISQ_INV_RT :             break;
+	case FUNC_F_DIST :                   break;
+	case FUNC_F_DIST_RT :                break;
+	case FUNC_F_INV :                    break;
+	case FUNC_F_INV_RT :                 break;
+	case FUNC_HYPGEOM_DIST :             break;
+	case FUNC_LOGNORM_DIST :             break;
+	case FUNC_LOGNORM_INV :              break;
+	case FUNC_NEGBINOM_DIST :            break;
+	case FUNC_NORM_S_DIST :              break;
+	case FUNC_NORM_S_INV :               break;
+	case FUNC_T_TEST :                   break;
+	case FUNC_Z_TEST :                   break;
+	case FUNC_ERF_PRECISE :              break;
+	case FUNC_ERFC_PRECISE :             break;
+	case FUNC_GAMMALN_PRECISE :          break;
+	case FUNC_CEILING_PRECISE :          break;
+	case FUNC_FLOOR_PRECISE :            break;
+	}
+	return -1;
+}
 
 
 function_basenode_t::function_basenode_t(CGlobalRecords& gRecords, expr_function_code_t f) :
@@ -1914,13 +2638,59 @@ void function_basenode_t::GetResultEstimate(estimated_formula_result_t &dst) con
 
 size_t function_basenode_t::GetSize(bool include_subtree) const
 {
-	return 0;
+	size_t len = 1+2; // OP_FUNC
+
+	if (ExcelFunctionHasNumberOfFixedArgs(func))
+	{
+		len += 1;
+	}
+	
+	if (include_subtree)
+	{
+		size_t chcnt = GetNumberOfChilds();
+
+#if defined(XL_WITH_ASSERTIONS)
+		size_t argcnt = KnownNumberOfArgsForExcelFunction(func);
+		XL_ASSERT(chcnt == argcnt ? argcnt >= 0 : true); // make sure we match the known number of args
+#endif
+
+		while (chcnt-- > 0)
+		{
+			XL_ASSERT(GetChild(chcnt));
+			len += GetChild(chcnt)->GetSize(include_subtree);
+		}
+	}
+	return len;
 }
 signed8_t function_basenode_t::DumpData(CUnit &dst, bool include_subtree) const
 {
 	signed8_t errcode = NO_ERRORS;
+	size_t argcnt = KnownNumberOfArgsForExcelFunction(func);
 
-	errcode |= dst.AddValue8(OP_STR);
+	if (include_subtree)
+	{
+		size_t chcnt = GetNumberOfChilds();
+		size_t idx;
+
+		for (idx = 0; idx < chcnt; idx++)
+		{
+			XL_ASSERT(GetChild(idx));
+			errcode |= GetChild(idx)->DumpData(dst, include_subtree);
+		}
+	}
+
+	if (argcnt >= 0)
+	{
+		XL_ASSERT(GetNumberOfChilds() == argcnt);
+		errcode |= dst.AddValue8(OP_FUNC);
+	}
+	else
+	{
+		errcode |= dst.AddValue8(OP_FUNCVAR);
+		errcode |= dst.AddValue8((unsigned16_t)GetNumberOfChilds() & 0x7F); // no prompt for user: 0x80 not set
+	}
+
+	errcode |= dst.AddValue16((unsigned16_t)func & 0x7FFF); // no command equivalent function: 0x8000 not set
 
 	return errcode;
 }
@@ -1937,18 +2707,6 @@ z_ary_func_node_t::~z_ary_func_node_t()
 
 }
 
-size_t z_ary_func_node_t::GetSize(bool include_subtree) const
-{
-	return 0;
-}
-signed8_t z_ary_func_node_t::DumpData(CUnit &dst, bool include_subtree) const
-{
-	signed8_t errcode = NO_ERRORS;
-
-	errcode |= dst.AddValue8(OP_STR);
-
-	return errcode;
-}
 
 
 
@@ -1973,18 +2731,6 @@ unsigned16_t unary_func_node_t::GetNumberOfChilds(void) const
 	return 1;
 }
 
-size_t unary_func_node_t::GetSize(bool include_subtree) const
-{
-	return 0;
-}
-signed8_t unary_func_node_t::DumpData(CUnit &dst, bool include_subtree) const
-{
-	signed8_t errcode = NO_ERRORS;
-
-	errcode |= dst.AddValue8(OP_STR);
-
-	return errcode;
-}
 
 
 
@@ -2010,18 +2756,6 @@ unsigned16_t binary_func_node_t::GetNumberOfChilds(void) const
 return 2;
 }
 
-size_t binary_func_node_t::GetSize(bool include_subtree) const
-{
-	return 0;
-}
-signed8_t binary_func_node_t::DumpData(CUnit &dst, bool include_subtree) const
-{
-	signed8_t errcode = NO_ERRORS;
-
-	errcode |= dst.AddValue8(OP_STR);
-
-	return errcode;
-}
 
 
 
@@ -2083,18 +2817,6 @@ function_basenode_t& n_ary_func_node_t::PushArg(expression_node_t* arg)
 	return *this;
 }
 
-size_t n_ary_func_node_t::GetSize(bool include_subtree) const
-{
-	return 0;
-}
-signed8_t n_ary_func_node_t::DumpData(CUnit &dst, bool include_subtree) const
-{
-	signed8_t errcode = NO_ERRORS;
-
-	errcode |= dst.AddValue8(OP_STR);
-
-	return errcode;
-}
 
 
 
@@ -2183,13 +2905,13 @@ text_value_node_t *expression_node_factory_t::text(const u16string& value)
 {
 	return new text_value_node_t(m_GlobalRecords, value);
 }
-cell_ref_node_t *expression_node_factory_t::cell_ref(const cell_t& cellref, cell_ref_attr_t attr)
+cell_deref_node_t *expression_node_factory_t::cell(const cell_t& cellref, cell_addr_mode_t attr, cell_op_class_t opclass)
 {
-	return new cell_ref_node_t(m_GlobalRecords, cellref, attr);
+	return new cell_deref_node_t(m_GlobalRecords, cellref, attr, opclass);
 }
-cell_ref_node_t *expression_node_factory_t::cell_ref(const cell_t& cellref, const worksheet* ws, cell_ref_attr_t attr)
+cell_deref_node_t *expression_node_factory_t::cell(const cell_t& cellref, const worksheet* ws, cell_addr_mode_t attr, cell_op_class_t opclass)
 {
-	return new cell_ref_node_t(m_GlobalRecords, cellref, ws, attr);
+	return new cell_deref_node_t(m_GlobalRecords, cellref, ws, attr, opclass);
 }
 unary_op_node_t *expression_node_factory_t::op(expr_operator_code_t op, expression_node_t* arg)
 {

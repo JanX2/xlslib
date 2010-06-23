@@ -103,7 +103,7 @@ int main(int argc, char *argv[])
 #if 01
 	rv |= StandardTest("a2fa7ad755b8bf18fd84117d1e0170db");
 #endif
-	rv |= StandardTest2("3a939d18dd58887d153004f0210d3d6c");
+	rv |= StandardTest2("10cf918df1ff423f6d182c791b1f0d85");
 #if 01
 	rv |= BlankTest("e80a45e13f92863f0d2dffaca7c3834c");
 
@@ -219,8 +219,8 @@ static expression_node_t *build_formula(int row, int col, worksheet *sh3, worksh
 
 	cell_t *cref = sh4->FindCellOrMakeBlank(row+1, col+1);
 	assert(cref);
-	//expression_node_t *root = maker.op(OP_ADD, maker.integer(val), maker.cell_ref(*cref, sh4, CELLREF_RELATIVE_A1));
-	expression_node_t *root = maker.integer(val);
+	expression_node_t *root = maker.op(OP_ADD, maker.integer(val), maker.cell(*cref, sh4, CELL_RELATIVE_A1));
+	//expression_node_t *root = maker.integer(val);
 
 	return root;
 }

@@ -1233,6 +1233,18 @@ namespace xlslib_core
 		FUNC_FLOOR_PRECISE = xlfFloor_precise ,
 	};
 
+	/**
+	 @return the number of arguments for this Excel function when it is known to require a fixed number of arguments. 
+	 
+	 Returns -1 when the Excel function has a variable number of arguments.
+	*/
+	int KnownNumberOfArgsForExcelFunction(expr_function_code_t func);
+	inline bool ExcelFunctionHasNumberOfFixedArgs(expr_function_code_t func)
+	{
+		return KnownNumberOfArgsForExcelFunction(func) >= 0;
+	}
+
+
 	class estimated_formula_result_t
 	{
 	public:
@@ -1415,20 +1427,28 @@ namespace xlslib_core
 		CGlobalRecords& GetGlobalRecords(void) const { return m_GlobalRecords; }; 
 	};
 
-	typedef enum cell_ref_attr_t
+	typedef enum cell_addr_mode_t
 	{
-		CELLREF_RELATIVE_A1   = 0xC000,
-		CELLREF_ABSOLUTE_A$1  = 0x8000,
-		CELLREF_ABSOLUTE_$A1  = 0x4000,
-		CELLREF_ABSOLUTE_$A$1 = 0,
-	} cell_ref_attr_t;
+		CELL_RELATIVE_A1   = 0xC000,
+		CELL_ABSOLUTE_A$1  = 0x8000,
+		CELL_ABSOLUTE_$A1  = 0x4000,
+		CELL_ABSOLUTE_$A$1 = 0,
+	} cell_addr_mode_t;
 
-	class cell_ref_node_t : public terminal_node_t
+	// 'operand class'
+	typedef enum cell_op_class_t
+	{
+		CELLOP_AS_VALUE     = 0x40, //  V  - value, i.e. the value stored in the cell
+		CELLOP_AS_REFERENCE = 0x20, // [R] - reference, i.e. the cell address itself 
+		CELLOP_AS_ARRAY     = 0x60, //  A  - array, i.e. the cell address in {...} array form
+	} cell_op_class_t;
+
+	class cell_deref_node_t : public terminal_node_t
 	{
 	public:
-		cell_ref_node_t(CGlobalRecords& gRecords, const cell_t& value, cell_ref_attr_t attr);
-		cell_ref_node_t(CGlobalRecords& gRecords, const cell_t& value, const worksheet* ws, cell_ref_attr_t attr);
-		virtual ~cell_ref_node_t();
+		cell_deref_node_t(CGlobalRecords& gRecords, const cell_t& value, cell_addr_mode_t attr, cell_op_class_t opclass = CELLOP_AS_VALUE);
+		cell_deref_node_t(CGlobalRecords& gRecords, const cell_t& value, const worksheet* ws, cell_addr_mode_t attr, cell_op_class_t opclass = CELLOP_AS_VALUE);
+		virtual ~cell_deref_node_t();
 
 	public:
 		virtual size_t GetSize(bool include_subtree = false) const;
@@ -1439,8 +1459,29 @@ namespace xlslib_core
 	protected:
 		const cell_t* value;
 		const worksheet* worksheet_ref;
-		cell_ref_attr_t attr;
+		cell_addr_mode_t attr;
+		cell_op_class_t operand_class;
 	};
+
+	class cellarea_deref_node_t : public cell_deref_node_t
+	{
+	public:
+		cellarea_deref_node_t(CGlobalRecords& gRecords, const cell_t& upper_left_corner, const cell_t& lower_right_corner, cell_addr_mode_t attr, cell_op_class_t opclass = CELLOP_AS_VALUE);
+		cellarea_deref_node_t(CGlobalRecords& gRecords, const cell_t& upper_left_corner, const cell_t& lower_right_corner, const worksheet* ws, cell_addr_mode_t attr, cell_op_class_t opclass = CELLOP_AS_VALUE);
+		virtual ~cellarea_deref_node_t();
+
+	public:
+		virtual size_t GetSize(bool include_subtree = false) const;
+		virtual signed8_t DumpData(CUnit &dst, bool include_subtree = false) const;
+
+		virtual void GetResultEstimate(estimated_formula_result_t &dst) const;
+
+	protected:
+		// parent class' [const cell_t* value] ~ upper_left_corner;
+		inline const cell_t* upper_left_corner(void) const { return value; };
+		const cell_t* lower_right_corner;
+	};
+
 
 
 	class operator_basenode_t : public expression_node_t
@@ -1514,8 +1555,8 @@ namespace xlslib_core
 		virtual ~z_ary_func_node_t();
 
 	public:
-		virtual size_t GetSize(bool include_subtree = false) const;
-		virtual signed8_t DumpData(CUnit &dst, bool include_subtree = false) const;
+		//virtual size_t GetSize(bool include_subtree = false) const;
+		//virtual signed8_t DumpData(CUnit &dst, bool include_subtree = false) const;
 	};
 
 	class unary_func_node_t : public function_basenode_t
@@ -1528,8 +1569,8 @@ namespace xlslib_core
 		virtual expression_node_t* GetChild(unsigned16_t index) const; 
 		virtual unsigned16_t GetNumberOfChilds(void) const; 
 
-		virtual size_t GetSize(bool include_subtree = false) const;
-		virtual signed8_t DumpData(CUnit &dst, bool include_subtree = false) const;
+		//virtual size_t GetSize(bool include_subtree = false) const;
+		//virtual signed8_t DumpData(CUnit &dst, bool include_subtree = false) const;
 
 	protected:
 		expression_node_t *arg;
@@ -1545,8 +1586,8 @@ namespace xlslib_core
 		virtual expression_node_t* GetChild(unsigned16_t index) const; 
 		virtual unsigned16_t GetNumberOfChilds(void) const; 
 
-		virtual size_t GetSize(bool include_subtree = false) const;
-		virtual signed8_t DumpData(CUnit &dst, bool include_subtree = false) const;
+		//virtual size_t GetSize(bool include_subtree = false) const;
+		//virtual signed8_t DumpData(CUnit &dst, bool include_subtree = false) const;
 
 	protected:
 		expression_node_t *args[2];
@@ -1564,8 +1605,8 @@ namespace xlslib_core
 
 		virtual function_basenode_t& PushArg(expression_node_t* arg);
 
-		virtual size_t GetSize(bool include_subtree = false) const;
-		virtual signed8_t DumpData(CUnit &dst, bool include_subtree = false) const;
+		//virtual size_t GetSize(bool include_subtree = false) const;
+		//virtual signed8_t DumpData(CUnit &dst, bool include_subtree = false) const;
 
 	protected:
 		unsigned16_t arg_arrsize;
@@ -1610,8 +1651,8 @@ namespace xlslib_core
 		missing_arg_node_t *missing_arg(void);
 		text_value_node_t *text(const std::string& value);
 		text_value_node_t *text(const u16string& value);
-		cell_ref_node_t *cell_ref(const cell_t& value, cell_ref_attr_t attr);
-		cell_ref_node_t *cell_ref(const cell_t& value, const worksheet* ws, cell_ref_attr_t attr);
+		cell_deref_node_t *cell(const cell_t& value, cell_addr_mode_t attr, cell_op_class_t opclass = CELLOP_AS_VALUE);
+		cell_deref_node_t *cell(const cell_t& value, const worksheet* ws, cell_addr_mode_t attr, cell_op_class_t opclass = CELLOP_AS_VALUE);
 		unary_op_node_t *op(expr_operator_code_t op, expression_node_t* arg);
 		binary_op_node_t *op(expr_operator_code_t op, expression_node_t* arg1, expression_node_t* arg2);
 		z_ary_func_node_t *f(expr_function_code_t func);
