@@ -1234,15 +1234,16 @@ namespace xlslib_core
 	};
 
 	/**
-	 @return the number of arguments for this Excel function when it is known to require a fixed number of arguments. 
+	 @return a bit for each number of arguments supported by this function.
 	 
-	 Returns -1 when the Excel function has a variable number of arguments.
+	 @note
+	 Bit 0 (0x0001U) indicates whether the function accepts @e zero (0) arguments.
+
+	 Bit 1..14 indicate whether the function accepts 1..14 arguments.
+
+	 Bit 15 (0x8000U) indicates the function accepts more than 14 arguments.
 	*/
-	int KnownNumberOfArgsForExcelFunction(expr_function_code_t func);
-	inline bool ExcelFunctionHasNumberOfFixedArgs(expr_function_code_t func)
-	{
-		return KnownNumberOfArgsForExcelFunction(func) >= 0;
-	}
+	unsigned16_t NumberOfArgsForExcelFunction(expr_function_code_t func);
 
 
 	class estimated_formula_result_t

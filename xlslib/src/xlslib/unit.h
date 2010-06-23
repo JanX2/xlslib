@@ -63,7 +63,8 @@ namespace xlslib_core
 	class CDataStorage;
 	class CGlobalRecords;
 
-  class CUnit {
+  class CUnit 
+  {
     // Attributes
   protected:
 
@@ -144,7 +145,7 @@ namespace xlslib_core
     signed8_t AddValue16(unsigned16_t newval);
     signed8_t AddValue32(unsigned32_t newval);
     signed8_t AddValue64(unsigned64_t newval);
-    signed8_t AddValue64(unsigned64_t* newvalP);
+	signed8_t AddValue64FP(double newval);
 
     signed8_t SetValueAt8(unsigned8_t newval, unsigned32_t index);							// Modify specific position
     signed8_t SetValueAt16(unsigned16_t newval, unsigned32_t index);

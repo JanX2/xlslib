@@ -233,11 +233,39 @@ signed8_t CUnit::AddValue64(unsigned64_t newval)
 
    return errcode;
 }
-signed8_t CUnit::AddValue64(unsigned64_t* newvalP)
-{
-   return CUnit::AddValue64(*newvalP);
-}
 
+/************************************************
+************************************************/
+
+signed8_t CUnit::AddValue64FP(double newval)
+{
+	signed8_t errcode = NO_ERRORS;
+
+#include <xls_pshpack1.h>
+
+	union 
+	{
+		double f;
+		unsigned64_t i;
+		unsigned8_t b[8];
+	} v;
+	
+#include <xls_poppack.h>
+
+	v.f = newval;
+
+	if(AddValue8(BYTE_0(v.i))) errcode = GENERAL_ERROR;
+	if(AddValue8(BYTE_1(v.i))) errcode = GENERAL_ERROR;
+	if(AddValue8(BYTE_2(v.i))) errcode = GENERAL_ERROR;
+	if(AddValue8(BYTE_3(v.i))) errcode = GENERAL_ERROR;
+
+	if(AddValue8(BYTE_4(v.i))) errcode = GENERAL_ERROR;
+	if(AddValue8(BYTE_5(v.i))) errcode = GENERAL_ERROR;
+	if(AddValue8(BYTE_6(v.i))) errcode = GENERAL_ERROR;
+	if(AddValue8(BYTE_7(v.i))) errcode = GENERAL_ERROR;
+
+	return errcode;
+}
 
 /************************************************
  ************************************************/

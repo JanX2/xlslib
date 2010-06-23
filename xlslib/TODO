@@ -32,19 +32,6 @@ Code cleanup
        - xlslib basic types, which are portable - thanks to the first two items here.
 
 
-[GerH] kill the sections marked:
-
-  #if 0
-  ...
-  #endif
-  
-       These are mostly remnants of old code, dangling there pending review.
-       
-
-[GerH] create a set of 'real' 'make check' tests for xlslib. See whether we can do that using the autoconf/autom4te
-       toolset.
-       
-
 [GerH] regenerate PDF from manual.xls
       
       

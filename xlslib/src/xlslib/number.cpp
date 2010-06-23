@@ -109,9 +109,7 @@ CNumber::CNumber(CDataStorage &datastore, const number_t& numdef):
 		val |= 0x2;										// Integral type
 		AddValue32(val);
 	} else {
-		double val = numdef.GetDouble();
-
-		AddValue64((unsigned64_t*)&val);
+		AddValue64FP(numdef.GetDouble());
 	}
 
 	SetRecordLength(GetDataSize()-4);
