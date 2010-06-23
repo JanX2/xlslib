@@ -175,7 +175,7 @@ class format_t
       void SetFormatStr(const u16string& fmtstr) {formatstr = fmtstr;};
 
 	public:
-		static const unsigned16_t format2index(format_number_t idx);
+		static unsigned16_t format2index(format_number_t idx);
 
     private:
       unsigned16_t index;

@@ -138,8 +138,8 @@ size_t HPSFitem::GetSize()
 }
 
 HPSFdoc::HPSFdoc(CDataStorage &datastore, docType_t dt) :
-	docType(dt),
-	CUnit(datastore)
+	CUnit(datastore),
+	docType(dt)
 {
 
 }

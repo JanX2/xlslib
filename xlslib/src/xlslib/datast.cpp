@@ -67,38 +67,22 @@ CDataStorage class Implementation
 */
 
 CDataStorage::CDataStorage() :
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
     store(),
+	m_DataSize(0),
 	m_FlushStack(),
-	m_FlushLastEndLevel(0),
-#else
-	data(),
-#endif
-	m_DataSize(0)
+	m_FlushLastEndLevel(0)
 {
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 	store.reserve(300);
 	m_FlushLastEndPos = 0; // .begin();
-#else
-	data.reserve(100);
-#endif
 }
-	CDataStorage::CDataStorage(size_t blobs) :
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+CDataStorage::CDataStorage(size_t blobs) :
     store(),
+	m_DataSize(0),
 	m_FlushStack(),
-	m_FlushLastEndLevel(0),
-#else
-	data(), 
-#endif
-	m_DataSize(0)
+	m_FlushLastEndLevel(0)
 {
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 	store.reserve(blobs);
 	m_FlushLastEndPos = 0; // m_FlushStack.begin();
-#else
-	data.reserve(blobs);
-#endif
 }
 
 CDataStorage::~CDataStorage()

@@ -52,8 +52,8 @@ CUnit class implementation
 // Default constructor
 CUnit::CUnit(CDataStorage &datastore) :
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
-	m_Store(datastore),
 	m_Index(INVALID_STORE_INDEX),
+	m_Store(datastore),
 	m_Backpatching_Level(0)
 #else
 	m_nSize(0),
@@ -69,8 +69,8 @@ CUnit::CUnit(CDataStorage &datastore) :
 
 	CUnit::CUnit(const CUnit& orig) :
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
-	m_Store(orig.m_Store),
 	m_Index(INVALID_STORE_INDEX),
+	m_Store(orig.m_Store),
 	m_Backpatching_Level(0)
 #else
 	m_nSize(orig.m_nSize),

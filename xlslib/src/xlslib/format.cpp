@@ -80,7 +80,7 @@ static const unsigned16_t format2index_arr[] =
    FMTCODE_TEXT
 };
 
-const unsigned16_t format_t::format2index(format_number_t idx)
+unsigned16_t format_t::format2index(format_number_t idx)
 {
 	if ((unsigned16_t)idx > FMT_TEXT)
 		idx = FMT_GENERAL;
@@ -96,10 +96,10 @@ const unsigned16_t format_t::format2index(format_number_t idx)
 */
 
 format_t::format_t(const format_t& orig) :
-m_GlobalRecords(orig.m_GlobalRecords),
-m_usage_counter(0),
 index(0),
-formatstr(orig.formatstr)
+formatstr(orig.formatstr),
+m_usage_counter(0),
+m_GlobalRecords(orig.m_GlobalRecords)
 {
 	m_GlobalRecords.AddFormat(this);
 }
@@ -149,8 +149,8 @@ CFormat::~CFormat()
 format_t::format_t(CGlobalRecords& gRecords, const std::string& fmtstr) :
 	index(0),
 	formatstr(),
-	m_GlobalRecords(gRecords),
-	m_usage_counter(0)
+	m_usage_counter(0),
+	m_GlobalRecords(gRecords)
 {
 	gRecords.char2str16(fmtstr, formatstr);
 }
@@ -158,8 +158,8 @@ format_t::format_t(CGlobalRecords& gRecords, const std::string& fmtstr) :
 format_t::format_t(CGlobalRecords& gRecords, const std::ustring& fmtstr) :
 index(0),
 formatstr(),
-m_GlobalRecords(gRecords),
-m_usage_counter(0)
+m_usage_counter(0),
+m_GlobalRecords(gRecords)
 {
 	gRecords.wide2str16(fmtstr, formatstr);
 }
@@ -167,8 +167,8 @@ m_usage_counter(0)
 format_t::format_t(CGlobalRecords& gRecords, const u16string& fmtstr) :
 index(0),
 formatstr(fmtstr),
-m_GlobalRecords(gRecords),
-m_usage_counter(0)
+m_usage_counter(0),
+m_GlobalRecords(gRecords)
 {
 }
 

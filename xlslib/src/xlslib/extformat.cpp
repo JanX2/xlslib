@@ -279,8 +279,8 @@ xf_t::xf_t(xlslib_core::CGlobalRecords& gRecords, bool userXF, bool isCell, bool
 	index(0),
 
 	font(NULL),
-	formatIndex(FMTCODE_GENERAL),
 	format(NULL),
+	formatIndex(FMTCODE_GENERAL),
 	halign(0),
 	valign(0),
 	indent(0),
@@ -342,8 +342,8 @@ xf_t::xf_t(const xf_t& orig) :
 	index(0),
 
 	font(NULL),							// yes, need this as SetFont below depends on a set value
-	formatIndex(orig.formatIndex),
 	format(NULL),
+	formatIndex(orig.formatIndex),
 	halign(orig.halign),
 	valign(orig.valign),
 	indent(orig.indent),
@@ -390,8 +390,8 @@ xf_t::xf_t(CGlobalRecords& gRecords, const xf_init_t& xfinit) :
 	index(0),
 
 	font(NULL),
-	formatIndex(FMTCODE_GENERAL),
 	format(NULL),
+	formatIndex(FMTCODE_GENERAL),
 	halign(0),
 	valign(0),
 	indent(0),

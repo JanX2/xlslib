@@ -67,7 +67,7 @@ number_t::number_t(CGlobalRecords& gRecords,
 	num()
 {
 	// 536870911 >= numval >= -536870912
-	if(numval <= 0x1FFFFFFF && numval >= 0xE0000000) {
+	if(numval <= 0x1FFFFFFF && numval >= (signed32_t)0xE0000000) {
 		num.intNum = numval;
 	} else {
 		isDouble	= true;

@@ -70,7 +70,7 @@ namespace xlslib_core
 
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 
-#define INVALID_STORE_INDEX			0x80000000 // marks a 'not yet set up' unit store
+#define INVALID_STORE_INDEX			((signed32_t)0x80000000) // marks a 'not yet set up' unit store
 	  
 	friend class CDataStorage;
 
