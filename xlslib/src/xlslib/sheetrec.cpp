@@ -227,9 +227,10 @@ CUnit* worksheet::DumpData(CDataStorage &datastore, size_t offset)
 			{
 			   // Get sizes of next RowBlock
 			   rowblocksize_t rbsize;
+#if defined(XL_WITH_ASSERTIONS)
 			   bool state = GetRowBlockSizes(rbsize);
 			   XL_ASSERT(rb == numrb - 1 ? state == false : state == true);
-
+#endif
 			   // Update the offset accumulator and create the next DBCELL's offset
 			   rb_size_acc += rbsize.rowandcell_size;
 			   size_t dbcelloffset = offset + BOF_RECORD_SIZE + index_size + rb_size_acc;

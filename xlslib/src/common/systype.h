@@ -271,6 +271,7 @@ that code like this will compile as expected in all conditions:
 			xlslib_report_failed_assertion(#expr, __FILE__, __LINE__, __FUNCTION__);\
 		}																			\
 	}  while (0)
+#define XL_WITH_ASSERTIONS			1
 
 /*
 override for 'release' type builds: the compiler optimizer will make sure this
@@ -282,6 +283,7 @@ will be properly 'munched'.
 #undef XL_ASSERT
 #define XL_ASSERT(expr)																\
 	(void)0
+#undef XL_WITH_ASSERTIONS			
 
 #endif
 

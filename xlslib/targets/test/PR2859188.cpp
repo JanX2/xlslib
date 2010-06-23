@@ -65,7 +65,7 @@ int test1(void)
 		cerr << "test1 failed: I/O failure: " << err << std::endl;
 		return -1;
 	}
-	if (0 != check_file("PR2859188-1.xls", "d0f5c265f9f9ed7892263520ee970477"))
+	if (0 != check_file("PR2859188-1.xls", "192f5802704154692cc13c16916caf02"))
 	{
 		cerr << "test1 failed: MD5 of generated XLS mismatch or I/O failure." << std::endl;
 		return -1;
@@ -88,7 +88,7 @@ int test2(void)
 		cerr << "test2 failed: I/O failure: " << err << std::endl;
 		return -1;
 	}
-	if (0 != check_file("PR2859188-2.xls", "55befa27b461f6611ea8f960d9882172"))
+	if (0 != check_file("PR2859188-2.xls", "561aa69db9027c0f22aedac16dd13edf"))
 	{
 		cerr << "test2 failed: MD5 of generated XLS mismatch or I/O failure." << std::endl;
 		return -1;
@@ -118,7 +118,7 @@ int test3(void)
 		cerr << "test3 failed: I/O failure: " << err << std::endl;
 		return -1;
 	}
-	if (0 != check_file("PR2859188-3.xls", "a7f1dfe12d7f865986c777376b6ea971"))
+	if (0 != check_file("PR2859188-3.xls", "c0b8bd7e8f8b8421cc3637c2f29b7915"))
 	{
 		cerr << "test3 failed: MD5 of generated XLS mismatch or I/O failure." << std::endl;
 		return -1;
