@@ -1,7 +1,7 @@
 #! /bin/bash
 
 # libtool - Provide generalized library-building support services.
-# Generated automatically by config.status (xlslib) 1.6.0
+# Generated automatically by config.status (xlslib) 2.0.0
 # Libtool was configured on host debbie:
 # NOTE: Changes made to this file will be lost: look at ltmain.sh.
 #
@@ -37,6 +37,15 @@
 available_tags="CXX "
 
 # ### BEGIN LIBTOOL CONFIG
+
+# Assembler program.
+AS=as
+
+# DLL creation program.
+DLLTOOL=dlltool
+
+# Object dumper program.
+OBJDUMP=objdump
 
 # Which release of libtool.m4 was used?
 macro_version=2.2.6b
@@ -86,7 +95,7 @@ NM="/usr/bin/nm -B"
 LN_S="ln"
 
 # What is the maximum length of a command?
-max_cmd_len=1572864
+max_cmd_len=3458764513820540925
 
 # Object file suffix (normally "o").
 objext=o
@@ -107,9 +116,6 @@ NL2SP="tr \\015\\012 \\040\\040"
 reload_flag=" -r"
 reload_cmds="\$LD\$reload_flag -o \$output\$reload_objs"
 
-# An object symbol dumper.
-OBJDUMP="objdump"
-
 # Method to check whether dependent libraries are shared objects.
 deplibs_check_method="pass_all"
 
@@ -129,10 +135,10 @@ old_postinstall_cmds="chmod 644 \$oldlib~\$RANLIB \$oldlib"
 old_postuninstall_cmds=""
 
 # A C compiler.
-LTCC="gcc"
+LTCC="gcc -std=gnu99"
 
 # LTCC compiler flags.
-LTCFLAGS="-g -O2"
+LTCFLAGS="    -O3 -Wall -Wextra -Wno-unused-parameter -Wno-missing-field-initializers"
 
 # Take the output of nm and produce a listing of raw symbols and C names.
 global_symbol_pipe="sed -n -e 's/^.*[	 ]\\([ABCDGIRSTW][ABCDGIRSTW]*\\)[	 ][	 ]*\\([_A-Za-z][_A-Za-z0-9]*\\)\$/\\1 \\2 \\2/p'"
@@ -243,20 +249,14 @@ sys_lib_dlsearch_path_spec="/lib /usr/lib /usr/lib/mesa /usr/lib32/mesa /usr/lib
 dlopen_support=yes
 
 # Whether dlopen of programs is supported.
-dlopen_self=unknown
+dlopen_self=yes
 
 # Whether dlopen of statically linked programs is supported.
-dlopen_self_static=unknown
+dlopen_self_static=no
 
 # Commands to strip libraries.
 old_striplib="strip --strip-debug"
 striplib="strip --strip-unneeded"
-
-# Assembler program.
-AS=as
-
-# DLL creation program.
-DLLTOOL=dlltool
 
 
 # The linker used to build libraries.
@@ -266,7 +266,7 @@ LD="/usr/bin/ld -m elf_x86_64"
 old_archive_cmds="\$AR \$AR_FLAGS \$oldlib\$oldobjs~\$RANLIB \$oldlib"
 
 # A language specific compiler.
-CC="gcc"
+CC="gcc -std=gnu99"
 
 # Is the compiler the GNU compiler?
 with_gcc=yes

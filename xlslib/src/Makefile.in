@@ -45,7 +45,14 @@ subdir = src
 DIST_COMMON = $(pkginclude_HEADERS) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/m4/ax_cc_pragma_pack.m4 \
+am__aclocal_m4_deps =  \
+	$(top_srcdir)/m4/ac___function___c99_vpredef_vars.m4 \
+	$(top_srcdir)/m4/ax_add_option.m4 \
+	$(top_srcdir)/m4/ax_cc_pragma_pack.m4 \
+	$(top_srcdir)/m4/ax_cflags_gcc_option.m4 \
+	$(top_srcdir)/m4/ax_cflags_warn_all.m4 \
+	$(top_srcdir)/m4/ax_cxxflags_gcc_option.m4 \
+	$(top_srcdir)/m4/ax_cxxflags_warn_all.m4 \
 	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
 	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
 	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/configure.ac
@@ -239,10 +246,10 @@ AM_CPPFLAGS = \
 lib_LTLIBRARIES = libxls.la
 
 # DFH addition
-libxls_la_LDFLAGS = $(XLSLIB_LIBS)
+libxls_la_LDFLAGS = $(XLSLIB_LIBS) -version-info 2:0:0
 libxls_la_SOURCES = \
 common/overnew.cpp                    \
-xlslib/assert_assist.cpp      \
+xlslib/assert_assist.cpp              \
 xlslib/blank.cpp		      \
 xlslib/boolean.cpp		      \
 xlslib/cbridge.cpp		      \

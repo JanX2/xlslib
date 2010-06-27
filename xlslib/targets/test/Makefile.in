@@ -40,7 +40,14 @@ TESTS = testCPP$(EXEEXT) testC$(EXEEXT) PR2859188$(EXEEXT)
 subdir = targets/test
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/m4/ax_cc_pragma_pack.m4 \
+am__aclocal_m4_deps =  \
+	$(top_srcdir)/m4/ac___function___c99_vpredef_vars.m4 \
+	$(top_srcdir)/m4/ax_add_option.m4 \
+	$(top_srcdir)/m4/ax_cc_pragma_pack.m4 \
+	$(top_srcdir)/m4/ax_cflags_gcc_option.m4 \
+	$(top_srcdir)/m4/ax_cflags_warn_all.m4 \
+	$(top_srcdir)/m4/ax_cxxflags_gcc_option.m4 \
+	$(top_srcdir)/m4/ax_cxxflags_warn_all.m4 \
 	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
 	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
 	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/configure.ac
@@ -54,12 +61,21 @@ PROGRAMS = $(noinst_PROGRAMS)
 am_PR2859188_OBJECTS = PR2859188.$(OBJEXT) md5.$(OBJEXT)
 PR2859188_OBJECTS = $(am_PR2859188_OBJECTS)
 PR2859188_DEPENDENCIES = $(top_builddir)/src/libxls.la
+PR2859188_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
+	$(CXXFLAGS) $(PR2859188_LDFLAGS) $(LDFLAGS) -o $@
 am_testC_OBJECTS = mainC.$(OBJEXT) md5.$(OBJEXT)
 testC_OBJECTS = $(am_testC_OBJECTS)
 testC_DEPENDENCIES = $(top_builddir)/src/libxls.la
+testC_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
+	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(testC_LDFLAGS) \
+	$(LDFLAGS) -o $@
 am_testCPP_OBJECTS = mainCPP.$(OBJEXT) md5.$(OBJEXT)
 testCPP_OBJECTS = $(am_testCPP_OBJECTS)
 testCPP_DEPENDENCIES = $(top_builddir)/src/libxls.la
+testCPP_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
+	--mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) \
+	$(testCPP_LDFLAGS) $(LDFLAGS) -o $@
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)/src/common
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
 am__depfiles_maybe = depfiles
@@ -231,10 +247,13 @@ AM_CPPFLAGS = \
 
 testCPP_SOURCES = mainCPP.cpp md5.c
 testCPP_LDADD = $(top_builddir)/src/libxls.la 
+testCPP_LDFLAGS = -static -lstdc++
 testC_SOURCES = mainC.c md5.c
 testC_LDADD = $(top_builddir)/src/libxls.la 
+testC_LDFLAGS = -static -lstdc++
 PR2859188_SOURCES = PR2859188.cpp md5.c
 PR2859188_LDADD = $(top_builddir)/src/libxls.la 
+PR2859188_LDFLAGS = -static -lstdc++
 all: all-am
 
 .SUFFIXES:
@@ -289,13 +308,13 @@ clean-noinstPROGRAMS:
 	rm -f $$list
 PR2859188$(EXEEXT): $(PR2859188_OBJECTS) $(PR2859188_DEPENDENCIES) 
 	@rm -f PR2859188$(EXEEXT)
-	$(CXXLINK) $(PR2859188_OBJECTS) $(PR2859188_LDADD) $(LIBS)
+	$(PR2859188_LINK) $(PR2859188_OBJECTS) $(PR2859188_LDADD) $(LIBS)
 testC$(EXEEXT): $(testC_OBJECTS) $(testC_DEPENDENCIES) 
 	@rm -f testC$(EXEEXT)
-	$(LINK) $(testC_OBJECTS) $(testC_LDADD) $(LIBS)
+	$(testC_LINK) $(testC_OBJECTS) $(testC_LDADD) $(LIBS)
 testCPP$(EXEEXT): $(testCPP_OBJECTS) $(testCPP_DEPENDENCIES) 
 	@rm -f testCPP$(EXEEXT)
-	$(CXXLINK) $(testCPP_OBJECTS) $(testCPP_LDADD) $(LIBS)
+	$(testCPP_LINK) $(testCPP_OBJECTS) $(testCPP_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
