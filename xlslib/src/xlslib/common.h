@@ -53,11 +53,10 @@
 
 #define RANGE_FEATURE
 
-#include <xls_pshpack2.h>
+// #include <xls_pshpack2.h>
 
 namespace xlslib_core
 {
-#if 1
   // Some typedefs used only by xlslib core
   class range_t
   {
@@ -71,16 +70,6 @@ namespace xlslib_core
 		unsigned32_t first_col;
 		unsigned32_t last_col;
   };
-#else
-  // Some typedefs used only by xlslib core
-  typedef struct
-  {
-    unsigned32_t first_row;
-    unsigned32_t last_row;
-    unsigned32_t first_col;
-    unsigned32_t last_col;
-  } range_t;
-#endif
 
 
 #if defined(_MSC_VER) && defined(WIN32)
@@ -104,7 +93,7 @@ namespace xlslib_core
 }
 
 
-#include <xls_poppack.h>
+// #include <xls_poppack.h>
 
 #endif //XLSLIB_COMMON_H
 

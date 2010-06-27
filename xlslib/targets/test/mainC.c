@@ -23,6 +23,7 @@
 
 
 #include <stdio.h>
+#include <stdlib.h>
 #ifdef HAVE_STDINT_H	// [i_a] 
 #include <stdint.h>
 #endif
@@ -49,6 +50,26 @@ typedef enum
 #include "md5.h"
 
 
+static void my_xlslib_assertion_reporter(const char *expr, const char *filename, int lineno, const char *funcname)
+{
+	fprintf(stderr, "Assertion failed: %s at line %d", 
+			(expr ? expr : "???"),
+			lineno);
+	if (funcname)
+	{
+		fprintf(stderr, " (%s)", funcname);
+	}
+	if (filename)
+	{
+		fprintf(stderr, " in %s\n", filename);
+	}
+	else
+	{
+		fprintf(stderr, " in [unidentified source file]\n");
+	}
+	exit(EXIT_FAILURE);
+}
+
 
 
 int main(int argc, char *argv[]) 
@@ -56,6 +77,8 @@ int main(int argc, char *argv[])
 	workbook *w;
 	worksheet *ws;
 	int ret;
+
+	xlslib_register_assert_reporter(&my_xlslib_assertion_reporter);
 
 	w = xlsNewWorkbook();
 	ws = xlsWorkbookSheet(w, "xlslib C");
@@ -71,15 +94,15 @@ int main(int argc, char *argv[])
 	if (ret != NO_ERRORS)
 	{
 		fprintf(stderr, "%s failed: I/O failure %d.\n", argv[0], ret);
-		return -1;
+		return EXIT_FAILURE;
 	}
 	if (0 != check_file("testC.xls", "a38b19e5ef2076e96146070c70a7bf13"))
 	{
 		fprintf(stderr, "%s failed: MD5 of generated XLS mismatch or I/O failure.\n", argv[0]);
-		return -1;
+		return EXIT_FAILURE;
 	}
 
-	return 0;
+	return EXIT_SUCCESS;
 }
 
 

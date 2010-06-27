@@ -44,7 +44,7 @@
 #include <extformat.h>
 
 
-#include <xls_pshpack2.h>
+// #include <xls_pshpack2.h>
 
 namespace xlslib_core
 {
@@ -89,7 +89,7 @@ namespace xlslib_core
     };
 }
 
-#include <xls_poppack.h>
+// #include <xls_poppack.h>
 
 #endif //LABEL_H
 

@@ -187,7 +187,7 @@ unsigned64_t HPSFdoc::unix2mstime(time_t unixTime)
 // http://poi.apache.org/hpsf/internals.html
 // or google "DocumentSummaryInformation and UserDefined Property Sets" and look for MSDN hits
 //
-void HPSFdoc::DumpData(void)
+int HPSFdoc::DumpData(void)
 {
 	HPSF_Set_Itor_t		hBegin, hEnd, hIter;
 	const unsigned32_t	*fmt;
@@ -198,111 +198,115 @@ void HPSFdoc::DumpData(void)
 	numProperties = itemList.size();	
 	fmt = (docType == HPSF_SUMMARY ? summaryFormat : docSummaryFormat);
 
-	Inflate(SUMMARY_SIZE);	// this file will only be this size, ever (zero padded)
-
-	// Header
-	AddValue16(0xfffe);	// signature
-	AddValue16(0);
+	int ret = Inflate(SUMMARY_SIZE);	// this file will only be this size, ever (zero padded)
+	if (ret == NO_ERRORS)
+	{
+		// Header
+		AddValue16(0xfffe);	// signature
+		AddValue16(0);
 #ifdef __OSX__
-	AddValue32(1);		// Macintosh
+		AddValue32(1);		// Macintosh
 #else
-	AddValue32(2);		// WIN32
+		AddValue32(2);		// WIN32
 #endif
-	AddValue32(0); AddValue32(0); AddValue32(0); AddValue32(0);		// CLASS
-	AddValue32(1);		// One section
+		AddValue32(0); AddValue32(0); AddValue32(0); AddValue32(0);		// CLASS
+		AddValue32(1);		// One section
 
-	// The section (this is a list but in this case just 1 section so can shorten logic)
-	AddValue32(fmt[0]);	// Class ID
-	AddValue32(fmt[1]);
-	AddValue32(fmt[2]);
-	AddValue32(fmt[3]);
+		// The section (this is a list but in this case just 1 section so can shorten logic)
+		AddValue32(fmt[0]);	// Class ID
+		AddValue32(fmt[1]);
+		AddValue32(fmt[2]);
+		AddValue32(fmt[3]);
 
-	// offset to the data (would vary if multiple sections, but since one only its easy
-	sectionListOffset = GetDataSize() + 4;		// offset from the start of this stream to first byte after this offset     [i_a]
-	AddValue32((unsigned32_t)sectionListOffset);				// where this section starts (right after this tag!)
-	
-	// Start of Section 1: sectionListOffset starts here
-	AddValue32(0);								// length of the section - updated later
-	AddValue32((unsigned32_t)numProperties);					// 
-
-	// now write the propertyLists - the values, and where to find the payloads
-	itemOffset	= 8 + numProperties * 8;	// where I am now, then allow for propertyLists
-	hBegin		= itemList.begin();
-	hEnd		= itemList.end();
-	for(hIter=hBegin; hIter != hEnd; ++hIter) 
-	{
-		HPSFitem	*item = *hIter;
+		// offset to the data (would vary if multiple sections, but since one only its easy
+		sectionListOffset = GetDataSize() + 4;		// offset from the start of this stream to first byte after this offset     [i_a]
+		AddValue32((unsigned32_t)sectionListOffset);				// where this section starts (right after this tag!)
 		
-		item->SetOffset(itemOffset);
+		// Start of Section 1: sectionListOffset starts here
+		AddValue32(0);								// length of the section - updated later
+		AddValue32((unsigned32_t)numProperties);					// 
 
-		AddValue32(item->GetPropID());			// Variant (ie type)
-		AddValue32((unsigned32_t)itemOffset);	// where the actual data will be found
-		
-		itemOffset += item->GetSize();
-	}
-	SetValueAt32((unsigned32_t)itemOffset, (unsigned32_t)sectionListOffset);
-	//printf("Think size is %d\n", (int)itemOffset);
-
-	// Now we can write out the actual data
-	hBegin		= itemList.begin();
-	hEnd		= itemList.end();
-	for(hIter=hBegin; hIter != hEnd; ++hIter) 
-	{
-		HPSFitem		*item = *hIter;
-		size_t	len;
-		size_t padding;
-		unsigned16_t variant;
-		hValue			value;
-		
-		value	= item->GetValue();
-		variant	= item->GetVariant();
-		//printf("PROPERTY[%d]: ActualOffset=%d savedOffset=%d variant=%d realVariant=%d val64=%llx\n", item->GetPropID(), 
-		//  m_nDataSize - sectionListOffset, item->GetOffset(), variant,  hpsfValues[variant], value.val64);
-		AddValue32(hpsfValues[variant]);
-		
-		switch(variant) 
+		// now write the propertyLists - the values, and where to find the payloads
+		itemOffset	= 8 + numProperties * 8;	// where I am now, then allow for propertyLists
+		hBegin		= itemList.begin();
+		hEnd		= itemList.end();
+		for(hIter=hBegin; hIter != hEnd; ++hIter) 
 		{
-		case HPSF_STRING:
-			len = value.str->length() + 1;	// length of string plus null terminator
-			// padding = (len % 4) + 1;		// string terminator is the "1"
-			// round up to the next 4-byte boundary to determine the padding; 
-			// take the mandatory NUL sentinel into account as well:
-			padding = 1 + ((4 - len) & 3);
-			XL_ASSERT(padding + len - 1 >= 4);
-			XL_ASSERT((padding + len - 1) % 4 == 0);
-			AddValue32((unsigned32_t)len);
-			AddDataArray((const unsigned8_t *)value.str->c_str(), len-1);
-			break;
-		case HPSF_BOOL:
-			padding = 2;
-			AddValue16(value.isOn ? 0xFFFF : 0x0000);	// per MSDN google of VT_BOOL
-			break;
-		case HPSF_INT16:
-			padding = 2;
-			AddValue16(value.val16);
-			break;
-		case HPSF_INT32:
-			padding = 0;
-			AddValue32(value.val32);
-			break;
-		case HPSF_INT64:
-			padding = 0;
-			AddValue64(value.val64);
-			break;
-		default:
-			padding = 0;
-			break;
+			HPSFitem	*item = *hIter;
+			
+			item->SetOffset(itemOffset);
+
+			AddValue32(item->GetPropID());			// Variant (ie type)
+			AddValue32((unsigned32_t)itemOffset);	// where the actual data will be found
+			
+			itemOffset += item->GetSize();
 		}
-		AddFixedDataArray(0, padding);	
+		SetValueAt32((unsigned32_t)itemOffset, (unsigned32_t)sectionListOffset);
+		//printf("Think size is %d\n", (int)itemOffset);
+
+		// Now we can write out the actual data
+		hBegin		= itemList.begin();
+		hEnd		= itemList.end();
+		for(hIter=hBegin; hIter != hEnd; ++hIter) 
+		{
+			HPSFitem		*item = *hIter;
+			size_t	len;
+			size_t padding;
+			unsigned16_t variant;
+			hValue			value;
+			
+			value	= item->GetValue();
+			variant	= item->GetVariant();
+			//printf("PROPERTY[%d]: ActualOffset=%d savedOffset=%d variant=%d realVariant=%d val64=%llx\n", item->GetPropID(), 
+			//  m_nDataSize - sectionListOffset, item->GetOffset(), variant,  hpsfValues[variant], value.val64);
+			AddValue32(hpsfValues[variant]);
+			
+			switch(variant) 
+			{
+			case HPSF_STRING:
+				len = value.str->length() + 1;	// length of string plus null terminator
+				// padding = (len % 4) + 1;		// string terminator is the "1"
+				// round up to the next 4-byte boundary to determine the padding; 
+				// take the mandatory NUL sentinel into account as well:
+				padding = 1 + ((4 - len) & 3);
+				XL_ASSERT(padding + len - 1 >= 4);
+				XL_ASSERT((padding + len - 1) % 4 == 0);
+				AddValue32((unsigned32_t)len);
+				AddDataArray((const unsigned8_t *)value.str->c_str(), len-1);
+				break;
+			case HPSF_BOOL:
+				padding = 2;
+				AddValue16(value.isOn ? 0xFFFF : 0x0000);	// per MSDN google of VT_BOOL
+				break;
+			case HPSF_INT16:
+				padding = 2;
+				AddValue16(value.val16);
+				break;
+			case HPSF_INT32:
+				padding = 0;
+				AddValue32(value.val32);
+				break;
+			case HPSF_INT64:
+				padding = 0;
+				AddValue64(value.val64);
+				break;
+			default:
+				padding = 0;
+				break;
+			}
+			AddFixedDataArray(0, padding);	
+		}
+
+	#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+	#endif
+
+		//printf("Actual size = %d\n", m_nDataSize - sectionListOffset);
+		XL_ASSERT(GetDataSize() <= GetSize());
+		XL_ASSERT(GetDataSize() <= SUMMARY_SIZE);
+		AddFixedDataArray(0, SUMMARY_SIZE - GetDataSize());
+		XL_ASSERT(GetDataSize() <= GetSize());
 	}
 
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
-#endif
-
-	//printf("Actual size = %d\n", m_nDataSize - sectionListOffset);
-	XL_ASSERT(GetDataSize() <= GetSize());
-	XL_ASSERT(GetDataSize() <= SUMMARY_SIZE);
-	AddFixedDataArray(0, SUMMARY_SIZE - GetDataSize());
-	XL_ASSERT(GetDataSize() <= GetSize());
+	return ret;
 }
 

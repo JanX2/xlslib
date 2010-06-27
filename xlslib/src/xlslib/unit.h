@@ -42,12 +42,12 @@
 
 
 
-#include <xls_pshpack2.h>
+// #include <xls_pshpack2.h>
 
 namespace xlslib_core
 {
 
-#define UNIT_MAX_SIZE (0xFFFF)
+#define UNIT_MAX_SIZE  0xFFFF
 
   // Error codes
 #define ERR_DATASTORAGE_EMPTY            (-2)
@@ -55,9 +55,9 @@ namespace xlslib_core
 #define ERR_UNABLE_TOALLOCATE_MEMORY     (-4) // [i_a]
 
   //Block definitions
-#define BIG_BLOCK_SIZE     (0x200)
-#define SMALL_BLOCK_SIZE   (0x040)
-#define PROP_BLOCK_SIZE    (0x080)
+#define BIG_BLOCK_SIZE     0x200
+#define SMALL_BLOCK_SIZE   0x040
+#define PROP_BLOCK_SIZE    0x080
 
 	// forward ref
 	class CDataStorage;
@@ -74,8 +74,8 @@ namespace xlslib_core
 	  
 	friend class CDataStorage;
 
-	signed32_t m_Index; // positive numbers index space in the associated storage; negative numbers are that index, but the data has been marked as 'sticky' in the associated storage
 	CDataStorage &m_Store;
+	signed32_t m_Index; // positive numbers index space in the associated storage; negative numbers are that index, but the data has been marked as 'sticky' in the associated storage
 
 	unsigned16_t m_Backpatching_Level; // 0: requires no backpatching, 1: innermost backpatching (DBCELL), ...
 
@@ -135,9 +135,9 @@ namespace xlslib_core
 	signed8_t AddUnicodeString(CGlobalRecords& gRecords, const std::string& str, XlsUnicodeStringFormat_t fmt /* = LEN2_FLAGS_UNICODE */ );
     signed8_t AddUnicodeString(CGlobalRecords& gRecords, const u16string& newdata, XlsUnicodeStringFormat_t fmt /* = LEN2_FLAGS_UNICODE */ );
 
-    signed8_t GetValue16From(signed16_t* val, unsigned32_t index) const;
-    signed8_t GetValue32From(signed32_t* val, unsigned32_t index) const;
-    signed8_t GetValue8From(signed8_t* data, unsigned32_t  index) const;
+    signed8_t GetValue16From(unsigned16_t* val, unsigned32_t index) const;
+    signed8_t GetValue32From(unsigned32_t* val, unsigned32_t index) const;
+    signed8_t GetValue8From(unsigned8_t* data, unsigned32_t  index) const;
 	
     signed8_t Append(const CUnit& newunit);
 
@@ -159,11 +159,11 @@ namespace xlslib_core
   protected:
     signed8_t InitFill(unsigned8_t data, size_t size);
   public:
-    signed8_t Inflate(size_t increase = 0);
+    signed8_t Inflate(size_t newsize);
   };
 }
 
-#include <xls_poppack.h>
+// #include <xls_poppack.h>
 
 #endif // UNIT_H
 

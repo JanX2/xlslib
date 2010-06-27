@@ -242,6 +242,14 @@ extern "C"
 {
 #endif
 
+#if defined(HAVE___FUNCTION__)
+#define XL_FUNCNAME()                   __FUNCTION__
+#elif defined(HAVE___FUNC__)
+#define XL_FUNCNAME()                   __func__
+#else
+#define XL_FUNCNAME()                   "???"
+#endif
+
 /**
 Custom ASSERT macro; since we create a library, we'ld better allow the user of that
 lib to set up how [s]he wants to have her/his assertion failures reported.
@@ -263,14 +271,24 @@ that code like this will compile as expected in all conditions:
     do_something();
 
 */
-#define XL_ASSERT(expr)																\
-	do																				\
-	{																				\
-		if (!(expr))																\
-		{																			\
-			xlslib_report_failed_assertion(#expr, __FILE__, __LINE__, __FUNCTION__);\
-		}																			\
+#define XL_ASSERT(expr)																	\
+	do																					\
+	{																					\
+		if (!(expr))																	\
+		{																				\
+			xlslib_report_failed_assertion(#expr, __FILE__, __LINE__, XL_FUNCNAME());	\
+		}																				\
 	}  while (0)
+
+#define XL_VERIFY(expr)																	\
+	do																					\
+	{																					\
+		if (!(expr))																	\
+		{																				\
+			xlslib_report_failed_assertion(#expr, __FILE__, __LINE__, XL_FUNCNAME());	\
+		}																				\
+	}  while (0)
+
 #define XL_WITH_ASSERTIONS			1
 
 /*
@@ -278,11 +296,16 @@ override for 'release' type builds: the compiler optimizer will make sure this
 empty statement will be discarded, while we still ensure the trailing semicolon 
 will be properly 'munched'.
 */
-#if !defined(WITH_DEBUGGING)
+#if defined(XLSLIB_DONT_ASSERT)
 
 #undef XL_ASSERT
 #define XL_ASSERT(expr)																\
 	(void)0
+
+#undef XL_VERIFY
+#define XL_VERIFY(expr)																\
+	(void)(expr)
+
 #undef XL_WITH_ASSERTIONS			
 
 #endif

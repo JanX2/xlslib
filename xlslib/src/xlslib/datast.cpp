@@ -89,8 +89,8 @@ CDataStorage::~CDataStorage()
 {
   // Delete all the data. (Only if it exists)
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
-	// flush all lingering units BEFORE we discard the associated UnitStore entities or we'll get a nasty assertion failure.
-  FlushEm((unsigned16_t)(-1));
+  // flush all lingering units BEFORE we discard the associated UnitStore entities or we'll get a nasty assertion failure.
+  FlushEm(BACKPATCH_LEVEL_EVERYONE);
 
   if (!store.empty())
   {
@@ -152,7 +152,7 @@ void CDataStorage::operator+=(CUnit* from)
 		store += p1;
 		store += p2;
 	*/
-	XL_ASSERT(from->m_Index == store.size() - 1);
+	XL_ASSERT(from->m_Index == (int)store.size() - 1);
 
 	m_DataSize += from->GetDataSize();
 
@@ -212,7 +212,8 @@ signed32_t CDataStorage::RequestIndex(size_t minimum_size)
 	signed32_t idx = static_cast<signed32_t>(store.size());
 	CUnitStore &unit = *store.insert(store.end(), CUnitStore());
 
-	unit.Prepare(minimum_size);
+	if (unit.Prepare(minimum_size) != NO_ERRORS)
+		return INVALID_STORE_INDEX;
 
 	return idx;
 }
@@ -220,8 +221,8 @@ signed32_t CDataStorage::RequestIndex(size_t minimum_size)
 CUnitStore& CDataStorage::operator[](signed32_t index)
 {
 	XL_ASSERT(index != INVALID_STORE_INDEX);
-	XL_ASSERT(index >= 0 ? index < store.size() : 1);
-	XL_ASSERT(index < 0 ? (-1 ^ index) < store.size() : 1);
+	XL_ASSERT(index >= 0 ? index < (int)store.size() : 1);
+	XL_ASSERT(index < 0 ? (-1 ^ index) < (int)store.size() : 1);
 
 	return (index >= 0 ? store[index] : store[-1 ^ index]);
 }
@@ -241,11 +242,14 @@ void CDataStorage::FlushEm(unsigned16_t backpatch_level)
 	*/
 	UnitList_Itor_t start = m_FlushStack.begin();
 	if (m_FlushLastEndLevel == backpatch_level 
-		&& backpatch_level != (unsigned16_t)(-1)	// do not use cached position when 'flushing all'
+		&& backpatch_level != BACKPATCH_LEVEL_EVERYONE	// do not use cached position when 'flushing all'
 		//&& m_FlushLastEndPos != m_FlushStack.begin()
 		&& m_FlushLastEndPos != m_FlushStack.size()) //.end())
 	{
+		XL_ASSERT(start != m_FlushStack.end());
 		start = m_FlushStack.begin() + m_FlushLastEndPos;
+		XL_ASSERT(m_FlushLastEndPos <= m_FlushStack.size());
+		XL_ASSERT(start != m_FlushStack.end());
 		start++;
 	}
 
@@ -254,21 +258,22 @@ void CDataStorage::FlushEm(unsigned16_t backpatch_level)
 	size_t cntleft = 0;
 	for (UnitList_Itor_t i = j; i != m_FlushStack.end(); i++)
 	{
-		if ((*i)->m_Backpatching_Level <= backpatch_level)
+		CUnit *up = *i;
+		if (up->m_Backpatching_Level <= backpatch_level)
 		{
-			XL_ASSERT((*i) != NULL);
-			delete (*i);
+			XL_ASSERT(up != NULL);
+			delete up;
 			(*i) = NULL;
 			cnt++;
 			continue;
 		}
 
-		XL_ASSERT((*i)->m_Backpatching_Level <= 4);
+		XL_ASSERT(up->m_Backpatching_Level <= 4);
 
 		// do we need to move-copy the unit reference down as part of a shrink operation?
 		if (i != j)
 		{
-			(*j) = (*i);
+			(*j) = up;
 		}
 		j++;
 		cntleft++;
@@ -465,9 +470,9 @@ HPSFdoc* CDataStorage::MakeHPSFdoc(docType_t dt)
 
 
 CUnitStore::CUnitStore():
-	m_varying_width(0),
-	m_is_in_use(0),
-	m_is_sticky(0),
+	m_varying_width(false),
+	m_is_in_use(false),
+	m_is_sticky(false),
 	m_nDataSize(0)
 {
 	memset(&s, 0, sizeof(s));
@@ -529,9 +534,9 @@ signed8_t CUnitStore::Prepare(size_t minimum_size)
 	// allocate space in the 'variable sized store' if we cannot fit in a fixed-width unit:
 	if (minimum_size <= FIXEDWIDTH_STORAGEUNIT_SIZE)
 	{
-		m_varying_width = 0;
-		m_is_in_use = 1;
-		m_is_sticky = 0;
+		m_varying_width = false;
+		m_is_in_use = true;
+		m_is_sticky = false;
 		m_nDataSize = 0;
 		memset(&s, 0, sizeof(s));
 
@@ -539,9 +544,9 @@ signed8_t CUnitStore::Prepare(size_t minimum_size)
 	}
 	else
 	{
-		m_varying_width = 1;
-		m_is_in_use = 1;
-		m_is_sticky = 0;
+		m_varying_width = true;
+		m_is_in_use = true;
+		m_is_sticky = false;
 		m_nDataSize = 0;
 		memset(&s, 0, sizeof(s));
 		XL_ASSERT(s.vary.m_pData == NULL);
@@ -567,9 +572,9 @@ void CUnitStore::Reset()
 		 XL_ASSERT(m_is_in_use);
 		 free((void *)s.vary.m_pData);
 	 }
-	m_varying_width = 0;
-	m_is_in_use = 0;
-	m_is_sticky = 0;
+	m_varying_width = false;
+	m_is_in_use = false;
+	m_is_sticky = false;
 	m_nDataSize = 0;
 	memset(&s, 0, sizeof(s));
 	XL_ASSERT(s.vary.m_pData == NULL);
@@ -600,7 +605,7 @@ signed8_t CUnitStore::Resize(size_t newlen)
 			}
 			s.vary.m_pData = p;
 			s.vary.m_nSize = newlen;
-			m_varying_width = 1;
+			m_varying_width = true;
 		}
 	}	
 	else 
@@ -636,8 +641,11 @@ signed8_t CUnitStore::Init(const unsigned8_t *data, size_t size, size_t datasize
 	XL_ASSERT(size > 0);
 	XL_ASSERT(datasize <= size);
 	ret = Resize(size);
-	memcpy(GetBuffer(), data, datasize);
-	SetDataSize(datasize);
+	if (ret == NO_ERRORS)
+	{
+		memcpy(GetBuffer(), data, datasize);
+		SetDataSize(datasize);
+	}
 	return ret;
 }
 
@@ -648,8 +656,11 @@ signed8_t CUnitStore::InitWithValue(unsigned8_t value, size_t size)
 	XL_ASSERT(m_is_in_use);
 	XL_ASSERT(size > 0);
 	ret = Resize(size);
-	memset(GetBuffer(), value, size);
-	SetDataSize(size);
+	if (ret == NO_ERRORS)
+	{
+		memset(GetBuffer(), value, size);
+		SetDataSize(size);
+	}
 	return ret;
 }
 

@@ -44,7 +44,7 @@
 
 
 
-#include <xls_pshpack2.h>
+// #include <xls_pshpack2.h>
 
 namespace xlslib_core
 {
@@ -109,7 +109,7 @@ __attribute__((unused))
 }
 
 
-#include <xls_poppack.h>
+// #include <xls_poppack.h>
 
 #endif //NUMBER_H
 

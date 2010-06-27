@@ -65,11 +65,11 @@ workbook::workbook() :
 	m_PreviousDumpState(WB_FINISH),
 	sheetIndex(0),
 	m_pCurrentData(NULL),
-	writeLen(0),
 	m_pContinueRecord(NULL),
+	writeLen(0),
+	offset(0),
 	m_ContinueIndex(0),
 	current_sheet(0),
-	offset(0),
 	Last_BOF_offset(0)
 {
 #if HAVE_ICONV

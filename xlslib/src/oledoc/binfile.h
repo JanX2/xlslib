@@ -66,8 +66,8 @@ CBinFile class declaration
 
       int Open(const std::string& name);
       int Close(void);   
-      int Write ( unsigned8_t * data, size_t size );
-      int Write (CUnit& data_unit );
+      int Write(unsigned8_t * data, size_t size);
+      int Write(CUnit& data_unit);
     
       int WriteByte(unsigned8_t byte);
       int WriteUnsigned16(unsigned16_t data);

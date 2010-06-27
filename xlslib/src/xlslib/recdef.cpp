@@ -45,18 +45,18 @@ using namespace xlslib_core;
 
 
 boundsheet_t::boundsheet_t(CGlobalRecords& gRecords) : 
-streampos(0),
-sheetname(),
-sheetData(NULL),
-m_GlobalRecords(gRecords)
+		sheetname(),
+		streampos(0),
+		sheetData(NULL),
+		m_GlobalRecords(gRecords)
 {
 	SetAttributes(0);
 }
 boundsheet_t::boundsheet_t(CGlobalRecords& gRecords, const u16string& sn, unsigned16_t attributes, unsigned32_t sp) :
-streampos(sp),
-sheetname(sn),
-sheetData(NULL),
-m_GlobalRecords(gRecords)
+		sheetname(sn),
+		streampos(sp),
+		sheetData(NULL),
+		m_GlobalRecords(gRecords)
 {
 	SetAttributes(attributes);
 }
@@ -78,17 +78,17 @@ void boundsheet_t::SetAttributes(unsigned16_t attributes)
 }
 
 boundsheet_t::boundsheet_t(const boundsheet_t& that) : 
-streampos(that.streampos),
-sheetname(that.sheetname),
-worksheet(that.worksheet),
-ex4macro(that.ex4macro),
-chart(that.chart),
-vbmodule(that.vbmodule),
-visible(that.visible),
-hidden(that.hidden),
-veryhidden(that.veryhidden),
-sheetData(that.sheetData),
-m_GlobalRecords(that.m_GlobalRecords)
+		sheetname(that.sheetname),
+		streampos(that.streampos),
+		worksheet(that.worksheet),
+		ex4macro(that.ex4macro),
+		chart(that.chart),
+		vbmodule(that.vbmodule),
+		visible(that.visible),
+		hidden(that.hidden),
+		veryhidden(that.veryhidden),
+		sheetData(that.sheetData),
+		m_GlobalRecords(that.m_GlobalRecords)
 {
 }
 boundsheet_t& boundsheet_t::operator=(const boundsheet_t& right)
@@ -118,7 +118,7 @@ CBof::CBof(CDataStorage &datastore, unsigned16_t boftype):
 	AddValue16(BOF_BUILD_DFLT);
 	AddValue16(BOF_YEAR_DFLT);
 
-	AddValue32(0);					//The file hystory flags are all set to zero
+	AddValue32(0);					// The file history flags are all set to zero
 	AddValue32(VERSION_BIFF);		// The lowest BIFF version
 
    SetRecordLength(GetDataSize()-4);
@@ -259,7 +259,7 @@ CWindow2::CWindow2(CDataStorage &datastore, bool isActive):
 	AddValue16(COLOR_CODE_SYS_WIND_FG);	// grid color
 	AddValue16(0);						// UNUSED
 	AddValue16(0);						// zoom page break preview, default == 0 (W2_DFLT_ZOOMPBPREV ???)
-	AddValue16(0);						// xoom normal view, default == 0 (W2_DFLT_ZOOMNORMAL ???)
+	AddValue16(0);						// zoom normal view, default == 0 (W2_DFLT_ZOOMNORMAL ???)
 	AddValue32(W2_DFLT_RESERVED); 
 
 	SetRecordLength(GetDataSize()-4);
@@ -302,12 +302,13 @@ CDimension::~CDimension()
 */
 void CWindow2::SetSelected()
 {
-   signed16_t grbitval;
+   unsigned16_t grbitval;
+
    GetValue16From(&grbitval, W2_OFFSET_GRBIT);
 
    grbitval |= W2_GRBITMASK_SELECTED;
 
-   SetValueAt16((unsigned16_t)grbitval, W2_OFFSET_GRBIT);
+   SetValueAt16(grbitval, W2_OFFSET_GRBIT);
 }
 
 /*
@@ -317,11 +318,12 @@ void CWindow2::SetSelected()
 void CWindow2::SetPaged()
 {
    unsigned16_t grbitval;
-   GetValue16From((signed16_t*)&grbitval, W2_OFFSET_GRBIT);
+
+   GetValue16From(&grbitval, W2_OFFSET_GRBIT);
 
    grbitval |= W2_GRBITMASK_PAGEBRK;
 
-   SetValueAt16((unsigned16_t)grbitval, W2_OFFSET_GRBIT);
+   SetValueAt16(grbitval, W2_OFFSET_GRBIT);
 }
 
 /*
@@ -331,11 +333,12 @@ void CWindow2::SetPaged()
 void CWindow2::ClearSelected()
 {
    unsigned16_t grbitval;
-   GetValue16From((signed16_t*)&grbitval, W2_OFFSET_GRBIT);
 
-   grbitval &= (~W2_GRBITMASK_SELECTED);
+   GetValue16From(&grbitval, W2_OFFSET_GRBIT);
 
-   SetValueAt16((unsigned16_t)grbitval, W2_OFFSET_GRBIT);
+   grbitval &= ~W2_GRBITMASK_SELECTED;
+
+   SetValueAt16(grbitval, W2_OFFSET_GRBIT);
 }
 
 /*
@@ -345,11 +348,12 @@ void CWindow2::ClearSelected()
 void CWindow2::ClearPaged()
 {
    unsigned16_t grbitval;
-   GetValue16From((signed16_t*)&grbitval, W2_OFFSET_GRBIT);
 
-   grbitval &= (W2_GRBITMASK_PAGEBRK);
+   GetValue16From(&grbitval, W2_OFFSET_GRBIT);
 
-   SetValueAt16((unsigned16_t)grbitval, W2_OFFSET_GRBIT);
+   grbitval &= W2_GRBITMASK_PAGEBRK;
+
+   SetValueAt16(grbitval, W2_OFFSET_GRBIT);
 }
 
 

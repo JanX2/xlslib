@@ -100,12 +100,16 @@ bool CDocSummaryInfo::property(property_t prop, const string& content)
 ***********************************
 ***********************************
 */
-void CDocSummaryInfo::DumpData(void)
+int CDocSummaryInfo::DumpData(void)
 {
    XTRACE("CDocSummaryInfo::DumpData");
 
-   	hpsf->DumpData();
-	(*this) += hpsf;
+   	int ret = hpsf->DumpData();
+	if (ret == NO_ERRORS)
+	{
+		(*this) += hpsf;
+	}
+	return ret;
 }
 
 

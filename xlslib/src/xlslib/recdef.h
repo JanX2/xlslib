@@ -41,7 +41,7 @@
 #include <rectypes.h>
 #include <record.h>
 
-#include <xls_pshpack2.h>
+// #include <xls_pshpack2.h>
 
 namespace xlslib_core
 {
@@ -340,8 +340,8 @@ CBSheet class declaration
 	boundsheet_t& operator=(const boundsheet_t& right);
 
   protected:
-    unsigned32_t streampos;
     u16string sheetname;
+    unsigned32_t streampos;
     bool worksheet:1;      
     bool ex4macro:1;
     bool chart:1;
@@ -356,7 +356,10 @@ CBSheet class declaration
 
   public:
 	  unsigned32_t GetStreamPos(void) const { return streampos; };
-	  const u16string& GetSheetName(void) const { return sheetname; };
+	  const u16string& GetSheetName(void) const 
+	  { 
+		  return sheetname; 
+	  };
 
 	  void SetAttributes(unsigned16_t attributes);
 	  bool IsWorkSheet(void) const { return worksheet; };      
@@ -367,7 +370,11 @@ CBSheet class declaration
 	  bool IsHidden(void) const { return hidden; };
 	  bool IsVeryHidden(void) const { return veryhidden; };
 
-	  CBSheet *SetSheetData(CBSheet *sh) { sheetData = sh; return sh; };
+	  CBSheet *SetSheetData(CBSheet *sh) 
+	  { 
+		  sheetData = sh; 
+		  return sh; 
+	  };
 	  void SetSheetStreamPosition(size_t offset);
 	  const CBSheet *GetSheetData(void) const { return sheetData; };
 
@@ -393,7 +400,7 @@ CBSheet class declaration
     };
 }
 
-#include <xls_poppack.h>
+// #include <xls_poppack.h>
 
 #endif //RECDEF_H
 

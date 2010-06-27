@@ -42,7 +42,7 @@
 #include <record.h>
 
 
-#include <xls_pshpack2.h>
+// #include <xls_pshpack2.h>
 
 namespace xlslib_core
 {
@@ -178,9 +178,10 @@ class format_t
 		static unsigned16_t format2index(format_number_t idx);
 
     private:
-      unsigned16_t index;
       u16string formatstr;
+      unsigned16_t index;
       unsigned32_t m_usage_counter;    
+	  
 	  CGlobalRecords& m_GlobalRecords;
 
 	public:
@@ -209,7 +210,7 @@ class format_t
 }
 
 
-#include <xls_poppack.h>
+// #include <xls_poppack.h>
 
 #endif //FORMAT_H
 

@@ -42,7 +42,7 @@
 #include <unit.h>
 
 
-#include <xls_pshpack2.h>
+// #include <xls_pshpack2.h>
 
 namespace xlslib_core
 {
@@ -61,7 +61,7 @@ CRecord class declaration
 #endif
 
     protected:
-      unsigned16_t m_Num;
+      //unsigned16_t m_Num;
       //unsigned32_t streamPos;
 
     protected:
@@ -69,10 +69,10 @@ CRecord class declaration
       virtual ~CRecord();
   
     public:
-      void SetRecordType(unsigned16_t rtype);
+      signed8_t SetRecordType(unsigned16_t rtype);
       unsigned16_t GetRecordType() const;
 
-      void SetRecordLength(size_t);
+      signed8_t SetRecordLength(size_t);
       size_t GetRecordLength() const;
 
       const unsigned8_t* GetRecordDataBuffer() const;
@@ -83,7 +83,7 @@ CRecord class declaration
     };
 }
 
-#include <xls_poppack.h>
+// #include <xls_poppack.h>
 
 #endif //RECORD_H
 

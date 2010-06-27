@@ -15,15 +15,19 @@ AC_CONFIG_HEADERS([src/common/xlconfig.h])
 
 
 # Checks for programs.
+AC_PROG_SED
+
 AC_PROG_CXX
 AC_PROG_CC
 # AC_PROG_RANLIB  -- rendered obsolete by LT_INIT
-LT_INIT
 
 # see also: GNU libtool docs: AC_PROG_LIBTOOL et al:
+# AC_DISABLE_SHARED
+# AC_DISABLE_STATIC
 AC_LIBTOOL_WIN32_DLL
 AC_LIBTOOL_DLOPEN
-AC_PROG_LIBTOOL
+# AC_PROG_LIBTOOL -- obsoleted version of LT_INIT
+LT_INIT
 AC_SUBST(LIBTOOL_DEPS)
 
 AC_PROG_INSTALL

@@ -69,8 +69,8 @@ CGlobalRecords::CGlobalRecords() :
 	font(),
 	font_dflt(),
 	fontIndex(0),
-	format(),
 	formatIndex(FMTCODE_GENERAL),
+	format(),
 	xf(),
 	xf_dflt(),
 	xfIndex(0),
@@ -828,9 +828,11 @@ void  CGlobalRecords::wide2str16(const ustring& str1, u16string& str2)
 	cBegin	= str1.begin();
 	cEnd	= str1.end();
 	
-	while(cBegin != cEnd) {
+	while(cBegin != cEnd) 
+	{
 		str2.push_back((unsigned16_t)*cBegin++);		
 	}
+	XL_ASSERT(str2.length() == str1.length());
 }
 
 #endif
@@ -848,9 +850,11 @@ void  CGlobalRecords::char2str16(const string& str1, u16string& str2)
 	cBegin	= str1.begin();
 	cEnd	= str1.end();
 	
-	while(cBegin != cEnd) {
+	while(cBegin != cEnd) 
+	{
 		str2.push_back((unsigned16_t)*cBegin++);		
 	}
+	XL_ASSERT(str2.length() == str1.length());
 }
 
 bool CGlobalRecords::IsASCII(const std::string& str)

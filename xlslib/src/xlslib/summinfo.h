@@ -44,7 +44,7 @@
 
 
 
-#include <xls_pshpack2.h>
+// #include <xls_pshpack2.h>
 
 // all of these defined, not all used
 #define SumInfo_Unknown						 1
@@ -105,7 +105,7 @@ CSummaryInfo class declaration
 		virtual ~CSummaryInfo();
 		
 		bool property(property_t prop, const std::string& content);
-		void DumpData(void);
+		int DumpData(void);
 
 	private:
 		CSummaryInfo(const CSummaryInfo& that);
@@ -113,7 +113,7 @@ CSummaryInfo class declaration
     };
 }
 
-#include <xls_poppack.h>
+// #include <xls_poppack.h>
 
 #endif
 

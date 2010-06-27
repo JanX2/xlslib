@@ -41,16 +41,16 @@
 #include <extformat.h>
 
 
-#include <xls_pshpack2.h>
+// #include <xls_pshpack2.h>
 
 namespace xlslib_core
 {
   struct colinfo_t
   {
+    xf_t*			xformat;
     unsigned32_t	colfirst;
     unsigned32_t	collast;
     unsigned16_t	width;
-    xf_t*			xformat;
     unsigned16_t	flags;
   };
 
@@ -84,7 +84,7 @@ namespace xlslib_core
 }
 
 
-#include <xls_poppack.h>
+// #include <xls_poppack.h>
 
 #endif //COLINFO_H
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

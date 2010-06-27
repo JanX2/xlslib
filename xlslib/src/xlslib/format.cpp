@@ -96,13 +96,47 @@ unsigned16_t format_t::format2index(format_number_t idx)
 */
 
 format_t::format_t(const format_t& orig) :
-index(0),
-formatstr(orig.formatstr),
-m_usage_counter(0),
-m_GlobalRecords(orig.m_GlobalRecords)
+		formatstr(orig.formatstr),
+		index(0),
+		m_usage_counter(0),
+		m_GlobalRecords(orig.m_GlobalRecords)
 {
 	m_GlobalRecords.AddFormat(this);
 }
+
+
+format_t::format_t(CGlobalRecords& gRecords, const std::string& fmtstr) :
+		formatstr(),
+		index(0),
+		m_usage_counter(0),
+		m_GlobalRecords(gRecords)
+{
+	gRecords.char2str16(fmtstr, formatstr);
+}
+
+format_t::format_t(CGlobalRecords& gRecords, const std::ustring& fmtstr) :
+		formatstr(),
+		index(0),
+		m_usage_counter(0),
+		m_GlobalRecords(gRecords)
+{
+	gRecords.wide2str16(fmtstr, formatstr);
+}
+
+format_t::format_t(CGlobalRecords& gRecords, const u16string& fmtstr) :
+		formatstr(fmtstr),
+		index(0),
+		m_usage_counter(0),
+		m_GlobalRecords(gRecords)
+{
+}
+
+
+format_t &format_t::operator =(const format_t &src)
+{
+	throw std::string("Should never have invoked the format_t copy operator!");
+}
+
 
 
 void format_t::MarkUsed(void) 
@@ -144,39 +178,6 @@ CFormat::~CFormat()
 }
 
 
-
-
-format_t::format_t(CGlobalRecords& gRecords, const std::string& fmtstr) :
-	index(0),
-	formatstr(),
-	m_usage_counter(0),
-	m_GlobalRecords(gRecords)
-{
-	gRecords.char2str16(fmtstr, formatstr);
-}
-
-format_t::format_t(CGlobalRecords& gRecords, const std::ustring& fmtstr) :
-index(0),
-formatstr(),
-m_usage_counter(0),
-m_GlobalRecords(gRecords)
-{
-	gRecords.wide2str16(fmtstr, formatstr);
-}
-
-format_t::format_t(CGlobalRecords& gRecords, const u16string& fmtstr) :
-index(0),
-formatstr(fmtstr),
-m_usage_counter(0),
-m_GlobalRecords(gRecords)
-{
-}
-
-
-format_t &format_t::operator =(const format_t &src)
-{
-	throw std::string("Should never have invoked the format_t copy operator!");
-}
 
 
 

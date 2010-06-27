@@ -43,8 +43,8 @@ using namespace xlslib_core;
 
 cell_t::cell_t(CGlobalRecords& gRecord, unsigned32_t rowNum, unsigned32_t colNum, xf_t* pxfval) :
    m_GlobalRecords(gRecord),
-   row(rowNum), col(colNum),
-   pxf(pxfval ? pxfval : gRecord.GetDefaultXF())
+   pxf(pxfval ? pxfval : gRecord.GetDefaultXF()),
+   row(rowNum), col(colNum)
 {
 	XL_ASSERT(pxf);
 	pxf->MarkUsed();
@@ -63,8 +63,6 @@ unsigned16_t cell_t::GetXFIndex() const
    return pxf->GetIndex();
 }
 
-unsigned32_t cell_t::GetRow(void) const {return row;}
-unsigned32_t cell_t::GetCol(void) const {return col;}
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 // Implementation of the XF record interface (xf_i pure virtual interface)

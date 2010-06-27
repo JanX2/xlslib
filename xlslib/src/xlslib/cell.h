@@ -43,7 +43,7 @@
 #include <extformat.h>
 
 
-#include <xls_pshpack2.h>
+// #include <xls_pshpack2.h>
 
 namespace xlslib_core
 {
@@ -68,8 +68,8 @@ namespace xlslib_core
 
     public:
 		unsigned16_t GetXFIndex(void) const;
-		unsigned32_t GetRow(void) const;
-		unsigned32_t GetCol(void) const;
+		unsigned32_t GetRow(void) const { return row; };
+		unsigned32_t GetCol(void) const { return col; };
 
 		void SetXF(xf_t* pxfval);
 		xf_t* GetXF(void) const;
@@ -80,9 +80,9 @@ namespace xlslib_core
 	protected:
 		CGlobalRecords& m_GlobalRecords;
 		static const unsigned16_t FORMAT_NUM_OPTIONS_TABLE[];
+		xf_t* pxf;
 		unsigned32_t row;
 		unsigned32_t col;
-		xf_t* pxf;
 
     public: // xf_i interface
 		void font(font_t* font);
@@ -142,7 +142,7 @@ namespace xlslib_core
 }
 
 
-#include <xls_poppack.h>
+// #include <xls_poppack.h>
 
 #endif // CELL_H
 

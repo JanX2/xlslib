@@ -41,7 +41,7 @@
 #include <record.h>
 
 
-#include <xls_pshpack2.h>
+// #include <xls_pshpack2.h>
 
 namespace xlslib_core
 {
@@ -72,7 +72,7 @@ CMergedCells class declaration
 }
 
 
-#include <xls_poppack.h>
+// #include <xls_poppack.h>
 
 #endif //MERGED_H 
 

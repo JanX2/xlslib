@@ -48,7 +48,7 @@
 #ifdef RANGE_FEATURE
 
 
-#include <xls_pshpack2.h>
+// #include <xls_pshpack2.h>
 
 namespace xlslib_core
 {
@@ -129,7 +129,7 @@ namespace xlslib_core
 			{
 				if((left.first)->index < (right.first)->index) return true;
 				if((left.first)->index > (right.first)->index) return false;
-				return ((left.second).flags < (right.second).flags) ? true : false;
+				return ((left.second).flags < (right.second).flags);
 			}
 	};
 	
@@ -138,7 +138,7 @@ namespace xlslib_core
 }
 
 
-#include <xls_poppack.h>
+// #include <xls_poppack.h>
 
 #endif //RANGE_H 
 

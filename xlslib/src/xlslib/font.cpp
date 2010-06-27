@@ -136,8 +136,8 @@ const unsigned8_t font_t::COLOR_OPTION_TABLE[] =
 
 font_t::font_t(CGlobalRecords& gRecords) :
    m_GlobalRecords(gRecords),
-   index(0x0000),
    name(FONT_DFLT_FONTNAME),
+   index(0x0000),
    height(FONT_DFLT_HEIGHT),
    boldstyle(FONT_BOLDNESS_NORMAL),
    script(FONT_SCRIPT_NONE),
@@ -152,8 +152,8 @@ font_t::font_t(CGlobalRecords& gRecords) :
 
 font_t::font_t(const font_t& right) :
    m_GlobalRecords(right.m_GlobalRecords),
-   index(0x0000),
    name(right.name),
+   index(0x0000),
    height(right.height),
    boldstyle(right.boldstyle),
    script(right.script),

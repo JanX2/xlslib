@@ -46,13 +46,12 @@ CRecord class implementation
 ******************************
 */
 CRecord::CRecord(CDataStorage &datastore) :
-	CUnit(datastore),
-   m_Num(RECTYPE_NULL)
+	CUnit(datastore)
 {
    static const unsigned8_t array[] = {0,0,0,0} ; 
    // Initialize (and create) the space for record type
    // and record length
-   AddDataArray(array, 4);
+   XL_VERIFY(NO_ERRORS == AddDataArray(array, 4));
 }
 
 CRecord::~CRecord()
@@ -63,9 +62,9 @@ CRecord::~CRecord()
 ******************************
 ******************************
 */
-void CRecord::SetRecordType(unsigned16_t rtype)
+signed8_t CRecord::SetRecordType(unsigned16_t rtype)
 {
-   SetValueAt16((unsigned16_t)rtype, 0);
+   return SetValueAt16(rtype, 0);
 }
 
 
@@ -75,9 +74,9 @@ void CRecord::SetRecordType(unsigned16_t rtype)
 */
 unsigned16_t CRecord::GetRecordType() const
 {
-   signed16_t value;
+   unsigned16_t value;
 
-   GetValue16From(&value, 0);
+   XL_VERIFY(NO_ERRORS == GetValue16From(&value, 0));
 
    return value;
 }
@@ -86,9 +85,9 @@ unsigned16_t CRecord::GetRecordType() const
 ******************************
 ******************************
 */
-void CRecord::SetRecordLength(size_t rlength)
+signed8_t CRecord::SetRecordLength(size_t rlength)
 {
-   SetValueAt16((unsigned16_t)rlength, 2);
+   return SetValueAt16((unsigned16_t)rlength, 2);
 }
 
 
@@ -101,7 +100,7 @@ size_t CRecord::GetRecordLength() const
 {
    unsigned16_t value;
 
-   GetValue16From((signed16_t*)&value, 2);
+   XL_VERIFY(NO_ERRORS == GetValue16From(&value, 2));
 
    return value;
 }
@@ -124,6 +123,7 @@ const unsigned8_t* CRecord::GetRecordDataBuffer() const
 size_t CRecord::GetRecordDataSize() const
 {
    size_t len = GetDataSize() - 4;
+
    return len;
 }
 

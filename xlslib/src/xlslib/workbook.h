@@ -47,7 +47,7 @@
 #define XLSLIB_VERSION PACKAGE_VERSION // "2.0.0"
 
 
-#include <xls_pshpack2.h>
+// #include <xls_pshpack2.h>
 
 namespace xlslib_core
 {
@@ -121,17 +121,15 @@ namespace xlslib_core
 		WorkbookDumpState_t		m_DumpState;
 		WorkbookDumpState_t		m_PreviousDumpState;
 		unsigned16_t			sheetIndex;
-
-		CUnit*					m_pCurrentData;
 		
+		CUnit*					m_pCurrentData;
 
 		// Continue record variables:
-		size_t			writeLen;
 		CUnit*					m_pContinueRecord;
-		unsigned16_t			m_ContinueIndex;
-		
-		unsigned16_t			current_sheet;
+		size_t			writeLen;
 		size_t			offset;              
+		unsigned16_t			m_ContinueIndex;
+		unsigned16_t			current_sheet;
 
 		// INDEX / DBCELL assistant variables:
 		size_t			Last_BOF_offset;
@@ -139,7 +137,7 @@ namespace xlslib_core
 
 }
 
-#include <xls_poppack.h>
+// #include <xls_poppack.h>
 
 #endif //WORKBOOK_H
 

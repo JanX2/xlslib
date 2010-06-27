@@ -45,7 +45,7 @@
 //#include <workbook.h>
 
 
-#include <xls_pshpack2.h>
+// #include <xls_pshpack2.h>
 
 namespace xlslib_core
 {
@@ -53,7 +53,7 @@ namespace xlslib_core
 // COMMON
 
   // The Cell Properties bit or-masks:
-#define XF_PROP_SHIFTPOS_PARENT  (4)
+#define XF_PROP_SHIFTPOS_PARENT  4
 
 #define XF_PROP_LOCKED      0x0001
 #define XF_PROP_HIDDEN      0x0002
@@ -215,7 +215,7 @@ namespace xlslib_core
 #define XF_ALIGN_ATR_MASK			0xFC000000
 
   // Text Orientation Options
-#define XF_ORI_SHIFTPOS			(8)
+#define XF_ORI_SHIFTPOS			8
 #define XF_ORI_NONE             0
 #define XF_ORI_90NOCLOCKTXT     90
 #define XF_ORI_90CLOCKTXT       180
@@ -230,7 +230,7 @@ namespace xlslib_core
     } txtori_option_t;
 
   // Indent field
-#define XF_INDENT_SHIFTPOS		(16)
+#define XF_INDENT_SHIFTPOS		16
 #define XF_INDENT_LVL			0x0F
 #define XF_INDENT_0				0x00
 #define XF_INDENT_1				0x01
@@ -277,18 +277,18 @@ namespace xlslib_core
     } indent_option_t;
 
   // XF_USED_ATTRIB
-#define XF_ATTRIB_SHIFTPOS		(16)	// bits shifted by 8 already
+#define XF_ATTRIB_SHIFTPOS		16	// bits shifted by 8 already
 
   // The Border A field bit or-masks:
 
-#define XF_STYLE_SHIFTPOS_LEFT		(0)
-#define XF_STYLE_SHIFTPOS_RIGHT		(4)
-#define XF_STYLE_SHIFTPOS_TOP		(8)
-#define XF_STYLE_SHIFTPOS_BOTTOM	(12)
+#define XF_STYLE_SHIFTPOS_LEFT		0
+#define XF_STYLE_SHIFTPOS_RIGHT		4
+#define XF_STYLE_SHIFTPOS_TOP		8
+#define XF_STYLE_SHIFTPOS_BOTTOM	12
 
   // The BorderA field bit or-masks:
-#define XF_COLOR_SHIFTPOS_LEFT  (16)
-#define XF_COLOR_SHIFTPOS_RIGHT (23)
+#define XF_COLOR_SHIFTPOS_LEFT  16
+#define XF_COLOR_SHIFTPOS_RIGHT 23
 
 #define XF_BORDER_LEFTSTYLE		0x0000000F
 #define XF_BORDER_RIGHTSTYLE	0x000000F0
@@ -302,11 +302,11 @@ namespace xlslib_core
 
   // BORDER B 
 
-#define XF_COLOR_SHIFTPOS_TOP		(0)
-#define XF_COLOR_SHIFTPOS_BOTTOM	(7)
-#define XF_COLOR_SHIFTPOS_DIAG		(14)
-#define XF_STYLE_SHIFTPOS_DIAG		(21)
-#define XF_SHIFTPOS_FILLPATTERN		(26)
+#define XF_COLOR_SHIFTPOS_TOP		0
+#define XF_COLOR_SHIFTPOS_BOTTOM	7
+#define XF_COLOR_SHIFTPOS_DIAG		14
+#define XF_STYLE_SHIFTPOS_DIAG		21
+#define XF_SHIFTPOS_FILLPATTERN		26
 
 #define XF_BORDER_TOPCOLOR     0x0000007f
 #define XF_BORDER_BOTTOMCOLOR  0x00003f80
@@ -314,16 +314,16 @@ namespace xlslib_core
 #define XF_BORDER_DIAGSTYLE    0x01e00000
 #define XF_BORDER_FILLPATTERN  0xFC000000
 
-//#define XF_STYLE_SHIFTPOS_LEFT  (3)
-//#define XF_STYLE_SHIFTPOS_RIGHT (6)
-//#define XF_COLOR_SHIFTPOS_TOP   (9)
+//#define XF_STYLE_SHIFTPOS_LEFT  3
+//#define XF_STYLE_SHIFTPOS_RIGHT 6
+//#define XF_COLOR_SHIFTPOS_TOP   9
 //#define XF_BORDER1_TOPSTYLE     0x0007
 //#define XF_BORDER1_LEFTSTYLE    0x0038
 //#define XF_BORDER1_RIGHTSTYLE   0x01c0
 
   // The Color field bit or-masks:
-#define XF_COLOR_SHIFTPOS_FG  (0)
-#define XF_COLOR_SHIFTPOS_BG  (7)
+#define XF_COLOR_SHIFTPOS_FG   0
+#define XF_COLOR_SHIFTPOS_BG   7
 #define XF_COLOR_FOREGROUND    0x007f
 #define XF_COLOR_BACKGROUND    0x3f80
 #define XF_COLOR_DIAG          0xc000
@@ -343,6 +343,10 @@ CExtFormat class declaration
 		//format_number_t format;	problem is user formats are in their own space
 		unsigned16_t	formatIndex;
 
+		bool locked : 1;
+		bool hidden : 1;
+		bool wrap : 1;
+
 		halign_option_t halign;
 		valign_option_t valign;
 		indent_option_t indent;
@@ -351,10 +355,6 @@ CExtFormat class declaration
 		fill_option_t	fillstyle;
 		color_name_t	fill_fgcolor;
 		color_name_t	fill_bgcolor;
-
-		bool locked;
-		bool hidden;
-		bool wrap;
 
 		border_style_t	border_style[_NUM_BORDERS];
 		color_name_t	border_color[_NUM_BORDERS];
@@ -541,9 +541,9 @@ CExtFormat class declaration
       unsigned32_t m_usage_counter;
       unsigned16_t index;
 
+	  unsigned16_t formatIndex;
       font_t* font;
       format_t *format;
-	  unsigned16_t formatIndex;
 
       unsigned8_t halign;
       unsigned8_t valign;
@@ -554,11 +554,11 @@ CExtFormat class declaration
       unsigned8_t fill_fgcolor;
       unsigned8_t fill_bgcolor;
 
-      bool locked;
-      bool hidden;
-      bool wrap;
-      bool is_cell;
-	  bool is_userXF;
+      bool locked : 1;
+      bool hidden : 1;
+      bool wrap : 1;
+      bool is_cell : 1;
+	  bool is_userXF : 1;
 
       unsigned8_t	border_style[_NUM_BORDERS];
       unsigned8_t	border_color[_NUM_BORDERS];
@@ -622,7 +622,7 @@ CExtFormat class declaration
 
 }
 
-#include <xls_poppack.h>
+// #include <xls_poppack.h>
 
 #endif //EXTFORMAT_H
 

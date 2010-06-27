@@ -42,7 +42,7 @@
 #include <colors.h>
 
 
-#include <xls_pshpack2.h>
+// #include <xls_pshpack2.h>
 
 namespace xlslib_core
 {
@@ -135,8 +135,8 @@ CFont class declaration
 
   typedef struct
   {
-    unsigned16_t index;
     std::string name;
+    unsigned16_t index;
     unsigned16_t height;
     boldness_option_t boldstyle;
     underline_option_t underline;
@@ -264,8 +264,8 @@ CFont class declaration
 
     private:
       CGlobalRecords&	m_GlobalRecords;
-      unsigned16_t		index;
       std::string		name;
+      unsigned16_t		index;
 	
       unsigned16_t		height;
       unsigned16_t		boldstyle;
@@ -310,7 +310,7 @@ CFont class declaration
 }
 
 
-#include <xls_poppack.h>
+// #include <xls_poppack.h>
 
 #endif //FONT_H
 

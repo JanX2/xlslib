@@ -72,7 +72,7 @@ namespace xlslib_core
 #define HEADVAL_DFLT_UK2            (0x00)  
 #define HEADVAL_DFLT_UK2b           (0x00)  /* According to the Excel sample... but undocummented */
 #define HEADVAL_DFLT_UK3            (0x00)  
-#define HEADVAL_DFLT_UK4            (0x3e)  /*POIFS documentations says 0x3b... let's stick with the Excel sample ...*/
+#define HEADVAL_DFLT_UK4            (0x3e)  /* POIFS documentation says 0x3b... let's stick with the Excel sample ...*/
 #define HEADVAL_DFLT_UK5            (0x03)  
 #define HEADVAL_DFLT_UK6              (-2)    
 #define HEADVAL_DFLT_UK7            (0x00)  
@@ -104,7 +104,7 @@ namespace xlslib_core
 #define BAT_BLOCKS_PER_MSAT_BLOCK	(BAT_ENTRIES_PER_BLOCK - 1)	// pointer to next, or final terminator
 #define HEADER_SAT_SIZE				109
 
-  /* 
+/* 
 ******************************
 COleFile class declaration
 ******************************

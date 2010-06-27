@@ -107,19 +107,23 @@ bool CSummaryInfo::property(property_t prop, const string& content) {
 ***********************************
 ***********************************
 */
-void CSummaryInfo::DumpData(void)
+int CSummaryInfo::DumpData(void)
 {
    XTRACE("\tCSummaryInfo::DumpData");
 
 #if 1
-   	hpsf->DumpData();
-	(*this) += hpsf;
-	// hpsf = NULL;	// DataStore owns it now
+   	int ret = hpsf->DumpData();
+	if (ret == NO_ERRORS)
+	{
+		(*this) += hpsf;
+		// hpsf = NULL;	// DataStore owns it now
+	}
 #else
 	CUnit* ptraildata = new CUnit;
 	ptraildata->AddDataArray(CSummaryInfo::summ_info_data, sizeof(CSummaryInfo::summ_info_data));
 	(*this) += ptraildata;
 #endif
+	return ret;
 }
 /*
 ***********************************

@@ -45,7 +45,7 @@
 #include <unit.h>
 
 
-#include <xls_pshpack2.h>
+// #include <xls_pshpack2.h>
 
 namespace xlslib_core
 {
@@ -162,8 +162,8 @@ CGlobalRecords class declaration
       Font_Vect_Itor_t       font_dflt;
       unsigned16_t           fontIndex;
 	
-      Format_Vect_Itor_t     format;
       unsigned16_t           formatIndex;
+      Format_Vect_Itor_t     format;
 
       XF_Vect_Itor_t         xf;
       XF_Vect_Itor_t         xf_dflt;
@@ -175,7 +175,7 @@ CGlobalRecords class declaration
 
 }
 
-#include <xls_poppack.h>
+// #include <xls_poppack.h>
 
 #endif // GLOBALREC_H
 

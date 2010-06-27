@@ -42,7 +42,7 @@
 #include <unit.h>
 
 
-#include <xls_pshpack2.h>
+// #include <xls_pshpack2.h>
 
 namespace xlslib_core
 {
@@ -137,7 +137,10 @@ typedef enum
 
 	struct color_entry_t
 	{
-		unsigned8_t r, g, b, nuttin;
+		unsigned8_t r;
+		unsigned8_t g;
+		unsigned8_t b;
+		unsigned8_t nuttin;
 	};
 
 	class colors_t // : public CRecord
@@ -154,7 +157,7 @@ typedef enum
 		colors_t& operator=(const colors_t& right);
 
 	  private:
-		color_entry_t	*colors;
+		color_entry_t *colors;
 	};
 
 	// forward ref
@@ -179,7 +182,7 @@ CPalette class declaration
 
 }
 
-#include <xls_poppack.h>
+// #include <xls_poppack.h>
 
 #endif //COLORS_H
 

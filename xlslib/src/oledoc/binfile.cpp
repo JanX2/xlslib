@@ -72,7 +72,7 @@ int CBinFile::Open(const string& file_name)
 ******************************
 ******************************
 */
-int CBinFile::Close (  )
+int CBinFile::Close(void)
 {
    if(m_File.is_open())
       m_File.close();
@@ -84,7 +84,7 @@ int CBinFile::Close (  )
 ******************************
 */
 
-unsigned32_t CBinFile::Position (  )
+unsigned32_t CBinFile::Position(void)
 {
 	unsigned32_t pt = 0;
    if(m_File.is_open()) {
@@ -140,10 +140,11 @@ int CBinFile::WriteByte(unsigned8_t byte)
 */
 int CBinFile::WriteUnsigned16(unsigned16_t data)
 {
-   int errcode = NO_ERRORS;
+   int errcode;
 
-   WriteByte(BYTE_0(data));
-   WriteByte(BYTE_1(data));
+   errcode = WriteByte(BYTE_0(data));
+   if (errcode != NO_ERRORS) return errcode;
+   errcode = WriteByte(BYTE_1(data));
 
    return errcode;
 }
@@ -154,12 +155,15 @@ int CBinFile::WriteUnsigned16(unsigned16_t data)
 */
 int CBinFile::WriteUnsigned32(unsigned32_t data)
 {
-   int errcode = NO_ERRORS;
+   int errcode;
 
-   WriteByte(BYTE_0(data));
-   WriteByte(BYTE_1(data));
-   WriteByte(BYTE_2(data));
-   WriteByte(BYTE_3(data));
+   errcode = WriteByte(BYTE_0(data));
+   if (errcode != NO_ERRORS) return errcode;
+   errcode = WriteByte(BYTE_1(data));
+   if (errcode != NO_ERRORS) return errcode;
+   errcode = WriteByte(BYTE_2(data));
+   if (errcode != NO_ERRORS) return errcode;
+   errcode = WriteByte(BYTE_3(data));
 
    return errcode;
 }
@@ -170,10 +174,11 @@ int CBinFile::WriteUnsigned32(unsigned32_t data)
 */
 int CBinFile::WriteSigned16(signed16_t data)
 {
-   int errcode = NO_ERRORS;
+   int errcode;
 
-   WriteByte(BYTE_0(data));
-   WriteByte(BYTE_1(data));
+   errcode = WriteByte(BYTE_0(data));
+   if (errcode != NO_ERRORS) return errcode;
+   errcode = WriteByte(BYTE_1(data));
 
    return errcode;
 }
@@ -184,11 +189,15 @@ int CBinFile::WriteSigned16(signed16_t data)
 */
 int CBinFile::WriteSigned32(signed32_t data)
 {
-   int errcode = NO_ERRORS;
-   WriteByte(BYTE_0(data));
-   WriteByte(BYTE_1(data));
-   WriteByte(BYTE_2(data));
-   WriteByte(BYTE_3(data));
+   int errcode;
+
+   errcode = WriteByte(BYTE_0(data));
+   if (errcode != NO_ERRORS) return errcode;
+   errcode = WriteByte(BYTE_1(data));
+   if (errcode != NO_ERRORS) return errcode;
+   errcode = WriteByte(BYTE_2(data));
+   if (errcode != NO_ERRORS) return errcode;
+   errcode = WriteByte(BYTE_3(data));
 
    return errcode;
 }
@@ -212,7 +221,10 @@ int CBinFile::SerializeFixedArray(const unsigned8_t data, size_t size)
    int errcode = NO_ERRORS;
    
    for (size_t i = 0; i<size; i++)
-      WriteByte(data);
+   {
+      errcode = WriteByte(data);
+	  if (errcode != NO_ERRORS) return errcode;
+   }
 
    return errcode;
 }
@@ -224,17 +236,14 @@ int CBinFile::SerializeFixedArray(const unsigned8_t data, size_t size)
 
 int CBinFile::write_service(const char *buffer, size_t size)
 {
-//   if(!is_stroke)
-   {
-      if(m_File.is_open())
-      {
-         if(size > 1)
-            m_File.write(buffer, static_cast<streamsize>(size));
-         else if(size == 1)
-            m_File.put(*buffer);
-      }
-   }
-   return NO_ERRORS;
+	if(m_File.is_open())
+	{
+		if(size > 1)
+			m_File.write(buffer, static_cast<streamsize>(size));
+		else if(size == 1)
+			m_File.put(*buffer);
+	}
+	return m_File.good() ? NO_ERRORS : FILE_ERROR;
 }
 
 

@@ -55,7 +55,7 @@
 #include <range.h>
 
 
-#include <xls_pshpack2.h>
+// #include <xls_pshpack2.h>
 
 namespace xlslib_core
 {
@@ -139,8 +139,7 @@ worksheet class declaration
   typedef CellOffsets_Vect_t::iterator CellOffsets_Vect_Itor_t;
 
 //  class range;
-  class worksheet
-    : public CBiffSection
+  class worksheet : public CBiffSection
     {
 	  friend class workbook;
 
@@ -199,7 +198,7 @@ worksheet class declaration
 		CUnit*					DumpData(CDataStorage &datastore, size_t offset, size_t writeLen, size_t &Last_BOF_offset);
 		
     private:
-		worksheet( const worksheet& that);
+		worksheet(const worksheet& that);
 		worksheet& operator=(const worksheet& right);
 
     public:
@@ -260,7 +259,7 @@ worksheet class declaration
 }
 
 
-#include <xls_poppack.h>
+// #include <xls_poppack.h>
 
 #endif // SHEETREC_H
 

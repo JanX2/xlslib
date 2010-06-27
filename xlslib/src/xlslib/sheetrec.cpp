@@ -40,7 +40,6 @@
 
 #include <datast.h>
 
-using namespace std;
 using namespace xlslib_core;
 
 
@@ -51,8 +50,6 @@ using namespace xlslib_core;
 
 #define MAX_COLUMNS_PER_ROW			256 // Excel 2003 limit: 256 columns per row. (Update this when we upgrade this lib to support BIFF12 !)
 
-
-using namespace std;
 
 /*
 **********************************************************************
@@ -595,14 +592,17 @@ size_t worksheet::EstimateNumBiffUnitsNeeded(void)
 ***********************************
 */
 
-void worksheet::MakeActive() { m_GlobalRecords.GetWindow1().SetActiveSheet(sheetIndex);}
+void worksheet::MakeActive() 
+{ 
+	m_GlobalRecords.GetWindow1().SetActiveSheet(sheetIndex);
+}
 
 /*
 ***********************************
 ***********************************
 */
 cell_t* worksheet::label(unsigned32_t row, unsigned32_t col, 
-                         const string& strlabel, xf_t* pxformat)
+						 const std::string& strlabel, xf_t* pxformat)
 {
 	label_t* lbl;
 
@@ -612,7 +612,7 @@ cell_t* worksheet::label(unsigned32_t row, unsigned32_t col,
 	return lbl;
 }
 cell_t* worksheet::label(unsigned32_t row, unsigned32_t col, 
-                         const ustring& strlabel, xf_t* pxformat)
+						 const std::ustring& strlabel, xf_t* pxformat)
 {
 	label_t* lbl;
 
@@ -758,7 +758,7 @@ void worksheet::AddCell(cell_t* pcell)
 			ret		= m_Cells.insert(cellIterHint, pcell);
 			success	= (*ret == pcell);
 		} else {
-			pair<Cell_Set_Itor_t, bool> pr;
+			std::pair<Cell_Set_Itor_t, bool> pr;
 			
 			pr = m_Cells.insert(pcell);
 			ret		= pr.first;
@@ -794,9 +794,8 @@ cell_t* worksheet::FindCell(unsigned32_t row, unsigned32_t col) const
    Cell_Set_CItor_t existing_cell;
    
    // need a cell to find a cell! So create simplest possible one
-   cell_t* cell = new blank_t(m_GlobalRecords, row, col);
-   existing_cell = m_Cells.find(cell);
-   delete cell;
+   blank_t cell(m_GlobalRecords, row, col);
+   existing_cell = m_Cells.find(&cell);
 
    // The find operation returns the end() iterator
    // if the cell wasn't found

@@ -44,7 +44,7 @@
 #define FILETIME2UNIX_NS	11644473600000000ll		// from the web
 
 
-#include <xls_pshpack2.h>
+// #include <xls_pshpack2.h>
 
 namespace xlslib_core
 {
@@ -139,7 +139,7 @@ namespace xlslib_core
 			//unsigned32_t	NumProperties() const {return numProperties;};
 			unsigned64_t unix2mstime(time_t unixTime);
 
-			void DumpData(void);
+			int DumpData(void);
 
 		private:
 			docType_t		docType;
@@ -149,6 +149,6 @@ namespace xlslib_core
 }
 
 
-#include <xls_poppack.h>
+// #include <xls_poppack.h>
 
 #endif

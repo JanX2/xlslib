@@ -38,8 +38,29 @@
 #include <row.h>
 #include <datast.h>
 
-using namespace std;
 using namespace xlslib_core;
+
+
+rowheight_t::rowheight_t() : 
+		xformat(NULL), 
+		num(0), 
+		height(ROW_DFLT_HEIGHT) 
+{
+}
+rowheight_t::rowheight_t(unsigned32_t rownum, unsigned16_t rowheight, xf_t *pxformat) : 
+		xformat(pxformat), 
+		num(rownum), 
+		height(rowheight) 
+{
+}
+
+rowheight_t::~rowheight_t() 
+{
+	if(xformat) 
+		xformat->UnMarkUsed();
+}
+
+
 
 /*
 ******************************

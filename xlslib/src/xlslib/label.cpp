@@ -85,7 +85,7 @@ size_t xlslib_core::label_t::GetSize(void) const
 
 	size = 10;		// empty Unicode string has a flags byte
 	size += 
-		(sizeof(unsigned16_t) + 1 + strLabel.size() * (CGlobalRecords::IsASCII(strLabel) ? sizeof(unsigned8_t) : sizeof(unsigned16_t)));
+		(sizeof(unsigned16_t) + 1 + strLabel.length() * (CGlobalRecords::IsASCII(strLabel) ? sizeof(unsigned8_t) : sizeof(unsigned16_t)));
 	  
 	return size;
 }

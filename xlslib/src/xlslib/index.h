@@ -41,7 +41,7 @@
 #include <record.h>
 
 
-#include <xls_pshpack2.h>
+// #include <xls_pshpack2.h>
 
 namespace xlslib_core
 {
@@ -75,14 +75,14 @@ CIndex class declaration
       virtual ~CIndex();
 
 	public:
-      void AddDBCellOffset(size_t dbcoffset);
+      signed8_t AddDBCellOffset(size_t dbcoffset);
       void SetRows(unsigned32_t firstrow, unsigned32_t lastrow);
       unsigned32_t GetFirstRow(void);
       unsigned32_t GetLastRow(void);
     };
 }
 
-#include <xls_poppack.h>
+// #include <xls_poppack.h>
 
 #endif //INDEX_H
 

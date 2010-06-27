@@ -51,7 +51,7 @@ COleFile class declaration
 */
 
 
-#include <xls_pshpack2.h>
+// #include <xls_pshpack2.h>
 
 namespace xlslib_core
 {
@@ -170,7 +170,7 @@ namespace xlslib_core
 		inline void MakeSticky(void)
 		{
 			XL_ASSERT(m_is_in_use);
-			m_is_sticky = 1;
+			m_is_sticky = true;
 		}
 	};
 
@@ -304,6 +304,7 @@ namespace xlslib_core
 
 	public:
 		void Push(CUnit* unit);
+		static const unsigned16_t BACKPATCH_LEVEL_EVERYONE = (unsigned16_t)~0;
 		void FlushEm(unsigned16_t backpatch_level = 0);
 		void FlushLowerLevelUnits(const CUnit *unit);
 
@@ -345,7 +346,7 @@ namespace xlslib_core
 	};
 }
 
-#include <xls_poppack.h>
+// #include <xls_poppack.h>
 
 #endif //DATAST_H
 

@@ -39,7 +39,7 @@
 
 
 
-#include <xls_pshpack2.h>
+// #include <xls_pshpack2.h>
 
 namespace xlslib_core
 {
@@ -1693,8 +1693,7 @@ namespace xlslib_core
 
     public:
       const expression_node_t *GetAST() const {return ast;};
-
-	void GetResultEstimate(estimated_formula_result_t &dst) const;
+	  void GetResultEstimate(estimated_formula_result_t &dst) const;
     };
 
 
@@ -1715,7 +1714,7 @@ namespace xlslib_core
 }
 
 
-#include <xls_poppack.h>
+// #include <xls_poppack.h>
 
 #endif //FORMULA_H
 

@@ -208,7 +208,7 @@ int  COleDoc::DumpHeader(blocks bks, size_t total_data_size)
 ***********************************
 ***********************************
 */
-int  COleDoc::DumpData(void)
+int COleDoc::DumpData(void)
 {
    int errcode = NO_ERRORS;
 
@@ -224,7 +224,9 @@ int  COleDoc::DumpData(void)
          {
 			 XL_ASSERT(j->GetBuffer() != NULL);
 			 //XL_ASSERT(j->GetDataSize() > 0);
-            WriteByteArray(j->GetBuffer(), j->GetDataSize());
+            errcode = WriteByteArray(j->GetBuffer(), j->GetDataSize());
+			if (errcode != NO_ERRORS)
+				break;
          }
 #else
 		  for(DataList_Itor_t j = (*i)->GetDataPointer()->begin(); 

@@ -80,11 +80,14 @@ CIndex::~CIndex()
 **********************************
 **********************************
 */
-void CIndex::AddDBCellOffset(size_t dboffset)
+signed8_t CIndex::AddDBCellOffset(size_t dboffset)
 {
-   AddValue32((unsigned32_t)dboffset);
+   signed8_t errcode = AddValue32((unsigned32_t)dboffset);
 
-   SetRecordLength(GetDataSize()-4); // Update record's length
+   if (errcode != NO_ERRORS)
+	   return errcode;
+
+   return SetRecordLength(GetDataSize()-4); // Update record's length
 }
 
 /* 
@@ -94,8 +97,8 @@ void CIndex::AddDBCellOffset(size_t dboffset)
 void CIndex::SetRows(unsigned32_t firstrow,
                      unsigned32_t lastrow)
 {
-	SetValueAt32((unsigned32_t)firstrow, INDEX_OFFSET_B8FIRSTROW); // [i_a]
-	SetValueAt32((unsigned32_t)(lastrow+1), INDEX_OFFSET_B8LASTROW); // [i_a]
+	XL_VERIFY(NO_ERRORS == SetValueAt32((unsigned32_t)firstrow, INDEX_OFFSET_B8FIRSTROW)); // [i_a]
+	XL_VERIFY(NO_ERRORS == SetValueAt32((unsigned32_t)(lastrow+1), INDEX_OFFSET_B8LASTROW)); // [i_a]
 }
 
 /* 
@@ -105,13 +108,11 @@ void CIndex::SetRows(unsigned32_t firstrow,
 
 unsigned32_t CIndex::GetFirstRow(void)
 {
-	unsigned32_t retval;
+	unsigned32_t firstrow;
 
-	signed32_t firstrow;
-	GetValue32From(&firstrow, INDEX_OFFSET_B8FIRSTROW); // [i_a]
-	retval = firstrow;
+	XL_VERIFY(NO_ERRORS == GetValue32From(&firstrow, INDEX_OFFSET_B8FIRSTROW)); // [i_a]
    
-	return retval;
+	return firstrow;
 }
 
 /* 
@@ -121,13 +122,11 @@ unsigned32_t CIndex::GetFirstRow(void)
 
 unsigned32_t CIndex::GetLastRow(void)
 {
-	unsigned32_t retval;
-	
-	signed32_t lastrow;
-	GetValue32From(&lastrow, INDEX_OFFSET_B8LASTROW); // [i_a]
-	retval = lastrow;
+	unsigned32_t lastrow;
 
-	return retval;
+	XL_VERIFY(NO_ERRORS == GetValue32From(&lastrow, INDEX_OFFSET_B8LASTROW)); // [i_a]
+
+	return lastrow;
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

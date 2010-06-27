@@ -16,13 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with xlslib.  If not, see <http://www.gnu.org/licenses/>.
  * 
- * Copyright 2004 Yeico S. A. de C. V.
- * Copyright 2008 David Hoerl
- *  
- * $Source: /cvsroot/xlslib/xlslib/src/xlslib/blank.cpp,v $
- * $Revision: 1.4 $
- * $Author: dhoerl $
- * $Date: 2009/03/02 04:08:43 $
+ * Copyright 2010 Ger Hobbelt
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *
@@ -38,7 +32,6 @@
 #include <datast.h>
 
 
-using namespace std;
 using namespace xlslib_core;
 
 /*

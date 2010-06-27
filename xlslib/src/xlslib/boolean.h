@@ -16,13 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with xlslib.  If not, see <http://www.gnu.org/licenses/>.
  * 
- * Copyright 2004 Yeico S. A. de C. V.
- * Copyright 2008 David Hoerl
- *  
- * $Source: /cvsroot/xlslib/xlslib/src/xlslib/blank.h,v $
- * $Revision: 1.5 $
- * $Author: dhoerl $
- * $Date: 2009/03/02 04:08:43 $
+ * Copyright 2010 Ger Hobbelt
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *
@@ -42,7 +36,7 @@
 #include <unit.h>
 
 
-#include <xls_pshpack2.h>
+// #include <xls_pshpack2.h>
 
 namespace xlslib_core
 {
@@ -86,7 +80,7 @@ namespace xlslib_core
 }
 
 
-#include <xls_poppack.h>
+// #include <xls_poppack.h>
 
 #endif
 

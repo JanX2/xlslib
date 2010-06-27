@@ -52,8 +52,8 @@ CUnit class implementation
 // Default constructor
 CUnit::CUnit(CDataStorage &datastore) :
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
-	m_Index(INVALID_STORE_INDEX),
 	m_Store(datastore),
+	m_Index(INVALID_STORE_INDEX),
 	m_Backpatching_Level(0)
 #else
 	m_nSize(0),
@@ -67,10 +67,10 @@ CUnit::CUnit(CDataStorage &datastore) :
 #endif
 }
 
-	CUnit::CUnit(const CUnit& orig) :
+CUnit::CUnit(const CUnit& orig) :
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
-	m_Index(INVALID_STORE_INDEX),
 	m_Store(orig.m_Store),
+	m_Index(INVALID_STORE_INDEX),
 	m_Backpatching_Level(0)
 #else
 	m_nSize(orig.m_nSize),
@@ -83,7 +83,16 @@ CUnit::CUnit(CDataStorage &datastore) :
 	if (orig.m_Index != INVALID_STORE_INDEX)
 	{
 		m_Index = m_Store.RequestIndex(orig.GetDataSize());
-		memcpy(m_Store[m_Index].GetBuffer(), orig.GetBuffer(), orig.GetDataSize());
+		if (m_Index != INVALID_STORE_INDEX)
+		{
+			XL_ASSERT(m_Index >= 0);
+			XL_ASSERT(m_Store[m_Index].GetSize() >= orig.GetDataSize());
+			memcpy(m_Store[m_Index].GetBuffer(), orig.GetBuffer(), orig.GetDataSize());
+		}
+		else
+		{
+			// TODO: mark error. Should we throw an exception from this constructor? 
+		}
 	}
 #else
 	if(m_pData) {
@@ -104,14 +113,24 @@ CUnit& CUnit::operator=(const CUnit& right)
 	if (m_Index == INVALID_STORE_INDEX && right.m_Index != INVALID_STORE_INDEX)
 	{
 		m_Index = m_Store.RequestIndex(len);
+		if (m_Index == INVALID_STORE_INDEX)
+		{
+			// TODO: mark error.
+		}
 	}
 	else if (right.m_Index != INVALID_STORE_INDEX)
 	{
-		m_Store[m_Index].Resize(len);
+		signed8_t ret = m_Store[m_Index].Resize(len);
+		if (ret != NO_ERRORS)
+		{
+			// TODO mark error
+		}
+		XL_ASSERT(ret == NO_ERRORS);
 	}
-	XL_ASSERT(right.m_Index != INVALID_STORE_INDEX ? m_Index != INVALID_STORE_INDEX : 1);
-	if (right.m_Index != INVALID_STORE_INDEX)
+	XL_ASSERT(right.m_Index != INVALID_STORE_INDEX && m_Index != INVALID_STORE_INDEX);
+	if (right.m_Index != INVALID_STORE_INDEX && m_Index != INVALID_STORE_INDEX)
 	{
+		XL_ASSERT(m_Store[m_Index].GetSize() >= len);
 		memcpy(m_Store[m_Index].GetBuffer(), right.GetBuffer(), len);
 		m_Store[m_Index].SetDataSize(len);
 	}
@@ -168,15 +187,16 @@ signed8_t CUnit::SetValueAt8(unsigned8_t newval, unsigned32_t index)
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 
    XL_ASSERT(m_Index != INVALID_STORE_INDEX);
-   unsigned8_t *m_pData = m_Store[m_Index].GetBuffer();
-   size_t m_nDataSize = m_Store[m_Index].GetDataSize();
+   unsigned8_t *data = m_Store[m_Index].GetBuffer();
+   size_t datasize = m_Store[m_Index].GetDataSize();
 
 #endif
 
-   if(m_pData != NULL)
+   if(data != NULL)
    {
-      if (index < m_nDataSize)
-         m_pData[index] = newval;
+	   XL_ASSERT(m_Store[m_Index].GetSize() >= datasize);
+      if (index < datasize)
+         data[index] = newval;
       else
          errcode = ERR_INVALID_INDEX;
    } else {
@@ -299,12 +319,12 @@ signed8_t CUnit::SetValueAt32(unsigned32_t newval, unsigned32_t index)
 /************************************************
  ************************************************/
 
-signed8_t CUnit::GetValue16From(signed16_t* val, unsigned32_t index) const
+signed8_t CUnit::GetValue16From(unsigned16_t* val, unsigned32_t index) const
 {
    signed8_t errcode = NO_ERRORS;
 
-   *val = (signed16_t)(operator[](index) + 
-                       operator[](index+1)*0x0100);
+   *val = (unsigned16_t)(operator[](index) + 
+                       operator[](index+1)*0x0100U);
 
    return errcode;
 }
@@ -312,42 +332,43 @@ signed8_t CUnit::GetValue16From(signed16_t* val, unsigned32_t index) const
 /************************************************
  ************************************************/
 
-signed8_t CUnit::GetValue32From(signed32_t* val, unsigned32_t index) const
+signed8_t CUnit::GetValue32From(unsigned32_t* val, unsigned32_t index) const
 {
    signed8_t errcode = NO_ERRORS;
    // Yikes! this was signed16_t - DFH
-   *val = (signed32_t)(operator[](index)  *0x00000001 + 
-                       operator[](index+1)*0x00000100 +
-                       operator[](index+2)*0x00010000 +
-                       operator[](index+3)*0x01000000  );	// Yikes again, it was
+   *val = (unsigned32_t)(operator[](index)*0x00000001U + 
+                       operator[](index+1)*0x00000100U +
+                       operator[](index+2)*0x00010000U +
+                       operator[](index+3)*0x01000000U  );	// Yikes again, it was
    return errcode;
 }
 
 /************************************************
  ************************************************/
 
-signed8_t CUnit::GetValue8From(signed8_t* data, unsigned32_t  index) const
+signed8_t CUnit::GetValue8From(unsigned8_t* dst, unsigned32_t index) const
 {
    signed8_t errcode = NO_ERRORS;
 
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 
    XL_ASSERT(m_Index != INVALID_STORE_INDEX);
-   unsigned8_t *m_pData = m_Store[m_Index].GetBuffer();
-   size_t m_nDataSize = m_Store[m_Index].GetDataSize();
+   unsigned8_t *data = m_Store[m_Index].GetBuffer();
+   size_t datasize = m_Store[m_Index].GetDataSize();
 
 #endif
 
-   if(m_pData != NULL)
+   if(dst != NULL)
    {
-      if (index < m_nDataSize)
+	   XL_ASSERT(m_Store[m_Index].GetSize() >= datasize);
+      if (index < datasize)
       {
-         *data = m_pData[index];
+         *dst = data[index];
       } else {
-         errcode =  ERR_INVALID_INDEX;
+         errcode = ERR_INVALID_INDEX;
       }
    } else {
-      errcode =  ERR_DATASTORAGE_EMPTY;
+      errcode = ERR_DATASTORAGE_EMPTY;
    }
   
    return errcode;
@@ -364,31 +385,42 @@ signed8_t CUnit::AddDataArray(const unsigned8_t* newdata, size_t size)
 	if (m_Index == INVALID_STORE_INDEX)
 	{
 		m_Index = m_Store.RequestIndex(size);
+		if (m_Index == INVALID_STORE_INDEX)
+		{
+			return GENERAL_ERROR;
+		}
 	}
 #endif
 
+	XL_ASSERT(GetSize() >= GetDataSize());
 	size_t spaceleft = GetSize() - GetDataSize();
   
    if(spaceleft < size) // allocate more space if new to-be-added array won't fit
    {
-      Inflate(size-spaceleft/*+1*/);  // [i_a]
+      errcode = Inflate(size + GetDataSize());  
+	  if (errcode != NO_ERRORS)
+		  return errcode;
    }
 
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 
    XL_ASSERT(m_Index != INVALID_STORE_INDEX);
-   unsigned8_t *m_pData = m_Store[m_Index].GetBuffer();
-   size_t m_nDataSize = m_Store[m_Index].GetDataSize();
+   unsigned8_t *data = m_Store[m_Index].GetBuffer();
+   size_t datasize = m_Store[m_Index].GetDataSize();
 
 #endif
 
    if(newdata != NULL)
    {
+	   // TODO: memmove() (not memcpy() as can be called from Append() <-- this += *this; fringe case where memcpy() would possibly fail!
       for(size_t i=0; i<size; i++)
-         m_pData[m_nDataSize++] = newdata[i];
+	  {
+		  XL_ASSERT(m_Store[m_Index].GetSize() > datasize);
+         data[datasize++] = newdata[i];
+	  }
 
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
-	   m_Store[m_Index].SetDataSize(m_nDataSize);
+	   m_Store[m_Index].SetDataSize(datasize);
 #endif
 
    } else {
@@ -408,30 +440,40 @@ signed8_t CUnit::AddFixedDataArray(const unsigned8_t value, size_t size)
 	if (m_Index == INVALID_STORE_INDEX)
 	{
 		m_Index = m_Store.RequestIndex(size);
+		if (m_Index == INVALID_STORE_INDEX)
+		{
+			return GENERAL_ERROR;
+		}
 	}
 #endif
 
+	XL_ASSERT(GetSize() >= GetDataSize());
 	size_t spaceleft = GetSize() - GetDataSize();
   
    if(spaceleft < size) // allocate more space if new to-be-added array won't fit
    {
-      Inflate(size-spaceleft/*+1*/);  // [i_a]
+      errcode = Inflate(size + GetDataSize());  
+	  if (errcode != NO_ERRORS)
+		  return errcode;
    }
 
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 
    XL_ASSERT(m_Index != INVALID_STORE_INDEX);
-   unsigned8_t *m_pData = m_Store[m_Index].GetBuffer();
-   size_t m_nDataSize = m_Store[m_Index].GetDataSize();
+   unsigned8_t *data = m_Store[m_Index].GetBuffer();
+   size_t datasize = m_Store[m_Index].GetDataSize();
 
 #endif
 
    // The following can be a memset
    for(size_t i=0; i<size; i++)
-      m_pData[m_nDataSize++] = value;
+   {
+	   XL_ASSERT(m_Store[m_Index].GetSize() > datasize);
+      data[datasize++] = value;
+   }
 
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
-	   m_Store[m_Index].SetDataSize(m_nDataSize);
+	   m_Store[m_Index].SetDataSize(datasize);
 #endif
 
    return errcode;
@@ -452,9 +494,12 @@ signed8_t CUnit::RemoveTrailData(size_t remove_size)
    size_t newlen = GetDataSize() + remove_size;
 
    XL_ASSERT(m_Index != INVALID_STORE_INDEX);
-   m_Store[m_Index].Resize(newlen);
-   memset(m_Store[m_Index].GetBuffer() + m_Store[m_Index].GetDataSize(), 0, remove_size);
-   m_Store[m_Index].SetDataSize(newlen);
+   signed8_t ret = m_Store[m_Index].Resize(newlen);
+   if (ret == NO_ERRORS)
+   {
+	   memset(m_Store[m_Index].GetBuffer() + m_Store[m_Index].GetDataSize(), 0, remove_size);
+	   m_Store[m_Index].SetDataSize(newlen);
+   }
 
 #else
 
@@ -480,7 +525,7 @@ signed8_t CUnit::RemoveTrailData(size_t remove_size)
 
 #endif
 
-   return NO_ERRORS;
+   return ret;
 }
 
 /************************************************
@@ -489,29 +534,30 @@ signed8_t CUnit::RemoveTrailData(size_t remove_size)
 signed8_t CUnit::SetArrayAt(const unsigned8_t* newdata, size_t size, unsigned32_t index)
 {
    signed8_t errcode = NO_ERRORS;
-   size_t spaceleft = GetSize() - index;
+   size_t space = GetSize();
 
-   if(spaceleft < size) // allocate more space if new to-be-added array won't fit
+   if(space < size + index) // allocate more space if new to-be-added array won't fit
    {
-      Inflate(size-spaceleft);
+      errcode = Inflate(size + index);
+	  if (errcode != NO_ERRORS)
+		  return errcode;
    }
 
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 
    XL_ASSERT(m_Index != INVALID_STORE_INDEX);
-   unsigned8_t *m_pData = m_Store[m_Index].GetBuffer();
-   //size_t m_nDataSize = m_Store[m_Index].GetDataSize();
+   unsigned8_t *data = m_Store[m_Index].GetBuffer();
+   //size_t datasize = m_Store[m_Index].GetDataSize();
 
 #endif
 
-   if(newdata != NULL)
+   if (newdata != NULL)
    {
-      for(size_t i=0; i<size; i++)
+      for (size_t i=0; i<size; i++)
       {
-         m_pData[index++] = newdata[i];
+		  XL_ASSERT(m_Store[m_Index].GetSize() > index);
+         data[index++] = newdata[i];
       }
-   } else {
-      //No data to add. Do nothing
    }
 
    return errcode;
@@ -522,23 +568,26 @@ signed8_t CUnit::SetArrayAt(const unsigned8_t* newdata, size_t size, unsigned32_
 
 signed8_t CUnit::AddValue8(unsigned8_t newdata)
 {
+	XL_ASSERT(GetSize() >= GetDataSize());
    if(GetDataSize() >= GetSize()) 
    {
-      Inflate();
+      signed8_t errcode = Inflate(GetDataSize() + 1);
+	  if (errcode != NO_ERRORS)
+		  return errcode;
    }
 
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 
    XL_ASSERT(m_Index != INVALID_STORE_INDEX);
-   unsigned8_t *m_pData = m_Store[m_Index].GetBuffer();
-   size_t m_nDataSize = m_Store[m_Index].GetDataSize();
+   unsigned8_t *data = m_Store[m_Index].GetBuffer();
+   size_t datasize = m_Store[m_Index].GetDataSize();
 
 #endif
  
-   m_pData[m_nDataSize++] = newdata;
+   data[datasize++] = newdata;
 
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
-   m_Store[m_Index].SetDataSize(m_nDataSize);
+   m_Store[m_Index].SetDataSize(datasize);
 #endif
 
    return NO_ERRORS;
@@ -547,7 +596,7 @@ signed8_t CUnit::AddValue8(unsigned8_t newdata)
 signed8_t CUnit::AddUnicodeString(CGlobalRecords& gRecords, const std::string& str, XlsUnicodeStringFormat_t fmt)
 {
 	std::string::const_iterator	cBegin, cEnd;
-	signed8_t				errcode = NO_ERRORS;
+	signed8_t errcode = NO_ERRORS;
 	size_t strSize = 0;
 	size_t strLen;
 	size_t spaceleft;
@@ -597,49 +646,64 @@ signed8_t CUnit::AddUnicodeString(CGlobalRecords& gRecords, const std::string& s
 	}
 	strSize += strLen;
 
+	XL_ASSERT(GetSize() >= GetDataSize());
 	spaceleft = GetSize() - GetDataSize();
 	if(spaceleft < strSize) // allocate more space if new to-be-added array won't fit
 	{
-	  Inflate(strSize-spaceleft+1);
+	  errcode = Inflate(strSize + GetDataSize());
+	  if (errcode != NO_ERRORS)
+		  return errcode;
 	}
 
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 
    XL_ASSERT(m_Index != INVALID_STORE_INDEX);
-   unsigned8_t *m_pData = m_Store[m_Index].GetBuffer();
-   size_t m_nDataSize = m_Store[m_Index].GetDataSize();
+   unsigned8_t *data = m_Store[m_Index].GetBuffer();
+   size_t datasize = m_Store[m_Index].GetDataSize();
+   XL_ASSERT(data);
+   //XL_ASSERT(datasize > strSize);
 
 #endif
 
    switch (fmt)
    {
    case LEN1_NOFLAGS_ASCII: // RECTYPE_FONT
-	   m_pData[m_nDataSize++] = strLen & 0xFF;
+	   XL_ASSERT(m_Store[m_Index].GetSize() > datasize);
+	   data[datasize++] = strLen & 0xFF;
 	   break;
 
    case LEN2_FLAGS_UNICODE: // RECTYPE_FORMAT, RECTYPE_LABEL -- 'regular'
-	   m_pData[m_nDataSize++] = strLen & 0xFF;
-	   m_pData[m_nDataSize++] = (strLen >> 8) & 0xFF;
-	   m_pData[m_nDataSize++] = 0x00;	// ASCII
+	   XL_ASSERT(m_Store[m_Index].GetSize() > datasize);
+	   data[datasize++] = strLen & 0xFF;
+	   XL_ASSERT(m_Store[m_Index].GetSize() > datasize);
+	   data[datasize++] = (strLen >> 8) & 0xFF;
+	   XL_ASSERT(m_Store[m_Index].GetSize() > datasize);
+	   data[datasize++] = 0x00;	// ASCII
 	   break;
 
    case LEN2_NOFLAGS_PADDING_UNICODE: // RECTYPE_NOTE (RECTYPE_TXO)
-	   m_pData[m_nDataSize++] = strLen & 0xFF;
-	   m_pData[m_nDataSize++] = (strLen >> 8) & 0xFF;
+	   XL_ASSERT(m_Store[m_Index].GetSize() > datasize);
+	   data[datasize++] = strLen & 0xFF;
+	   XL_ASSERT(m_Store[m_Index].GetSize() > datasize);
+	   data[datasize++] = (strLen >> 8) & 0xFF;
 	   // the string is padded to be word-aligned with NUL bytes /preceding/ the text:
 	   if (strLen % 1)
 	   {
-		   m_pData[m_nDataSize++] = 0x00;	// padding
+		   XL_ASSERT(m_Store[m_Index].GetSize() > datasize);
+		   data[datasize++] = 0x00;	// padding
 	   }
 	   break;
 
    case LEN1_FLAGS_UNICODE: // RECTYPE_BOUNDSHEET
-	   m_pData[m_nDataSize++] = strLen & 0xFF;
-	   m_pData[m_nDataSize++] = 0x00;	// ASCII
+	   XL_ASSERT(m_Store[m_Index].GetSize() > datasize);
+	   data[datasize++] = strLen & 0xFF;
+	   XL_ASSERT(m_Store[m_Index].GetSize() > datasize);
+	   data[datasize++] = 0x00;	// ASCII
 	   break;
 
    case NOLEN_FLAGS_UNICODE: // RECTYPE_NAME
-	   m_pData[m_nDataSize++] = 0x00;	// ASCII
+	   XL_ASSERT(m_Store[m_Index].GetSize() > datasize);
+	   data[datasize++] = 0x00;	// ASCII
 	   break;
 
    default:
@@ -652,19 +716,20 @@ signed8_t CUnit::AddUnicodeString(CGlobalRecords& gRecords, const std::string& s
 	
 	while(cBegin != cEnd) 
 	{
-		m_pData[m_nDataSize++] = *cBegin++;
+		XL_ASSERT(m_Store[m_Index].GetSize() > datasize);
+		data[datasize++] = *cBegin++;
 	}
 
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
-   m_Store[m_Index].SetDataSize(m_nDataSize);
+   m_Store[m_Index].SetDataSize(datasize);
 #endif
 
    return errcode;
 }
 signed8_t CUnit::AddUnicodeString(CGlobalRecords& gRecords, const u16string& str16, XlsUnicodeStringFormat_t fmt)
 {
-	u16string::const_iterator	cBegin, cEnd;
-	signed8_t					errcode = NO_ERRORS;
+	u16string::const_iterator cBegin, cEnd;
+	signed8_t errcode = NO_ERRORS;
 	size_t strSize = 0;
 	size_t strLen;
 	size_t spaceleft;
@@ -723,24 +788,30 @@ signed8_t CUnit::AddUnicodeString(CGlobalRecords& gRecords, const u16string& str
 	}
 	strSize += strLen; // hence: count 1 byte per char for ASCII, 2 bytes per char for UTF16
 
+	XL_ASSERT(GetSize() >= GetDataSize());
 	spaceleft = GetSize() - GetDataSize();
 	if(spaceleft < strSize) // allocate more space if new to-be-added array won't fit
 	{
-	  Inflate(strSize-spaceleft+1);
+	  errcode = Inflate(strSize + GetDataSize());
+	  if (errcode != NO_ERRORS)
+		  return errcode;
 	}
 
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 
    XL_ASSERT(m_Index != INVALID_STORE_INDEX);
-   unsigned8_t *m_pData = m_Store[m_Index].GetBuffer();
-   size_t m_nDataSize = m_Store[m_Index].GetDataSize();
+   unsigned8_t *data = m_Store[m_Index].GetBuffer();
+   size_t datasize = m_Store[m_Index].GetDataSize();
+   XL_ASSERT(data);
+   //XL_ASSERT(datasize > strSize);
 
 #endif
 
    switch (fmt)
    {
    case LEN1_NOFLAGS_ASCII: // RECTYPE_FONT
-	   m_pData[m_nDataSize++] = strLen & 0xFF;
+	   XL_ASSERT(m_Store[m_Index].GetSize() > datasize);
+	   data[datasize++] = strLen & 0xFF;
 	   if (!isASCII)
 	   {
 		   std::string s;
@@ -756,35 +827,45 @@ signed8_t CUnit::AddUnicodeString(CGlobalRecords& gRecords, const u16string& str
 		   {
 			   unsigned8_t c = *b++;
 
-			   m_pData[m_nDataSize++] = c;
+			   XL_ASSERT(m_Store[m_Index].GetSize() > datasize);
+			   data[datasize++] = c;
 		   }
 		   goto string_dump_done;
 	   }
 	   break;
 
    case LEN2_FLAGS_UNICODE: // RECTYPE_FORMAT, RECTYPE_LABEL -- 'regular'
-	   m_pData[m_nDataSize++] = strLen & 0xFF;
-	   m_pData[m_nDataSize++] = (strLen >> 8) & 0xFF;
-	   m_pData[m_nDataSize++] = (isASCII ? 0x00 : 0x01);	// ASCII or UTF-16
+	   XL_ASSERT(m_Store[m_Index].GetSize() > datasize);
+	   data[datasize++] = strLen & 0xFF;
+	   XL_ASSERT(m_Store[m_Index].GetSize() > datasize);
+	   data[datasize++] = (strLen >> 8) & 0xFF;
+	   XL_ASSERT(m_Store[m_Index].GetSize() > datasize);
+	   data[datasize++] = (isASCII ? 0x00 : 0x01);	// ASCII or UTF-16
 	   break;
 
    case LEN2_NOFLAGS_PADDING_UNICODE: // RECTYPE_NOTE (RECTYPE_TXO)
-	   m_pData[m_nDataSize++] = strLen & 0xFF;
-	   m_pData[m_nDataSize++] = (strLen >> 8) & 0xFF;
+	   XL_ASSERT(m_Store[m_Index].GetSize() > datasize);
+	   data[datasize++] = strLen & 0xFF;
+	   XL_ASSERT(m_Store[m_Index].GetSize() > datasize);
+	   data[datasize++] = (strLen >> 8) & 0xFF;
 	   // the string is padded to be word-aligned with NUL bytes /preceding/ the text:
 	   if (isASCII && (strLen % 1))
 	   {
-		   m_pData[m_nDataSize++] = 0x00;	// padding
+		   XL_ASSERT(m_Store[m_Index].GetSize() > datasize);
+		   data[datasize++] = 0x00;	// padding
 	   }
 	   break;
 
    case LEN1_FLAGS_UNICODE: // RECTYPE_BOUNDSHEET
-	   m_pData[m_nDataSize++] = strLen & 0xFF;
-	   m_pData[m_nDataSize++] = (isASCII ? 0x00 : 0x01);	// ASCII or UTF-16
+	   XL_ASSERT(m_Store[m_Index].GetSize() > datasize);
+	   data[datasize++] = strLen & 0xFF;
+	   XL_ASSERT(m_Store[m_Index].GetSize() > datasize);
+	   data[datasize++] = (isASCII ? 0x00 : 0x01);	// ASCII or UTF-16
 	   break;
 
    case NOLEN_FLAGS_UNICODE: // RECTYPE_NAME
-	   m_pData[m_nDataSize++] = (isASCII ? 0x00 : 0x01);	// ASCII or UTF-16
+	   XL_ASSERT(m_Store[m_Index].GetSize() > datasize);
+	   data[datasize++] = (isASCII ? 0x00 : 0x01);	// ASCII or UTF-16
 	   break;
 
    default:
@@ -802,7 +883,8 @@ signed8_t CUnit::AddUnicodeString(CGlobalRecords& gRecords, const u16string& str
 		{
 			unsigned16_t c = *cBegin++;
 
-			m_pData[m_nDataSize++] = static_cast<unsigned8_t>(c);
+			XL_ASSERT(m_Store[m_Index].GetSize() > datasize);
+			data[datasize++] = static_cast<unsigned8_t>(c);
 		}
 	}
 	else
@@ -811,15 +893,17 @@ signed8_t CUnit::AddUnicodeString(CGlobalRecords& gRecords, const u16string& str
 		{
 			unsigned16_t c = *cBegin++;
 
-			m_pData[m_nDataSize++] = c & 0xFF;
-			m_pData[m_nDataSize++] = (c >> 8) & 0xFF;
+			XL_ASSERT(m_Store[m_Index].GetSize() > datasize);
+			data[datasize++] = c & 0xFF;
+			XL_ASSERT(m_Store[m_Index].GetSize() > datasize);
+			data[datasize++] = (c >> 8) & 0xFF;
 		}
 	}
 
 string_dump_done:
 
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
-   m_Store[m_Index].SetDataSize(m_nDataSize);
+   m_Store[m_Index].SetDataSize(datasize);
 #endif
 
 	return errcode;
@@ -828,7 +912,7 @@ string_dump_done:
 /************************************************
  ************************************************/
 
-signed8_t CUnit::Inflate(size_t increase)
+signed8_t CUnit::Inflate(size_t newsize)
 {
    signed8_t errcode = NO_ERRORS;
 
@@ -836,15 +920,17 @@ signed8_t CUnit::Inflate(size_t increase)
 
    if (m_Index == INVALID_STORE_INDEX)
 	{
-	   if (increase == 0)
-	   {
-			increase = CUnit::DefaultInflateSize;
-	   }
-		m_Index = m_Store.RequestIndex(increase);
+	   XL_ASSERT(newsize > 0);
+		m_Index = m_Store.RequestIndex(newsize);
+		if (m_Index == INVALID_STORE_INDEX)
+		{
+			return GENERAL_ERROR;
+		}
 	}
    else
    {
-	   if (increase == 0)
+	   XL_ASSERT(newsize > 0);
+#if 0
 	   {
 		   size_t oldlen = m_Store[m_Index].GetSize();
 		   if (oldlen < 64)
@@ -857,9 +943,9 @@ signed8_t CUnit::Inflate(size_t increase)
 			   increase = oldlen / 2;
 		   }
 	   }
-
+#endif
 	   XL_ASSERT(m_Index != INVALID_STORE_INDEX);
-	   m_Store[m_Index].Resize(GetSize() + increase);
+	   errcode = m_Store[m_Index].Resize(newsize);
    }
 
 #else
@@ -916,21 +1002,21 @@ unsigned8_t& CUnit::operator[](const size_t index) const
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 
    XL_ASSERT(m_Index != INVALID_STORE_INDEX);
-   unsigned8_t *m_pData = m_Store[m_Index].GetBuffer();
-   //size_t m_nDataSize = m_Store[m_Index].GetDataSize();
+   unsigned8_t *data = m_Store[m_Index].GetBuffer();
+   //size_t datasize = m_Store[m_Index].GetDataSize();
 
 #endif
 
 #if 1
    XL_ASSERT(index < GetSize());	// DFH: need to read ahead when setting bits in 32bit words
    XL_ASSERT(index < GetDataSize());	// [i_a]
-   //if(index >= m_nDataSize) printf("ERROR: Short read!! \n");
+   //if(index >= datasize) printf("ERROR: Short read!! \n");
 #else
    // this old code really bad - get bad data and never know it!
-   if(index >= m_nDataSize)
-      return m_pData[m_nDataSize];
+   if(index >= datasize)
+      return data[datasize];
 #endif
-   return m_pData[index];
+   return data[index];
 }
 
 /************************************************
@@ -938,16 +1024,8 @@ unsigned8_t& CUnit::operator[](const size_t index) const
 
 CUnit& CUnit::operator +=(const CUnit& from)
 {
-   if(&from != this)
-   {
-      Append(from);
-   }
-   else
-   {
-      //CUnit shadow(from.m_Store);
-      //shadow  = from;
-      Append(from);
-   }
+   XL_VERIFY(NO_ERRORS == Append(from));
+
    return *this;
 }
 
@@ -956,7 +1034,7 @@ CUnit& CUnit::operator +=(const CUnit& from)
 
 CUnit& CUnit::operator +=(unsigned8_t from)
 {
-   AddValue8(from);
+   XL_VERIFY(NO_ERRORS == AddValue8(from));
 
    return *this;
 }
@@ -970,7 +1048,7 @@ signed8_t CUnit::Init(const unsigned8_t* data, const size_t size, const unsigned
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 
    XL_ASSERT(m_Index != INVALID_STORE_INDEX);
-   m_Store[m_Index].Init(data, size, datasz);
+   signed8_t ret = m_Store[m_Index].Init(data, size, datasz);
 
 #else
 
@@ -992,24 +1070,30 @@ signed8_t CUnit::Init(const unsigned8_t* data, const size_t size, const unsigned
 
 #endif
 
-   return NO_ERRORS;
+   return ret;
 }
 
 
 /************************************************
  ************************************************/
 
-signed8_t CUnit::Append (const CUnit& newunit)
+signed8_t CUnit::Append(const CUnit& newunit)
 {
-   if(AddDataArray(newunit.GetBuffer(), newunit.GetDataSize()) == NO_ERRORS)
-      return NO_ERRORS;
-   else
-      return GENERAL_ERROR;
+	XL_ASSERT(GetSize() >= GetDataSize());
+	size_t spaceleft = GetSize() - GetDataSize();
+	if(spaceleft < newunit.GetDataSize()) // allocate more space if new to-be-added array won't fit
+	{
+		signed8_t errcode = Inflate(GetDataSize() + newunit.GetDataSize());
+		if (errcode != NO_ERRORS)
+			return errcode;
+	}
+
+   return AddDataArray(newunit.GetBuffer(), newunit.GetDataSize());
 }
 
 /************************************************
  ************************************************/
-signed8_t CUnit::InitFill (unsigned8_t data, size_t size)
+signed8_t CUnit::InitFill(unsigned8_t data, size_t size)
 {
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 
@@ -1038,7 +1122,7 @@ signed8_t CUnit::InitFill (unsigned8_t data, size_t size)
 /************************************************
  ************************************************/
 
-size_t CUnit::GetSize (void) const
+size_t CUnit::GetSize(void) const
 {
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
    XL_ASSERT(m_Index != INVALID_STORE_INDEX);

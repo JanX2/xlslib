@@ -131,10 +131,18 @@ int main(int argc, char *argv[])
 {
 	int rv = 0;
 
-	rv |= test1("6423d098b4025eed9277a4919281849d");
-	rv |= test2("d882ef1e426be85ef3ccb857309ad7dd");
-	rv |= test3("00607d4cca34d636718a1dd6b3fbe53d");
-
+	try
+	{
+		rv |= test1("6423d098b4025eed9277a4919281849d");
+		rv |= test2("d882ef1e426be85ef3ccb857309ad7dd");
+		rv |= test3("29e0cb48d82b271918a3fb865da6d83b");
+	}
+	catch (std::string &errmsg)
+	{
+		std::cerr << errmsg << std::endl;
+		rv = 1;
+	}
+	
 	return (rv == 0 ? EXIT_SUCCESS : EXIT_FAILURE);
 }
 

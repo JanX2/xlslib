@@ -45,7 +45,7 @@
 #define DocSumInfo_Max						DocSumInfo_LinksUpToDate
 
 
-#include <xls_pshpack2.h>
+// #include <xls_pshpack2.h>
 
 namespace xlslib_core
 {
@@ -69,7 +69,7 @@ CDocSummaryInfo class declaration
 		virtual ~CDocSummaryInfo();
 		
 		bool property(property_t prop, const std::string& content);
-		void DumpData(void);
+		int DumpData(void);
 
 	private:
 		CDocSummaryInfo(const CDocSummaryInfo& that);
@@ -78,7 +78,7 @@ CDocSummaryInfo class declaration
 
 }
 
-#include <xls_poppack.h>
+// #include <xls_poppack.h>
 
 #endif //DOCSUMMARYINFO_H
 

@@ -100,20 +100,29 @@ int main(int argc, char *argv[])
 {
 	int rv = 0;
 
-	// comment and uncomment the below to try various tests
-	rv |= StandardTest("d3c30e1d2d9a1e572984ca7f9aed4fb3");
-	rv |= StandardTest2("02111efe116b500a089e3e7da7899877");
-	rv |= BlankTest("e80a45e13f92863f0d2dffaca7c3834c");
-	rv |= FormulaFunctionsTest("e80a45e13f92863f0d2dffaca7c3834c");
+	try
+	{
+		// comment and uncomment the below to try various tests
+		rv |= StandardTest("d3c30e1d2d9a1e572984ca7f9aed4fb3");
+		rv |= StandardTest2("122d6dc69e9ff4db70653de02d79ec86");
+		rv |= BlankTest("e80a45e13f92863f0d2dffaca7c3834c");
+		rv |= FormulaFunctionsTest("ccb2cdfddd99b951041e13dcdd60ef77");
 
-	rv |= StressTest(3,100,100, "6d356960d22057ebee73aa910eb0a772");
-	rv |= StressTest(3,4,4, "b4fd13d503b1cf2dc0838aaef81cb65b");
-	rv |= RandomTest(3,200,200, 42424242, "1c7a539513c5833e66b422d0206ae076");
-	rv |= RandomCellAndFormatTest(1,15,10, 123456789, "4e0439306a18cfb4c6a28441c33f2b04");
-	rv |= RandomCellAndFormatTestProf(1,15,10, 987654321, "1a06208b4746a23a2442c4c06e75cdef");
-	rv |= RandomFormatTest(1,15,10, 42004200, "bd94fbe9ce77addc02cba876fc6e4d9b");
+		rv |= StressTest(3,100,100, "6d356960d22057ebee73aa910eb0a772");
+		rv |= StressTest(3,4,4, "b4fd13d503b1cf2dc0838aaef81cb65b");
+		rv |= RandomTest(3,200,200, 42424242, "212f014a332a34fc575151cc068753aa");
+		rv |= RandomCellAndFormatTest(1,15,10, 123456789, "4e0439306a18cfb4c6a28441c33f2b04");
+		rv |= RandomCellAndFormatTestProf(1,15,10, 987654321, "1a06208b4746a23a2442c4c06e75cdef");
+		rv |= RandomFormatTest(1,15,10, 42004200, "bd94fbe9ce77addc02cba876fc6e4d9b");
 
-	std::cerr << "    # Test finished" << std::endl;
+		std::cerr << "    # Test finished" << std::endl;
+	}
+	catch (std::string &errmsg)
+	{
+		std::cerr << errmsg << std::endl;
+		std::cerr << "    # Test aborted" << std::endl;
+		rv = 1;
+	}
 
 	return (rv == 0 ? EXIT_SUCCESS : EXIT_FAILURE);
 }
@@ -271,7 +280,7 @@ int StandardTest2(const char *md5_checksum)
 			int v = (j + k) % (sizeof(errcvt)/sizeof(errcvt[0]));
 			sh1->error(j + 4, k, errcvt[v]);
 
-			bool v2 = (((j + k) / 10) % 7 > 3) ^ ((j + k) % 129 == 1);
+			bool v2 = (((j + k) / 10) % 7 > 3) ^ ((128 * j + k) % 129 == 1);
 			sh2->boolean(j + 4, k, v2);
 
 			expression_node_t *ast = build_formula(j, k, sh3, sh4, v, wb);
@@ -1650,63 +1659,84 @@ int FormulaFunctionsTest(const char *md5_checksum)
 	workbook wb;
 	worksheet* sh[4];
 	
-	sh[0] = wb.sheet("Formulas_01");
-	sh[1] = wb.sheet("Formulas_02");
-	sh[2] = wb.sheet("Formulas_03");
+	sh[0] = wb.sheet("2003 and before");
+	sh[1] = wb.sheet("2007");
+	sh[2] = wb.sheet("2010");
 	sh[3] = wb.sheet("Formulas_04");
 
 	const int number_of_builtin_functions = sizeof(function_arr) / sizeof(function_arr[0]);
 
-	for (int r = 370-4; r < number_of_builtin_functions; r++)
+	int row = 4;
+	worksheet* cur_sh = sh[0];
+	for (int r = 0; r < number_of_builtin_functions; r++)
 	{
 		expr_function_code_t fn = function_arr[r].code;
-		int row = r - 370-4 + 4;
+		if (FUNC_BAHTTEXT == fn)
+		{
+			cur_sh = sh[1];
+			row = 4;
+#if 01 /* set to 0 to create an XLS which includes Excel 2007/2010 functions in the sample formulas */
+			break;
+#endif
+		}
+		else if (FUNC_AGGREGATE == fn)
+		{
+			cur_sh = sh[2];
+			row = 4;
+		}
 
 		expression_node_factory_t& maker = wb.GetFormulaFactory();
 
 		unsigned16_t argmask = NumberOfArgsForExcelFunction(fn);
-
-		if (argmask & 0x0001)
+		if (argmask != 0 && !(argmask & 0x8000U) /* A_MACRO */) 
 		{
-			expression_node_t *z_ary_root = maker.f(fn);
-			sh[0]->formula(row, 1, z_ary_root, true); 
-		}
-		if (argmask & 0x0002)
-		{
-			expression_node_t *unary_root = maker.f(fn, maker.floating_point(1.002));
-			sh[0]->formula(row, 2, unary_root, true); 
-		}
-		if (argmask & 0x0004)
-		{
-			expression_node_t *binary_root = maker.f(fn, maker.floating_point(1.002), maker.floating_point(2.075));
-			sh[0]->formula(row, 3, binary_root, true); 
-		}
-
-		int argcnt;
-		for (argcnt = 3; argcnt < 12; argcnt++)
-		{
-			if (argmask & (1U << argcnt))
+			if (argmask & 0x0001)
 			{
-				n_ary_func_node_t *n_ary_root = maker.f(fn, argcnt, NULL);
+				expression_node_t *z_ary_root = maker.f(fn);
+				cur_sh->formula(row, 1, z_ary_root, true); 
+			}
+			if (argmask & 0x0002)
+			{
+				expression_node_t *unary_root = maker.f(fn, maker.floating_point(1.002));
+				cur_sh->formula(row, 2, unary_root, true); 
+			}
+			if (argmask & 0x0004)
+			{
+				expression_node_t *binary_root = maker.f(fn, maker.floating_point(1.002), maker.floating_point(2.075));
+				cur_sh->formula(row, 3, binary_root, true); 
+			}
 
-				int a;
-				for (a = 0; a < argcnt; a++)
+			int argcnt;
+			for (argcnt = 3; argcnt < 12; argcnt++)
+			{
+				if (argmask & (1U << argcnt))
 				{
-					expression_node_t *num = maker.integer(a + 1);
-					n_ary_root->PushArg(num);
+					n_ary_func_node_t *n_ary_root = maker.f(fn, argcnt, NULL);
+
+					int a;
+					for (a = 0; a < argcnt; a++)
+					{
+						expression_node_t *num = maker.integer(a + 1);
+						n_ary_root->PushArg(num);
+					}
+					cur_sh->formula(row, argcnt + 1, n_ary_root, true); 
 				}
-				sh[0]->formula(row, argcnt + 1, n_ary_root, true); 
 			}
 		}
 
-		sh[0]->label(row, 0, function_arr[r].name);
+		cur_sh->label(row, 0, function_arr[r].name);
+
+		row++;
 	}
 
-	sh[0]->label(1, 0, "function name");
-	sh[0]->label(0, 1, "argument count");
-	for (int argcnt = 0; argcnt < 12; argcnt++)
+	for (int i = 0; i < 4; i++)
 	{
-		sh[0]->number(1, 1 + argcnt, argcnt);
+		sh[i]->label(1, 0, "function name");
+		sh[i]->label(0, 1, "argument count");
+		for (int argcnt = 0; argcnt < 12; argcnt++)
+		{
+			sh[i]->number(1, 1 + argcnt, argcnt);
+		}
 	}
 
 	int err = wb.Dump("formulas.xls");
