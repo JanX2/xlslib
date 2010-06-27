@@ -266,9 +266,9 @@ num
 8
 An IEEE floating-point number
 Operand Tokens
-Operand tokens push operand values onto the operand stack. These values fall into one of three classes — reference class, value class, or array class — depending on what type of value the formula expects from the operand. The type of value is determined by the context of the operand when the formula is parsed by Excel.
+Operand tokens push operand values onto the operand stack. These values fall into one of three classes â€” reference class, value class, or array class â€” depending on what type of value the formula expects from the operand. The type of value is determined by the context of the operand when the formula is parsed by Excel.
 Reference Class
-Some operands are required by context to evaluate to references. In this case, the term reference is a general term meaning one or more areas on an Excel worksheet. When the Excel expression evaluator encounters a reference class operand, it pushes only the reference itself onto the operand stack; it does not de-reference it to return the underlying value or values. For example, because we have a ptgRef, a reference (to the cell B5) is pushed onto the stack. This function returns the column width of cell B5; therefore, only the reference to B5 is required, and there‘s no need to de-reference to the value stored in cell B5.
+Some operands are required by context to evaluate to references. In this case, the term reference is a general term meaning one or more areas on an Excel worksheet. When the Excel expression evaluator encounters a reference class operand, it pushes only the reference itself onto the operand stack; it does not de-reference it to return the underlying value or values. For example, because we have a ptgRef, a reference (to the cell B5) is pushed onto the stack. This function returns the column width of cell B5; therefore, only the reference to B5 is required, and thereâ€˜s no need to de-reference to the value stored in cell B5.
 Value Class
 This is the most common type of operand. Value class operands push a single de-referenced value onto the operand stack. Using the formula =A1+1 as an example, because we have a ptgRefV, the value (of cell A1, for example: 5) is pushed onto the stack.
 Array Class
@@ -278,11 +278,11 @@ The three classes of operand tokens are divided numerically, as shown in the fol
 Operand class
 Ptg values
 Reference
-20h–3Fh
+20hâ€“3Fh
 Value
-40h–5Fh
+40hâ€“5Fh
 Array
-60h–7Fh
+60hâ€“7Fh
 The arithmetic difference between ptg classes is 20h. This is the basis for forming the class variants of ptgs. Class variants of ptgs are formed from the reference class ptg, also known as the base ptg. To form the value class ptg from the base ptg, add 20h to the ptg and append V (for ?value?) to the ptg name. To form the array class ptg from the base ptg, add 40h to the ptg and append A (for ?array?) to the ptg name. These rules are summarized in the following table for a sample base ptg, ptgRef.
 Class
 Name
@@ -307,7 +307,7 @@ A more efficient implementation would define a macro that computes the base ptg,
 Operand Tokens: Base
 This section describes the operand tokens in their base form (also known as reference class operand tokens).
 ptgArray: Array Constant (Operand, ptg=20h)
-		  Array constant followed by 7 reserved bytes. The token value for ptgArray consists of the array dimensions and the array values. ptgArray differs from most other operand tokens in that the token value doesn‘t follow the token type. Instead, the token value is appended to the saved parsed expression, immediately following the last token. The format of the token value is shown in the following table.
+		  Array constant followed by 7 reserved bytes. The token value for ptgArray consists of the array dimensions and the array values. ptgArray differs from most other operand tokens in that the token value doesnâ€˜t follow the token type. Instead, the token value is appended to the saved parsed expression, immediately following the last token. The format of the token value is shown in the following table.
 		  Offset
 		  Name
 		  Size
@@ -357,7 +357,7 @@ ptgArray: Array Constant (Operand, ptg=20h)
 		  var
 		  The string
 		  If a formula contains more than one array constant, the token values for the array constants are appended to the saved parsed expression in order: first the values for the first array constant, then the values for the second array constant, and so on. If a formula contains very long array constants, the FORMULA, ARRAY, or NAME record containing the parsed expression may overflow into CONTINUE records (to accommodate all of the array values). In such cases, an individual array value is never split between records, but record boundaries are established between adjacent array values. The reference class ptgArray never appears in an Excel formula; only the ptgArrayV and ptgArrayA classes are used.
-ptgName: Name (Operand, ptg=23h) — BIFF8
+ptgName: Name (Operand, ptg=23h) â€” BIFF8
 		 This ptg stores the index to a name. The ilbl field is a 1-based index to the table of NAME records in the workbook.
 		 Offset
 		 Name
@@ -371,7 +371,7 @@ ptgName: Name (Operand, ptg=23h) — BIFF8
 		 (Reserved)
 		 2
 		 Reserved; must be 0 (zero)
-ptgName: Name (Operand, ptg=23h) — BIFF7 and earlier
+ptgName: Name (Operand, ptg=23h) â€” BIFF7 and earlier
 		 This ptg stores the index to a name. The ilbl field is a 1-based index to the table of NAME records in the workbook.
 		 Offset
 		 Name
@@ -385,7 +385,7 @@ ptgName: Name (Operand, ptg=23h) — BIFF7 and earlier
 		 (Reserved)
 		 12
 		 Reserved; must be 0 (zero)
-ptgRef: Cell Reference (Operand, ptg=24h) — BIFF8
+ptgRef: Cell Reference (Operand, ptg=24h) â€” BIFF8
 		This ptg specifies a reference to a single cell. It is followed by references for the row and column that contain the cell. The column number is encoded.
 		Offset
 		Name
@@ -412,12 +412,12 @@ ptgRef: Cell Reference (Operand, ptg=24h) — BIFF8
 		4000h
 		fColRel
 		=1 if the column offset is relative =0 otherwise
-		13–0
+		13â€“0
 		3FFFh
 		col
 		The column number or column offset (0-based)
 		For example, cell C5 is row number 4, column number 2 (Excel stores 0-based cell references). Therefore, the absolute reference $C$5 is stored in a ptgRef, as shown in the following file fragment. 24 04 00 02 00 In this case, rw=0004h and grbitCol=0002h. Note: bits 14 and 15 of grbitCol are both 0 (zero). The relative reference C5 is stored in a ptgRef, as shown in the following file fragment. 24 04 00 02 C0 In this case, where grbitCol=C004h and col=02h, bits 14 and 15 of grbitCol are both 1. Mixed references are stored in the same way, with appropriate coding in grbitCol.
-ptgRef: Cell Reference (Operand, ptg=24h) — BIFF7 and earlier
+ptgRef: Cell Reference (Operand, ptg=24h) â€” BIFF7 and earlier
 		This ptg specifies a reference to a single cell. It is followed by references for the row and column that contain the cell. The row number is encoded.
 		Offset
 		Name
@@ -444,13 +444,13 @@ ptgRef: Cell Reference (Operand, ptg=24h) — BIFF7 and earlier
 		4000h
 		fColRel
 		=1 if the column offset is relative =0 otherwise
-		13–0
+		13â€“0
 		3FFFh
 		rw
 		The row number or row offset (0-based)
 		For example, cell C5 is row number 4, column number 2 (Excel stores 0-based cell references). Therefore, the absolute reference $C$5 is stored in a ptgRef, as shown in the following file fragment. 24 04 00 02
 		In this case, grbitRw=0004h and col=02h. Note: bits 14 and 15 of grbitRw are both 0 (zero). The relative reference C5 is stored in a ptgRef, as shown in the following file fragment. 24 04 C0 02 In this case, where grbitRw=C004h and col=02h, bits 14 and 15 of grbitRw are both 1. Mixed references are stored in the same way, with appropriate coding in grbitRw.
-ptgArea: Area Reference (Operand, ptg=25h) — BIFF8
+ptgArea: Area Reference (Operand, ptg=25h) â€” BIFF8
 		 This ptg specifies a reference to a rectangle (range) of cells. ptgArea is followed by 8 bytes that define the first row, last row, first column, and last column of the rectangle. The numbers of the first and last columns are encoded.
 		 Offset
 		 Name
@@ -485,11 +485,11 @@ ptgArea: Area Reference (Operand, ptg=25h) — BIFF8
 		 4000h
 		 fColRel
 		 =1 if the column offset is relative =0 otherwise
-		 13–0
+		 13â€“0
 		 3FFFh
 		 col
 		 The column number or column offset (0-based)
-ptgArea: Area Reference (Operand, ptg=25h) — BIFF7 and earlier
+ptgArea: Area Reference (Operand, ptg=25h) â€” BIFF7 and earlier
 		 This ptg specifies a reference to a rectangle (range) of cells. ptgArea is followed by 6 bytes that define the first row, last row, first column, and last column of the rectangle. The numbers of the first and last rows are encoded.
 		 Offset
 		 Name
@@ -524,12 +524,12 @@ ptgArea: Area Reference (Operand, ptg=25h) — BIFF7 and earlier
 		 4000h
 		 fColRel
 		 =1 if the column offset is relative =0 otherwise
-		 13–0
+		 13â€“0
 		 3FFFh
 		 rw
 		 The row number or row offset (0-based)
 ptgMemArea: Constant Reference Subexpression (Operand, ptg=26h)
-			This ptg is used to optimize reference expressions. A reference expression consists of operands — usually references to cells or areas — joined by reference operators (intersection, union, and range). Three examples of reference expressions are given in the following table.
+			This ptg is used to optimize reference expressions. A reference expression consists of operands â€” usually references to cells or areas â€” joined by reference operators (intersection, union, and range). Three examples of reference expressions are given in the following table.
 			Reference expression
 			Evaluates to
 			(A1,C3,D3:D5)
@@ -538,7 +538,7 @@ ptgMemArea: Constant Reference Subexpression (Operand, ptg=26h)
 			A 2x2 area (the space character is the intersection operator)
 			(Name C3)
 			The smallest area that contains both C3 and all the cells referenced in Name (the space character is the intersection operator)
-			Many reference expressions evaluate to constant references. In the preceding examples, the first two expressions always evaluate to the same reference. The third example doesn‘t evaluate to a constant reference because the name‘s definition may change, which might cause the reference expression to evaluate differently. When a reference expression evaluates to a constant reference, Excel stores the constant reference in the parsed formula through a ptgMemArea token. This saves time during expression evaluation, because the constant part of the expression is pre-evaluated. This part of the expression is known as a reference subexpression. The token value for ptgMemArea consists of two parts: the length of the reference subexpression, and the value of the reference subexpression. The length is stored immediately following the ptgMemArea, whereas the value is appended to the saved parsed expression, immediately following the last token. The format of the length is shown in the following table.
+			Many reference expressions evaluate to constant references. In the preceding examples, the first two expressions always evaluate to the same reference. The third example doesnâ€˜t evaluate to a constant reference because the nameâ€˜s definition may change, which might cause the reference expression to evaluate differently. When a reference expression evaluates to a constant reference, Excel stores the constant reference in the parsed formula through a ptgMemArea token. This saves time during expression evaluation, because the constant part of the expression is pre-evaluated. This part of the expression is known as a reference subexpression. The token value for ptgMemArea consists of two parts: the length of the reference subexpression, and the value of the reference subexpression. The length is stored immediately following the ptgMemArea, whereas the value is appended to the saved parsed expression, immediately following the last token. The format of the length is shown in the following table.
 			Offset
 			Name
 			Size
@@ -587,7 +587,7 @@ ptgMemArea: Constant Reference Subexpression (Operand, ptg=26h)
 			If a formula contains more than one ptgMemArea, the token values are appended to the saved parsed expression in order: first the values for the first ptgMemArea, then the values for the second ptgMemArea, and so on.
 			If a formula contains very long reference expressions, the BIFF record containing the parsed expression may be too long to fit in a single record. Excel uses CONTINUE records to store long formulas. However, an individual rgref rectangle is never split between records; record boundaries occur between successive rectangles. For more information about the CONTINUE records, see ?CONTINUE?.
 ptgMemErr: Erroneous Constant Reference Subexpression (Operand, ptg=27h)
-		   This ptg is closely related to ptgMemArea. It is used for pre-evaluating reference subexpressions that do not evaluate to references. For example, consider the formula =SUM(C:C 3:3), which is the sum of the intersection of column C and row 3 (the space between C:C and 3:3 is the intersection operator). The argument to the SUM function is a valid reference subexpression that generates a ptgMemArea for pre-evaluation. However, if you delete column C, the formula adjusts to =SUM(#REF! 3:3). In this case, the argument to SUM is still a constant reference subexpression, but it doesn‘t evaluate to a reference. Therefore, a ptgMemErr is used for pre-evaluation. The token value consists of the error value and the length of the reference subexpression. Its format is shown in the following table.
+		   This ptg is closely related to ptgMemArea. It is used for pre-evaluating reference subexpressions that do not evaluate to references. For example, consider the formula =SUM(C:C 3:3), which is the sum of the intersection of column C and row 3 (the space between C:C and 3:3 is the intersection operator). The argument to the SUM function is a valid reference subexpression that generates a ptgMemArea for pre-evaluation. However, if you delete column C, the formula adjusts to =SUM(#REF! 3:3). In this case, the argument to SUM is still a constant reference subexpression, but it doesnâ€˜t evaluate to a reference. Therefore, a ptgMemErr is used for pre-evaluation. The token value consists of the error value and the length of the reference subexpression. Its format is shown in the following table.
 		   Offset
 		   Name
 		   Size
@@ -600,7 +600,7 @@ ptgMemErr: Erroneous Constant Reference Subexpression (Operand, ptg=27h)
 		   2
 		   The length of the reference subexpression
 		   The reference subexpression will contain a ptgRefErr or ptgAreaErr.
-ptgRefErr: Deleted Cell Reference (Operand, ptg=2Ah) — BIFF8
+ptgRefErr: Deleted Cell Reference (Operand, ptg=2Ah) â€” BIFF8
 		   This ptg specifies a cell reference adjusted to #REF! as a result of worksheet editing (such as cutting, pasting, and deleting). The ptgRefErr is followed by4 unused bytes.
 		   Offset
 		   Name
@@ -610,7 +610,7 @@ ptgRefErr: Deleted Cell Reference (Operand, ptg=2Ah) — BIFF8
 		   (Reserved)
 		   4
 		   The original base type of the adjusted ptg is ptgRef or ptgRefN.
-ptgRefErr: Deleted Cell Reference (Operand, ptg=2Ah) — BIFF7 and earlier
+ptgRefErr: Deleted Cell Reference (Operand, ptg=2Ah) â€” BIFF7 and earlier
 		   This ptg specifies a cell reference adjusted to #REF! as a result of worksheet editing (such as cutting, pasting, and deleting). The ptgRefErr is followed by 3 unused bytes.
 		   Offset
 		   Name
@@ -620,7 +620,7 @@ ptgRefErr: Deleted Cell Reference (Operand, ptg=2Ah) — BIFF7 and earlier
 		   (Reserved)
 		   3
 		   The original base type of the adjusted ptg is ptgRef or ptgRefN.
-ptgAreaErr: Deleted Area Reference (Operand, ptg=2Bh) — BIFF8
+ptgAreaErr: Deleted Area Reference (Operand, ptg=2Bh) â€” BIFF8
 			This ptg specifies an area reference adjusted to #REF! as a result of worksheet editing (such as cutting, pasting, and deleting). The ptgAreaErr is followed by 8 unused bytes.
 			Offset
 			Name
@@ -630,7 +630,7 @@ ptgAreaErr: Deleted Area Reference (Operand, ptg=2Bh) — BIFF8
 			(Reserved)
 			8
 			The original base type of the adjusted ptg is ptgArea or ptgAreaN.
-ptgAreaErr: Deleted Area Reference (Operand, ptg=2Bh) — BIFF7 and earlier
+ptgAreaErr: Deleted Area Reference (Operand, ptg=2Bh) â€” BIFF7 and earlier
 			This ptg specifies an area reference that was adjusted to #REF! as a result of worksheet editing (such as cutting, pasting, and deleting). The ptgAreaErr is followed by 6 unused bytes.
 			Offset
 			Name
@@ -640,7 +640,7 @@ ptgAreaErr: Deleted Area Reference (Operand, ptg=2Bh) — BIFF7 and earlier
 			(Reserved)
 			6
 			The original base type of the adjusted ptg is ptgArea or ptgAreaN.
-ptgRefN: Cell Reference Within a Shared Formula (Operand, ptg=2Ch) — BIFF8
+ptgRefN: Cell Reference Within a Shared Formula (Operand, ptg=2Ch) â€” BIFF8
 		 Similar to its ptgRef counterpart, the ptgRefN specifies a reference to a single cell. It is followed by references for the row and column that contain the cell; the row number of the cell is encoded as bit fields. In BIFF5 and later, ptgRefN is used only in shared formulas. In earlier versions of Excel, ptgRefN was used in names.
 		 Offset
 		 Name
@@ -667,12 +667,12 @@ ptgRefN: Cell Reference Within a Shared Formula (Operand, ptg=2Ch) — BIFF8
 		 4000h
 		 fColRel
 		 =1 if the column offset is relative =0 otherwise
-		 13–0
+		 13â€“0
 		 3FFFh
 		 col
 		 The column number or column offset (0-based)
 		 The only difference between ptgRefN and ptgRef is in the way relative references are stored. Relative references in shared formulas are stored as offsets, not as row and column numbers (as in ptgRef). For more information, see ?SHRFMLA?.
-ptgRefN: Cell Reference Within a Shared Formula (Operand, ptg=2Ch) — BIFF7 and earlier
+ptgRefN: Cell Reference Within a Shared Formula (Operand, ptg=2Ch) â€” BIFF7 and earlier
 		 Similar to its ptgRef counterpart, the ptgRefN specifies a reference to a single cell. It is followed by references for the row and column that contain the cell; the row number of the cell is encoded as bit fields. In BIFF5 and later, ptgRefN is used only in shared formulas. In earlier versions of Excel, ptgRefN was used in names.
 		 Offset
 		 Name
@@ -699,12 +699,12 @@ ptgRefN: Cell Reference Within a Shared Formula (Operand, ptg=2Ch) — BIFF7 and e
 		 4000h
 		 fColRel
 		 =1 if the column offset is relative =0 otherwise
-		 13–0
+		 13â€“0
 		 3FFFh
 		 rw
 		 The row number or row offset (0-based)
 		 The only difference between ptgRefN and ptgRef is in the way relative references are stored. Relative references in shared formulas are stored as offsets, not as row and column numbers (as in ptgRef). For more information, see ?SHRFMLA?.
-ptgAreaN: Area Reference Within a Shared Formula (Operand, ptg=2Dh) — BIFF8
+ptgAreaN: Area Reference Within a Shared Formula (Operand, ptg=2Dh) â€” BIFF8
 		  The ptgAreaN token specifies a reference to a rectangle of cells. Both the first column and last column are encoded. In BIFF5 and later, ptgAreaN is used only in shared formulas. In earlier versions, it was used in names.
 		  Offset
 		  Name
@@ -743,12 +743,12 @@ ptgAreaN: Area Reference Within a Shared Formula (Operand, ptg=2Dh) — BIFF8
 		  4000h
 		  fColRel
 		  =1 if the column offset is relative =0 otherwise
-		  13–0
+		  13â€“0
 		  3FFFh
 		  col
 		  The column number or column offset (0-based)
 		  The only difference between ptgAreaN and ptgArea is in the way relative references are stored.
-ptgAreaN: Area Reference Within a Shared Formula (Operand, ptg=2Dh) — BIFF7 and earlier
+ptgAreaN: Area Reference Within a Shared Formula (Operand, ptg=2Dh) â€” BIFF7 and earlier
 		  The ptgAreaN token specifies a reference to a rectangle of cells. Both the first row and last row are stored as bit fields. In BIFF5 and later, ptgAreaN is used only in shared formulas. In earlier versions, it was used in names.
 		  Offset
 		  Name
@@ -783,12 +783,12 @@ ptgAreaN: Area Reference Within a Shared Formula (Operand, ptg=2Dh) — BIFF7 and 
 		  4000h
 		  fColRel
 		  =1 if the column offset is relative =0 otherwise
-		  13–0
+		  13â€“0
 		  3FFFh
 		  rw
 		  The row number or row offset (0-based)
 		  The only difference between ptgAreaN and ptgArea is in the way relative references are stored.
-ptgNameX: Name or External Name (Operand, ptg=39h) — BIFF8
+ptgNameX: Name or External Name (Operand, ptg=39h) â€” BIFF8
 		  This ptg stores the index to a name.
 		  Offset
 		  Name
@@ -806,7 +806,7 @@ ptgNameX: Name or External Name (Operand, ptg=39h) — BIFF8
 		  (Reserved)
 		  2
 		  Reserved; must be 0 (zero)
-ptgNameX: Name or External Name (Operand, ptg=39h) — BIFF7 and earlier
+ptgNameX: Name or External Name (Operand, ptg=39h) â€” BIFF7 and earlier
 		  This ptg stores the index to a name. If the name is in the current workbook (in which case ixals is negative), the ilbl field is a 1-based index to the table of NAME records. If the name is in another workbook (that is, if it is an external name), the ilbl field is a 1-based index to the table of EXTERNNAME records.
 		  Offset
 		  Name
@@ -826,7 +826,7 @@ ptgNameX: Name or External Name (Operand, ptg=39h) — BIFF7 and earlier
 		  12
 		  (Reserved)
 		  12
-ptgRef3d: 3-D Cell Reference (Operand, ptg=3Ah) — BIFF8
+ptgRef3d: 3-D Cell Reference (Operand, ptg=3Ah) â€” BIFF8
 		  This ptg stores a 3-D cell reference (for example, Sheet1:Sheet3!$A$1).
 		  Offset
 		  Name
@@ -857,14 +857,14 @@ ptgRef3d: 3-D Cell Reference (Operand, ptg=3Ah) — BIFF8
 		  4000h
 		  fColRel
 		  =1 if the column offset is relative =0 otherwise
-		  13 – 8
+		  13 â€“ 8
 		  3F00h
 		  (Reserved)
-		  7 – 0
+		  7 â€“ 0
 		  00FFh
 		  col
 		  The column number or column offset (0-based)
-ptgRef3d: 3-D Cell Reference (Operand, ptg=3Ah) — BIFF7 and earlier
+ptgRef3d: 3-D Cell Reference (Operand, ptg=3Ah) â€” BIFF7 and earlier
 		  This ptg stores a 3-D cell reference (for example, Sheet1:Sheet3!$A$1). If the reference is to another workbook (in which case ixals is positive), itabFirst is not used (it will be 0000h), and itabLast is the ixals for the last sheet in the 3-D reference. If either itabFirst or itabLast is equal to FFFFh, that sheet is a deleted sheet.
 		  Offset
 		  Name
@@ -910,11 +910,11 @@ ptgRef3d: 3-D Cell Reference (Operand, ptg=3Ah) — BIFF7 and earlier
 		  4000h
 		  fColRel
 		  =1 if the column offset is relative =0 otherwise
-		  13–0
+		  13â€“0
 		  3FFFh
 		  rw
 		  The row number or row offset (0-based)
-ptgArea3d: 3-D Area Reference (Operand, ptg=3Bh) — BIFF8
+ptgArea3d: 3-D Area Reference (Operand, ptg=3Bh) â€” BIFF8
 		   This ptg stores a 3-D area reference (for example, Sheet1:Sheet3!A1:E9).
 		   Offset
 		   Name
@@ -953,14 +953,14 @@ ptgArea3d: 3-D Area Reference (Operand, ptg=3Bh) — BIFF8
 		   4000h
 		   fColRel
 		   =1 if the column offset is relative =0 otherwise
-		   13–8
+		   13â€“8
 		   3F00h
 		   (Reserved)
-		   7–0
+		   7â€“0
 		   00FFh
 		   col
 		   The column number or column offset (0-based)
-ptgArea3d: 3-D Area Reference (Operand, ptg=3Bh) — BIFF7 and earlier
+ptgArea3d: 3-D Area Reference (Operand, ptg=3Bh) â€” BIFF7 and earlier
 		   This ptg stores a 3-D area reference (for example, Sheet1:Sheet3!A1:E9).
 		   Offset
 		   Name
@@ -1010,7 +1010,7 @@ ptgArea3d: 3-D Area Reference (Operand, ptg=3Bh) — BIFF7 and earlier
 		   4000h
 		   fColRel
 		   =1 if the column offset is relative =0 otherwise
-		   13–0
+		   13â€“0
 		   3FFFh
 		   rw
 		   The row number or row offset (0-based)
@@ -1035,7 +1035,7 @@ ptgExp: Array Formula or Shared Formula (ptg=01h)
 		2
 		The column number of the upper-left corner
 ptgTbl: Data Table (ptg=02h)
-		This ptg indicates a data table. When ptgTbl occurs in a formula, it is the only token in the formula. This indicates the cell containing the formula is an interior cell in a data table; the table description is found in a TABLE record. Rows and columns that contain input values to be substituted in the table do not contain ptgTbl. The token value for ptgTbl consists of the row and column of the upper-left corner of the table‘s interior.
+		This ptg indicates a data table. When ptgTbl occurs in a formula, it is the only token in the formula. This indicates the cell containing the formula is an interior cell in a data table; the table description is found in a TABLE record. Rows and columns that contain input values to be substituted in the table do not contain ptgTbl. The token value for ptgTbl consists of the row and column of the upper-left corner of the tableâ€˜s interior.
 		Offset
 		Name
 		Size
@@ -1119,7 +1119,7 @@ ptgAttr: Special Attribute (ptg=19h)
 			 (unused)
 			 ptgAttr requires special handling when parsed expressions are scanned. For more information, see ?Scanning a Parsed Expression?.
 			 bitFAttrSemi
-			 Set to 1 if the formula contains a volatile function — that is, a function that is calculated in every recalculation. If ptgAttr is used to indicate a volatile function, it must be the first token in the parsed expression. If grbit=bitFAttrSemi, then the b (or w) field is don‘t-care.
+			 Set to 1 if the formula contains a volatile function â€” that is, a function that is calculated in every recalculation. If ptgAttr is used to indicate a volatile function, it must be the first token in the parsed expression. If grbit=bitFAttrSemi, then the b (or w) field is donâ€˜t-care.
 			 bitFAttrIf
 			 Indicates an optimized IF function. An IF function contains three parts: a condition, a TRUE subexpression, and a FALSE subexpression. The syntax of an associated Excel formula would be IF(condition, TRUE subexpression, FALSE subexpression). bitFAttrIf immediately follows the condition portion of the parsed expression. The b (or w) field specifies the offset to the FALSE subexpression; the TRUE subexpression is found immediately following the ptgAttr token. At the end of the TRUE subexpression, there is a bitFAttrGoto token that causes a jump to beyond the FALSE subexpression. In this way, Excel evaluates only the correct subexpression instead of evaluating both of them and discarding the wrong one. The FALSE subexpression is optional in Excel. If it is missing, the b (or w) field specifies an offset to beyond the TRUE subexpression.
 			 bitFAttrChoose
@@ -1143,7 +1143,7 @@ ptgAttr: Special Attribute (ptg=19h)
 			 bitFAttrGoto
 			 Instructs the expression evaluator to skip part of the parsed expression during evaluation. The b (or w) field specifies the number of bytes (or words) to skip, minus 1.
 			 bitFAttrSum
-			 Indicates an optimized SUM function (a SUM that has a single argument). For example, the sum of the cells in a 3-D reference — which has the formula =SUM(Sheet1:Sheet3!C11) — generates a ptgAttr with bitFAttrSum TRUE. The b (or w) field is don‘t-care.
+			 Indicates an optimized SUM function (a SUM that has a single argument). For example, the sum of the cells in a 3-D reference â€” which has the formula =SUM(Sheet1:Sheet3!C11) â€” generates a ptgAttr with bitFAttrSum TRUE. The b (or w) field is donâ€˜t-care.
 			 bifFAttrSpace
 			 Indicates a formula (macro sheet or worksheet) contains spaces or carriage returns. Excel retains spaces and returns in macro sheet and worksheet formulas (in version 3.0 and earlier, spaces and returns would have been eliminated when the formula was parsed). The bAttrSpace field contains an attribute code, and the bSpace field contains the number of spaces or returns. The attribute codes are listed in the following table.
 			 Attribute
@@ -1236,7 +1236,7 @@ ptgMemNoMemN: Incomplete Reference Subexpression Within a Name (ptg=2Fh)
 			  2
 			  The length of the reference subexpression
 			  Function Operators
-			  The following paragraphs describe the function operator ptgs. All of these operators pop arguments from the operand stack, compute a function, and then push the result back onto the operand stack. The number of operands popped from the stack is equal to the number of arguments passed to the Excel function. Some Excel functions always require a fixed number of arguments, whereas others accept a variable number of arguments. The SUM function, for example, accepts a variable number of arguments. Although they‘re operators, function tokens also behave like operands in that they can occur in any of the three ptg classes: reference, value, or array.
+			  The following paragraphs describe the function operator ptgs. All of these operators pop arguments from the operand stack, compute a function, and then push the result back onto the operand stack. The number of operands popped from the stack is equal to the number of arguments passed to the Excel function. Some Excel functions always require a fixed number of arguments, whereas others accept a variable number of arguments. The SUM function, for example, accepts a variable number of arguments. Although theyâ€˜re operators, function tokens also behave like operands in that they can occur in any of the three ptg classes: reference, value, or array.
 ptgFunc: Function, Fixed Number of Arguments (Operator, ptg=21h)
 		 This ptg indicates an Excel function with a fixed number of arguments. The ptgFunc is followed by the index to the function table.
 		 Offset
@@ -1255,7 +1255,7 @@ ptgFuncVar: Function, Variable Number of Arguments (Operator, ptg=22h)
 				Name
 				Contents
 				0
-				6–0
+				6â€“0
 				7Fh
 				cargs
 				The number of arguments to the function.
@@ -1264,7 +1264,7 @@ ptgFuncVar: Function, Variable Number of Arguments (Operator, ptg=22h)
 				fPrompt
 				=1, function prompts the user (macro functions that end with a question mark).
 				1
-				14–0
+				14â€“0
 				7FFFh
 				iftab
 				The index to the function table;
@@ -1901,35 +1901,43 @@ unsigned16_t xlslib_core::NumberOfArgsForExcelFunction(expr_function_code_t func
 {
 	enum
 	{
-		A_UNKNOWN = 0xFFFFU,
+		A_UNKNOWN = 0U,
 		A_0 = 0x0001,
 		A_1 = 0x0002,
 		A_2 = 0x0004,
 		A_3 = 0x0008,
 		A_4 = 0x0010,
+		A_6 = 0x0040,
 		A_0_OR_1 = 0x0003,
 		A_0_TO_2 = 0x0007,
 		A_0_TO_3 = 0x000F,
 		A_0_TO_4 = 0x001F,
 		A_0_TO_5 = 0x003F,
 		A_1_OR_2 = 0x0006,
-		A_1_OR_MORE = 0xFFFE,
-		A_2_OR_MORE = 0xFFFC,
+		A_1_OR_MORE = 0x7FFE,
+		A_2_OR_MORE = 0x7FFC,
 		A_1_TO_3 = 0x000E,
 		A_1_TO_4 = 0x001E,
 		A_1_TO_5 = 0x003E,
 		A_1_TO_7 = 0x00FE,
-		A_2_OR_3 = 0x000E,
+		A_2_OR_3 = 0x000C,
 		A_2_TO_4 = 0x001C,
 		A_2_TO_5 = 0x003C,
 		A_2_TO_9 = 0x03FC,
-		A_3_OR_MORE = 0xFFF8,
+		A_3_OR_MORE = 0x7FF8,
 		A_3_OR_4 = 0x0018,
 		A_3_TO_5 = 0x0038,
 		A_3_TO_6 = 0x0078,
 		A_4_OR_5 = 0x0030,
 		A_4_TO_6 = 0x0070,
+		A_5_OR_6 = 0x0060,
 		A_5_TO_7 = 0x00E0,
+		A_6_OR_7 = 0x00C0,
+		A_6_TO_8 = 0x01C0,
+		A_7_OR_8 = 0x0180,
+		A_8_OR_9 = 0x0300,
+
+		A_MACRO = 0x8000,
 	};
 static const struct
 {
@@ -1991,8 +1999,8 @@ static const struct
         { A_1_TO_4,  FUNC_TREND },
         { A_1_TO_4,  FUNC_LOGEST },
         { A_1_TO_4,  FUNC_GROWTH },
-        { A_1,  FUNC_GOTO },
-        { A_0_OR_1,  FUNC_HALT },
+        { A_1 | A_MACRO,  FUNC_GOTO },
+        { A_0_OR_1 | A_MACRO,  FUNC_HALT },
         { A_3_TO_5,  FUNC_PV },
         { A_3_TO_5,  FUNC_FV },
         { A_3_TO_5,  FUNC_NPER },
@@ -2016,38 +2024,38 @@ static const struct
         { A_1,  FUNC_ROWS },
         { A_1,  FUNC_COLUMNS },
         { A_3_TO_5,  FUNC_OFFSET },
-        { A_2,  FUNC_ABSREF },
-        { A_2,  FUNC_RELREF },
-        { A_0_TO_3,  FUNC_ARGUMENT },
+        { A_2 | A_MACRO,  FUNC_ABSREF },
+        { A_2 | A_MACRO,  FUNC_RELREF },
+        { A_0_TO_3 | A_MACRO,  FUNC_ARGUMENT },
         { A_2_OR_3,  FUNC_SEARCH },
         { A_1,  FUNC_TRANSPOSE },
-        { A_0_TO_2,  FUNC_ERROR },
-        { A_0,  FUNC_STEP },
+        { A_0_TO_2 | A_MACRO,  FUNC_ERROR },
+        { A_0 | A_MACRO,  FUNC_STEP },
         { A_1,  FUNC_TYPE },
-        { A_0_OR_1,  FUNC_ECHO },
-        { A_1_OR_2,  FUNC_SETNAME },
-        { A_0,  FUNC_CALLER },
-        { A_1,  FUNC_DEREF },
-        { A_0_TO_2,  FUNC_WINDOWS },
+        { A_0_OR_1 | A_MACRO,  FUNC_ECHO },
+        { A_1_OR_2 | A_MACRO,  FUNC_SETNAME },
+        { A_0 | A_MACRO,  FUNC_CALLER },
+        { A_1 | A_MACRO,  FUNC_DEREF },
+        { A_0_TO_2 | A_MACRO,  FUNC_WINDOWS },
         { A_4_OR_5,  FUNC_SERIES },
-        { A_0_TO_2,  FUNC_DOCUMENTS },
-        { A_0,  FUNC_ACTIVECELL },
-        { A_0,  FUNC_SELECTION },
-        { A_0_OR_1,  FUNC_RESULT },
+        { A_0_TO_2 | A_MACRO,  FUNC_DOCUMENTS },
+        { A_0 | A_MACRO,  FUNC_ACTIVECELL },
+        { A_0 | A_MACRO,  FUNC_SELECTION },
+        { A_0_OR_1 | A_MACRO,  FUNC_RESULT },
         { A_2,  FUNC_ATAN2 },
         { A_1,  FUNC_ASIN },
         { A_1,  FUNC_ACOS },
         { A_2_OR_MORE,  FUNC_CHOOSE },
         { A_3_OR_4,  FUNC_HLOOKUP },
         { A_3_OR_4,  FUNC_VLOOKUP },
-        { A_0_TO_2,  FUNC_LINKS },
-        { A_1_TO_7,  FUNC_INPUT },
+        { A_0_TO_2 | A_MACRO,  FUNC_LINKS },
+        { A_1_TO_7 | A_MACRO,  FUNC_INPUT },
         { A_1,  FUNC_ISREF },
-        { A_1,  FUNC_GETFORMULA },
-        { A_1_OR_2,  FUNC_GETNAME },
-        { A_2,  FUNC_SETVALUE },
+        { A_1 | A_MACRO,  FUNC_GETFORMULA },
+        { A_1_OR_2 | A_MACRO,  FUNC_GETNAME },
+        { A_2 | A_MACRO,  FUNC_SETVALUE },
         { A_1_OR_2,  FUNC_LOG },
-        { A_1_TO_4,  FUNC_EXEC },
+        { A_1_TO_4 | A_MACRO,  FUNC_EXEC },
         { A_1,  FUNC_CHAR },
         { A_1,  FUNC_LOWER },
         { A_1,  FUNC_UPPER },
@@ -2059,8 +2067,8 @@ static const struct
         { A_4,  FUNC_REPLACE },
         { A_3_OR_4,  FUNC_SUBSTITUTE },
         { A_1,  FUNC_CODE },
-        { A_0_TO_3,  FUNC_NAMES },
-        { A_0_OR_1,  FUNC_DIRECTORY },
+        { A_0_TO_3 | A_MACRO,  FUNC_NAMES },
+        { A_0_OR_1 | A_MACRO,  FUNC_DIRECTORY },
         { A_2_OR_3,  FUNC_FIND },
         { A_1_OR_2,  FUNC_CELL },
         { A_1,  FUNC_ISERR },
@@ -2069,63 +2077,63 @@ static const struct
         { A_1,  FUNC_ISBLANK },
         { A_1,  FUNC_T },
         { A_1,  FUNC_N },
-        { A_1_OR_2,  FUNC_FOPEN },
-        { A_1,  FUNC_FCLOSE },
-        { A_1,  FUNC_FSIZE },
-        { A_1,  FUNC_FREADLN },
-        { A_2,  FUNC_FREAD },
-        { A_2,  FUNC_FWRITELN },
-        { A_2,  FUNC_FWRITE },
-        { A_1_OR_2,  FUNC_FPOS },
+        { A_1_OR_2 | A_MACRO,  FUNC_FOPEN },
+        { A_1 | A_MACRO,  FUNC_FCLOSE },
+        { A_1 | A_MACRO,  FUNC_FSIZE },
+        { A_1 | A_MACRO,  FUNC_FREADLN },
+        { A_2 | A_MACRO,  FUNC_FREAD },
+        { A_2 | A_MACRO,  FUNC_FWRITELN },
+        { A_2 | A_MACRO,  FUNC_FWRITE },
+        { A_1_OR_2 | A_MACRO,  FUNC_FPOS },
         { A_1,  FUNC_DATEVALUE },
         { A_1,  FUNC_TIMEVALUE },
         { A_3,  FUNC_SLN },
         { A_4,  FUNC_SYD },
         { A_4_OR_5,  FUNC_DDB },
-        { A_1_TO_3,  FUNC_GETDEF },
-        { A_1_OR_2,  FUNC_REFTEXT },
-        { A_1_OR_2,  FUNC_TEXTREF },
+        { A_1_TO_3 | A_MACRO,  FUNC_GETDEF },
+        { A_1_OR_2 | A_MACRO,  FUNC_REFTEXT },
+        { A_1_OR_2 | A_MACRO,  FUNC_TEXTREF },
         { A_1_OR_2,  FUNC_INDIRECT },
-        { A_1_OR_MORE,  FUNC_REGISTER },
-        { A_1_OR_MORE,  FUNC_CALL },
-        { A_0_OR_1,  FUNC_ADDBAR },
-        { A_2_TO_4,  FUNC_ADDMENU },
-        { A_3_TO_5,  FUNC_ADDCOMMAND },
-        { A_4_OR_5,  FUNC_ENABLECOMMAND },
-        { A_4_OR_5,  FUNC_CHECKCOMMAND },
-        { A_4_OR_5,  FUNC_RENAMECOMMAND },
-        { A_0_OR_1,  FUNC_SHOWBAR },
-        { A_2_OR_3,  FUNC_DELETEMENU },
-        { A_3_OR_4,  FUNC_DELETECOMMAND },
-        { A_1_TO_3,  FUNC_GETCHARTITEM },
-        { A_1,  FUNC_DIALOGBOX },
+        { A_1_OR_MORE | A_MACRO,  FUNC_REGISTER },
+        { A_1_OR_MORE | A_MACRO,  FUNC_CALL },
+        { A_0_OR_1 | A_MACRO,  FUNC_ADDBAR },
+        { A_2_TO_4 | A_MACRO,  FUNC_ADDMENU },
+        { A_3_TO_5 | A_MACRO,  FUNC_ADDCOMMAND },
+        { A_4_OR_5 | A_MACRO,  FUNC_ENABLECOMMAND },
+        { A_4_OR_5 | A_MACRO,  FUNC_CHECKCOMMAND },
+        { A_4_OR_5 | A_MACRO,  FUNC_RENAMECOMMAND },
+        { A_0_OR_1 | A_MACRO,  FUNC_SHOWBAR },
+        { A_2_OR_3 | A_MACRO,  FUNC_DELETEMENU },
+        { A_3_OR_4 | A_MACRO,  FUNC_DELETECOMMAND },
+        { A_1_TO_3 | A_MACRO,  FUNC_GETCHARTITEM },
+        { A_1 | A_MACRO,  FUNC_DIALOGBOX },
         { A_1,  FUNC_CLEAN },
         { A_1,  FUNC_MDETERM },
         { A_1,  FUNC_MINVERSE },
         { A_2,  FUNC_MMULT },
-        { A_0_TO_2,  FUNC_FILES },
+        { A_0_TO_2 | A_MACRO,  FUNC_FILES },
         { A_4_TO_6,  FUNC_IPMT },
         { A_4_TO_6,  FUNC_PPMT },
         { A_1_OR_MORE,  FUNC_COUNTA },
-        { A_0_TO_2,  FUNC_CANCELKEY },
-        { A_2,  FUNC_INITIATE },
-        { A_2,  FUNC_REQUEST },
-        { A_3,  FUNC_POKE },
-        { A_2,  FUNC_EXECUTE },
-        { A_1,  FUNC_TERMINATE },
-        { A_0_OR_1,  FUNC_RESTART },
-        { A_0_OR_1,  FUNC_HELP },
-        { A_0_TO_4,  FUNC_GETBAR },
+        { A_0_TO_2 | A_MACRO,  FUNC_CANCELKEY },
+        { A_2 | A_MACRO,  FUNC_INITIATE },
+        { A_2 | A_MACRO,  FUNC_REQUEST },
+        { A_3 | A_MACRO,  FUNC_POKE },
+        { A_2 | A_MACRO,  FUNC_EXECUTE },
+        { A_1 | A_MACRO,  FUNC_TERMINATE },
+        { A_0_OR_1 | A_MACRO,  FUNC_RESTART },
+        { A_0_OR_1 | A_MACRO,  FUNC_HELP },
+        { A_0_TO_4 | A_MACRO,  FUNC_GETBAR },
         { A_1_OR_MORE,  FUNC_PRODUCT },
         { A_1,  FUNC_FACT },
-        { A_1_OR_2,  FUNC_GETCELL },
-        { A_1,  FUNC_GETWORKSPACE },
-        { A_1_OR_2,  FUNC_GETWINDOW },
-        { A_1_OR_2,  FUNC_GETDOCUMENT },
+        { A_1_OR_2 | A_MACRO,  FUNC_GETCELL },
+        { A_1 | A_MACRO,  FUNC_GETWORKSPACE },
+        { A_1_OR_2 | A_MACRO,  FUNC_GETWINDOW },
+        { A_1_OR_2 | A_MACRO,  FUNC_GETDOCUMENT },
         { A_3,  FUNC_DPRODUCT },
         { A_1,  FUNC_ISNONTEXT },
-        { A_0_TO_3,  FUNC_GETNOTE },
-        { A_0_TO_4,  FUNC_NOTE },
+        { A_0_TO_3 | A_MACRO,  FUNC_GETNOTE },
+        { A_0_TO_4 | A_MACRO,  FUNC_NOTE },
         { A_1_OR_MORE,  FUNC_STDEVP },
         { A_1_OR_MORE,  FUNC_VARP },
         { A_3,  FUNC_DSTDEVP },
@@ -2133,8 +2141,8 @@ static const struct
         { A_1_OR_2,  FUNC_TRUNC },
         { A_1,  FUNC_ISLOGICAL },
         { A_3,  FUNC_DCOUNTA },
-        { A_1,  FUNC_DELETEBAR },
-        { A_1,  FUNC_UNREGISTER },
+        { A_1 | A_MACRO,  FUNC_DELETEBAR },
+        { A_1 | A_MACRO,  FUNC_UNREGISTER },
         { A_1_OR_2,  FUNC_USDOLLAR },
         { A_2_OR_3,  FUNC_FINDB },
         { A_2_OR_3,  FUNC_SEARCHB },
@@ -2161,36 +2169,36 @@ static const struct
         { A_1,  FUNC_ACOSH },
         { A_1,  FUNC_ATANH },
         { A_3,  FUNC_DGET },
-        { A_2_OR_MORE,  FUNC_CREATEOBJECT },
-        { A_0_OR_1,  FUNC_VOLATILE },
-        { A_0,  FUNC_LASTERROR },
-        { A_0_TO_2,  FUNC_CUSTOMUNDO },
-        { A_0_TO_3,  FUNC_CUSTOMREPEAT },
-        { A_2_TO_5,  FUNC_FORMULACONVERT },
-        { A_2_TO_4,  FUNC_GETLINKINFO },
-        { A_1_TO_4,  FUNC_TEXTBOX },
+        { A_2_OR_MORE | A_MACRO,  FUNC_CREATEOBJECT },
+        { A_0_OR_1 | A_MACRO,  FUNC_VOLATILE },
+        { A_0 | A_MACRO,  FUNC_LASTERROR },
+        { A_0_TO_2 | A_MACRO,  FUNC_CUSTOMUNDO },
+        { A_0_TO_3 | A_MACRO,  FUNC_CUSTOMREPEAT },
+        { A_2_TO_5 | A_MACRO,  FUNC_FORMULACONVERT },
+        { A_2_TO_4 | A_MACRO,  FUNC_GETLINKINFO },
+        { A_1_TO_4 | A_MACRO,  FUNC_TEXTBOX },
         { A_1,  FUNC_INFO },
-        { A_0,  FUNC_GROUP },
-        { A_1_TO_5,  FUNC_GETOBJECT },
+        { A_0 | A_MACRO,  FUNC_GROUP },
+        { A_1_TO_5 | A_MACRO,  FUNC_GETOBJECT },
         { A_4_OR_5,  FUNC_DB },
-        { A_0_OR_1,  FUNC_PAUSE },
-        { A_0_OR_1,  FUNC_RESUME },
+        { A_0_OR_1 | A_MACRO,  FUNC_PAUSE },
+        { A_0_OR_1 | A_MACRO,  FUNC_RESUME },
         { A_2,  FUNC_FREQUENCY },
-        { A_0_TO_2,  FUNC_ADDTOOLBAR },
-        { A_1,  FUNC_DELETETOOLBAR },
-        { A_1,  FUNC_RESETTOOLBAR },
-        { A_1,  FUNC_EVALUATE },
-        { A_1_OR_2,  FUNC_GETTOOLBAR },
-        { A_1_TO_3,  FUNC_GETTOOL },
-        { A_1_TO_3,  FUNC_SPELLINGCHECK },
+        { A_0_TO_2 | A_MACRO,  FUNC_ADDTOOLBAR },
+        { A_1 | A_MACRO,  FUNC_DELETETOOLBAR },
+        { A_1 | A_MACRO,  FUNC_RESETTOOLBAR },
+        { A_1 | A_MACRO,  FUNC_EVALUATE },
+        { A_1_OR_2 | A_MACRO,  FUNC_GETTOOLBAR },
+        { A_1_TO_3 | A_MACRO,  FUNC_GETTOOL },
+        { A_1_TO_3 | A_MACRO,  FUNC_SPELLINGCHECK },
         { A_1,  FUNC_ERRORTYPE },
-        { A_0_OR_1,  FUNC_APPTITLE },
-        { A_0_OR_1,  FUNC_WINDOWTITLE },
-        { A_0_TO_2,  FUNC_SAVETOOLBAR },
-        { A_3,  FUNC_ENABLETOOL },
-        { A_3,  FUNC_PRESSTOOL },
-        { A_2_OR_3,  FUNC_REGISTERID },
-        { A_1_OR_2,  FUNC_GETWORKBOOK },
+        { A_0_OR_1 | A_MACRO,  FUNC_APPTITLE },
+        { A_0_OR_1 | A_MACRO,  FUNC_WINDOWTITLE },
+        { A_0_TO_2 | A_MACRO,  FUNC_SAVETOOLBAR },
+        { A_3 | A_MACRO,  FUNC_ENABLETOOL },
+        { A_3 | A_MACRO,  FUNC_PRESSTOOL },
+        { A_2_OR_3 | A_MACRO,  FUNC_REGISTERID },
+        { A_1_OR_2 | A_MACRO,  FUNC_GETWORKBOOK },
         { A_1_OR_MORE,  FUNC_AVEDEV },
         { A_3_TO_5,  FUNC_BETADIST },
         { A_1,  FUNC_GAMMALN },
@@ -2255,30 +2263,30 @@ static const struct
         { A_1_OR_MORE,  FUNC_MODE },
         { A_2,  FUNC_TRIMMEAN },
         { A_2,  FUNC_TINV },
-        { A_3_OR_4,  FUNC_MOVIECOMMAND },
-        { A_3_OR_4,  FUNC_GETMOVIE },
+        { A_3_OR_4 | A_MACRO,  FUNC_MOVIECOMMAND },
+        { A_3_OR_4 | A_MACRO,  FUNC_GETMOVIE },
         { A_1_OR_MORE,  FUNC_CONCATENATE },
         { A_2,  FUNC_POWER },
-        { A_2_TO_9,  FUNC_PIVOTADDDATA },
-        { A_1_OR_2,  FUNC_GETPIVOTTABLE },
-        { A_1_TO_3,  FUNC_GETPIVOTFIELD },
-        { A_1_TO_4,  FUNC_GETPIVOTITEM },
+        { A_2_TO_9 | A_MACRO,  FUNC_PIVOTADDDATA },
+        { A_1_OR_2 | A_MACRO,  FUNC_GETPIVOTTABLE },
+        { A_1_TO_3 | A_MACRO,  FUNC_GETPIVOTFIELD },
+        { A_1_TO_4 | A_MACRO,  FUNC_GETPIVOTITEM },
         { A_1,  FUNC_RADIANS },
         { A_1,  FUNC_DEGREES },
         { A_2_OR_MORE,  FUNC_SUBTOTAL },
         { A_2_OR_3,  FUNC_SUMIF },
         { A_2,  FUNC_COUNTIF },
         { A_1,  FUNC_COUNTBLANK },
-        { A_1_OR_2,  FUNC_SCENARIOGET },
-        { A_1,  FUNC_OPTIONSLISTSGET },
+        { A_1_OR_2 | A_MACRO,  FUNC_SCENARIOGET },
+        { A_1 | A_MACRO,  FUNC_OPTIONSLISTSGET },
         { A_4,  FUNC_ISPMT },
         { A_3,  FUNC_DATEDIF },
         { A_1,  FUNC_DATESTRING },
         { A_2,  FUNC_NUMBERSTRING },
         { A_1_OR_2,  FUNC_ROMAN },
-        { A_0_TO_4,  FUNC_OPENDIALOG },
-        { A_0_TO_5,  FUNC_SAVEDIALOG },
-        { A_1_OR_2,  FUNC_VIEWGET },
+        { A_0_TO_4 | A_MACRO,  FUNC_OPENDIALOG },
+        { A_0_TO_5 | A_MACRO,  FUNC_SAVEDIALOG },
+        { A_1_OR_2 | A_MACRO,  FUNC_VIEWGET },
         { A_2_OR_MORE,  FUNC_GETPIVOTDATA },
         { A_1_OR_2,  FUNC_HYPERLINK },
         { A_1,  FUNC_PHONETIC },
@@ -2301,23 +2309,23 @@ static const struct
         { A_1,  FUNC_ROUNDBAHTUP },
         { A_1,  FUNC_THAIYEAR },
         { A_3_OR_MORE,  FUNC_RTD },
-        { A_1_OR_MORE,  FUNC_CUBEVALUE },
-        { A_2_OR_3,  FUNC_CUBEMEMBER },
-        { A_3,  FUNC_CUBEMEMBERPROPERTY },
-        { A_3_OR_4,  FUNC_CUBERANKEDMEMBER },
+        { A_1_OR_MORE | A_MACRO,  FUNC_CUBEVALUE },
+        { A_2_OR_3 | A_MACRO,  FUNC_CUBEMEMBER },
+        { A_3 | A_MACRO,  FUNC_CUBEMEMBERPROPERTY },
+        { A_3_OR_4 | A_MACRO,  FUNC_CUBERANKEDMEMBER },
         { A_1_OR_2,  FUNC_HEX2BIN },
-        { A_1_OR_2,  FUNC_HEX2DEC },
+        { A_1,  FUNC_HEX2DEC },
         { A_1_OR_2,  FUNC_HEX2OCT },
         { A_1_OR_2,  FUNC_DEC2BIN },
         { A_1_OR_2,  FUNC_DEC2HEX },
         { A_1_OR_2,  FUNC_DEC2OCT },
         { A_1_OR_2,  FUNC_OCT2BIN },
         { A_1_OR_2,  FUNC_OCT2HEX },
-        { A_1_OR_2,  FUNC_OCT2DEC },
-        { A_1_OR_2,  FUNC_BIN2DEC },
+        { A_1,  FUNC_OCT2DEC },
+        { A_1,  FUNC_BIN2DEC },
         { A_1_OR_2,  FUNC_BIN2OCT },
         { A_1_OR_2,  FUNC_BIN2HEX },
-        { A_UNKNOWN,  FUNC_IMSUB },
+        { A_2,  FUNC_IMSUB },
         { A_2,  FUNC_IMDIV },
         { A_2,  FUNC_IMPOWER },
         { A_1,  FUNC_IMABS },
@@ -2329,77 +2337,77 @@ static const struct
         { A_1,  FUNC_IMCOS },
         { A_1,  FUNC_IMEXP },
         { A_1,  FUNC_IMARGUMENT },
-        { A_UNKNOWN,  FUNC_IMCONJUGATE },
-        { A_UNKNOWN,  FUNC_IMAGINARY },
-        { A_UNKNOWN,  FUNC_IMREAL },
-        { A_UNKNOWN,  FUNC_COMPLEX },
-        { A_UNKNOWN,  FUNC_IMSUM },
-        { A_UNKNOWN,  FUNC_IMPRODUCT },
-        { A_UNKNOWN,  FUNC_SERIESSUM },
-        { A_UNKNOWN,  FUNC_FACTDOUBLE },
-        { A_UNKNOWN,  FUNC_SQRTPI },
-        { A_UNKNOWN,  FUNC_QUOTIENT },
-        { A_UNKNOWN,  FUNC_DELTA },
-        { A_UNKNOWN,  FUNC_GESTEP },
-        { A_UNKNOWN,  FUNC_ISEVEN },
-        { A_UNKNOWN,  FUNC_ISODD },
-        { A_UNKNOWN,  FUNC_MROUND },
-        { A_UNKNOWN,  FUNC_ERF },
-        { A_UNKNOWN,  FUNC_ERFC },
-        { A_UNKNOWN,  FUNC_BESSELJ },
-        { A_UNKNOWN,  FUNC_BESSELK },
-        { A_UNKNOWN,  FUNC_BESSELY },
-        { A_UNKNOWN,  FUNC_BESSELI },
-        { A_UNKNOWN,  FUNC_XIRR },
-        { A_UNKNOWN,  FUNC_XNPV },
-        { A_UNKNOWN,  FUNC_PRICEMAT },
-        { A_UNKNOWN,  FUNC_YIELDMAT },
-        { A_UNKNOWN,  FUNC_INTRATE },
-        { A_UNKNOWN,  FUNC_RECEIVED },
-        { A_UNKNOWN,  FUNC_DISC },
-        { A_UNKNOWN,  FUNC_PRICEDISC },
-        { A_UNKNOWN,  FUNC_YIELDDISC },
-        { A_UNKNOWN,  FUNC_TBILLEQ },
-        { A_UNKNOWN,  FUNC_TBILLPRICE },
-        { A_UNKNOWN,  FUNC_TBILLYIELD },
-        { A_UNKNOWN,  FUNC_PRICE },
-        { A_UNKNOWN,  FUNC_YIELD },
-        { A_UNKNOWN,  FUNC_DOLLARDE },
-        { A_UNKNOWN,  FUNC_DOLLARFR },
-        { A_UNKNOWN,  FUNC_NOMINAL },
-        { A_UNKNOWN,  FUNC_EFFECT },
-        { A_UNKNOWN,  FUNC_CUMPRINC },
-        { A_UNKNOWN,  FUNC_CUMIPMT },
-        { A_UNKNOWN,  FUNC_EDATE },
-        { A_UNKNOWN,  FUNC_EOMONTH },
-        { A_UNKNOWN,  FUNC_YEARFRAC },
-        { A_UNKNOWN,  FUNC_COUPDAYBS },
-        { A_UNKNOWN,  FUNC_COUPDAYS },
-        { A_UNKNOWN,  FUNC_COUPDAYSNC },
-        { A_UNKNOWN,  FUNC_COUPNCD },
-        { A_UNKNOWN,  FUNC_COUPNUM },
-        { A_UNKNOWN,  FUNC_COUPPCD },
-        { A_UNKNOWN,  FUNC_DURATION },
-        { A_UNKNOWN,  FUNC_MDURATION },
-        { A_UNKNOWN,  FUNC_ODDLPRICE },
-        { A_UNKNOWN,  FUNC_ODDLYIELD },
-        { A_UNKNOWN,  FUNC_ODDFPRICE },
-        { A_UNKNOWN,  FUNC_ODDFYIELD },
-        { A_UNKNOWN,  FUNC_RANDBETWEEN },
-        { A_UNKNOWN,  FUNC_WEEKNUM },
-        { A_UNKNOWN,  FUNC_AMORDEGRC },
-        { A_UNKNOWN,  FUNC_AMORLINC },
-        { A_UNKNOWN,  FUNC_CONVERT },
-        { A_UNKNOWN,  FUNC_ACCRINT },
-        { A_UNKNOWN,  FUNC_ACCRINTM },
-        { A_UNKNOWN,  FUNC_WORKDAY },
-        { A_UNKNOWN,  FUNC_NETWORKDAYS },
-        { A_UNKNOWN,  FUNC_GCD },
-        { A_UNKNOWN,  FUNC_MULTINOMIAL },
-        { A_UNKNOWN,  FUNC_LCM },
-        { A_UNKNOWN,  FUNC_FVSCHEDULE },
-        { A_3_OR_4,  FUNC_CUBEKPIMEMBER },
-        { A_2_TO_5,  FUNC_CUBESET },
+        { A_1,  FUNC_IMCONJUGATE },
+        { A_1,  FUNC_IMAGINARY },
+        { A_1,  FUNC_IMREAL },
+        { A_2_OR_3,  FUNC_COMPLEX },
+        { A_1_OR_MORE,  FUNC_IMSUM },
+        { A_1_OR_MORE,  FUNC_IMPRODUCT },
+        { A_4,  FUNC_SERIESSUM },
+        { A_1,  FUNC_FACTDOUBLE },
+        { A_1,  FUNC_SQRTPI },
+        { A_2,  FUNC_QUOTIENT },
+        { A_1_OR_2,  FUNC_DELTA },
+        { A_1_OR_2,  FUNC_GESTEP },
+        { A_1,  FUNC_ISEVEN },
+        { A_1,  FUNC_ISODD },
+        { A_2,  FUNC_MROUND },
+        { A_1_OR_2,  FUNC_ERF },
+        { A_1,  FUNC_ERFC },
+        { A_2,  FUNC_BESSELJ },
+        { A_2,  FUNC_BESSELK },
+        { A_2,  FUNC_BESSELY },
+        { A_2,  FUNC_BESSELI },
+        { A_2_OR_3,  FUNC_XIRR },
+        { A_3,  FUNC_XNPV },
+        { A_5_OR_6,  FUNC_PRICEMAT },
+        { A_5_OR_6,  FUNC_YIELDMAT },
+        { A_4_OR_5,  FUNC_INTRATE },
+        { A_4_OR_5,  FUNC_RECEIVED },
+        { A_4_OR_5,  FUNC_DISC },
+        { A_4_OR_5,  FUNC_PRICEDISC },
+        { A_4_OR_5,  FUNC_YIELDDISC },
+        { A_3,  FUNC_TBILLEQ },
+        { A_3,  FUNC_TBILLPRICE },
+        { A_3,  FUNC_TBILLYIELD },
+        { A_6_OR_7,  FUNC_PRICE },
+        { A_6_OR_7,  FUNC_YIELD },
+        { A_2,  FUNC_DOLLARDE },
+        { A_2,  FUNC_DOLLARFR },
+        { A_2,  FUNC_NOMINAL },
+        { A_2,  FUNC_EFFECT },
+        { A_6,  FUNC_CUMPRINC },
+        { A_6,  FUNC_CUMIPMT },
+        { A_2,  FUNC_EDATE },
+        { A_2,  FUNC_EOMONTH },
+        { A_2_OR_3,  FUNC_YEARFRAC },
+        { A_3_OR_4,  FUNC_COUPDAYBS },
+        { A_3_OR_4,  FUNC_COUPDAYS },
+        { A_3_OR_4,  FUNC_COUPDAYSNC },
+        { A_3_OR_4,  FUNC_COUPNCD },
+        { A_3_OR_4,  FUNC_COUPNUM },
+        { A_3_OR_4,  FUNC_COUPPCD },
+        { A_5_OR_6,  FUNC_DURATION },
+        { A_5_OR_6,  FUNC_MDURATION },
+        { A_7_OR_8,  FUNC_ODDLPRICE },
+        { A_7_OR_8,  FUNC_ODDLYIELD },
+        { A_8_OR_9,  FUNC_ODDFPRICE },
+        { A_8_OR_9,  FUNC_ODDFYIELD },
+        { A_2,  FUNC_RANDBETWEEN },
+        { A_1_OR_2,  FUNC_WEEKNUM },
+        { A_6_OR_7,  FUNC_AMORDEGRC },
+        { A_6_OR_7,  FUNC_AMORLINC },
+        { A_3,  FUNC_CONVERT },
+        { A_6_TO_8,  FUNC_ACCRINT },
+        { A_4_OR_5,  FUNC_ACCRINTM },
+        { A_2_OR_3,  FUNC_WORKDAY },
+        { A_2_OR_3,  FUNC_NETWORKDAYS },
+        { A_1_OR_MORE,  FUNC_GCD },
+        { A_1_OR_MORE,  FUNC_MULTINOMIAL },
+        { A_1_OR_MORE,  FUNC_LCM },
+        { A_2,  FUNC_FVSCHEDULE },
+        { A_3_OR_4 | A_MACRO,  FUNC_CUBEKPIMEMBER },
+        { A_2_TO_5 | A_MACRO,  FUNC_CUBESET },
         { A_1,  FUNC_CUBESETCOUNT },
         { A_2,  FUNC_IFERROR },
         { A_2_OR_MORE,  FUNC_COUNTIFS },
@@ -2473,7 +2481,7 @@ static const struct
 /*
 TODO: bsearch() based on func code as the array stores those codes in order, hence we can binary-search through the array for a match...
 */
-for (int i = 0; i < sizeof(args_bits)/sizeof(args_bits[0]); i++)
+for (int i = 0; i < (int)(sizeof(args_bits)/sizeof(args_bits[0])); i++)
 {
 	if (args_bits[i].func == func)
 	{
@@ -2725,12 +2733,12 @@ signed8_t function_basenode_t::DumpData(CUnit &dst, bool include_subtree) const
 	// XL_ASSERT(argcntmask & (1U << (chcnt > 15 ? 15 : chcnt)));
 	if (chcnt >= 15 || (argcntmask & ~(1U << chcnt)))
 	{
-		errcode |= dst.AddValue8(OP_FUNCVAR);
+		errcode |= dst.AddValue8(OP_FUNCVAR | CELLOP_AS_VALUE);
 		errcode |= dst.AddValue8((unsigned16_t)chcnt & 0x7F); // no prompt for user: 0x80 not set
 	}
 	else
 	{
-		errcode |= dst.AddValue8(OP_FUNC);
+		errcode |= dst.AddValue8(OP_FUNC | CELLOP_AS_VALUE);
 	}
 
 	errcode |= dst.AddValue16((unsigned16_t)func & 0x7FFF); // no command equivalent function: 0x8000 not set
@@ -2901,9 +2909,19 @@ signed8_t userdef_func_node_t::DumpData(CUnit &dst, bool include_subtree) const
 {
 	signed8_t errcode = NO_ERRORS;
 
-	errcode |= dst.AddValue8(OP_STR);
+	/*
+	looks like the UDF is encoded like this:
 
-	return errcode;
+	first argument is a ptgNameX record pointing at the name of the UDF, then
+	followed by the arguments pushed onto the stack, and then at the
+	very end the ptgFuncVarV record with function id 0x00FF (UDF) and the total number
+	of arguments there INCLUDING that extra ptgNameX argument at the start.
+
+	In other words: UDF is a single function, which does indirection through the initial
+	argument to the actual user defined function, i.e. UDF(<referenced_user_function_name>, <arguments>...)
+	*/
+
+	return GENERAL_ERROR; // not supported yet...
 }
 
 
@@ -3208,9 +3226,21 @@ void formula_t::GetResultEstimate(estimated_formula_result_t &dst) const
 
 size_t formula_t::GetSize(void) const
 {
-	XL_ASSERT(GetAST());
+	const expression_node_t *expr = GetAST();
+	XL_ASSERT(expr);
 
-	size_t len = 4+2+2+2+8+2+4+2 + GetAST()->GetSize();
+	size_t len = 4+2+2+2+8+2+4+2 + expr->GetSize();
+	estimated_formula_result_t estimate(m_GlobalRecords);
+
+	expr->GetResultEstimate(estimate);
+	if (estimate.EncodedValueIsString())
+	{
+		// FORMULA BIFF8 is immediately followed by a STRING BIFF8 record!
+		const u16string* str = estimate.GetStringValue();
+		
+		XL_ASSERT(str);
+		len += 4 + str->length() * (CGlobalRecords::IsASCII(*str) ? sizeof(unsigned8_t) : sizeof(unsigned16_t));
+	}
 
 	return len;
 }
@@ -3244,16 +3274,76 @@ CFormula::CFormula(CDataStorage &datastore, const formula_t& expr):
    size_t len_position = GetDataSize();
    AddValue16(0 /* expr.GetSize() */ ); // length_of_parsed_expr
 
-   expr.GetAST()->DumpData(*this, true);
-   //AddDataArray(NULL, 0); // rgce dump, length_of_parsed_expr
+   expr.GetAST()->DumpData(*this, true); // rgce dump, length_of_parsed_expr
    
    size_t end = GetDataSize();
    SetValueAt16(end - len_position - 2, len_position);
 
    SetRecordLength(GetDataSize()-4);
+
+   if (estimate.EncodedValueIsString())
+   {
+	   // FORMULA BIFF8 is immediately followed by a STRING BIFF8 record!
+	   //
+	   // fake it by appending it at the tail of the current record!
+	   size_t basepos = GetDataSize();
+
+	   AddValue16(RECTYPE_STRING);
+	   AddValue16(0);
+
+	   const u16string* str = estimate.GetStringValue();
+
+	   XL_ASSERT(str);
+		XL_ASSERT(str->length() < 256); // dbg
+	   AddUnicodeString(expr.GetGlobalRecords(), *str, LEN2_FLAGS_UNICODE);
+	   
+	   SetValueAt16(GetDataSize() - basepos - 4, basepos + 2);
+   }
 }
 
 CFormula::~CFormula()
 {
 }
 
+
+/*
+BIFF 6 (06h)  41  72 01 02 00 0F 00 00 00  C8 7C 66 0C FF FF 00 00 
+C0 00 00 FC 13 00 39 00  00 01 00 00 00 17 02 00 
+46 38 1E 0A 00 42 03 FF  00  
+
+row=0172
+col = 0002
+ixfe = 000F
+num = FFFF0C667CC80000   --> string
+flags = 0000
+chn = FC00000C
+cce.len = 00013
+rgce = 39 00 00 01 00 00 00 17 02 00 46 38 1E 0A 00 42 03 FF 00  
+
+ptgNameX(39): ixti = 0000, ilbl = 0001, reserved = 0000
+ptgStr(17): cch.len = 02, flags = 0, str = 46 38 ("F8")
+ptgInt(1E): val = 000A (10)
+ptgFuncVarV(42): 00FF03 --> cargs = 3, prompt = 0, iftab = 00FF, CE = 0
+
+BIFF STRING (207h)  13  0A 00 00 30 30 31 31 31  31 31 30 30 30  
+BIFF 6 (06h)  38  73 01 02 00 0F 00 00 00  00 00 00 00 6F 40 00 00 
+C0 00 00 FD 10 00 39 01  00 02 00 00 00 17 02 00 
+46 38 42 02 FF 00  
+rgce = 39 01 00 02 00 00 00 17 02 00 46 38 42 02 FF 00 
+
+ptgNameX(39): ixti = 0000, ilbl = 0001, reserved = 0000
+ptgStr(17): cch.len = 02, flags = 0, str = 46 38 ("F8")
+ptgFuncVarV(42): 00FF02 --> cargs = 2, prompt = 0, iftab = 00FF, CE = 0
+
+BIFF 6 (06h)  45  74 01 02 00 0F 00 00 00  E0 D7 A6 04 FF FF 00 00 
+72 01 02 FE 17 00 39 01  00 01 00 00 00 17 02 00 
+46 38 19 40 00 01 1E 0A  00 42 03 FF 00  
+BIFF STRING (207h)  13  0A 00 00 30 30 30 30 30  30 30 33 37 30  
+
+
+
+
+BIFF 6 (06h)  37  6A 00 02 00 0F 00 F0 77  1B 7F CF EB BA 3F 00 00 
+C0 00 00 FC 0F 00 
+1E 01 00 1E 02 00 1E 03 00 1E 04 00 41 2E 01  012e  256+32+14  302
+*/

@@ -224,7 +224,7 @@
  
 /* EXTERNNAME: Externally Referenced Name */
 #define RECTYPE_EXTERNNAME                      \
-  0x223
+  0x223 // Excel2007 spits out 0x23 instead!
  
 /* EXTERNSHEET: External Reference */
 #define RECTYPE_EXTERNSHEET                     \
@@ -377,7 +377,7 @@
  
 /* NAME: Defined Name */
 #define RECTYPE_NAME                            \
-  0x218
+  0x218 // Excel 2007 spits out 0x18 instead!
  
 /* NOTE: Comment Associated with a Cell */
 #define RECTYPE_NOTE                            \
