@@ -71,6 +71,43 @@ static void my_xlslib_assertion_reporter(const char *expr, const char *filename,
 }
 
 
+void writeUnicodeLabel(worksheet *ws, int row, int col)
+{
+   const wchar_t *latin1wstr = L"\x0055\x006e\x0069\x0063\x006f\x0064\x0065\x0020\x0074\x0065\x0078\x0074\x0020\x00e3\x00f5\x00f1\x00e1\x00e9\x00fa\x00ed\x00f3\x002c\x00e0\x00e8\x00ec\x00f2\x00f9\x00e4\x00eb\x00ef\x00f6\x00fc\x00f1\x00e2\x00ea\x00ee\x00f4\x00fb";
+   const wchar_t *wstr = L"\x3042\x3043"; // 2 Hiragana characters
+
+#if 0
+   const char *latin1str = "Unicode text דץסביתםף,אטלעשהכןצüסגךמפû";
+	wchar_t wbuf[256];
+	int len;
+	const wchar_t *wp;
+
+    len = mbstowcs(NULL, latin1str, 0);
+	len++; /* take NUL sentinel into account */
+    len = mbstowcs(wbuf, latin1str, len);
+    if (len == (size_t) (-1))
+    {
+       printf("Couldn't convert string--invalid multibyte character.\n");
+    }
+    printf( "  Characters converted: %u\n", (unsigned int)len );
+    printf( "  Hex value of first 2" );
+    printf( " wide characters: %#.4x %#.4x\n\n", wbuf[13], wbuf[14] );
+
+	printf( " as Unicode string: L\"");
+	for (wp = wbuf; *wp; wp++)
+	{
+	    printf("\\x%04x", *wp);
+	}
+	printf( "\";\n");
+	xlsWorksheetLabelW(ws, row++, col, wbuf, NULL);
+#endif
+
+	xlsWorksheetLabel(ws, row++, col, "Two Japanese Hiragana:", NULL);
+	xlsWorksheetLabelW(ws, row++, col, wstr, NULL);
+	xlsWorksheetLabel(ws, row++, col, "A few words plus a series of Latin1 accented letters:", NULL);
+	xlsWorksheetLabelW(ws, row++, col, latin1wstr, NULL);
+}
+
 
 int main(int argc, char *argv[]) 
 {
@@ -86,6 +123,8 @@ int main(int argc, char *argv[])
 	xlsWorksheetNumberDbl(ws, (unsigned16_t)1, (unsigned16_t)1, 1.0, NULL);  
 	xlsWorksheetNumberDbl(ws, (unsigned16_t)2, (unsigned16_t)1, 2.0, NULL);
 	xlsWorksheetNumberDbl(ws, (unsigned16_t)3, (unsigned16_t)1, 3.0, NULL);
+	xlsWorksheetLabel(ws, 4, 1, "ASCII text", NULL);
+	writeUnicodeLabel(ws, 5, 1);
 	ret = xlsWorkbookDump(w, "testC.xls");
 
 	printf("    # saved it ret=%d!\n", ret);
@@ -96,7 +135,7 @@ int main(int argc, char *argv[])
 		fprintf(stderr, "%s failed: I/O failure %d.\n", argv[0], ret);
 		return EXIT_FAILURE;
 	}
-	if (0 != check_file("testC.xls", "a38b19e5ef2076e96146070c70a7bf13"))
+	if (0 != check_file("testC.xls", "c2a3a622dcff00f2fdbaa208e4753983"))
 	{
 		fprintf(stderr, "%s failed: MD5 of generated XLS mismatch or I/O failure.\n", argv[0]);
 		return EXIT_FAILURE;

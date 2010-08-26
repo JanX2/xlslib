@@ -697,7 +697,7 @@ namespace xlslib_core
 		*
 		* First argument should be a function reference.
 		*/
-		FUNC_UDF = xlUDF,      
+		FUNC_UDF = xlUDF,
 
 		/*
 		* Built-in Excel functions and command equivalents

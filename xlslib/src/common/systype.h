@@ -81,12 +81,12 @@
 #define FILE_ERROR        (-1)
 #define GENERAL_ERROR     (-100)
 
-#define PTYPE_DIRECTORY   (0x01)
-#define PTYPE_FILE        (0x02)
-#define PTYPE_ROOT        (0x05)
+#define PTYPE_DIRECTORY   0x01
+#define PTYPE_FILE        0x02
+#define PTYPE_ROOT        0x05
 
-#define PCOLOR_BLACK      (0x01)
-#define PCOLOR_RED		  (0x00)
+#define PCOLOR_BLACK      0x01
+#define PCOLOR_RED		  0x00
 
 #define PLINK_EMPTY       (-1)
 #define PBLOCK_END        (-2)
@@ -119,10 +119,10 @@ typedef StringList_t::const_iterator StringListItor_t;
 #endif
 
 // Macros
-# define MASK_BYTE0 0x00000000000000ff
-# define MASK_BYTE1 0x000000000000ff00
-# define MASK_BYTE2 0x0000000000ff0000
-# define MASK_BYTE3 0x00000000ff000000
+# define MASK_BYTE0 0x00000000000000ffU
+# define MASK_BYTE1 0x000000000000ff00U
+# define MASK_BYTE2 0x0000000000ff0000U
+# define MASK_BYTE3 0x00000000ff000000U
 
 #if defined(_MSC_VER) && defined(WIN32) && 0 // [i_a]
 
@@ -133,59 +133,59 @@ typedef StringList_t::const_iterator StringListItor_t;
 
 #else
 
-# define MASK_BYTE4 (unsigned64_t)0x000000ff00000000LL
-# define MASK_BYTE5 (unsigned64_t)0x0000ff0000000000LL
-# define MASK_BYTE6 (unsigned64_t)0x00ff000000000000LL
-# define MASK_BYTE7 (unsigned64_t)0xff00000000000000ULL
+# define MASK_BYTE4 ((unsigned64_t)0x000000ff00000000LL)
+# define MASK_BYTE5 ((unsigned64_t)0x0000ff0000000000LL)
+# define MASK_BYTE6 ((unsigned64_t)0x00ff000000000000LL)
+# define MASK_BYTE7 ((unsigned64_t)0xff00000000000000ULL)
 
 #endif
 
-#define BYTE_0(num) (unsigned8_t) (num & MASK_BYTE0)
-#define BYTE_1(num) (unsigned8_t)((num & MASK_BYTE1)>>0x08)
-#define BYTE_2(num) (unsigned8_t)((num & MASK_BYTE2)>>0x10)
-#define BYTE_3(num) (unsigned8_t)((num & MASK_BYTE3)>>0x18)
+#define BYTE_0(num) ((unsigned8_t) (num & MASK_BYTE0))
+#define BYTE_1(num) ((unsigned8_t)((num & MASK_BYTE1)>>0x08))
+#define BYTE_2(num) ((unsigned8_t)((num & MASK_BYTE2)>>0x10))
+#define BYTE_3(num) ((unsigned8_t)((num & MASK_BYTE3)>>0x18))
 
-#define BYTE_4(num) (unsigned8_t)((num & MASK_BYTE4)>>0x20)
-#define BYTE_5(num) (unsigned8_t)((num & MASK_BYTE5)>>0x28)
-#define BYTE_6(num) (unsigned8_t)((num & MASK_BYTE6)>>0x30)
-#define BYTE_7(num) (unsigned8_t)((num & MASK_BYTE7)>>0x38)
+#define BYTE_4(num) ((unsigned8_t)((num & MASK_BYTE4)>>0x20))
+#define BYTE_5(num) ((unsigned8_t)((num & MASK_BYTE5)>>0x28))
+#define BYTE_6(num) ((unsigned8_t)((num & MASK_BYTE6)>>0x30))
+#define BYTE_7(num) ((unsigned8_t)((num & MASK_BYTE7)>>0x38))
 
 
 
-#define PROPERTY_DFLT_NOTUSED		(0x00)
-#define PROPERTY_MAX_NAME_LENGTH	(32)
+#define PROPERTY_DFLT_NOTUSED		0x00
+#define PROPERTY_MAX_NAME_LENGTH	32
 
-#define PROPERTY_TYPE_DIR			(0x01)
-#define PROPERTY_TYPE_FILE			(0x02)
-#define PROPERTY_TYPE_ROOT			(0x05)
+#define PROPERTY_TYPE_DIR			0x01
+#define PROPERTY_TYPE_FILE			0x02
+#define PROPERTY_TYPE_ROOT			0x05
 
-#define PROPERTY_COLOR_NODE_RED		(0x00)
-#define PROPERTY_COLOR_NODE_BLACK	(0x01)
+#define PROPERTY_COLOR_NODE_RED		0x00
+#define PROPERTY_COLOR_NODE_BLACK	0x01
 #define PROPERTY_LINK_EMPTY			(-1)
 
-#define PPTPOS_NAME					(0x00)
-#define PPTPOS_NAMELENGTH			(0x40)
-#define PPTPOS_TYPE					(0x42)
-#define PPTPOS_NODECOLOR			(0x43)
-#define PPTPOS_PREVIOUS				(0x44)
-#define PPTPOS_NEXT					(0x48)
-#define PPTPOS_CHILD				(0x4C)
-#define PPTPOS_UNUSED_EMPTY0		(0x50)
+#define PPTPOS_NAME					0x00
+#define PPTPOS_NAMELENGTH			0x40
+#define PPTPOS_TYPE					0x42
+#define PPTPOS_NODECOLOR			0x43
+#define PPTPOS_PREVIOUS				0x44
+#define PPTPOS_NEXT					0x48
+#define PPTPOS_CHILD				0x4C
+#define PPTPOS_UNUSED_EMPTY0		0x50
 
 
-#define PPTPOS_SECS1				(0x64)
-#define PPTPOS_SECS2				(0x68)
-#define PPTPOS_DAYS1				(0x6c)
-#define PPTPOS_DAYS2				(0x70)
+#define PPTPOS_SECS1				0x64
+#define PPTPOS_SECS2				0x68
+#define PPTPOS_DAYS1				0x6c
+#define PPTPOS_DAYS2				0x70
 
-#define PPTPOS_STARTBLOCK			(0x74)
-#define PPTPOS_SIZE					(0x78)
+#define PPTPOS_STARTBLOCK			0x74
+#define PPTPOS_SIZE					0x78
 
 
-#define PPT_DFLT_SECS1				(0)
-#define PPT_DFLT_SECS2				(0)
-#define PPT_DFLT_DAYS1				(0)
-#define PPT_DFLT_DAYS2				(0)
+#define PPT_DFLT_SECS1				0
+#define PPT_DFLT_SECS2				0
+#define PPT_DFLT_DAYS1				0
+#define PPT_DFLT_DAYS2				0
 
 
 // More macros
@@ -313,6 +313,7 @@ will be properly 'munched'.
 typedef void xlslib_userdef_assertion_reporter(const char *expr, const char *fname, int lineno, const char *funcname);
 
 void xlslib_report_failed_assertion(const char *expr, const char *fname, int lineno, const char *funcname);
+
 /**
 override the default (C++ exception throwing) assertion failure reporting function within xlslib.
 */

@@ -49,6 +49,8 @@ namespace xlslib_core
 		XLERR_NAME  = 0x1D, // #NAME?
 		XLERR_NUM   = 0x24, // #NUM!
 		XLERR_N_A   = 0x2A, // #N/A!
+		// since Excel 2010:
+		XLERR_GETTINGDATA = 0x2B, // #DATA!
 	} errcode_t;
 
   class err_t: public cell_t
