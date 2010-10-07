@@ -388,8 +388,8 @@ CUnit* worksheet::RowBlocksDump(CDataStorage &datastore)
 		// Initialize the row widths
 		m_Current_RowHeight = m_RowHeights.begin();
 		m_DumpRBState = RB_FIRST_ROW;
-		repeat = true;
 
+		repeat = true;
 		break;
 
 	 case RB_FIRST_ROW:
@@ -404,7 +404,9 @@ CUnit* worksheet::RowBlocksDump(CDataStorage &datastore)
 		   m_CellOffsets.clear();
 
 		   m_DumpRBState = RB_ROWS;
-		} else {
+		} 
+		else 
+		{
 		   m_DumpRBState = RB_FINISH;
 		}
 		break;
@@ -415,13 +417,21 @@ CUnit* worksheet::RowBlocksDump(CDataStorage &datastore)
 
 		// Initialize first/last cols to impossible values
 		// that are appropriate for the following detection algorithm
-		unsigned32_t first_col = (unsigned32_t)(-1);
+		unsigned32_t first_col = ~(unsigned32_t)0;
 		unsigned32_t last_col  = 0;
-		unsigned32_t row_num = 0;
+		unsigned32_t row_num = (*m_CurrentCell)->GetRow();
+
+		if (m_Current_RowHeight != m_RowHeights.end())
+		{
+			if (row_num > (*m_Current_RowHeight)->GetRowNum())
+			{
+				row_num = (*m_Current_RowHeight)->GetRowNum();
+			}
+		}
 
 		// Get the row number for the current row;
 	    // The order in the conditional statement is important
-		for (row_num = (*m_CurrentCell)->GetRow(); 
+		for ( ;
 			m_CurrentCell != m_Cells.end() && (*m_CurrentCell)->GetRow() == row_num;
 			m_CurrentCell++)
 		{
@@ -435,10 +445,18 @@ CUnit* worksheet::RowBlocksDump(CDataStorage &datastore)
  		   m_CellCounter++;
 		}
 
+		// when there are NO cells in this row...
+		if (last_col < first_col)
+		{
+			last_col = 0;
+			first_col = 1;
+		}
+
 		// Check if the current row is in the list of height-set
 		// rows.
-		if(m_Current_RowHeight != m_RowHeights.end())
+		if (m_Current_RowHeight != m_RowHeights.end())
 		{
+		   XL_ASSERT((*m_Current_RowHeight)->GetRowNum() >= row_num);
 		   if((*m_Current_RowHeight)->GetRowNum() == row_num)
 		   {
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
@@ -453,14 +471,18 @@ CUnit* worksheet::RowBlocksDump(CDataStorage &datastore)
 											 (*m_Current_RowHeight)->GetRowHeight()) );
 #endif
 			   m_Current_RowHeight++;          
-			} else {
+		   } 
+		   else 
+		   {
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 			  rb_record = datastore.MakeCRow(row_num, first_col, last_col);
 #else
 			  rb_record = (CUnit*) (new CRow(datastore, row_num, first_col, last_col) );
 #endif
 		   }
-		} else {
+		} 
+		else 
+		{
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 		   rb_record = datastore.MakeCRow(row_num, first_col, last_col);
 #else
