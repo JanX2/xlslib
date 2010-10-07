@@ -154,6 +154,14 @@ CUnit& CUnit::operator=(const CUnit& right)
 // Default destructor
 CUnit::~CUnit()
 {
+	ResetDataStorage();
+}
+
+/************************************************
+ ************************************************/
+
+void CUnit::ResetDataStorage(void)
+{
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 	if (m_Index != INVALID_STORE_INDEX)
 	{
@@ -164,6 +172,7 @@ CUnit::~CUnit()
 			m_Store[m_Index].Reset();
 		}
 	}
+	m_Index = INVALID_STORE_INDEX;
 #else
    if(m_pData /*&& !m_ShadowUnit*/)
    {

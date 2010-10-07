@@ -64,8 +64,7 @@ namespace xlslib_core
   class CSummaryInfo;
   class CDocSummaryInfo;
 
-  class workbook
-    : public COleDoc
+  class workbook // : public COleDoc
     {
 	public:
 		workbook();

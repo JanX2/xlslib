@@ -94,18 +94,18 @@ namespace xlslib_core
 CSummaryInfo class declaration
 ********************************
 */
-  class CSummaryInfo: public CDataStorage
+  class CSummaryInfo //: public CDataStorage
 	{
 	private:
 		static const  unsigned8_t summ_info_data[];
-		HPSFdoc		*hpsf;
+		hpsf_doc_t *hpsf;
 
 	public:
 		CSummaryInfo();
 		virtual ~CSummaryInfo();
 		
 		bool property(property_t prop, const std::string& content);
-		int DumpData(void);
+		int DumpData(CDataStorage &datastore);
 
 	private:
 		CSummaryInfo(const CSummaryInfo& that);

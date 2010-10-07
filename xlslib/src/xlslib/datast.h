@@ -340,7 +340,7 @@ namespace xlslib_core
 		CBlank* MakeCBlank(const blank_t& blankdef);
 		CCodePage* MakeCCodePage(unsigned16_t boftype);
 		CDBCell* MakeCDBCell(size_t startblock = DBC_DFLT_STARTBLOCK);
-		HPSFdoc* MakeHPSFdoc(docType_t dt);
+		CHPSFdoc* MakeCHPSFdoc(const hpsf_doc_t &docdef);
 
 #endif
 	};

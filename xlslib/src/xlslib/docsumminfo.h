@@ -58,18 +58,19 @@ CDocSummaryInfo class declaration
 ********************************
 */
 
-  class CDocSummaryInfo: public CDataStorage
+  class CDocSummaryInfo //: public CDataStorage
 	{
     private:
 		static const unsigned8_t doc_summ_info_data[];
-		HPSFdoc		*hpsf;
+		hpsf_doc_t *hpsf;
 
     public:
 		CDocSummaryInfo();
 		virtual ~CDocSummaryInfo();
 		
 		bool property(property_t prop, const std::string& content);
-		int DumpData(void);
+
+		int DumpData(CDataStorage &datastore);
 
 	private:
 		CDocSummaryInfo(const CDocSummaryInfo& that);

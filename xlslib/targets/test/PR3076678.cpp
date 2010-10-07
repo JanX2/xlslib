@@ -1,5 +1,5 @@
 /*
- * SF issue #3076678
+ * SF issue #3083003 (! NOT 3076678 !)
 */
 
 //#define RANGE_FEATURE
@@ -39,14 +39,25 @@ int BorderTest(const char *md5_checksum)
 	pxf->SetLocked(false);
 	pCell = sh->label(1, 1, "Test #2", pxf);
 
-	int err = wb.Dump("bordertest.xls");
+	// PR3082021: rowheight doesn't work [for empty rows, and then the next ones that /are/ filled also miss out on the rowheight]
+	sh->rowheight(0, 30);
+	sh->rowheight(1, 76);		// in points (Excel uses twips, 1/20th of a point, but we dont)
+	
+	int err = wb.Dump("PR3083003.xls");
+	// test multiple Dump() calls: PR3083160
+	err |= wb.Dump("PR3083003-2.xls");
 
 	if (err != NO_ERRORS)
 	{
 		cerr << "BorderTest failed: I/O failure: " << err << std::endl;
 		return -1;
 	}
-	if (0 != check_file("bordertest.xls", md5_checksum))
+	if (0 != check_file("PR3083003.xls", md5_checksum))
+	{
+		cerr << "BorderTest failed: MD5 of generated XLS mismatch or I/O failure." << std::endl;
+		return -1;
+	}
+	if (0 != check_file("PR3083003-2.xls", md5_checksum))
 	{
 		cerr << "BorderTest failed: MD5 of generated XLS mismatch or I/O failure." << std::endl;
 		return -1;

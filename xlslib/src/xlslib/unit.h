@@ -107,6 +107,9 @@ namespace xlslib_core
 	CUnit&   operator+=(const CUnit& from);
     CUnit&   operator+=(unsigned8_t from);
 
+  protected:
+	void ResetDataStorage(void);
+
   public:
     size_t GetSize(void) const;
     size_t GetDataSize(void) const;

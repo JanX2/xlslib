@@ -139,12 +139,8 @@ COleFile class declaration
   
       blocks GetBATCount();
 
-
       static const unsigned8_t OLE_FILETYPE[]; 
-    
  
-    protected:
-    
     public:
       COleDoc();
       //COleDoc(const string& file_name);

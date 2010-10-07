@@ -41,7 +41,8 @@
 using namespace std;
 using namespace xlslib_core;
 
-const signed32_t xlslib_core::property2summary[] = {
+const signed32_t xlslib_core::property2summary[] = 
+{
 	0,
 	SumInfo_Author,
 	-1,
@@ -67,34 +68,31 @@ CSummaryInfo::CSummaryInfo()
 	
 	XTRACE("WRITE_SUMMARY");
 
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
-	hpsf = MakeHPSFdoc(HPSF_SUMMARY);
-#else
-	hpsf = new HPSFdoc(*this, HPSF_SUMMARY);
-#endif
+	hpsf = new hpsf_doc_t(HPSF_SUMMARY);
+	if (hpsf)
+	{
+		msTime = hpsf->unix2mstime(time(NULL));
 
-	msTime = hpsf->unix2mstime(time(NULL));
-
-	hpsf->addItem(SumInfo_Unknown, (unsigned16_t)1200);					// Excel 2004 on Mac writes this	// 0xfde9
-	hpsf->addItem(SumInfo_CreateTime_Date, msTime);						// should be "right now"
-	hpsf->addItem(SumInfo_LastSavedTime_Date, msTime);					// should be "right now"
-	hpsf->addItem(SumInfo_Security, (unsigned32_t)0);					// Default
-	hpsf->addItem(SumInfo_NameofCreatingApplication, s = PACKAGE_NAME);	// Default
+		hpsf->addItem(SumInfo_Unknown, (unsigned16_t)1200);					// Excel 2004 on Mac writes this	// 0xfde9
+		hpsf->addItem(SumInfo_CreateTime_Date, msTime);						// should be "right now"
+		hpsf->addItem(SumInfo_LastSavedTime_Date, msTime);					// should be "right now"
+		hpsf->addItem(SumInfo_Security, (unsigned32_t)0);					// Default
+		hpsf->addItem(SumInfo_NameofCreatingApplication, s = PACKAGE_NAME);	// Default
+	}
 }
 
 CSummaryInfo::~CSummaryInfo()
 {
-#if 0 /* hpsf gets deleted from within the CDataStorage destructor as it is part of the m_FlushList. */
 	if(hpsf) 
 		delete hpsf;
-#endif
 }
 
 /*
 ***********************************
 ***********************************
 */
-bool CSummaryInfo::property(property_t prop, const string& content) {
+bool CSummaryInfo::property(property_t prop, const string& content) 
+{
 	unsigned16_t val;
 	
 	val = static_cast<unsigned16_t>(property2summary[prop]);
@@ -107,28 +105,21 @@ bool CSummaryInfo::property(property_t prop, const string& content) {
 ***********************************
 ***********************************
 */
-int CSummaryInfo::DumpData(void)
+int CSummaryInfo::DumpData(CDataStorage &datastore)
 {
    XTRACE("\tCSummaryInfo::DumpData");
 
-#if 1
-   	int ret = hpsf->DumpData();
-	if (ret == NO_ERRORS)
+   	CUnit* ret = hpsf->GetData(datastore);
+	if (ret != NULL)
 	{
-		(*this) += hpsf;
+		datastore += ret;
 		// hpsf = NULL;	// DataStore owns it now
 	}
-#else
-	CUnit* ptraildata = new CUnit;
-	ptraildata->AddDataArray(CSummaryInfo::summ_info_data, sizeof(CSummaryInfo::summ_info_data));
-	(*this) += ptraildata;
-#endif
-	return ret;
+	return NO_ERRORS;
 }
-/*
-***********************************
-***********************************
-*/
+
+
+
 
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

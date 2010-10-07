@@ -284,8 +284,10 @@ int workbook::Dump(const string& filename)
 	size_t cells;
 	string					name;
 	int						errors;
+	COleDoc dst;
 
-	if(m_Sheets.empty()) {
+	if(m_Sheets.empty()) 
+	{
 		return GENERAL_ERROR;
 	}
 	
@@ -316,9 +318,10 @@ int workbook::Dump(const string& filename)
 	std::cerr << "ESTIMATED: total unit count: " << cells << std::endl;
 #endif
 
-	errors = Open(filename);
+	errors = dst.Open(filename);
 
-	if(errors == NO_ERRORS) {
+	if(errors == NO_ERRORS) 
+	{
 		CDataStorage		biffdata(cells);
 		CUnit*				precorddata;
 		bool				keep = true;
@@ -327,7 +330,8 @@ int workbook::Dump(const string& filename)
 		{
 		  precorddata = DumpData(biffdata);
 
-		  if(precorddata != NULL) {
+		  if(precorddata != NULL) 
+		  {
 			 biffdata += precorddata;
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 			 //Delete_Pointer(precorddata);
@@ -335,25 +339,29 @@ int workbook::Dump(const string& filename)
  			// and we can already discard any previous units at lower backpatch levels
 			biffdata.FlushLowerLevelUnits(precorddata);
 #endif
-		  } else {
+		  } 
+		  else 
+		  {
 			 keep = false;
 		  }
 		} while(keep);
 
-		AddFile("/Workbook", &biffdata);
+		dst.AddFile("/Workbook", &biffdata);
 
+		CDataStorage summarydata;
 		name = (char)0x05;
 		name += "SummaryInformation";
-		m_SummaryInfo.DumpData();
-		AddFile(name,  &m_SummaryInfo);
+		m_SummaryInfo.DumpData(summarydata);
+		dst.AddFile(name,  &summarydata);
 		
+		CDataStorage docdata;
 		name = (char)0x05;
 		name += "DocumentSummaryInformation";
-		m_DocSummaryInfo.DumpData();
-		AddFile(name, &m_DocSummaryInfo);
+		m_DocSummaryInfo.DumpData(docdata);
+		dst.AddFile(name, &docdata);
 		
-		errors = DumpOleFile();
-		Close();
+		errors = dst.DumpOleFile();
+		dst.Close();
 	}
 	return errors;
 }
@@ -527,7 +535,8 @@ CUnit* workbook::DumpData(CDataStorage &datastore)
             break;
       }
 
-      if(m_pCurrentData != NULL) {
+      if(m_pCurrentData != NULL) 
+	  {
 		 // WARNING: the test below was >= MAX_..., but MAX size is OK - only continue if > (I think!) DFH 12-12-08
 		 // Should only happen with single cells having data > MAX_RECORD_SIZE. Have no idea if this works or not (DFH)
          if(((CRecord*)m_pCurrentData)->GetRecordDataSize() > MAX_RECORD_SIZE && m_DumpState != WB_CONTINUE_REC)

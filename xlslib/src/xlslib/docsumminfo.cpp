@@ -64,21 +64,17 @@ CDocSummaryInfo::CDocSummaryInfo()
 {
 	XTRACE("WRITE_DOC_SUMMARY");
 	
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
-	hpsf = MakeHPSFdoc(HPSF_DOCSUMMARY);
-#else
-	hpsf = new HPSFdoc(*this, HPSF_DOCSUMMARY);
-#endif
-
-	hpsf->addItem(DocSumInfo_CodePage, (unsigned16_t)1200);				// UTF-16
+	hpsf = new hpsf_doc_t(HPSF_DOCSUMMARY);
+	if (hpsf)
+	{
+		hpsf->addItem(DocSumInfo_CodePage, (unsigned16_t)1200);				// UTF-16
+	}
 }
 
 CDocSummaryInfo::~CDocSummaryInfo()
 {
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
-	/* hpsf gets deleted from within the CDataStorage destructor as it is part of the m_FlushList. */
-#else
-#endif
+	if(hpsf) 
+		delete hpsf;
 }
 
 /*
@@ -100,17 +96,20 @@ bool CDocSummaryInfo::property(property_t prop, const string& content)
 ***********************************
 ***********************************
 */
-int CDocSummaryInfo::DumpData(void)
+int CDocSummaryInfo::DumpData(CDataStorage &datastore)
 {
    XTRACE("CDocSummaryInfo::DumpData");
 
-   	int ret = hpsf->DumpData();
-	if (ret == NO_ERRORS)
+   	CUnit* ret = hpsf->GetData(datastore);
+	if (ret != NULL)
 	{
-		(*this) += hpsf;
+		datastore += ret;
+		// hpsf = NULL;	// DataStore owns it now
 	}
-	return ret;
+	return NO_ERRORS;
 }
+
+
 
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

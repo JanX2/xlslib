@@ -459,9 +459,9 @@ CDBCell* CDataStorage::MakeCDBCell(size_t startblock)
 	return new CDBCell(*this, startblock);
 }
 
-HPSFdoc* CDataStorage::MakeHPSFdoc(docType_t dt)
+CHPSFdoc* CDataStorage::MakeCHPSFdoc(const hpsf_doc_t &docdef)
 {
-	return new HPSFdoc(*this, dt);
+	return new CHPSFdoc(*this, docdef);
 }
 
 

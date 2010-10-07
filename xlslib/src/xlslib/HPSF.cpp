@@ -32,6 +32,7 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 #include <xlsys.h>
+#include <datast.h>
 
 #include "HPSF.h"
 
@@ -137,14 +138,13 @@ size_t HPSFitem::GetSize()
 	return size + 4;	// variant at the start
 }
 
-HPSFdoc::HPSFdoc(CDataStorage &datastore, docType_t dt) :
-	CUnit(datastore),
-	docType(dt)
+hpsf_doc_t::hpsf_doc_t(docType_t dt) :
+	docType(dt),
+	itemList()
 {
-
 }
 
-HPSFdoc::~HPSFdoc()
+hpsf_doc_t::~hpsf_doc_t()
 {
 	HPSF_Set_Itor_t		hBegin, hEnd, hIter;
 	
@@ -154,7 +154,7 @@ HPSFdoc::~HPSFdoc()
 		delete *hIter;
 }
 
-void HPSFdoc::insert(HPSFitem *item)
+void hpsf_doc_t::insert(HPSFitem *item)
 {
 	HPSFitem*		existingItem;
 	bool			success;
@@ -173,7 +173,7 @@ void HPSFdoc::insert(HPSFitem *item)
 	} while(!success);
 }
 
-unsigned64_t HPSFdoc::unix2mstime(time_t unixTime)
+unsigned64_t hpsf_doc_t::unix2mstime(time_t unixTime)
 {
 	unsigned64_t	msTime;
 
@@ -183,20 +183,33 @@ unsigned64_t HPSFdoc::unix2mstime(time_t unixTime)
 	return msTime;
 }
 
+
+size_t hpsf_doc_t::GetSize(void) const
+{
+	return SUMMARY_SIZE;	// this file will only be this size, ever (zero padded)
+}
+
+CUnit* hpsf_doc_t::GetData(CDataStorage &datastore) const 
+{
+   return datastore.MakeCHPSFdoc(*this);	// NOTE: this pointer HAS to be deleted elsewhere.
+}
+
+
 //
 // http://poi.apache.org/hpsf/internals.html
 // or google "DocumentSummaryInformation and UserDefined Property Sets" and look for MSDN hits
 //
-int HPSFdoc::DumpData(void)
+CHPSFdoc::CHPSFdoc(CDataStorage &datastore, const hpsf_doc_t& docdef):
+		CUnit(datastore)
 {
-	HPSF_Set_Itor_t		hBegin, hEnd, hIter;
-	const unsigned32_t	*fmt;
+	HPSF_Set_ConstItor_t hBegin, hEnd, hIter;
+	const unsigned32_t *fmt;
 	size_t sectionListOffset;
 	size_t numProperties;
 	size_t itemOffset;
 	
-	numProperties = itemList.size();	
-	fmt = (docType == HPSF_SUMMARY ? summaryFormat : docSummaryFormat);
+	numProperties = docdef.itemList.size();	
+	fmt = (docdef.docType == HPSF_SUMMARY ? summaryFormat : docSummaryFormat);
 
 	int ret = Inflate(SUMMARY_SIZE);	// this file will only be this size, ever (zero padded)
 	if (ret == NO_ERRORS)
@@ -228,8 +241,8 @@ int HPSFdoc::DumpData(void)
 
 		// now write the propertyLists - the values, and where to find the payloads
 		itemOffset	= 8 + numProperties * 8;	// where I am now, then allow for propertyLists
-		hBegin		= itemList.begin();
-		hEnd		= itemList.end();
+		hBegin		= docdef.itemList.begin();
+		hEnd		= docdef.itemList.end();
 		for(hIter=hBegin; hIter != hEnd; ++hIter) 
 		{
 			HPSFitem	*item = *hIter;
@@ -245,8 +258,8 @@ int HPSFdoc::DumpData(void)
 		//printf("Think size is %d\n", (int)itemOffset);
 
 		// Now we can write out the actual data
-		hBegin		= itemList.begin();
-		hEnd		= itemList.end();
+		hBegin		= docdef.itemList.begin();
+		hEnd		= docdef.itemList.end();
 		for(hIter=hBegin; hIter != hEnd; ++hIter) 
 		{
 			HPSFitem		*item = *hIter;
@@ -297,8 +310,8 @@ int HPSFdoc::DumpData(void)
 			AddFixedDataArray(0, padding);	
 		}
 
-	#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
-	#endif
+#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+#endif
 
 		//printf("Actual size = %d\n", m_nDataSize - sectionListOffset);
 		XL_ASSERT(GetDataSize() <= GetSize());
@@ -306,7 +319,10 @@ int HPSFdoc::DumpData(void)
 		AddFixedDataArray(0, SUMMARY_SIZE - GetDataSize());
 		XL_ASSERT(GetDataSize() <= GetSize());
 	}
-
-	return ret;
 }
 
+
+
+CHPSFdoc::~CHPSFdoc()
+{
+}
