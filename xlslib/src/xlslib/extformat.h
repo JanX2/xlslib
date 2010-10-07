@@ -60,6 +60,7 @@ namespace xlslib_core
 #define XF_PROP_STYLE       0x0004
 //#define XF_PROP_123PREFIX   0x0008
 #define XF_PROP_XFPARENT    0xFFF0
+#define XF_PROP_XFPARENT_VALUE4STYLE    0x0FFF
 #define XF_PROP_XF_DEFAULT_CELL			   15
 
   // The Alignment field bit or-masks:
@@ -108,7 +109,8 @@ namespace xlslib_core
       FILL_DIAG_THIN,
       FILL_INV_DIAG_THIN,
       FILL_HORIZ_INT_THIN,
-      FILL_HORIZ_INTER_THICK   
+      FILL_HORIZ_INTER_THICK,
+      _NUM_FILL_OPTIONS
     } fill_option_t;
 
   // Border Options
@@ -129,7 +131,8 @@ namespace xlslib_core
       BORDER_DOTTED,
       BORDER_THICK,
       BORDER_DOUBLE,
-      BORDER_HAIR    
+      BORDER_HAIR,    
+      _NUM_BORDER_STYLES
     } border_style_t;
 
    // Border options
@@ -162,7 +165,8 @@ namespace xlslib_core
       HALIGN_RIGHT,
       HALIGN_FILL,
       HALIGN_JUSTIFY,
-      HALIGN_CENTERACCROSS
+      HALIGN_CENTERACCROSS,
+	  _NUM_HALIGN_OPTIONS
     } halign_option_t;
 
    // Vertical Align options
@@ -175,7 +179,8 @@ namespace xlslib_core
       VALIGN_TOP = 0,
       VALIGN_CENTER,
       VALIGN_BOTTOM,
-      VALIGN_JUSTIFY
+      VALIGN_JUSTIFY,
+	  _NUM_VALIGN_OPTIONS
     } valign_option_t;
 
 #define XF_LOCKED			true
@@ -199,8 +204,8 @@ namespace xlslib_core
 #define XF_OFFSET_COLOR        22
 
   // Geometric Align options
-#define XF_ALIGN_SHIFTPOS_HALIGN  (0)
-#define XF_ALIGN_SHIFTPOS_VALIGN  (4)
+#define XF_ALIGN_SHIFTPOS_HALIGN  0
+#define XF_ALIGN_SHIFTPOS_VALIGN  4
 
   // XF_USED_ATTRIB
 #define XF_ALIGN_ATR_SHIFT			24
@@ -226,7 +231,8 @@ namespace xlslib_core
       ORI_NONE = 0,      
       ORI_TOPBOTTOMTXT,
       ORI_90NOCLOCKTXT,
-      ORI_90CLOCKTXT     
+      ORI_90CLOCKTXT,     
+      _NUM_TXTORI_OPTIONS
     } txtori_option_t;
 
   // Indent field
@@ -273,7 +279,8 @@ namespace xlslib_core
       INDENT_15,
       INDENT_SHRINK2FIT,
       INDENT_L2R,
-	  INDENT_R2L
+	  INDENT_R2L,
+	  _NUM_INDENT_OPTIONS
     } indent_option_t;
 
   // XF_USED_ATTRIB
@@ -297,8 +304,8 @@ namespace xlslib_core
 
 #define XF_BORDER_LEFTCOLOR		0x007f0000
 #define XF_BORDER_RIGHTCOLOR	0x3f800000
-#define XF_DIAG_TL2BR			0x40000000
-#define XF_DIAG_BL2TR			0x80000000
+#define XF_DIAG_TL2BR			0x40000000 // diagonal down (part of 'grbitDiag' in BIFF8 spec)
+#define XF_DIAG_BL2TR			0x80000000 // diagonal up   (part of 'grbitDiag' in BIFF8 spec)
 
   // BORDER B 
 
@@ -335,6 +342,8 @@ CExtFormat class declaration
 */
   class xf_init_t
   {
+	  friend class xf_t;
+
 	public:
 		xf_init_t();
 		~xf_init_t();
@@ -363,6 +372,7 @@ CExtFormat class declaration
 
 	private:
 		xf_init_t(const xf_init_t &that);
+		xf_init_t(const xf_init_t *that);
 		xf_init_t& operator=(const xf_init_t& right);
   };
 
@@ -412,10 +422,8 @@ CExtFormat class declaration
 		xf_t(CGlobalRecords& gRecords, const xf_init_t& xfinit);
 		xf_t(const xf_t& orig);
 
-		//xf_t(const xlslib_core::xf_t* origP) { };	// block - not sure why this was there??? Old???
-		virtual ~xf_t();									// block (was virtual)
+		virtual ~xf_t();
 		
-		//static xf_init_t::xf_init_t		xfiInit;
 		static const xf_init_t		xfiInit;
 
 		xf_t& operator=(const xf_t& right);
@@ -439,6 +447,9 @@ CExtFormat class declaration
       void				SetIndex(unsigned16_t xfidx){index = xfidx;};
 	  std::string		Description() const;
 
+	  static const xf_init_t &GetDefaultXFshadow(CGlobalRecords& gRecords, bool userXF, bool isCell);
+	  const xf_init_t &GetXFshadow() const { return xfi; };
+
     public:
 	  // end user copy method
 	  static xf_t* xfDup(const xf_t* orig)
@@ -449,6 +460,10 @@ CExtFormat class declaration
       bool operator==(const xf_t& right);
 
       unsigned16_t	GetIndex(void) const {return index;};
+
+      void          SetParent(const xf_t* parent); 
+	  unsigned16_t	GetParentIndex(void) const;
+      const xf_t*   GetParent(void) const; 
 
 	  // XF_ALIGN_ATRNUM
       /* Format Index wrappers*/
@@ -533,6 +548,8 @@ CExtFormat class declaration
       void SetFlag(unsigned8_t flag);
       void ClearFlag(unsigned8_t flag);
 
+	  void AtuneXF(void); // make sure the XF is set up properly so the Excel output will be flawless.
+
     private:
       //xlslib_core::CGlobalRecords *m_GlobalRecords;
       CGlobalRecords& m_GlobalRecords;
@@ -540,6 +557,7 @@ CExtFormat class declaration
 
       unsigned32_t m_usage_counter;
       unsigned16_t index;
+      unsigned16_t parent_index;
 
 	  unsigned16_t formatIndex;
       font_t* font;
@@ -566,13 +584,16 @@ CExtFormat class declaration
 	  unsigned8_t flags;
 
       // Lookup tables for options
-      static const unsigned8_t HALIGN_OPTIONS_TABLE[];
-      static const unsigned8_t VALIGN_OPTIONS_TABLE[];
-      static const unsigned8_t INDENT_OPTIONS_TABLE[];
-      static const unsigned8_t TXTORI_OPTIONS_TABLE[];
-      static const unsigned8_t COLOR_OPTIONS_TABLE[];
-      static const unsigned8_t FILL_OPTIONS_TABLE[];
-      static const unsigned8_t BORDERSTYLE_OPTIONS_TABLE[];
+      static const unsigned8_t HALIGN_OPTIONS_TABLE[_NUM_HALIGN_OPTIONS];
+      static const unsigned8_t VALIGN_OPTIONS_TABLE[_NUM_VALIGN_OPTIONS];
+      static const unsigned8_t INDENT_OPTIONS_TABLE[_NUM_INDENT_OPTIONS];
+      static const unsigned8_t TXTORI_OPTIONS_TABLE[_NUM_TXTORI_OPTIONS];
+      static const unsigned8_t COLOR_OPTIONS_TABLE[_NUM_COLOR_NAMES];
+      static const unsigned8_t FILL_OPTIONS_TABLE[_NUM_FILL_OPTIONS];
+      static const unsigned8_t BORDERSTYLE_OPTIONS_TABLE[_NUM_BORDER_STYLES];
+
+	public:
+		CGlobalRecords& GetGlobalRecords(void) const { return m_GlobalRecords; }; 
     };
 
   typedef std::vector<xlslib_core::xf_t* XLSLIB_DFLT_ALLOCATOR> XF_Vect_t;
@@ -605,10 +626,10 @@ CExtFormat class declaration
       int SetFormatIndex(unsigned16_t formatindex);
       unsigned16_t GetFormatIndex(void);
 
-      void SetLocked();
-      void SetHidden();
+      void SetLocked(bool locked);
+      void SetHidden(bool hidden);
       void SetHorizAlign(unsigned8_t alignval);
-      void SetWrap();
+      void SetWrap(bool wrap);
 	  void SetIndent(unsigned8_t indentval);
       void SetVertAlign(unsigned8_t alignval);
       void SetTxtOrientation(unsigned8_t alignval);
@@ -617,7 +638,7 @@ CExtFormat class declaration
       void SetFillPattern(unsigned8_t color);
       void SetBorder(border_side_t border, unsigned16_t style, unsigned16_t color);
 	  void SetFlags(unsigned8_t flags);
-//    void SetXFParent(unsigned16_t parent); // maybe later
+      void SetXFParent(unsigned16_t parent); 
     };
 
 }

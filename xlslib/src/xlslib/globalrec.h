@@ -152,10 +152,10 @@ CGlobalRecords class declaration
       GlobalRecordDumpState_t m_DumpState;
 
       /*
-        static const font_init_t   m_Default_Fonts  [GLOBAL_NUM_DEFAULT_FONT    ];
-        static const format_t m_Default_Formats[GLOBAL_NUM_DEFAULT_FORMATS ];
-        static const xf_init_t     m_Default_XFs    [GLOBAL_NUM_DEFAULT_XFS     ];
-        static const style_t  m_Default_Styles [GLOBAL_NUM_DEFAULT_STYLES  ];
+        static const font_init_t   m_Default_Fonts[GLOBAL_NUM_DEFAULT_FONT];
+        static const format_t m_Default_Formats[GLOBAL_NUM_DEFAULT_FORMATS];
+        static const xf_init_t     m_Default_XFs[GLOBAL_NUM_DEFAULT_XFS];
+        static const style_t  m_Default_Styles[GLOBAL_NUM_DEFAULT_STYLES];
       */
 
       Font_Vect_Itor_t       font;

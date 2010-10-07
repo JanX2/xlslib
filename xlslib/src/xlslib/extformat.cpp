@@ -51,7 +51,7 @@ xf_t class implementation
 
 const xf_init_t xf_t::xfiInit;
 
-const unsigned8_t xf_t::HALIGN_OPTIONS_TABLE[] = 
+const unsigned8_t xf_t::HALIGN_OPTIONS_TABLE[_NUM_HALIGN_OPTIONS] = 
 {
    XF_HALIGN_GENERAL      ,
    XF_HALIGN_LEFT         ,
@@ -62,7 +62,7 @@ const unsigned8_t xf_t::HALIGN_OPTIONS_TABLE[] =
    XF_HALIGN_CENTERACCROSS
 };
 
-const unsigned8_t xf_t::VALIGN_OPTIONS_TABLE[] = 
+const unsigned8_t xf_t::VALIGN_OPTIONS_TABLE[_NUM_VALIGN_OPTIONS] = 
 {
    XF_VALIGN_TOP    ,
    XF_VALIGN_CENTER ,
@@ -70,7 +70,7 @@ const unsigned8_t xf_t::VALIGN_OPTIONS_TABLE[] =
    XF_VALIGN_JUSTIFY
 };
 
-const unsigned8_t xf_t::INDENT_OPTIONS_TABLE[] = 
+const unsigned8_t xf_t::INDENT_OPTIONS_TABLE[_NUM_INDENT_OPTIONS] = 
 {
 	XF_INDENT_0,
 	XF_INDENT_1,
@@ -93,15 +93,15 @@ const unsigned8_t xf_t::INDENT_OPTIONS_TABLE[] =
 	XF_INDENT_R2L
 };
 
-const unsigned8_t xf_t::TXTORI_OPTIONS_TABLE[] = 
+const unsigned8_t xf_t::TXTORI_OPTIONS_TABLE[_NUM_TXTORI_OPTIONS] = 
 {
-   XF_ORI_NONE        ,
+   XF_ORI_NONE,
    XF_ORI_TOPBOTTOMTXT,
    XF_ORI_90NOCLOCKTXT,
    XF_ORI_90CLOCKTXT  
 };
 
-const unsigned8_t xf_t::COLOR_OPTIONS_TABLE[] =
+const unsigned8_t xf_t::COLOR_OPTIONS_TABLE[_NUM_COLOR_NAMES] =
 {
 	0,	// Black as used in the default fonts
 	COLOR_CODE_BLACK,
@@ -171,7 +171,7 @@ const unsigned8_t xf_t::COLOR_OPTIONS_TABLE[] =
 	COLOR_CODE_SYS_WIND_BG
 };
 
-const unsigned8_t xf_t::FILL_OPTIONS_TABLE[] =
+const unsigned8_t xf_t::FILL_OPTIONS_TABLE[_NUM_FILL_OPTIONS] =
 {
    XF_FILL_NONE,
    XF_FILL_SOLID,
@@ -194,7 +194,7 @@ const unsigned8_t xf_t::FILL_OPTIONS_TABLE[] =
    XF_FILL_HORIZ_INTER_THICK   
 };
 
-const unsigned8_t xf_t::BORDERSTYLE_OPTIONS_TABLE[] =
+const unsigned8_t xf_t::BORDERSTYLE_OPTIONS_TABLE[_NUM_BORDER_STYLES] =
 {
    XF_BRDOPTION_NONE,
    XF_BRDOPTION_THIN,
@@ -212,7 +212,7 @@ class xf_init_t: convenience structure to init an xf_t
 ******************************************************
 */
 xf_init_t::xf_init_t() :
-	font(0),
+	font(NULL),
 	formatIndex(FMTCODE_GENERAL),
 	
 	locked(XF_LOCKED),
@@ -232,7 +232,8 @@ xf_init_t::xf_init_t() :
 	border_style(),
 	border_color()
 {
-	for(int i=0; i<_NUM_BORDERS; ++i) {
+	for(int i=0; i<_NUM_BORDERS; ++i) 
+	{
 		border_style[i]	= BORDER_NONE;
 		border_color[i] = ORIG_COLOR_BLACK;
 	}
@@ -240,6 +241,40 @@ xf_init_t::xf_init_t() :
 xf_init_t::~xf_init_t()
 {
 }
+
+xf_init_t::xf_init_t(const xf_init_t &that) :
+	font(that.font),
+	formatIndex(that.formatIndex),
+	
+	locked(that.locked),
+	hidden(that.hidden),
+	wrap(that.wrap),
+
+	halign(that.halign),
+	valign(that.valign),
+	
+	indent(that.indent),
+	txt_orient(that.txt_orient),
+	
+	fillstyle(that.fillstyle),
+	fill_fgcolor(that.fill_fgcolor),
+	fill_bgcolor(that.fill_bgcolor),
+	
+	border_style(),
+	border_color()
+{
+	for(int i=0; i<_NUM_BORDERS; ++i) 
+	{
+		border_style[i]	= that.border_style[i];
+		border_color[i] = that.border_color[i];
+	}
+}
+
+xf_init_t& xf_init_t::operator=(const xf_init_t& right)
+{
+	throw std::string("Should never have invoked the xf_init_t copy operator!");
+}
+
 bool xf_init_t::operator==(const xf_init_t& right)
 {
 	// used by "range" in doing mass changes. Try to arrange so most
@@ -268,6 +303,20 @@ bool xf_init_t::operator==(const xf_init_t& right)
 	return true;
 }
 
+const xf_init_t &xf_t::GetDefaultXFshadow(CGlobalRecords& gRecords, bool userXF, bool isCell)
+{
+	if (!isCell)
+	{
+		const xf_t *xf = gRecords.GetDefaultXF();
+
+		if (xf)
+		{
+			return xf->GetXFshadow();
+		}
+	}
+	return xfiInit;
+}
+
 /* 
 ******************************************
 GlobalRec, xftDup, and range(userXF==no)
@@ -275,23 +324,25 @@ GlobalRec, xftDup, and range(userXF==no)
 */
 xf_t::xf_t(xlslib_core::CGlobalRecords& gRecords, bool userXF, bool isCell, bool isMasterXF) :
     m_GlobalRecords(gRecords),
-	xfi(),
+	xfi(GetDefaultXFshadow(gRecords, userXF, isCell)),
 	m_usage_counter(0),
 	index(0),
+	parent_index(0),
+
 	formatIndex(FMTCODE_GENERAL),
 	font(NULL),
 	format(NULL),
-	halign(0),
-	valign(0),
-	indent(0),
-	txt_orient(0),
-	fillstyle(0),
-	fill_fgcolor(0),
-	fill_bgcolor(0),
+	halign(XF_HALIGN_GENERAL),
+	valign(XF_VALIGN_BOTTOM),
+	indent(XF_INDENT_0),
+	txt_orient(XF_ORI_NONE),
+	fillstyle(XF_FILL_NONE),
+	fill_fgcolor(ORIG_COLOR_BLACK),
+	fill_bgcolor(ORIG_COLOR_BLACK),
 
-	locked(false),
-	hidden(false),
-	wrap(false),
+	locked(XF_NO_LOCKED),
+	hidden(XF_NO_HIDDEN),
+	wrap(XF_NO_WRAPPED),
 	is_cell(isCell),
 	is_userXF(userXF),
 
@@ -301,6 +352,9 @@ xf_t::xf_t(xlslib_core::CGlobalRecords& gRecords, bool userXF, bool isCell, bool
 	flags(0)
 {
 //	SetCellMode(isCell);
+
+	// Flags have different meanings for Cell or Style formats
+	flags = (isCell || isMasterXF) ? 0 : XF_ALIGN_ALL;
 
 	// Set a default value for class members
 	SetFormatIndex(xfi.formatIndex);
@@ -321,10 +375,6 @@ xf_t::xf_t(xlslib_core::CGlobalRecords& gRecords, bool userXF, bool isCell, bool
 		SetBorderColor((border_side_t)i, xfi.border_color[i]);
 	}
 
-	// Flags have different meanings for Cell or Style formats
-	flags = (isCell || isMasterXF) ? 0 : XF_ALIGN_ALL;
-
-	is_userXF = userXF;
 	if(is_userXF) {
 		m_GlobalRecords.AddXFormat(this);
 	}
@@ -337,9 +387,10 @@ Only for use by users
 */
 xf_t::xf_t(const xf_t& orig) :
 	m_GlobalRecords(orig.m_GlobalRecords),
-	xfi(),
+	xfi(orig.xfi),
 	m_usage_counter(0),
 	index(0),
+	parent_index(0),
 
 	formatIndex(orig.formatIndex),
 	font(NULL),							// yes, need this as SetFont below depends on a set value
@@ -361,7 +412,7 @@ xf_t::xf_t(const xf_t& orig) :
  	border_style(),
 	border_color(),
 	
-	flags(0)
+	flags(orig.flags)
 {
     SetFont(orig.font);	// side effects
 	if (orig.format)
@@ -369,12 +420,12 @@ xf_t::xf_t(const xf_t& orig) :
 		SetFormat(orig.format);	// side effects
 	}
 	
-	for(int i=0; i<_NUM_BORDERS; ++i) {
+	for(int i=0; i<_NUM_BORDERS; ++i) 
+	{
 		border_style[i]	= orig.border_style[i];
 		border_color[i] = orig.border_color[i];
 	}
 	
-	flags = orig.flags;
 	m_GlobalRecords.AddXFormat(this);
 }
 
@@ -385,24 +436,25 @@ Constructor using pre-set values: range
 */
 xf_t::xf_t(CGlobalRecords& gRecords, const xf_init_t& xfinit) :
     m_GlobalRecords(gRecords),
-	xfi(),
+	xfi(xfinit),
 	m_usage_counter(0),
 	index(0),
+	parent_index(0),
 
 	formatIndex(FMTCODE_GENERAL),
 	font(NULL),
 	format(NULL),
-	halign(0),
-	valign(0),
-	indent(0),
-	txt_orient(0),
-	fillstyle(0),
-	fill_fgcolor(0),
-	fill_bgcolor(0),
+	halign(XF_HALIGN_GENERAL),
+	valign(XF_VALIGN_BOTTOM),
+	indent(XF_INDENT_0),
+	txt_orient(XF_ORI_NONE),
+	fillstyle(XF_FILL_NONE),
+	fill_fgcolor(ORIG_COLOR_BLACK),
+	fill_bgcolor(ORIG_COLOR_BLACK),
 
-	locked(false),
-	hidden(false),
-	wrap(false),
+	locked(XF_NO_LOCKED),
+	hidden(XF_NO_HIDDEN),
+	wrap(XF_NO_WRAPPED),
 	is_cell(true),
 	is_userXF(true),
 
@@ -426,7 +478,8 @@ xf_t::xf_t(CGlobalRecords& gRecords, const xf_init_t& xfinit) :
 	SetHidden(xfinit.hidden);
 	SetWrap(xfinit.wrap);
 
-	for(int i=0; i<_NUM_BORDERS; ++i) {
+	for(int i=0; i<_NUM_BORDERS; ++i) 
+	{
 		SetBorderStyle((border_side_t)i, xfinit.border_style[i]);
 		SetBorderColor((border_side_t)i, xfinit.border_color[i]);
 	}
@@ -449,19 +502,26 @@ void xf_t::SetFlag(unsigned8_t flag)
 {
    if(IsCell())
    {
-      if((flags & flag) == 0) {
+#if 0
+	   if((flags & flag) == 0) 
+	   {
 	     // The flag forces all these fields to be defined, so init them to defaults
-		 switch(flag) {
+		 switch(flag) 
+		 {
 		 case XF_ALIGN_ATRALC:
-			valign = XF_VALIGN_BOTTOM;
+			XL_ASSERT(valign == XF_VALIGN_BOTTOM);  /* is already set as default through xfinit() */
 			break;
 		 case XF_ALIGN_ATRPAT:
-			fill_fgcolor = COLOR_CODE_SYS_WIND_FG;
-			fill_bgcolor = COLOR_CODE_SYS_WIND_BG;
+			XL_ASSERT(fill_fgcolor == COLOR_CODE_SYS_WIND_FG);
+			XL_ASSERT(fill_bgcolor == COLOR_CODE_SYS_WIND_BG);
+			break;
+		 case XF_ALIGN_ATRBDR:
+			XL_ASSERT(valign == XF_VALIGN_BOTTOM);
 			break;
 		 }
-	  }
-      // Cells indicate that a characteristic is not equal
+	   }
+#endif
+	  // Cells indicate that a characteristic is not equal
       //  from its parent with the flag set.
       flags |= flag; 
    } else {
@@ -498,6 +558,74 @@ unsigned8_t xf_t::GetFlags() const
 	return flags;
 }
 
+/* 
+**********************************
+**********************************
+*/
+void xf_t::AtuneXF(void)
+{
+		if(font != xfi.font)
+		{
+			SetFlag(XF_ALIGN_ATRFONT);
+		}
+		if(formatIndex != xfi.formatIndex)
+		{
+			SetFlag(XF_ALIGN_ATRNUM);
+		}
+
+		for(int side = 0; side < _NUM_BORDERS; ++side) 
+		{
+			if(border_style[side] != xfi.border_style[side]) 
+			{
+					SetFlag(XF_ALIGN_ATRBDR);
+			}
+			if(border_color[side] != xfi.border_color[side]) 
+			{
+					SetFlag(XF_ALIGN_ATRBDR);
+			}
+		}
+
+		if(halign != xfi.halign)
+        {
+                SetFlag(XF_ALIGN_ATRALC);
+        }
+        if(valign != xfi.valign)
+        {
+                SetFlag(XF_ALIGN_ATRALC);
+        }
+        if(indent != xfi.indent)
+        {
+                SetFlag(XF_ALIGN_ATRALC);
+        }
+        if(txt_orient != xfi.txt_orient)
+        {
+                SetFlag(XF_ALIGN_ATRALC);
+        }
+        if(fill_fgcolor != xfi.fill_fgcolor)
+        {
+                SetFlag(XF_ALIGN_ATRPAT);
+        }
+        if(fill_bgcolor != xfi.fill_bgcolor)
+        {
+                SetFlag(XF_ALIGN_ATRPAT);
+        }
+        if(fillstyle != xfi.fillstyle)
+        {
+                SetFlag(XF_ALIGN_ATRPAT);
+        }
+        if(locked != xfi.locked)
+        {
+                SetFlag(XF_ALIGN_ATRPROT);
+        }
+        if(hidden != xfi.hidden)
+        {
+                SetFlag(XF_ALIGN_ATRPROT);
+        }
+        if(wrap != xfi.wrap)
+        {
+                SetFlag(XF_ALIGN_ATRALC);
+        }
+}
 
 /* 
 **********************************
@@ -525,6 +653,33 @@ unsigned32_t xf_t::Usage(void) const
    return m_usage_counter;
 }
 
+
+/* 
+**********************************
+**********************************
+*/
+
+void xf_t::SetParent(const xf_t* parent)
+{
+	if (parent)
+	{
+		xfi = parent->xfi;
+
+		// now make sure all the flags are properly set, given that we probably have altered xfi 'shadow base' by now.
+		AtuneXF();
+	}
+}
+unsigned16_t xf_t::GetParentIndex(void) const
+{
+	/* TBD: derive XF's from other XF's, including the standard ones */ 
+	return 0;
+}
+const xf_t* xf_t::GetParent(void) const
+{
+	return NULL;
+}
+
+
 /* 
 **********************************
 **********************************
@@ -533,7 +688,9 @@ void xf_t::SetFont(font_t* newfont)
 {
 	// Set the related flag
 	if(newfont != xf_t::xfiInit.font)
+	{
 		SetFlag(XF_ALIGN_ATRFONT);
+	}
 	if(font)
 	  font->UnMarkUsed();
 	  
@@ -559,7 +716,6 @@ unsigned16_t xf_t::GetFontIndex(void) const
 **********************************
 **********************************
 */
-
 void xf_t::SetFormatIndex(unsigned16_t formatidx)
 {
 	// Set the related flag.
@@ -637,7 +793,7 @@ std::string xf_t::Description() const
 
 	buf << "-----------------------------------------" << endl;
 		
-	buf << "      INDEX: " << index << " usage=" <<  m_usage_counter << endl;
+	buf << "      INDEX: " << index << " parent=" << parent_index << " usage=" <<  m_usage_counter << endl;
     buf << "       Font: " << hex << font << dec << endl;
     buf << "  FormatIdx: " << formatIndex << endl;
     buf << "      Align: " << "h=" << hex << (int)halign << " v=" << (int)valign << " indent=" << (int)indent << " orient=" << (int)txt_orient << dec << endl;
@@ -660,25 +816,43 @@ std::string xf_t::Description() const
 /* Cell option wrappers*/
 void xf_t::SetBorderStyle(border_side_t side, border_style_t style)
 {
-	border_style[side] = (border_style_t)BORDERSTYLE_OPTIONS_TABLE[style];
+	XL_ASSERT(side >= 0);
+	XL_ASSERT(side < _NUM_BORDERS);
+	XL_ASSERT(style >= 0);
+	XL_ASSERT(style < _NUM_BORDER_STYLES);
+	border_style[side] = BORDERSTYLE_OPTIONS_TABLE[style];
 
-	if(border_style[side] != xf_t::xfiInit.border_style[side]) {
+	if(border_style[side] != xf_t::xfiInit.border_style[side]) 
+	{
 		SetFlag(XF_ALIGN_ATRBDR);
+	}
+	// fix up XF record for Excel, who does not like color == 0 when the style is not NONE!
+	if (IsCell() && border_color[side] == 0)
+	{
+		border_color[side] = COLOR_OPTIONS_TABLE[CLR_SYS_WIND_FG];
 	}
 }
 void xf_t::SetBorderColor(border_side_t side, color_name_t color) 
 {
+	XL_ASSERT(side >= 0);
+	XL_ASSERT(side < _NUM_BORDERS);
+	XL_ASSERT(color >= 0);
+	XL_ASSERT(color < _NUM_COLOR_NAMES);
 	border_color[side] = COLOR_OPTIONS_TABLE[color];
 
-	if(border_color[side] != xf_t::xfiInit.border_color[side]) {
+	if(border_color[side] != xf_t::xfiInit.border_color[side]) 
+	{
 		SetFlag(XF_ALIGN_ATRBDR);
 	}
 }
 void xf_t::SetBorderColor(border_side_t side, unsigned8_t color) 
 {
+	XL_ASSERT(side >= 0);
+	XL_ASSERT(side < _NUM_BORDERS);
 	border_color[side] = color;
 
-	if(border_color[side] != xf_t::xfiInit.border_color[side]) {
+	if(border_color[side] != xf_t::xfiInit.border_color[side]) 
+	{
 		SetFlag(XF_ALIGN_ATRBDR);
 	}
 }
@@ -689,6 +863,8 @@ void xf_t::SetBorderColor(border_side_t side, unsigned8_t color)
 */
 unsigned8_t xf_t::GetBorderStyle(border_side_t side) const
 {
+	XL_ASSERT(side >= 0);
+	XL_ASSERT(side < _NUM_BORDERS);
 	return border_style[side];
 }
 
@@ -698,39 +874,55 @@ unsigned8_t xf_t::GetBorderStyle(border_side_t side) const
 */
 unsigned16_t xf_t::GetBorderColorIdx(border_side_t side) const
 {
+	XL_ASSERT(side >= 0);
+	XL_ASSERT(side < _NUM_BORDERS);
 	return border_color[side];
 }
 
 xf_t& xf_t::operator=(const xf_t& right)
 {
-	index		= 0x0000;
-	font		= right.font;
-	formatIndex = right.formatIndex;
+	if (&right != this)
+	{
+		//m_GlobalRecords = right.GetGlobalRecords();
+		xfi = right.xfi;
 
-	halign = right.halign;
-	valign = right.valign;
-	indent = right.indent;
+		index		= right.index; // or -1 or 0 ?
+		parent_index = right.parent_index;
 
-	txt_orient		= right.txt_orient;  
-	fill_fgcolor	= right.fill_fgcolor;
-	fill_bgcolor	= right.fill_bgcolor;
-	fillstyle		= right.fillstyle;       
+		font		= right.font;
+		formatIndex = right.formatIndex;
+		format      = right.format;
 
-	locked		= right.locked; 
-	hidden		= right.hidden; 
-	wrap		= right.wrap;  
-	is_cell		= right.is_cell;   
-	is_userXF	= right.is_userXF;
+		halign = right.halign;
+		valign = right.valign;
+		indent = right.indent;
+		
+		txt_orient		= right.txt_orient;  
 
-	for(int i=0; i<_NUM_BORDERS; ++i) {
-		border_style[i]	= right.border_style[i];
-		border_color[i] = right.border_color[i];
+		fill_fgcolor	= right.fill_fgcolor;
+		fill_bgcolor	= right.fill_bgcolor;
+		fillstyle		= right.fillstyle;       
+
+		locked		= right.locked; 
+		hidden		= right.hidden; 
+		wrap		= right.wrap;  
+		is_cell		= right.is_cell;   
+		is_userXF	= right.is_userXF;
+
+		flags = right.flags;
+
+		for(int i=0; i<_NUM_BORDERS; ++i) 
+		{
+			border_style[i]	= right.border_style[i];
+			border_color[i] = right.border_color[i];
+		}
 	}
 
 	return *this;
 }
 bool xf_t::operator==(const xf_t& right)
 {
+	// TBD! don't compare shadows; compare the real xf!
 	return this->xfi == right.xfi;
 }
 
@@ -739,8 +931,12 @@ void xf_t::SetHAlign(halign_option_t ha_option)
 {
 	// Set the related flag.
 	if(ha_option != xf_t::xfiInit.halign)
+	{
 		SetFlag(XF_ALIGN_ATRALC);
+	}
 
+	XL_ASSERT(ha_option >= 0);
+	XL_ASSERT(ha_option < _NUM_HALIGN_OPTIONS);
 	halign = xf_t::HALIGN_OPTIONS_TABLE[ha_option];
 }
  
@@ -754,8 +950,12 @@ void xf_t::SetVAlign(valign_option_t va_option)
 {
 	// Set the related flag.
 	if(va_option != xf_t::xfiInit.valign)
+	{
 		SetFlag(XF_ALIGN_ATRALC);
+	}
 
+	XL_ASSERT(va_option >= 0);
+	XL_ASSERT(va_option < _NUM_VALIGN_OPTIONS);
 	valign = xf_t::VALIGN_OPTIONS_TABLE[va_option];
 }
 
@@ -768,8 +968,12 @@ void xf_t::SetIndent(indent_option_t indent_option)
 {
 	// Set the related flag.
 	if(indent_option != xf_t::xfiInit.indent)
+	{
 		SetFlag(XF_ALIGN_ATRALC);
+	}
 
+	XL_ASSERT(indent_option >= 0);
+	XL_ASSERT(indent_option < _NUM_INDENT_OPTIONS);
 	indent = xf_t::INDENT_OPTIONS_TABLE[indent_option];
 }
 unsigned8_t xf_t::GetIndent(void) const
@@ -782,8 +986,12 @@ void xf_t::SetTxtOrientation(txtori_option_t ori_option)
 {
 	// Set the related flag.
 	if(ori_option != xf_t::xfiInit.txt_orient)
+	{
 		SetFlag(XF_ALIGN_ATRALC);
+	}
 
+	XL_ASSERT(ori_option >= 0);
+	XL_ASSERT(ori_option < _NUM_TXTORI_OPTIONS);
 	txt_orient = xf_t::TXTORI_OPTIONS_TABLE[ori_option];
 }
 
@@ -797,8 +1005,12 @@ void xf_t::SetFillFGColor(color_name_t color)
 {
 	// Set the related flag.
 	if(color != xf_t::xfiInit.fill_fgcolor)
+	{
 		SetFlag(XF_ALIGN_ATRPAT);
+	}
 
+	XL_ASSERT(color >= 0);
+	XL_ASSERT(color < _NUM_COLOR_NAMES);
 	fill_fgcolor = xf_t::COLOR_OPTIONS_TABLE[color];
 }
 void xf_t::SetFillFGColor(unsigned8_t color) 
@@ -819,8 +1031,12 @@ void xf_t::SetFillBGColor(color_name_t color)
 {
 	// Set the related flag.
 	if(color != xf_t::xfiInit.fill_bgcolor)
+	{
 		SetFlag(XF_ALIGN_ATRPAT);
+	}
 
+	XL_ASSERT(color >= 0);
+	XL_ASSERT(color < _NUM_COLOR_NAMES);
 	fill_bgcolor = xf_t::COLOR_OPTIONS_TABLE[color];
 }
 void xf_t::SetFillBGColor(unsigned8_t color)
@@ -840,8 +1056,12 @@ void xf_t::SetFillStyle(fill_option_t fill)
 {
 	// Set the related flag.
 	if(fill != xf_t::xfiInit.fillstyle)
+	{
 		SetFlag(XF_ALIGN_ATRPAT);
+	}
 
+	XL_ASSERT(fill >= 0);
+	XL_ASSERT(fill < _NUM_FILL_OPTIONS);
 	fillstyle = xf_t::FILL_OPTIONS_TABLE[fill];
 }
 
@@ -855,7 +1075,9 @@ void xf_t::SetLocked(bool locked_opt)
 {
 	// Set the related flag.
 	if(locked_opt != xf_t::xfiInit.locked)
+	{
 		SetFlag(XF_ALIGN_ATRPROT);
+	}
 
 	locked = locked_opt;
 }
@@ -870,7 +1092,9 @@ void xf_t::SetHidden(bool hidden_opt)
 {
 	// Set the related flag.
 	if(hidden_opt != xf_t::xfiInit.hidden)
+	{
 		SetFlag(XF_ALIGN_ATRPROT);
+	}
 
 	hidden = hidden_opt;
 }
@@ -884,7 +1108,9 @@ void xf_t::SetWrap(bool wrap_opt)
 {
 	// Set the related flag.
 	if(wrap_opt != xf_t::xfiInit.wrap)
+	{
 		SetFlag(XF_ALIGN_ATRALC);
+	}
 
 	wrap = wrap_opt;
 }
@@ -909,10 +1135,11 @@ bool xf_t::IsCell(void) const
 CExtFormat::CExtFormat(CDataStorage &datastore, const xf_t* xfdef):
 		CRecord(datastore)
 {
+	bool is_cell = xfdef->IsCell();
 	//cerr << "CExtFormat:" << endl << xfdef->Description() << endl;
 
 	SetRecordType(RECTYPE_XF);
-	InitDummy(xfdef->IsCell());
+	InitDummy(is_cell);
 	SetRecordLength(GetDataSize()-4);
 	  
 	SetFontIndex(xfdef->GetFontIndex());
@@ -926,9 +1153,9 @@ CExtFormat::CExtFormat(CDataStorage &datastore, const xf_t* xfdef):
 	SetBGColorIndex(xfdef->GetFillBGColorIdx());
 	SetFillPattern(xfdef->GetFillStyle());
 
-	if(xfdef->IsLocked())	SetLocked();
-	if(xfdef->IsHidden())	SetHidden(); 
-	if(xfdef->IsWrap())		SetWrap(); 
+	SetLocked(xfdef->IsLocked());
+	SetHidden(xfdef->IsHidden()); 
+	SetWrap(xfdef->IsWrap()); 
 
 	SetBorder(BORDER_BOTTOM, xfdef->GetBorderStyle(BORDER_BOTTOM), 
 			 xfdef->GetBorderColorIdx(BORDER_BOTTOM));
@@ -940,6 +1167,10 @@ CExtFormat::CExtFormat(CDataStorage &datastore, const xf_t* xfdef):
 			 xfdef->GetBorderColorIdx(BORDER_RIGHT));
 
 	SetFlags(xfdef->GetFlags());
+	if (is_cell)
+	{
+		SetXFParent(xfdef->GetParentIndex());
+	}
 }
 
 CExtFormat::~CExtFormat()
@@ -965,8 +1196,8 @@ void CExtFormat::InitDummy(bool is_cell)
    static const unsigned8_t xfStyleDefault[] = {
       // Open Office offsets
 /*    0         2         4         6         8         10        12        14         16       18        20 */
-      0x00,0x00,0x00,0x00,0xf5,0xff,0x20,0x00,0x00,0xfc,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xc0,0x20
-						  // STYLE_XF | INDEX=0xFFF -> Style
+      0x00,0x00,0x00,0x00,0xf4,0xff,0x20,0x00,0x00,0xfc,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xc0,0x20
+						  // STYLE_XF | INDEX=0xFFF -> Style (Excel BIFF spec says this should be FFF4, but we had the 'locked' bit turned on as well here before)
 									// HALIGN -> General, VALIGN -> BOTTOM
 												  // Cells, use this value, Style, not used
 																						   // Fill Pattern -> 1 Black, left shifted 2 bits, (well, fully colored, not a pattern)
@@ -998,7 +1229,22 @@ bool CExtFormat::IsCell()
 
    GetValue16From(&val, XF_OFFSET_PROP);
 
+   XL_ASSERT((val & XF_PROP_STYLE) ? (val & XF_PROP_XFPARENT) == (XF_PROP_XFPARENT_VALUE4STYLE << XF_PROP_SHIFTPOS_PARENT) : 1);
    return !(val & XF_PROP_STYLE);
+}
+
+/* 
+**********************************
+**********************************
+*/
+void CExtFormat::SetXFParent(unsigned16_t parent)
+{
+   unsigned16_t val;
+
+   GetValue16From(&val, XF_OFFSET_PROP);
+   val &= ~XF_PROP_XFPARENT;
+   val |= (parent << XF_PROP_SHIFTPOS_PARENT) & XF_PROP_XFPARENT;
+   SetValueAt16(val, XF_OFFSET_PROP);
 }
 
 /* 
@@ -1055,12 +1301,19 @@ unsigned16_t CExtFormat::GetFormatIndex(void)
 **********************************
 **********************************
 */
-void CExtFormat::SetLocked()
+void CExtFormat::SetLocked(bool locked)
 {
    unsigned16_t value;
 
    GetValue16From(&value, XF_OFFSET_PROP);
-   value |= XF_PROP_LOCKED;
+   if (locked)
+   {
+		value |= XF_PROP_LOCKED;
+   }
+   else
+   {
+		value &= ~XF_PROP_LOCKED;
+   }
    SetValueAt16(value, XF_OFFSET_PROP);
 }
 
@@ -1068,12 +1321,19 @@ void CExtFormat::SetLocked()
 **********************************
 **********************************
 */
-void CExtFormat::SetHidden()
+void CExtFormat::SetHidden(bool hidden)
 {
    unsigned16_t value;
 
    GetValue16From(&value, XF_OFFSET_PROP);
-   value |= XF_PROP_HIDDEN;
+   if (hidden)
+   {
+		value |= XF_PROP_HIDDEN;
+   }
+   else
+   {
+		value &= ~XF_PROP_HIDDEN;
+   }
    SetValueAt16(value, XF_OFFSET_PROP);
 }
 
@@ -1086,6 +1346,7 @@ void CExtFormat::SetHorizAlign(unsigned8_t alignval)
    unsigned32_t value;
    
    GetValue32From(&value, XF_OFFSET_ALIGN);
+   XL_ASSERT(XF_ALIGN_SHIFTPOS_HALIGN == 0);
    value = (value & (~XF_ALIGN_HORIZONTAL)) | (alignval & XF_ALIGN_HORIZONTAL);
    SetValueAt32(value, XF_OFFSET_ALIGN);
 }
@@ -1109,12 +1370,19 @@ void CExtFormat::SetVertAlign(unsigned8_t alignval)
 **********************************
 **********************************
 */
-void CExtFormat::SetWrap()
+void CExtFormat::SetWrap(bool wrap)
 {
    unsigned32_t value;
 
    GetValue32From(&value, XF_OFFSET_ALIGN);
-   value |= XF_ALIGN_WRAP;
+   if (wrap)
+   {
+	   value |= XF_ALIGN_WRAP;
+   }
+   else
+   {
+	   value &= ~XF_ALIGN_WRAP;
+   }
    SetValueAt32(value, XF_OFFSET_ALIGN);
 }
 /* 
@@ -1290,7 +1558,8 @@ void CExtFormat::SetBorder(border_side_t border, unsigned16_t style, unsigned16_
 */
 void CExtFormat::SetFlags(unsigned8_t flags)
 {
-   unsigned32_t value, flags32 = flags;
+   unsigned32_t value;
+   unsigned32_t flags32 = flags;
 
    flags32 <<= XF_ALIGN_ATR_SHIFT;
    GetValue32From(&value, XF_OFFSET_ALIGN);

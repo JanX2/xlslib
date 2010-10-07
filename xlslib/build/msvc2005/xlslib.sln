@@ -29,6 +29,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xlslib-PR2859188", "xlslib-
 		{4A077629-8590-434C-9486-0D069DF341AF} = {4A077629-8590-434C-9486-0D069DF341AF}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "xlslib-PR3076678", "xlslib-PR3076678.vcproj", "{AA020425-F744-449C-9DDB-4C19B84B1434}"
+	ProjectSection(ProjectDependencies) = postProject
+		{4A077629-8590-434C-9486-0D069DF341AF} = {4A077629-8590-434C-9486-0D069DF341AF}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Itanium = Debug|Itanium
@@ -111,6 +116,18 @@ Global
 		{E755D2E2-4D43-4B1E-B694-9A1D805D2A7A}.Release|Win32.Build.0 = Release|Win32
 		{E755D2E2-4D43-4B1E-B694-9A1D805D2A7A}.Release|x64.ActiveCfg = Release|x64
 		{E755D2E2-4D43-4B1E-B694-9A1D805D2A7A}.Release|x64.Build.0 = Release|x64
+		{AA020425-F744-449C-9DDB-4C19B84B1434}.Debug|Itanium.ActiveCfg = Debug|Itanium
+		{AA020425-F744-449C-9DDB-4C19B84B1434}.Debug|Itanium.Build.0 = Debug|Itanium
+		{AA020425-F744-449C-9DDB-4C19B84B1434}.Debug|Win32.ActiveCfg = Debug|Win32
+		{AA020425-F744-449C-9DDB-4C19B84B1434}.Debug|Win32.Build.0 = Debug|Win32
+		{AA020425-F744-449C-9DDB-4C19B84B1434}.Debug|x64.ActiveCfg = Debug|x64
+		{AA020425-F744-449C-9DDB-4C19B84B1434}.Debug|x64.Build.0 = Debug|x64
+		{AA020425-F744-449C-9DDB-4C19B84B1434}.Release|Itanium.ActiveCfg = Release|Itanium
+		{AA020425-F744-449C-9DDB-4C19B84B1434}.Release|Itanium.Build.0 = Release|Itanium
+		{AA020425-F744-449C-9DDB-4C19B84B1434}.Release|Win32.ActiveCfg = Release|Win32
+		{AA020425-F744-449C-9DDB-4C19B84B1434}.Release|Win32.Build.0 = Release|Win32
+		{AA020425-F744-449C-9DDB-4C19B84B1434}.Release|x64.ActiveCfg = Release|x64
+		{AA020425-F744-449C-9DDB-4C19B84B1434}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

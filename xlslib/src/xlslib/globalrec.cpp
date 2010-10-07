@@ -130,7 +130,8 @@ CGlobalRecords::CGlobalRecords() :
 		fmt		= FMT_GENERAL;
 		is_cell	= XF_IS_STYLE;
 
-		switch(xfIndex) {
+		switch(xfIndex) 
+		{
 		case 0:
 			fnt		= NULL;
 			break;
