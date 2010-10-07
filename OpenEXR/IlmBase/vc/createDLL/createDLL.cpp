@@ -451,6 +451,10 @@ void createDef(string moduleName, symbol_store &strings, bool verbose, FILE* def
             }
             else if (i->second->export_alt_name.empty())
             {
+			// Jihun July, 2010 : ordinals cause a link warning of LNK4197 on win64
+			// when a c function is declared with _declspec(dllexport) and in the .def file.
+			// removing ordinal fixes this problem.
+
 				int spacing = max(8, 60 - (int)i->first.size());
 
                 fprintf(defFile, "\t%s%*s   @%d\n", i->first.c_str(), spacing, "", i->second->ordinal);
@@ -569,7 +573,7 @@ static void addLibsFromVector(set<string>& libs, vector<string>& morelibs)
    Note that on Win64 (AMD64, Itanium), the extra underscore ('_') for C functions is MISSING!
 
    Also note that not only can _ or ? start a label, '@' can too. Even '.' can start a valid symbol
-   (see Itanium list above). That last one should trigger a red light in our heads: better
+   (see Itanium list above). That last one should trigger a red light in your head: better
    make darn sure the CreateDLL tool code does NOT include those ('.')dot-prefixed segment symbols from
    the map file!
 

@@ -92,7 +92,14 @@ else
     AC_CHECK_HEADER(iconv.h,
 	AC_MSG_CHECKING(for iconv)
 	AC_LINK_IFELSE([AC_LANG_PROGRAM([[#include <stdlib.h>
-#include <iconv.h>]], [[
+#include <iconv.h>
+
+#ifdef __GLIBC__
+#if (__GLIBC__ == 2 && __GLIBC_MINOR__ <= 1 )
+#error "Too old glibc. This version's iconv() implementation cannot be trusted."
+#endif
+#endif
+]], [[
 iconv_t cd = iconv_open ("","");
 iconv (cd, NULL, NULL, NULL, NULL);]])],[
 	    AC_MSG_RESULT(yes)
@@ -106,7 +113,14 @@ iconv (cd, NULL, NULL, NULL, NULL);]])],[
 	    LIBS="${LIBS} -liconv"
 
 	    AC_TRY_LINK([#include <stdlib.h>
-#include <iconv.h>],[
+#include <iconv.h>
+
+#ifdef __GLIBC__
+#if (__GLIBC__ == 2 && __GLIBC_MINOR__ <= 1 )
+#error "Too old glibc. This version's iconv() implementation cannot be trusted."
+#endif
+#endif
+],[
 iconv_t cd = iconv_open ("","");
 iconv (cd, NULL, NULL, NULL, NULL);],[
 		AC_MSG_RESULT(yes)

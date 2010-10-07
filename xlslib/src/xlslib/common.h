@@ -44,7 +44,17 @@
 
 #ifdef HAVE_ICONV
 #include <iconv.h>
+
+/* part of fix for PR #3039001 */
+#ifndef __GLIBC__
+#define UCS_2_INTERNAL "UCS-2-INTERNAL"
+#else
+#if (__GLIBC__ == 2 && __GLIBC_MINOR__ <= 1 )
+#error "Too old glibc. This version's iconv() implementation cannot be trusted."
 #endif
+#define UCS_2_INTERNAL "UCS-2"
+#endif
+#endif /* HAVE_ICONV */
 
 /*
 #define when we want the leight weights factory code activated: it's a memory footprint reduction 

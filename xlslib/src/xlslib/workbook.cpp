@@ -95,7 +95,7 @@ int workbook::iconvInType(const char *inType)
 	int			ret;	
 	iconv_t		cd;
 	
-	cd = iconv_open("UCS-2-INTERNAL", inType);
+	cd = iconv_open(UCS_2_INTERNAL, inType);
 	if(cd != (iconv_t)(-1)) {
 		iconv_close(cd);
 		m_GlobalRecords.SetIconvCode(inType);

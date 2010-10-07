@@ -181,7 +181,8 @@ CGlobalRecords::CGlobalRecords() :
 		newxf->MarkUsed();
 		m_DefaultXFs.push_back(newxf);
 		
-		if(xfIndex == XF_PROP_XF_DEFAULT_CELL) {
+		if(xfIndex == XF_PROP_XF_DEFAULT_CELL) 
+		{
 			newxf->SetIndex(XF_PROP_XF_DEFAULT_CELL);
 			defaultXF = newxf;
 		}
@@ -787,7 +788,7 @@ void  CGlobalRecords::wide2str16(const ustring& str1, u16string& str2)
 	unsigned16_t			*outbuf, *origOutbuf;
 	static unsigned16_t		convFail[] = { 'i', 'c', 'o', 'n', 'v', ' ', 'f', 'a', 'i', 'l', 'e', 'd', '!' };
 	
-	cd = iconv_open("UCS-2-INTERNAL", iconv_code.c_str());
+	cd = iconv_open(UCS_2_INTERNAL, iconv_code.c_str());
 	// no need to test return code as we ALREADY did this when setting iconv_code in workbook
 	
 	inbytesleft		= str1.size() * sizeof(unichar_t);
