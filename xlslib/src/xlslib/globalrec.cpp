@@ -787,7 +787,7 @@ void  CGlobalRecords::wide2str16(const ustring& str1, u16string& str2)
 	const wchar_t			*inbuf;
 	iconv_t					cd;
 	unsigned16_t			*outbuf, *origOutbuf;
-	static unsigned16_t		convFail[] = { 'i', 'c', 'o', 'n', 'v', ' ', 'f', 'a', 'i', 'l', 'e', 'd', '!' };
+	static const unsigned16_t convFail[] = { 'i', 'c', 'o', 'n', 'v', ' ', 'f', 'a', 'i', 'l', 'e', 'd', '!' };
 	
 	cd = iconv_open(UCS_2_INTERNAL, iconv_code.c_str());
 	// no need to test return code as we ALREADY did this when setting iconv_code in workbook
@@ -807,6 +807,7 @@ void  CGlobalRecords::wide2str16(const ustring& str1, u16string& str2)
 	} else {
 		str2.assign(origOutbuf, outbuf - origOutbuf);
 	}
+	free((void *)origOutbuf);
 }
 #else
 void  CGlobalRecords::wide2str16(const ustring& str1, u16string& str2)

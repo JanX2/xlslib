@@ -73,7 +73,7 @@ int main(int argc, char *argv[])
 
 	try
 	{
-		rv |= BorderTest("52c4432092351283d09453bdf13847ab");
+		rv |= BorderTest("3edb600c1bd08dec602f5627089dc9d4");
 	}
 	catch (std::string &errmsg)
 	{

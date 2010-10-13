@@ -104,7 +104,7 @@ int main(int argc, char *argv[])
 	{
 		// comment and uncomment the below to try various tests
 		rv |= StandardTest("d3c30e1d2d9a1e572984ca7f9aed4fb3");
-		rv |= StandardTest2("122d6dc69e9ff4db70653de02d79ec86");
+		rv |= StandardTest2("c1375c9fb90f135052665a85af63c2ed");
 		rv |= BlankTest("e80a45e13f92863f0d2dffaca7c3834c");
 		rv |= FormulaFunctionsTest("ccb2cdfddd99b951041e13dcdd60ef77");
 

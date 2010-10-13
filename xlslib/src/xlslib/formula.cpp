@@ -2907,7 +2907,7 @@ size_t userdef_func_node_t::GetSize(bool include_subtree) const
 }
 signed8_t userdef_func_node_t::DumpData(CUnit &dst, bool include_subtree) const
 {
-	signed8_t errcode = NO_ERRORS;
+	//signed8_t errcode = NO_ERRORS;
 
 	/*
 	looks like the UDF is encoded like this:
