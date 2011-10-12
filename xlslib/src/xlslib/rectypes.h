@@ -43,7 +43,7 @@
 #include <systype.h>
 
 // SIZES
-#define MAX_RECORD_SIZE		8224			// payload only
+#define MAX_RECORD_SIZE		8224			// see OpenOffice Doc, CONTINUE record 5.21. This is the payload size not including the header
 
 #define BOF_SIZE 20
 
