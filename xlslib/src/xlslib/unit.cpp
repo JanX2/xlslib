@@ -17,7 +17,7 @@
  * along with xlslib.  If not, see <http://www.gnu.org/licenses/>.
  * 
  * Copyright 2004 Yeico S. A. de C. V.
- * Copyright 2008 David Hoerl
+ * Copyright 2008-2011 David Hoerl
  *  
  * $Source: /cvsroot/xlslib/xlslib/src/xlslib/unit.cpp,v $
  * $Revision: 1.8 $
@@ -726,7 +726,7 @@ signed8_t CUnit::AddUnicodeString(CGlobalRecords& gRecords, const std::string& s
 	while(cBegin != cEnd) 
 	{
 		XL_ASSERT(m_Store[m_Index].GetSize() > datasize);
-		data[datasize++] = *cBegin++;
+		data[datasize++] = (uint8_t)*cBegin++;
 	}
 
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
@@ -739,63 +739,10 @@ signed8_t CUnit::AddUnicodeString(CGlobalRecords& gRecords, const u16string& str
 {
 	u16string::const_iterator cBegin, cEnd;
 	signed8_t errcode = NO_ERRORS;
-	size_t strSize = 0;
-	size_t strLen;
 	size_t spaceleft;
-	bool isASCII = CGlobalRecords::IsASCII(str16);
-
-	strLen = str16.length();
-	
-	switch (fmt)
-	{
-	case LEN1_NOFLAGS_ASCII: // RECTYPE_FONT
-		strSize = 1;
-		break;
-
-	case LEN2_FLAGS_UNICODE: // RECTYPE_FORMAT, RECTYPE_LABEL -- 'regular'
-		strSize = 2;
-		strSize += 1;	// flags byte
-		if (!isASCII)
-		{
-			strSize += strLen;	// UTF16 takes 2 bytes per char
-		}
-		break;
-
-	case LEN2_NOFLAGS_PADDING_UNICODE: // RECTYPE_NOTE (RECTYPE_TXO)
-		strSize = 2;
-		if (isASCII)
-		{
-			strSize += (strLen % 1);	// padding byte
-		}
-		else // if (!isASCII)
-		{
-			strSize += strLen;	// UTF16 takes 2 bytes per char
-		}
-		break;
-
-	case LEN1_FLAGS_UNICODE: // RECTYPE_BOUNDSHEET
-		strSize = 1;
-		strSize += 1;	// flags byte
-		if (!isASCII)
-		{
-			strSize += strLen;	// UTF16 takes 2 bytes per char
-		}
-		break;
-
-	case NOLEN_FLAGS_UNICODE: // RECTYPE_NAME
-		strSize = 0;
-		strSize += 1;	// flags byte
-		if (!isASCII)
-		{
-			strSize += strLen;	// UTF16 takes 2 bytes per char
-		}
-		break;
-
-	default:
-		XL_ASSERT(!"should never go here!");
-		break;
-	}
-	strSize += strLen; // hence: count 1 byte per char for ASCII, 2 bytes per char for UTF16
+	size_t strLen;
+	bool isASCII;
+	size_t strSize = UnicodeStringLength(str16, strLen, isASCII, fmt /* = LEN2_FLAGS_UNICODE */ );
 
 	XL_ASSERT(GetSize() >= GetDataSize());
 	spaceleft = GetSize() - GetDataSize();
@@ -834,7 +781,7 @@ signed8_t CUnit::AddUnicodeString(CGlobalRecords& gRecords, const u16string& str
 
 		   while(b != e) 
 		   {
-			   unsigned8_t c = *b++;
+			   unsigned8_t c = (unsigned8_t)*b++;
 
 			   XL_ASSERT(m_Store[m_Index].GetSize() > datasize);
 			   data[datasize++] = c;
@@ -916,6 +863,65 @@ string_dump_done:
 #endif
 
 	return errcode;
+}
+
+size_t CUnit::UnicodeStringLength(const u16string& str16, size_t& strLen, bool& isASCII, XlsUnicodeStringFormat_t fmt /* = LEN2_FLAGS_UNICODE */ )
+{
+	strLen = str16.length();
+	isASCII = CGlobalRecords::IsASCII(str16);
+	size_t strSize = strLen;
+
+	switch (fmt)
+	{
+	case LEN1_NOFLAGS_ASCII: // RECTYPE_FONT
+		strSize += 1;
+		break;
+
+	case LEN2_FLAGS_UNICODE: // RECTYPE_FORMAT, RECTYPE_LABEL -- 'regular'
+		strSize += 2;
+		strSize += 1;	// flags byte
+		if (!isASCII)
+		{
+			strSize += strLen;	// UTF16 takes 2 bytes per char
+		}
+		break;
+
+	case LEN2_NOFLAGS_PADDING_UNICODE: // RECTYPE_NOTE (RECTYPE_TXO)
+		strSize += 2;
+		if (isASCII)
+		{
+			strSize += (strLen % 1);	// padding byte
+		}
+		else // if (!isASCII)
+		{
+			strSize += strLen;	// UTF16 takes 2 bytes per char
+		}
+		break;
+
+	case LEN1_FLAGS_UNICODE: // RECTYPE_BOUNDSHEET
+		strSize += 1;
+		strSize += 1;	// flags byte
+		if (!isASCII)
+		{
+			strSize += strLen;	// UTF16 takes 2 bytes per char
+		}
+		break;
+
+	case NOLEN_FLAGS_UNICODE: // RECTYPE_NAME
+		//strSize = 0;
+		strSize += 1;	// flags byte
+		if (!isASCII)
+		{
+			strSize += strLen;	// UTF16 takes 2 bytes per char
+		}
+		break;
+
+	default:
+		XL_ASSERT(!"should never go here!");
+		break;
+	}
+
+	return strSize;
 }
 
 /************************************************

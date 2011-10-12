@@ -17,7 +17,7 @@
  * along with xlslib.  If not, see <http://www.gnu.org/licenses/>.
  * 
  * Copyright 2004 Yeico S. A. de C. V.
- * Copyright 2008 David Hoerl
+ * Copyright 2008-2011 David Hoerl
  *  
  * $Source: /cvsroot/xlslib/xlslib/src/xlslib/unit.h,v $
  * $Revision: 1.8 $
@@ -81,7 +81,9 @@ namespace xlslib_core
 
 	// Static attributes
 	static const size_t DefaultInflateSize;
-
+	
+	// needed for SST labels (maybe others in the future)
+	void SetAlreadyContinued(bool val) { alreadyContinued = val; }
 #else
 
 	size_t	m_nSize;		// Size of data store (maybe larger than actual used data)
@@ -98,6 +100,7 @@ namespace xlslib_core
   protected: // deny these operations to others...
     CUnit(CDataStorage &datastore);
   private: // deny these operations to others...
+	bool alreadyContinued;
     CUnit(const CUnit& orig);
     CUnit& operator=(const CUnit& right);
   public:
@@ -114,6 +117,7 @@ namespace xlslib_core
     size_t GetSize(void) const;
     size_t GetDataSize(void) const;
     const unsigned8_t* GetBuffer(void) const;
+	bool AlreadyContinued() const { return alreadyContinued; };
 //  protected:
 //    unsigned8_t* GetBuffer(void);
 
@@ -137,6 +141,7 @@ namespace xlslib_core
 
 	signed8_t AddUnicodeString(CGlobalRecords& gRecords, const std::string& str, XlsUnicodeStringFormat_t fmt /* = LEN2_FLAGS_UNICODE */ );
     signed8_t AddUnicodeString(CGlobalRecords& gRecords, const u16string& newdata, XlsUnicodeStringFormat_t fmt /* = LEN2_FLAGS_UNICODE */ );
+    size_t UnicodeStringLength(const u16string& str16, size_t& strLen, bool& isAscii, XlsUnicodeStringFormat_t fmt /* = LEN2_FLAGS_UNICODE */ );
 
     signed8_t GetValue16From(unsigned16_t* val, unsigned32_t index) const;
     signed8_t GetValue32From(unsigned32_t* val, unsigned32_t index) const;
