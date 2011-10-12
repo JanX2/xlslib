@@ -17,7 +17,7 @@
  * along with xlslib.  If not, see <http://www.gnu.org/licenses/>.
  * 
  * Copyright 2004 Yeico S. A. de C. V.
- * Copyright 2008 David Hoerl
+ * Copyright 2008-2011 David Hoerl
  *  
  * $Source: /cvsroot/xlslib/xlslib/src/xlslib/record.cpp,v $
  * $Revision: 1.5 $
@@ -67,7 +67,6 @@ signed8_t CRecord::SetRecordType(unsigned16_t rtype)
    return SetValueAt16(rtype, 0);
 }
 
-
 /* 
 ******************************
 ******************************
@@ -90,6 +89,19 @@ signed8_t CRecord::SetRecordLength(size_t rlength)
    return SetValueAt16((unsigned16_t)rlength, 2);
 }
 
+/* 
+******************************
+******************************
+*/
+signed8_t CRecord::SetRecordTypeIndexed(unsigned16_t rtype, size_t index)
+{
+   return SetValueAt16(rtype, index);
+}
+
+signed8_t CRecord::SetRecordLengthIndexed(size_t rlength, size_t index)
+{
+   return SetValueAt16((unsigned16_t)rlength, index+2);
+}
 
 /* 
 ******************************

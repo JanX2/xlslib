@@ -17,7 +17,7 @@
  * along with xlslib.  If not, see <http://www.gnu.org/licenses/>.
  * 
  * Copyright 2004 Yeico S. A. de C. V.
- * Copyright 2008 David Hoerl
+ * Copyright 2008-2011 David Hoerl
  *  
  * $Source: /cvsroot/xlslib/xlslib/src/xlslib/record.h,v $
  * $Revision: 1.4 $
@@ -72,8 +72,11 @@ CRecord class declaration
       signed8_t SetRecordType(unsigned16_t rtype);
       unsigned16_t GetRecordType() const;
 
-      signed8_t SetRecordLength(size_t);
+      signed8_t SetRecordLength(size_t len);
       size_t GetRecordLength() const;
+
+      signed8_t SetRecordTypeIndexed(unsigned16_t rtype, size_t index);
+      signed8_t SetRecordLengthIndexed(size_t len, size_t index);
 
       const unsigned8_t* GetRecordDataBuffer() const;
       size_t GetRecordDataSize() const;
