@@ -17,7 +17,7 @@
  * along with xlslib.  If not, see <http://www.gnu.org/licenses/>.
  * 
  * Copyright 2004 Yeico S. A. de C. V.
- * Copyright 2008 David Hoerl
+ * Copyright 2008-2011 David Hoerl
  *  
  * $Source: /cvsroot/xlslib/xlslib/src/xlslib/label.cpp,v $
  * $Revision: 1.7 $
@@ -47,32 +47,51 @@ using namespace xlslib_core;
 label_t class implementation
 ******************************
 */
+
 xlslib_core::label_t::label_t(CGlobalRecords& gRecords, 
 		unsigned32_t rowval, unsigned32_t colval, const u16string& labelstrval, xf_t* pxfval) :
 	cell_t(gRecords, rowval, colval, pxfval),
-	strLabel(labelstrval)
+	strLabel(labelstrval),
+	inSST(false)
 {
+	setType();
 }
 
 xlslib_core::label_t::label_t(CGlobalRecords& gRecords, 
 							  unsigned32_t rowval, unsigned32_t colval, const std::string& labelstrval, xf_t* pxfval) :
 cell_t(gRecords, rowval, colval, pxfval),
-	strLabel()
+	strLabel(),
+	inSST(false)
 {
 	gRecords.char2str16(labelstrval, strLabel);
+	setType();
 }
 
 xlslib_core::label_t::label_t(CGlobalRecords& gRecords, 
 							  unsigned32_t rowval, unsigned32_t colval, const std::ustring& labelstrval, xf_t* pxfval) :
-cell_t(gRecords, rowval, colval, pxfval),
-strLabel()
+	cell_t(gRecords, rowval, colval, pxfval),
+	strLabel(),
+	inSST(false)
 {
 	gRecords.wide2str16(labelstrval, strLabel);
+	setType();
 }
 
+void xlslib_core::label_t::setType()
+{
+	if(strLabel.length() > 255) {
+		inSST = true;
+		m_GlobalRecords.AddLabelSST(*this);
+	}
+}
 
 xlslib_core::label_t::~label_t()
 {
+	// suppose someone creates a SST string, then overwrites it or overwrites cell with something else.
+	// Unlikely, but this protects against that case.
+	if(inSST) {
+		m_GlobalRecords.DeleteLabelSST(*this);
+	}
 }
 
 /*
@@ -81,12 +100,15 @@ xlslib_core::label_t::~label_t()
 */
 size_t xlslib_core::label_t::GetSize(void) const
 {
-	size_t size = 0;
+	size_t size;
 
-	size = 10;		// empty Unicode string has a flags byte
-	size += 
-		(sizeof(unsigned16_t) + 1 + strLabel.length() * (CGlobalRecords::IsASCII(strLabel) ? sizeof(unsigned8_t) : sizeof(unsigned16_t)));
-	  
+	if(inSST) {
+		size = 4 + 8;	// =2 + 2 + 2 + 2 + 4
+	} else {
+		size = 4 + 6;	// 4:type/size 2:row 2:col 2:xtnded 
+		// 2:size 1:flag len:(ascii or not)
+		size += (sizeof(unsigned16_t) + 1 + strLabel.length() * (CGlobalRecords::IsASCII(strLabel) ? sizeof(unsigned8_t) : sizeof(unsigned16_t)));
+	}
 	return size;
 }
 /*
@@ -110,13 +132,16 @@ CLabel class implementation
 CLabel::CLabel(CDataStorage &datastore, const label_t& labeldef):
 		CRecord(datastore)
 {
-	SetRecordType(RECTYPE_LABEL);
+	SetRecordType(labeldef.GetInSST() ? RECTYPE_LABELSST : RECTYPE_LABEL);
 	AddValue16((unsigned16_t)labeldef.GetRow());
 	AddValue16((unsigned16_t)labeldef.GetCol());
 	AddValue16(labeldef.GetXFIndex());
-
-	AddUnicodeString(labeldef.GetGlobalRecords(), labeldef.GetStrLabel(), LEN2_FLAGS_UNICODE);
-
+	if(labeldef.GetInSST()) {
+		size_t index = labeldef.GetGlobalRecords().GetLabelSSTIndex(labeldef);
+		AddValue32(index);
+	} else {
+		AddUnicodeString(labeldef.GetGlobalRecords(), labeldef.GetStrLabel(), LEN2_FLAGS_UNICODE);
+	}
 	SetRecordLength(GetDataSize()-4);
 }
 

@@ -17,7 +17,7 @@
  * along with xlslib.  If not, see <http://www.gnu.org/licenses/>.
  * 
  * Copyright 2004 Yeico S. A. de C. V.
- * Copyright 2008 David Hoerl
+ * Copyright 2008-2011 David Hoerl
  *  
  * $Source: /cvsroot/xlslib/xlslib/src/xlslib/label.h,v $
  * $Revision: 1.5 $
@@ -61,19 +61,22 @@ namespace xlslib_core
 	  friend class worksheet;
 
     private:
-      label_t(CGlobalRecords& gRecords, unsigned32_t rowval, unsigned32_t colval, const u16string& labelstrval, xf_t* pxfval = NULL);
+	  label_t(CGlobalRecords& gRecords, unsigned32_t rowval, unsigned32_t colval, const u16string& labelstrval, xf_t* pxfval = NULL);
 	  label_t(CGlobalRecords& gRecords, unsigned32_t rowval, unsigned32_t colval, const std::string& labelstrval, xf_t* pxfval = NULL);
 	  label_t(CGlobalRecords& gRecords, unsigned32_t rowval, unsigned32_t colval, const std::ustring& labelstrval, xf_t* pxfval = NULL);
       virtual ~label_t();
 
     private:
 	  u16string	strLabel;
+	  bool inSST;
+	  void setType();
 
     public:
       const u16string& GetStrLabel() const { return strLabel; };
 
       virtual size_t GetSize(void) const;
       virtual CUnit* GetData(CDataStorage &datastore) const;
+      bool GetInSST(void) const { return inSST; }
     };
 
   class CLabel: public CRecord
@@ -88,6 +91,10 @@ namespace xlslib_core
       virtual ~CLabel();
     };
 }
+
+  typedef std::vector<const xlslib_core::label_t* XLSLIB_DFLT_ALLOCATOR> Label_Vect_t;
+  typedef Label_Vect_t::iterator Label_Vect_Itor_t;
+  typedef Label_Vect_t::const_iterator cLabel_Vect_Itor_t;
 
 // #include <xls_poppack.h>
 
