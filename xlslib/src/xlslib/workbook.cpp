@@ -17,7 +17,7 @@
  * along with xlslib.  If not, see <http://www.gnu.org/licenses/>.
  * 
  * Copyright 2004 Yeico S. A. de C. V.
- * Copyright 2008 David Hoerl
+ * Copyright 2008-2011 David Hoerl
  *  
  * $Source: /cvsroot/xlslib/xlslib/src/xlslib/workbook.cpp,v $
  * $Revision: 1.13 $
@@ -537,9 +537,11 @@ CUnit* workbook::DumpData(CDataStorage &datastore)
 
       if(m_pCurrentData != NULL) 
 	  {
+         // SST Table most likely record to exceed size, but its handled now in the recrod itself (breaks have to occur at defined places)
 		 // WARNING: the test below was >= MAX_..., but MAX size is OK - only continue if > (I think!) DFH 12-12-08
 		 // Should only happen with single cells having data > MAX_RECORD_SIZE. Have no idea if this works or not (DFH)
-         if(((CRecord*)m_pCurrentData)->GetRecordDataSize() > MAX_RECORD_SIZE && m_DumpState != WB_CONTINUE_REC)
+         if(!((CRecord*)m_pCurrentData)->AlreadyContinued() && ((CRecord*)m_pCurrentData)->GetRecordDataSize() > MAX_RECORD_SIZE && m_DumpState != WB_CONTINUE_REC)
+
          {
             // Save the current dump state and change to the CONTINUE Record state
             CHANGE_DUMPSTATE(WB_CONTINUE_REC);
