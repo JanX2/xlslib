@@ -69,7 +69,7 @@ CBlank class implementation
 CBlank::CBlank(CDataStorage &datastore, const blank_t& blankdef):
 		CRecord(datastore)
 {
-   SetRecordType(RECTYPE_BLANK);	// DFH - was RECTYPE_LABEL, typo ??? (just like the number class)
+   SetRecordType(RECTYPE_BLANK);
    AddValue16((unsigned16_t)blankdef.GetRow());
    AddValue16((unsigned16_t)blankdef.GetCol());
    AddValue16(blankdef.GetXFIndex());
