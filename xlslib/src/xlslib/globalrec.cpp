@@ -17,7 +17,7 @@
  * along with xlslib.  If not, see <http://www.gnu.org/licenses/>.
  * 
  * Copyright 2004 Yeico S. A. de C. V.
- * Copyright 2008 David Hoerl
+ * Copyright 2008-2011 David Hoerl
  *  
  * $Source: /cvsroot/xlslib/xlslib/src/xlslib/globalrec.cpp,v $
  * $Revision: 1.12 $
@@ -57,6 +57,7 @@ CGlobalRecords::CGlobalRecords() :
 	m_DefaultXFs(),
 	m_Styles(),
 	m_BoundSheets(),
+	m_Labels(),
 	m_window1(),
 	m_palette(),
 
@@ -75,7 +76,8 @@ CGlobalRecords::CGlobalRecords() :
 	xf_dflt(),
 	xfIndex(0),
 	style(),
-	bsheet()
+	bsheet(),
+	label()
 {
 	// set to what Excel 2004 on Mac outputs 12/12/2008
 
@@ -236,6 +238,7 @@ CGlobalRecords::CGlobalRecords() :
 	xf		= m_XFs.begin();            
 	style	= m_Styles.begin();      
 	bsheet	= m_BoundSheets.begin();
+	label   = m_Labels.begin();
 }
 /*
 ****************************************
@@ -306,6 +309,7 @@ size_t CGlobalRecords::EstimateNumBiffUnitsNeeded4Header(void)
 	ret += m_DefaultXFs.size();            
 	ret += m_Styles.size();      
 	ret += m_BoundSheets.size();
+	ret += m_Labels.size();
 
 	return ret;
 }
@@ -587,19 +591,42 @@ CUnit* CGlobalRecords::DumpData(CDataStorage &datastore)
 				  bsheet++;
 				} else {
 				  // if it was the last from the list, change the DumpState
-				  m_DumpState = GLOBAL_EOF;
+				  m_DumpState = GLOBAL_SST;
 				  bsheet = m_BoundSheets.begin();
 				}
 				repeat = false;
 			} else {
 			   // if the list is empty, change the dump state.
-			   m_DumpState = GLOBAL_EOF;
+			   m_DumpState = GLOBAL_SST;
 			   bsheet = m_BoundSheets.begin();
 			   repeat = true;
 			}
 			break;
 
-         case GLOBAL_EOF:// ********** STATE 9 *************
+		 case GLOBAL_SST: // ********** STATE 9 *************
+			XTRACE("\tBOUNDSHEETS");
+			if(!m_Labels.empty())
+			{
+				// First check if the list of sheets is not empty...
+#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+				m_pCurrentData = datastore.MakeSST(m_Labels);
+#else
+				//Delete_Pointer(m_pCurrentData);
+				XXX m_pCurrentData = (CUnit*)(new CBSheet(datastore, *bsheet));
+				XXX (*bsheet)->SetSheetData((CBSheet *)m_pCurrentData);
+#endif
+				  // if it was the last from the list, change the DumpState
+				m_DumpState = GLOBAL_EOF;
+				repeat = false;
+			} else {
+			   // if the list is empty, change the dump state.
+			   m_DumpState = GLOBAL_EOF;
+			   label = m_Labels.begin();
+			   repeat = true;
+			}
+			break;
+
+         case GLOBAL_EOF:// ********** STATE 10 *************
             XTRACE("\tEOF");
 
             repeat = false;
@@ -612,7 +639,7 @@ CUnit* CGlobalRecords::DumpData(CDataStorage &datastore)
 			m_DumpState = GLOBAL_FINISH;
             break;
 
-         case GLOBAL_FINISH: // ********** STATE 10 *************
+         case GLOBAL_FINISH: // ********** STATE 11 *************
             XTRACE("\tFINISH");
 
             repeat = false;
@@ -728,6 +755,42 @@ void CGlobalRecords::AddXFormat(xf_t* xfi)
 ****************************************
 ****************************************
 */
+void CGlobalRecords::AddLabelSST(const label_t& labeldef)
+{
+	if(labeldef.GetInSST()) {
+		m_Labels.push_back(&labeldef);
+	}
+}
+
+size_t CGlobalRecords::GetLabelSSTIndex(const label_t& labeldef)
+{
+	size_t idx = 0;
+	cLabel_Vect_Itor_t label_end = m_Labels.end();
+	for(cLabel_Vect_Itor_t lbl = m_Labels.begin(); lbl != label_end; ++lbl) {
+		if(&labeldef == (*lbl)) {
+			return idx;
+		}
+		++idx;
+	}
+	XL_ASSERT(!"Did not find a label");
+	return (size_t)GLOBAL_INVALID_STORE_INDEX;
+}
+
+void CGlobalRecords::DeleteLabelSST(const label_t& labeldef)
+{
+	cLabel_Vect_Itor_t label_end = m_Labels.end();
+	for(Label_Vect_Itor_t lbl = m_Labels.begin(); lbl != label_end; ++lbl) {
+		if(&labeldef == (*lbl)) {
+			m_Labels.erase(lbl);
+			break;
+		}
+	}
+}
+
+/*
+****************************************
+****************************************
+*/
 bool CGlobalRecords::SetColor(unsigned8_t r, unsigned8_t g, unsigned8_t b, unsigned8_t idx)
 {
 	return m_palette.setColor(r, g, b, idx);
@@ -775,7 +838,7 @@ void CGlobalRecords::str16toascii(const u16string& str1, std::string& str2)
 		{
 			c = '?';
 		}
-		str2.push_back(c);
+		str2.push_back((char)c);
 	}
 }
 
@@ -787,7 +850,7 @@ void  CGlobalRecords::wide2str16(const ustring& str1, u16string& str2)
 	const wchar_t			*inbuf;
 	iconv_t					cd;
 	unsigned16_t			*outbuf, *origOutbuf;
-	static const unsigned16_t convFail[] = { 'i', 'c', 'o', 'n', 'v', ' ', 'f', 'a', 'i', 'l', 'e', 'd', '!' };
+	static const unsigned16_t convFail[] = { 'i', 'c', 'o', 'n', 'v', ' ', 'f', 'a', 'i', 'l', 'e', 'd', '!'};
 	
 	cd = iconv_open(UCS_2_INTERNAL, iconv_code.c_str());
 	// no need to test return code as we ALREADY did this when setting iconv_code in workbook

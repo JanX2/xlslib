@@ -17,7 +17,7 @@
  * along with xlslib.  If not, see <http://www.gnu.org/licenses/>.
  * 
  * Copyright 2004 Yeico S. A. de C. V.
- * Copyright 2008 David Hoerl
+ * Copyright 2008-2011 David Hoerl
  *  
  * $Source: /cvsroot/xlslib/xlslib/src/xlslib/globalrec.h,v $
  * $Revision: 1.9 $
@@ -40,6 +40,7 @@
 #include <biffsection.h>
 #include <font.h>
 #include <format.h>
+#include <label.h>
 #include <extformat.h>
 #include <recdef.h>
 #include <unit.h>
@@ -59,6 +60,7 @@ CGlobalRecords class declaration
 #define GLOBAL_NUM_DEFAULT_FORMATS 8
 #define GLOBAL_NUM_DEFAULT_XFS     16
 #define GLOBAL_NUM_DEFAULT_STYLES  6
+#define GLOBAL_INVALID_STORE_INDEX ((signed32_t)0x80000000)
 
   class xf_t;
   
@@ -77,6 +79,7 @@ CGlobalRecords class declaration
       GLOBAL_STYLES,
 	  GLOBAL_PALETTE,
       GLOBAL_BOUNDSHEETS,
+      GLOBAL_SST,
       GLOBAL_EOF,
       GLOBAL_FINISH
     } GlobalRecordDumpState_t;
@@ -99,6 +102,9 @@ CGlobalRecords class declaration
       void			AddFont(font_t* newfont);
       void			AddFormat(format_t*);
       void			AddXFormat(xf_t* xf);
+	  void			AddLabelSST(const label_t& label);
+      size_t		GetLabelSSTIndex(const label_t& labeldef);
+	  void			DeleteLabelSST(const label_t& label);
 
       bool			SetColor(unsigned8_t r, unsigned8_t g, unsigned8_t b, unsigned8_t idx);
 
@@ -140,6 +146,7 @@ CGlobalRecords class declaration
 		XF_Vect_t			m_DefaultXFs;
 		Style_Vect_t		m_Styles;
 		Boundsheet_Vect_t	m_BoundSheets;
+		Label_Vect_t		m_Labels; // SST strings
 		window1				m_window1;
 		colors_t			m_palette;
 		
@@ -171,6 +178,7 @@ CGlobalRecords class declaration
 
       Style_Vect_Itor_t      style;
       Boundsheet_Vect_Itor_t bsheet;
+	  Label_Vect_Itor_t		 label;
     };
 
 }
