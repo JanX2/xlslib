@@ -17,7 +17,7 @@
  * along with xlslib.  If not, see <http://www.gnu.org/licenses/>.
  * 
  * Copyright 2004 Yeico S. A. de C. V.
- * Copyright 2008 David Hoerl
+ * Copyright 2008-2011 David Hoerl
  *  
  * $Source: /cvsroot/xlslib/xlslib/src/xlslib/datast.cpp,v $
  * $Revision: 1.4 $
@@ -55,6 +55,7 @@
 #include <colinfo.h>
 #include <blank.h>
 #include <recdef.h>
+// DFH #include <unit.h>
 
 
 namespace xlslib_core
@@ -464,10 +465,57 @@ CHPSFdoc* CDataStorage::MakeCHPSFdoc(const hpsf_doc_t &docdef)
 	return new CHPSFdoc(*this, docdef);
 }
 
+CUnit* CDataStorage::MakeSST(const Label_Vect_t& labels)
+{
+	CRecord *record = new CRecord(*this);
+	size_t count = labels.size();
+	record->SetAlreadyContinued(true);
+	
+	size_t offset = 0;	// offset of last written data 
 
+	record->SetRecordTypeIndexed(RECTYPE_SST, 0);
+    record->AddValue32(static_cast<unsigned32_t>(count));	// usages
+    record->AddValue32(static_cast<unsigned32_t>(count));	// number of strings to follow
 
+	size_t currSize = record->GetDataSize();
+	
+	cLabel_Vect_Itor_t label_end = labels.end();
+	for(cLabel_Vect_Itor_t label = labels.begin(); label != label_end; ++label) {
+		const label_t *currLabel = *label;
+		u16string str16 = currLabel->GetStrLabel();
+		
+		size_t strLen;
+		bool isAscii;
+		size_t strSize = record->UnicodeStringLength(str16, strLen, isAscii, CUnit::LEN2_FLAGS_UNICODE /* = LEN2_FLAGS_UNICODE */ );
+		if(strSize > MAX_RECORD_SIZE) {
+			static const unsigned16_t tooLong[] = { 'L', 'e', 'n', 'g', 't', 'h', ' ', 't', 'o', 'o', ' ', 'l', 'o', 'n', 'g', '!' };
+			str16 = tooLong;
+			strSize = record->UnicodeStringLength(str16, strLen, isAscii, CUnit::LEN2_FLAGS_UNICODE /* = LEN2_FLAGS_UNICODE */ );
+		}
+		
+		//printf("TEST: (currSize=%ld + strSize=%ld ) offset=%ld\n", currSize, strSize, offset);
+		
+		// Payload is always 4 less than currSize, so account for that here
+		if((currSize + strSize) > (MAX_RECORD_SIZE+4)) {
+			 
+			record->SetRecordLengthIndexed(currSize-4, offset);
 
-
+			offset = record->GetDataSize();				// new offset is where we are now
+			//printf("CHUNK: size=%ld END=%ld\n", currSize, offset);
+			record->AddFixedDataArray(0, 4);			// space for header
+			record->SetRecordTypeIndexed(RECTYPE_CONTINUE, offset);
+		}
+		record->AddUnicodeString(currLabel->GetGlobalRecords(), str16, CUnit::LEN2_FLAGS_UNICODE);
+		currSize = record->GetDataSize() - offset;	// at end so its valid when we break out of the loop
+		//printf("WROTE %ld bytes:  total=%ld currBlock=%ld offset=%ld\n", strSize, record->GetDataSize(), currSize, offset);
+	}
+	//totalSize = record->GetDataSize();		// total size of this record
+	//printf("FINAL: cursize=%ld offset=%ld\n", currSize, offset);		
+	record->SetRecordLengthIndexed(currSize-4, offset);
+			
+	//printf("TOTAL STRING SIZE: %ld\n", record->GetDataSize());		
+	return record;
+}
 
 CUnitStore::CUnitStore():
 	m_varying_width(false),

@@ -17,7 +17,7 @@
  * along with xlslib.  If not, see <http://www.gnu.org/licenses/>.
  * 
  * Copyright 2004 Yeico S. A. de C. V.
- * Copyright 2008 David Hoerl
+ * Copyright 2008-2011 David Hoerl
  *  
  * $Source: /cvsroot/xlslib/xlslib/src/xlslib/datast.h,v $
  * $Revision: 1.4 $
@@ -42,6 +42,7 @@
 #include <unit.h>
 #include <row.h>
 #include <HPSF.h>
+#include <label.h>
 
 
 /* 
@@ -341,7 +342,7 @@ namespace xlslib_core
 		CCodePage* MakeCCodePage(unsigned16_t boftype);
 		CDBCell* MakeCDBCell(size_t startblock = DBC_DFLT_STARTBLOCK);
 		CHPSFdoc* MakeCHPSFdoc(const hpsf_doc_t &docdef);
-
+		CUnit *MakeSST(const Label_Vect_t& labels);
 #endif
 	};
 }
