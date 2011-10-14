@@ -1281,7 +1281,7 @@ ptgFuncVar: Function, Variable Number of Arguments (Operator, ptg=22h)
 
 expression_node_t::expression_node_t(CGlobalRecords& gRecords)
 {
-
+	(void)gRecords;
 }
 expression_node_t::~expression_node_t()
 {
@@ -1290,6 +1290,7 @@ expression_node_t::~expression_node_t()
 
 expression_node_t* expression_node_t::GetChild(unsigned16_t index) const 
 {
+	(void)index;
 	return NULL;
 }
 unsigned16_t expression_node_t::GetNumberOfChilds(void) const 
@@ -1319,6 +1320,7 @@ void expression_node_t::DestroyAST(void)
 
 void expression_node_t::GetResultEstimate(estimated_formula_result_t &dst) const
 {
+	(void)dst;
 	XL_ASSERT(!"Should never get here! MUST be handled by the derived class' method of similar name!");
 
 	// do nothing: propagate the currently set expected value. 
@@ -1326,11 +1328,14 @@ void expression_node_t::GetResultEstimate(estimated_formula_result_t &dst) const
 
 size_t expression_node_t::GetSize(bool include_subtree) const
 {
+	(void)include_subtree;
 	XL_ASSERT(!"Should never get here! MUST be handled by the derived class' method of similar name!");
 	return 0;
 }
 signed8_t expression_node_t::DumpData(CUnit &dst, bool include_subtree) const
 {
+	(void)dst; // stop warnings
+	(void)include_subtree;
 	XL_ASSERT(!"Should never get here! MUST be handled by the derived class' method of similar name!");
 	return NO_ERRORS;
 }
@@ -1366,10 +1371,12 @@ void boolean_value_node_t::GetResultEstimate(estimated_formula_result_t &dst) co
 
 size_t boolean_value_node_t::GetSize(bool include_subtree) const
 {
+	(void)include_subtree;
 	return 2;
 }
 signed8_t boolean_value_node_t::DumpData(CUnit &dst, bool include_subtree) const
 {
+	(void)include_subtree;
 	signed8_t errcode = NO_ERRORS;
 
 	errcode |= dst.AddValue8(OP_BOOL);
@@ -1397,12 +1404,14 @@ void integer_value_node_t::GetResultEstimate(estimated_formula_result_t &dst) co
 
 size_t integer_value_node_t::GetSize(bool include_subtree) const
 {
+	(void)include_subtree;
 	if (value >= 0 && value <= 65535) 
 		return 2+1; // ptgInt
 	return 8+1; // ptgNum
 }
 signed8_t integer_value_node_t::DumpData(CUnit &dst, bool include_subtree) const
 {
+	(void)include_subtree;
 	signed8_t errcode = NO_ERRORS;
 
 	if (value >= 0 && value <= 65535) 
@@ -1436,10 +1445,12 @@ void float_value_node_t::GetResultEstimate(estimated_formula_result_t &dst) cons
 
 size_t float_value_node_t::GetSize(bool include_subtree) const
 {
+	(void)include_subtree;
 	return 8+1;
 }
 signed8_t float_value_node_t::DumpData(CUnit &dst, bool include_subtree) const
 {
+	(void)include_subtree;
 	signed8_t errcode = NO_ERRORS;
 
 	errcode |= dst.AddValue8(OP_NUM);
@@ -1469,10 +1480,12 @@ void error_value_node_t::GetResultEstimate(estimated_formula_result_t &dst) cons
 
 size_t error_value_node_t::GetSize(bool include_subtree) const
 {
+	(void)include_subtree;
 	return 1+1;
 }
 signed8_t error_value_node_t::DumpData(CUnit &dst, bool include_subtree) const
 {
+	(void)include_subtree;
 	signed8_t errcode = NO_ERRORS;
 
 	errcode |= dst.AddValue8(OP_ERR);
@@ -1501,10 +1514,12 @@ void missing_arg_node_t::GetResultEstimate(estimated_formula_result_t &dst) cons
 
 size_t missing_arg_node_t::GetSize(bool include_subtree) const
 {
+	(void)include_subtree;
 	return 1;
 }
 signed8_t missing_arg_node_t::DumpData(CUnit &dst, bool include_subtree) const
 {
+	(void)include_subtree;
 	signed8_t errcode;
 
 	errcode = dst.AddValue8(OP_MISSARG);
@@ -1539,6 +1554,7 @@ text_value_node_t::~text_value_node_t()
 
 text_value_node_t& text_value_node_t::operator =(const text_value_node_t &src)
 {
+	(void)src;
 	throw std::string("Should never have invoked the text_value_node_t copy operator!");
 }
 
@@ -1549,10 +1565,12 @@ void text_value_node_t::GetResultEstimate(estimated_formula_result_t &dst) const
 
 size_t text_value_node_t::GetSize(bool include_subtree) const
 {
+	(void)include_subtree;
 	return 1 + 1 + CGlobalRecords::IsASCII(value) * value.length() + value.length();
 }
 signed8_t text_value_node_t::DumpData(CUnit &dst, bool include_subtree) const
 {
+	(void)include_subtree;
 	signed8_t errcode;
 
 	errcode = dst.AddValue8(OP_STR);
@@ -1599,10 +1617,12 @@ void cell_deref_node_t::GetResultEstimate(estimated_formula_result_t &dst) const
 
 size_t cell_deref_node_t::GetSize(bool include_subtree) const
 {
+	(void)include_subtree;
 	return 1+2+2;
 }
 signed8_t cell_deref_node_t::DumpData(CUnit &dst, bool include_subtree) const
 {
+	(void)include_subtree;
 	signed8_t errcode;
 
 	errcode = dst.AddValue8(OP_REF | operand_class); // OP_REF, OP_REFV, OP_REFA
@@ -1642,10 +1662,13 @@ cellarea_deref_node_t::~cellarea_deref_node_t()
 
 size_t cellarea_deref_node_t::GetSize(bool include_subtree) const
 {
+	(void)include_subtree;
+
 	return 1+2*(2+2);
 }
 signed8_t cellarea_deref_node_t::DumpData(CUnit &dst, bool include_subtree) const
 {
+	(void)include_subtree; // stop warning
 	signed8_t errcode;
 
 	errcode = dst.AddValue8(OP_AREA | operand_class); // OP_AREA. OP_AREAV, OP_AREAA
@@ -2707,8 +2730,8 @@ size_t function_basenode_t::GetSize(bool include_subtree) const
 	{
 		while (chcnt-- > 0)
 		{
-			XL_ASSERT(GetChild(chcnt));
-			len += GetChild(chcnt)->GetSize(include_subtree);
+			XL_ASSERT(GetChild((unsigned16_t)chcnt));
+			len += GetChild((unsigned16_t)chcnt)->GetSize(include_subtree);
 		}
 	}
 	return len;
@@ -2725,8 +2748,8 @@ signed8_t function_basenode_t::DumpData(CUnit &dst, bool include_subtree) const
 
 		for (idx = 0; idx < chcnt; idx++)
 		{
-			XL_ASSERT(GetChild(idx));
-			errcode |= GetChild(idx)->DumpData(dst, include_subtree);
+			XL_ASSERT(GetChild((unsigned16_t)idx));
+			errcode |= GetChild((unsigned16_t)idx)->DumpData(dst, include_subtree);
 		}
 	}
 
@@ -2775,6 +2798,7 @@ unary_func_node_t::~unary_func_node_t()
 
 expression_node_t* unary_func_node_t::GetChild(unsigned16_t index) const
 {
+	(void)index; // stop warning
 	return arg;
 }
 unsigned16_t unary_func_node_t::GetNumberOfChilds(void) const
@@ -2813,8 +2837,10 @@ return 2;
 
 
 n_ary_func_node_t::n_ary_func_node_t(CGlobalRecords& gRecords, expr_function_code_t func, size_t count, expression_node_t** arr) :
-function_basenode_t(gRecords, func),
-arg_arrsize(count), arg_count(0), arg_arr(NULL)
+   function_basenode_t(gRecords, func),
+   arg_arrsize((unsigned16_t)count), 
+   arg_count(0), 
+   arg_arr(NULL)
 {
 	if (count > 0)
 	{
@@ -2824,7 +2850,7 @@ arg_arrsize(count), arg_count(0), arg_arr(NULL)
 
 		if (arr)
 		{
-			arg_count = count;
+			arg_count = (unsigned16_t)count;
 
 			while (count-- > 0)
 			{
@@ -2903,10 +2929,13 @@ void userdef_func_node_t::GetResultEstimate(estimated_formula_result_t &dst) con
 
 size_t userdef_func_node_t::GetSize(bool include_subtree) const
 {
+	(void)include_subtree;
 	return 0;
 }
 signed8_t userdef_func_node_t::DumpData(CUnit &dst, bool include_subtree) const
 {
+	(void)dst; // stop warnings
+	(void)include_subtree;
 	//signed8_t errcode = NO_ERRORS;
 
 	/*
@@ -2941,6 +2970,7 @@ expression_node_factory_t::~expression_node_factory_t()
 
 expression_node_factory_t &expression_node_factory_t::operator =(const expression_node_factory_t &src)
 {
+	(void)src; // stop warning
 	throw std::string("Should never have invoked the expression_node_factory_t copy operator!");
 }
 
@@ -3063,6 +3093,7 @@ estimated_formula_result_t::~estimated_formula_result_t()
 
 estimated_formula_result_t& estimated_formula_result_t::operator =(const estimated_formula_result_t &src)
 {
+	(void)src; // stop warning
 	throw std::string("Should never have invoked the estimated_formula_result_t copy operator!");
 }
 
@@ -3090,7 +3121,7 @@ void estimated_formula_result_t::SetCalcAlways(void)
 
 unsigned16_t estimated_formula_result_t::GetOptionFlags(void) const
 {
-	return (calc_on_load << 1 | always_calc);
+	return (unsigned16_t)(calc_on_load << 1 | always_calc);
 }
 
 bool estimated_formula_result_t::SetBoolean(bool v)
@@ -3277,7 +3308,7 @@ CFormula::CFormula(CDataStorage &datastore, const formula_t& expr):
    expr.GetAST()->DumpData(*this, true); // rgce dump, length_of_parsed_expr
    
    size_t end = GetDataSize();
-   SetValueAt16(end - len_position - 2, len_position);
+   SetValueAt16((unsigned16_t)(end - len_position - 2), len_position);
 
    SetRecordLength(GetDataSize()-4);
 
@@ -3297,7 +3328,7 @@ CFormula::CFormula(CDataStorage &datastore, const formula_t& expr):
 		XL_ASSERT(str->length() < 256); // dbg
 	   AddUnicodeString(expr.GetGlobalRecords(), *str, LEN2_FLAGS_UNICODE);
 	   
-	   SetValueAt16(GetDataSize() - basepos - 4, basepos + 2);
+	   SetValueAt16((unsigned16_t)(GetDataSize() - basepos - 4), basepos + 2);
    }
 }
 

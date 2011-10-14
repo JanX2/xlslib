@@ -93,6 +93,7 @@ boundsheet_t::boundsheet_t(const boundsheet_t& that) :
 }
 boundsheet_t& boundsheet_t::operator=(const boundsheet_t& right)
 {
+	(void)right; // stop warning
 	throw std::string("Should never have invoked the boundsheet_t copy operator!");
 }
 

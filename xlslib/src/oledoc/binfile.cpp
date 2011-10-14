@@ -176,9 +176,9 @@ int CBinFile::WriteSigned16(signed16_t data)
 {
    int errcode;
 
-   errcode = WriteByte(BYTE_0(data));
+   errcode = WriteByte(BYTE_0((unsigned32_t)data));
    if (errcode != NO_ERRORS) return errcode;
-   errcode = WriteByte(BYTE_1(data));
+   errcode = WriteByte(BYTE_1((unsigned32_t)data));
 
    return errcode;
 }
@@ -191,13 +191,13 @@ int CBinFile::WriteSigned32(signed32_t data)
 {
    int errcode;
 
-   errcode = WriteByte(BYTE_0(data));
+   errcode = WriteByte(BYTE_0((unsigned32_t)data));
    if (errcode != NO_ERRORS) return errcode;
-   errcode = WriteByte(BYTE_1(data));
+   errcode = WriteByte(BYTE_1((unsigned32_t)data));
    if (errcode != NO_ERRORS) return errcode;
-   errcode = WriteByte(BYTE_2(data));
+   errcode = WriteByte(BYTE_2((unsigned32_t)data));
    if (errcode != NO_ERRORS) return errcode;
-   errcode = WriteByte(BYTE_3(data));
+   errcode = WriteByte(BYTE_3((unsigned32_t)data));
 
    return errcode;
 }

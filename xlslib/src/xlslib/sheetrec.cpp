@@ -224,21 +224,21 @@ CUnit* worksheet::DumpData(CDataStorage &datastore, size_t offset, size_t writeL
 			for(size_t rb = 0; rb < numrb; rb++)
 			{
 			   // Get sizes of next RowBlock
-			   rowblocksize_t rbsize;
+			   rowblocksize_t rbsize2;
 #if defined(XL_WITH_ASSERTIONS)
 			   bool state = 
 #else
 			   (void)
 #endif
-				   GetRowBlockSizes(rbsize);
+				   GetRowBlockSizes(rbsize2);
 			   XL_ASSERT(rb == numrb - 1 ? state == false : state == true);
 			   // Update the offset accumulator and create the next DBCELL's offset
-			   rb_size_acc += rbsize.rowandcell_size;
+			   rb_size_acc += rbsize2.rowandcell_size;
 			   size_t dbcelloffset = offset - Last_BOF_offset + BOF_RECORD_SIZE + index_size + rb_size_acc;
 			   ((CIndex*)m_pCurrentData)->AddDBCellOffset(dbcelloffset);
 
 			   // Update the offset for the next DBCELL's offset
-			   rb_size_acc += rbsize.dbcell_size;
+			   rb_size_acc += rbsize2.dbcell_size;
 			}
 		}
 		m_DumpState = SHEET_DIMENSION; // Change to the next state

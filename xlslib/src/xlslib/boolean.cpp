@@ -63,10 +63,10 @@ CBoolean::CBoolean(CDataStorage &datastore, const boolean_t& booldef):
 		CRecord(datastore)
 {
    SetRecordType(RECTYPE_BOOLERR);	
-   AddValue16(booldef.GetRow());
-   AddValue16(booldef.GetCol());
-   AddValue16(booldef.GetXFIndex());
-   AddValue8(booldef.GetBoolean());
+   AddValue16((unsigned16_t)booldef.GetRow());
+   AddValue16((unsigned16_t)booldef.GetCol());
+   AddValue16((unsigned16_t)booldef.GetXFIndex());
+   AddValue8((unsigned8_t)booldef.GetBoolean());
    AddValue8(0);
 
    SetRecordLength(GetDataSize()-4);

@@ -272,6 +272,7 @@ xf_init_t::xf_init_t(const xf_init_t &that) :
 
 xf_init_t& xf_init_t::operator=(const xf_init_t& right)
 {
+	(void)right;	// stop warning
 	throw std::string("Should never have invoked the xf_init_t copy operator!");
 }
 
@@ -305,6 +306,7 @@ bool xf_init_t::operator==(const xf_init_t& right)
 
 const xf_init_t &xf_t::GetDefaultXFshadow(CGlobalRecords& gRecords, bool userXF, bool isCell)
 {
+	(void)userXF; // remove warning
 	if (!isCell)
 	{
 		const xf_t *xf = gRecords.GetDefaultXF();
@@ -777,12 +779,12 @@ unsigned16_t xf_t::GetFormatIndex(void) const
 
 format_number_t xf_t::GetFormat(void) const
 {
-	int format;
+	format_number_t frmt;
 	
-	for(format=FMT_GENERAL; format<=FMT_TEXT; ++format) 
+	for(frmt=FMT_GENERAL; frmt<=FMT_TEXT; ++frmt) 
 	{
-		if(formatIndex == format_t::format2index((format_number_t)format))
-			return (format_number_t)format;
+		if(formatIndex == format_t::format2index(frmt))
+			return frmt;
 	}
 	return FMT_GENERAL;	// should never get here...
 }
@@ -1347,7 +1349,7 @@ void CExtFormat::SetHorizAlign(unsigned8_t alignval)
    
    GetValue32From(&value, XF_OFFSET_ALIGN);
    XL_ASSERT(XF_ALIGN_SHIFTPOS_HALIGN == 0);
-   value = (value & (~XF_ALIGN_HORIZONTAL)) | (alignval & XF_ALIGN_HORIZONTAL);
+   value = (value & (~(unsigned32_t)XF_ALIGN_HORIZONTAL)) | (alignval & XF_ALIGN_HORIZONTAL);
    SetValueAt32(value, XF_OFFSET_ALIGN);
 }
 
@@ -1362,7 +1364,7 @@ void CExtFormat::SetVertAlign(unsigned8_t alignval)
    GetValue32From(&value, XF_OFFSET_ALIGN);
    alignval32 = alignval;
    alignval32 <<= XF_ALIGN_SHIFTPOS_VALIGN;				// Place the option at the right bit position
-   value = (value & (~XF_ALIGN_VERTICAL)) | (alignval32 & XF_ALIGN_VERTICAL);
+   value = (value & (~(unsigned32_t)XF_ALIGN_VERTICAL)) | (alignval32 & XF_ALIGN_VERTICAL);
    SetValueAt32(value, XF_OFFSET_ALIGN);
 }
 
@@ -1381,7 +1383,7 @@ void CExtFormat::SetWrap(bool wrap)
    }
    else
    {
-	   value &= ~XF_ALIGN_WRAP;
+	   value &= ~(unsigned32_t)XF_ALIGN_WRAP;
    }
    SetValueAt32(value, XF_OFFSET_ALIGN);
 }
@@ -1428,7 +1430,7 @@ void CExtFormat::SetTxtOrientation(unsigned8_t alignval)
 
    unsigned32_t alignval32 = alignval;
    alignval32 <<= XF_ORI_SHIFTPOS; // Place the option at the right bit position
-   value = (value & (~XF_ORI_MASK)) | (alignval32 & XF_ORI_MASK);
+   value = (value & (~(unsigned32_t)XF_ORI_MASK)) | (alignval32 & XF_ORI_MASK);
 
    SetValueAt32(value, XF_OFFSET_ALIGN);
 }
@@ -1499,13 +1501,13 @@ void CExtFormat::SetBorder(border_side_t border, unsigned16_t style, unsigned16_
 	{
 	case BORDER_BOTTOM:
 		 GetValue32From(&value, XF_OFFSET_BORDERA);
-		 value &= (~XF_BORDER_BOTTOMSTYLE);
+		 value &= (~(unsigned32_t)XF_BORDER_BOTTOMSTYLE);
 		 style32 <<= XF_STYLE_SHIFTPOS_BOTTOM;
 		 value |= (style32 & XF_BORDER_BOTTOMSTYLE);
 		 SetValueAt32(value, XF_OFFSET_BORDERA);
 
 		 GetValue32From(&value, XF_OFFSET_BORDERB);
-		 value &= (~XF_BORDER_BOTTOMCOLOR);
+		 value &= (~(unsigned32_t)XF_BORDER_BOTTOMCOLOR);
 		 color32 <<= XF_COLOR_SHIFTPOS_BOTTOM;
 		 value |= (color32 & XF_BORDER_BOTTOMCOLOR);
 		 SetValueAt32(value, XF_OFFSET_BORDERB);
@@ -1513,13 +1515,13 @@ void CExtFormat::SetBorder(border_side_t border, unsigned16_t style, unsigned16_
 
 	case BORDER_TOP:
 		 GetValue32From(&value, XF_OFFSET_BORDERA);
-		 value &= (~XF_BORDER_TOPSTYLE);
+		 value &= (~(unsigned32_t)XF_BORDER_TOPSTYLE);
 		 style32 <<= XF_STYLE_SHIFTPOS_TOP;
 		 value |= (style32 & XF_BORDER_TOPSTYLE);
 		 SetValueAt32(value, XF_OFFSET_BORDERA);
 
 		 GetValue32From(&value, XF_OFFSET_BORDERB);
-		 value &= (~XF_BORDER_TOPCOLOR);
+		 value &= (~(unsigned32_t)XF_BORDER_TOPCOLOR);
 		 color32 <<= XF_COLOR_SHIFTPOS_TOP;
 		 value |= (color32 & XF_BORDER_TOPCOLOR);
 		 SetValueAt32(value, XF_OFFSET_BORDERB);
@@ -1527,7 +1529,7 @@ void CExtFormat::SetBorder(border_side_t border, unsigned16_t style, unsigned16_
 
 	case BORDER_LEFT:   
 		 GetValue32From(&value, XF_OFFSET_BORDERA);
-		 value &= ~(XF_BORDER_LEFTSTYLE|XF_BORDER_LEFTCOLOR);
+		 value &= ~(unsigned32_t)(XF_BORDER_LEFTSTYLE|XF_BORDER_LEFTCOLOR);
 
 		 color32 <<= XF_COLOR_SHIFTPOS_LEFT;
 		 style32 <<= XF_STYLE_SHIFTPOS_LEFT;
@@ -1539,7 +1541,7 @@ void CExtFormat::SetBorder(border_side_t border, unsigned16_t style, unsigned16_
 	case BORDER_RIGHT:  
 		 GetValue32From(&value, XF_OFFSET_BORDERA);
 
-		 value &= ~(XF_BORDER_RIGHTSTYLE|XF_BORDER_RIGHTCOLOR);
+		 value &= ~(unsigned32_t)(XF_BORDER_RIGHTSTYLE|XF_BORDER_RIGHTCOLOR);
 		 color32 <<= XF_COLOR_SHIFTPOS_RIGHT;
 		 style32 <<= XF_STYLE_SHIFTPOS_RIGHT;
 		 value |= (color32 & XF_BORDER_RIGHTCOLOR) | (style32 & XF_BORDER_RIGHTSTYLE);

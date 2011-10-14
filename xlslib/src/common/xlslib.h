@@ -344,7 +344,7 @@ EXTERN_TYPE xf_t *xlsWorkbookxFormatFont(workbook *w, font_t *font);
 #ifdef HAVE_ICONV
 EXTERN_TYPE	int xlsWorkbookIconvInType(workbook *w, const char *inType);
 #endif
-EXTERN_TYPE	uint8_t xlsWorkbookProperty(workbook *w, property_t prop, const char *s);
+EXTERN_TYPE	unsigned8_t xlsWorkbookProperty(workbook *w, property_t prop, const char *s);
 EXTERN_TYPE	void xlsWorkBookWindPosition(workbook *w, unsigned16_t horz, unsigned16_t vert);
 EXTERN_TYPE	void xlsWorkBookWindSize(workbook *w, unsigned16_t horz, unsigned16_t vert);
 EXTERN_TYPE	void xlsWorkBookFirstTab(workbook *w, unsigned16_t firstTab);
@@ -408,6 +408,9 @@ EXTERN_TYPE void xlsCellFontoutline(cell_t *c, bool ol);
 EXTERN_TYPE void xlsCellFontshadow(cell_t *c, bool sh);
 EXTERN_TYPE unsigned32_t xlsCellGetRow(cell_t *c);
 EXTERN_TYPE unsigned32_t xlsCellGetCol(cell_t *c);
+#ifdef RANGE_FEATURE	
+EXTERN_TYPE void xlsRangeCellcolor(range *r, color_name_t color);
+#endif // RANGE_FEATURE
 EXTERN_TYPE unsigned16_t xlsCellGetXFIndex(cell_t *c);
 EXTERN_TYPE void xlsCellSetXF(cell_t *c, xf_t *pxfval);
 // xformat

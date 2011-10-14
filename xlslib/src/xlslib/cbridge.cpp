@@ -80,7 +80,7 @@ extern "C" {
 #ifdef HAVE_ICONV
 	int xlsWorkbookIconvInType(workbook *w, const char *inType)	{ return w->iconvInType(inType); }
 #endif
-	uint8_t xlsWorkbookProperty(workbook *w, property_t prop, const char *s)
+	unsigned8_t xlsWorkbookProperty(workbook *w, property_t prop, const char *s)
 																{ 
 																	std::string str = s;
 																	return w->property(prop, str) ? 1 : 0;

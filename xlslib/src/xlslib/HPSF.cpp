@@ -114,7 +114,7 @@ size_t HPSFitem::GetSize()
 	case HPSF_STRING:
 		size = value.str->length() + 1 + 4;         // 1 for null terminator, 4 for length field
 		// round up to the next 4-byte boundary:
-		size = (size + 4 - 1) & ~3;
+		size = (size + 4 - 1) & ~3ul;
 		XL_ASSERT(size >= 4);
 		XL_ASSERT((size % 4) == 0);
 		break;
@@ -177,7 +177,7 @@ unsigned64_t hpsf_doc_t::unix2mstime(time_t unixTime)
 {
 	unsigned64_t	msTime;
 
-	msTime	 = unixTime * (unsigned64_t)1000000 + FILETIME2UNIX_NS;
+	msTime	 = (unsigned64_t)unixTime * (unsigned64_t)1000000 + FILETIME2UNIX_NS;
 	msTime	*= (unsigned64_t)10;
 	
 	return msTime;

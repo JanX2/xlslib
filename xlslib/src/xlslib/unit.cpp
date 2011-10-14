@@ -726,7 +726,7 @@ signed8_t CUnit::AddUnicodeString(CGlobalRecords& gRecords, const std::string& s
 	while(cBegin != cEnd) 
 	{
 		XL_ASSERT(m_Store[m_Index].GetSize() > datasize);
-		data[datasize++] = (uint8_t)*cBegin++;
+		data[datasize++] = (unsigned8_t)*cBegin++;
 	}
 
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)

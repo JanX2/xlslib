@@ -98,9 +98,9 @@ CNumber::CNumber(CDataStorage &datastore, const number_t& numdef):
 
 	SetRecordType(type);
 
-	AddValue16(numdef.GetRow());
-	AddValue16(numdef.GetCol());
-	AddValue16(numdef.GetXFIndex());
+	AddValue16((unsigned16_t)numdef.GetRow());
+	AddValue16((unsigned16_t)numdef.GetCol());
+	AddValue16((unsigned16_t)numdef.GetXFIndex());
 
 	if(type == RECTYPE_RK) {
 		unsigned32_t val;

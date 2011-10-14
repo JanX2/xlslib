@@ -134,6 +134,7 @@ format_t::format_t(CGlobalRecords& gRecords, const u16string& fmtstr) :
 
 format_t &format_t::operator =(const format_t &src)
 {
+	(void)src; // stop warning
 	throw std::string("Should never have invoked the format_t copy operator!");
 }
 

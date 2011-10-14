@@ -155,7 +155,7 @@ BIFF WINDOW2 (23Eh)  18  B6 00 00 00 00 00 40 00  00 00 00 00 00 00 72 00
 CNote::CNote(CDataStorage &datastore, const note_t& notedef):
 		CRecord(datastore)
 {
-	int idx = 1; // OBJ reference
+   unsigned16_t idx = 1; // OBJ reference
 
    SetRecordType(RECTYPE_NOTE);	
    AddValue16((unsigned16_t)notedef.GetRow());
@@ -175,7 +175,7 @@ CNote::~CNote()
 // make an OBJ record:
 void CNote::mk_obj_Record(const note_t* notedef)
 {
-	size_t idx = 1;
+	unsigned16_t idx = 1;
 
 	SetRecordType(RECTYPE_OBJ);	
 	AddValue16((unsigned16_t)notedef->GetRow());
@@ -189,6 +189,7 @@ void CNote::mk_obj_Record(const note_t* notedef)
 // start
 void CNote::mk_obj_CMO_SubRecord(const note_t* notedef)
 {
+	(void)notedef; // stop warning
 	AddValue16(0x15);  // ftCmo
 	AddValue16(14+12-4);
 
@@ -203,6 +204,7 @@ void CNote::mk_obj_CMO_SubRecord(const note_t* notedef)
 // end
 void CNote::mk_obj_END_SubRecord(const note_t* notedef)
 {
+	(void)notedef; // stop warning
 	AddValue16(0x00); // ftEnd
 	AddValue16(0);
 
@@ -212,6 +214,7 @@ void CNote::mk_obj_END_SubRecord(const note_t* notedef)
 // note structure	???
 void CNote::mk_obj_NTS_SubRecord(const note_t* notedef)
 {
+	(void)notedef; // stop warning
 	AddValue16(0x0D); // ftNts
 	AddValue16(0);
 

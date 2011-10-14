@@ -251,7 +251,7 @@ int  COleDoc::DumpDepots(blocks bks)
 
 	NodeList_t node_list;
 	GetAllNodes(node_list);
-	unsigned32_t bat_index;
+	signed32_t bat_index;
 
 	bat_index = 0;
 	
@@ -314,7 +314,7 @@ int  COleDoc::DumpDepots(blocks bks)
 	++bks._bat_entries;
 
    //Fill the rest of the _LAST_ BAT block, code appears to handle the 0 case
-   unsigned32_t num_indexes = bat_index;
+   unsigned32_t num_indexes = (unsigned32_t)bat_index;
    unsigned32_t to_fill_size = BIG_BLOCK_SIZE - ((4*num_indexes) % BIG_BLOCK_SIZE);
    SerializeFixedArray(BAT_NOT_USED_BYTE, to_fill_size);
 

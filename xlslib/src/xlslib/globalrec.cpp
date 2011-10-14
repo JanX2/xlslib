@@ -868,7 +868,7 @@ void  CGlobalRecords::wide2str16(const ustring& str1, u16string& str2)
 	if(resultSize == (size_t)-1) {
 		str2 = convFail;
 	} else {
-		str2.assign(origOutbuf, outbuf - origOutbuf);
+		str2.assign(origOutbuf, (size_t)(outbuf - origOutbuf));
 	}
 	free((void *)origOutbuf);
 }

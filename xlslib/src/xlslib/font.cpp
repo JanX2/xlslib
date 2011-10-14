@@ -204,6 +204,7 @@ font_t::font_t(CGlobalRecords& gRecords,
 
 font_t &font_t::operator =(const font_t &src)
 {
+	(void)src; // stop warning
 	throw std::string("Should never have invoked the font_t copy operator!");
 }
 
