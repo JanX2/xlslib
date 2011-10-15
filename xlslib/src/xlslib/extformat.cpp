@@ -779,12 +779,12 @@ unsigned16_t xf_t::GetFormatIndex(void) const
 
 format_number_t xf_t::GetFormat(void) const
 {
-	format_number_t frmt;
+	int frmt;
 	
-	for(frmt=FMT_GENERAL; frmt<=FMT_TEXT; ++frmt) 
+	for(frmt=(int)FMT_GENERAL; frmt<=(int)FMT_TEXT; ++frmt) 
 	{
-		if(formatIndex == format_t::format2index(frmt))
-			return frmt;
+		if(formatIndex == format_t::format2index((format_number_t)frmt))
+			return (format_number_t)frmt;
 	}
 	return FMT_GENERAL;	// should never get here...
 }
