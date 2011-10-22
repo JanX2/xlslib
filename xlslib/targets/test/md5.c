@@ -504,7 +504,7 @@ int check_file(const char *filepath, const char *md5_checksum)
 	rv = strcasecmp(digest, md5_checksum);
 	if (rv)
 	{
-		printf("    # md5: %s -- %s\n", digest, md5_checksum);
+		printf("    # md5: Actual=\"%s\" -- Expected=\"%s\"\n", digest, md5_checksum);
 	}
 	return rv;
 }
