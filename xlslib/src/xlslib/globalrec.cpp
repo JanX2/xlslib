@@ -44,6 +44,7 @@
 using namespace std;
 using namespace xlslib_core;
 
+static const unsigned16_t convFail[] = { 'i', 'c', 'o', 'n', 'v', ' ', 'f', 'a', 'i', 'l', 'e', 'd', '!', 0 };
 
 /*
 **********************************************************************
@@ -846,19 +847,19 @@ void CGlobalRecords::str16toascii(const u16string& str1, std::string& str2)
 
 
 #ifdef HAVE_ICONV
+
 void  CGlobalRecords::wide2str16(const ustring& str1, u16string& str2)
 {
 	size_t					resultSize, inbytesleft, outbytesleft;
 	const wchar_t			*inbuf;
 	iconv_t					cd;
 	unsigned16_t			*outbuf, *origOutbuf;
-	static const unsigned16_t convFail[] = { 'i', 'c', 'o', 'n', 'v', ' ', 'f', 'a', 'i', 'l', 'e', 'd', '!'};
 	
 	cd = iconv_open(UCS_2_INTERNAL, iconv_code.c_str());
 	// no need to test return code as we ALREADY did this when setting iconv_code in workbook
 	
 	inbytesleft		= str1.size() * sizeof(unichar_t);
-	outbytesleft	= inbytesleft * 4 * sizeof(unsigned16_t); // Unicode expansion 4 to 2 ???
+	outbytesleft	= inbytesleft * 4 * sizeof(unsigned16_t); // This is for sure a mistake and should be str1.size() * sizeof(unsigned16_t) (dfh)
 
 	inbuf		= str1.c_str();
 	origOutbuf	= (unsigned16_t *)calloc(outbytesleft, 1);
@@ -874,7 +875,9 @@ void  CGlobalRecords::wide2str16(const ustring& str1, u16string& str2)
 	}
 	free((void *)origOutbuf);
 }
+
 #else
+
 void  CGlobalRecords::wide2str16(const ustring& str1, u16string& str2)
 {
 	ustring::const_iterator	cBegin, cEnd;
@@ -905,6 +908,68 @@ void  CGlobalRecords::wide2str16(const ustring& str1, u16string& str2)
 
 #endif
 
+#ifdef HAVE_ICONV
+
+void  CGlobalRecords::char2str16(const string& str1, u16string& str2)
+{
+	string::const_iterator	cBegin, cEnd;
+	size_t	len;
+
+	str2.clear();
+
+	// test for UTF
+	cBegin	= str1.begin();
+	cEnd	= str1.end();
+	
+	unsigned8_t c = 0;
+	while(cBegin != cEnd) 
+	{
+		c |= *cBegin++;		
+	}
+	
+	if(c & 0x80) {
+		const char				*inbuf;
+		iconv_t					cd;
+		unsigned16_t			*outbuf, *origOutbuf;
+		size_t					resultSize, inbytesleft, outbytesleft;
+		
+		cd = iconv_open(UCS_2_INTERNAL, "UTF-8");
+		XL_ASSERT(cd != (iconv_t)(-1));
+
+		inbytesleft		= str1.size();
+		outbytesleft	= inbytesleft * sizeof(unsigned16_t);
+
+		inbuf		= str1.c_str();
+		origOutbuf	= (unsigned16_t *)calloc(outbytesleft, 1);
+		outbuf		= origOutbuf;
+
+		resultSize = iconv(cd, (char **)&inbuf, &inbytesleft, (char **)&outbuf, &outbytesleft);
+		iconv_close(cd);
+
+		if(resultSize == (size_t)-1) {
+			str2 = convFail;
+		} else {
+			str2.assign(origOutbuf, (size_t)(outbuf - origOutbuf));
+		}
+		free((void *)origOutbuf);
+
+	} else {
+		len = str1.length();
+		str2.reserve(len);
+
+		cBegin	= str1.begin();
+		cEnd	= str1.end();
+		
+		while(cBegin != cEnd) 
+		{
+			str2.push_back((unsigned16_t)*cBegin++);		
+		}
+		XL_ASSERT(str2.length() == str1.length());
+	}
+}
+
+#else
+
 void  CGlobalRecords::char2str16(const string& str1, u16string& str2)
 {
 	string::const_iterator	cBegin, cEnd;
@@ -924,6 +989,7 @@ void  CGlobalRecords::char2str16(const string& str1, u16string& str2)
 	}
 	XL_ASSERT(str2.length() == str1.length());
 }
+#endif
 
 bool CGlobalRecords::IsASCII(const std::string& str)
 {
