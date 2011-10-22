@@ -17,7 +17,7 @@
  * along with xlslib.  If not, see <http://www.gnu.org/licenses/>.
  * 
  * Copyright 2004 Yeico S. A. de C. V.
- * Copyright 2008 David Hoerl
+ * Copyright 2008-2011 David Hoerl
  *  
  * $Source: /cvsroot/xlslib/xlslib/src/oledoc/oledoc.cpp,v $
  * $Revision: 1.7 $
@@ -313,9 +313,16 @@ int  COleDoc::DumpDepots(blocks bks)
 	++bat_index;
 	++bks._bat_entries;
 
-   //Fill the rest of the _LAST_ BAT block, code appears to handle the 0 case
+   // Fill the rest of the _LAST_ BAT block, code appears to handle the 0 case (IT DID NOT - SEE addition of final % BIG_BLOCK_SIZE BELOW)
    unsigned32_t num_indexes = (unsigned32_t)bat_index;
-   unsigned32_t to_fill_size = BIG_BLOCK_SIZE - ((4*num_indexes) % BIG_BLOCK_SIZE);
+   unsigned32_t to_fill_size = (BIG_BLOCK_SIZE - ((4*num_indexes) % BIG_BLOCK_SIZE)) % BIG_BLOCK_SIZE;
+
+#if OLE_DEBUG
+   std::cerr << "num_indexes=" << num_indexes << " to_fill_size=" << to_fill_size << std::endl;
+#endif
+
+
+   
    SerializeFixedArray(BAT_NOT_USED_BYTE, to_fill_size);
 
 #if OLE_DEBUG
@@ -344,7 +351,7 @@ int  COleDoc::DumpFileSystem(void)
 
 #if OLE_DEBUG
    std::cerr << "FILESYSTEM directory at SecID=" << (Position() - HEAD_SIZE)/BIG_BLOCK_SIZE
-	   << " (remain=" << (Position() % BIG_BLOCK_SIZE) << std::endl;
+	   << " (remain=" << (Position() % BIG_BLOCK_SIZE) << ")" << std::endl;
 #endif
    DumpNode(GetRootEntry());
 
