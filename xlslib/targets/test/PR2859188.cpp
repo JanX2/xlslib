@@ -133,9 +133,9 @@ int main(int argc, char *argv[])
 
 	try
 	{
-		rv |= test1("6423d098b4025eed9277a4919281849d");
-		rv |= test2("d882ef1e426be85ef3ccb857309ad7dd");
-		rv |= test3("29e0cb48d82b271918a3fb865da6d83b");
+		rv |= test1("58ee796a46fecde484910c9fd4703143");
+		rv |= test2("51b73d1cdeae8e738f8188858bcc36dd");
+		rv |= test3("ee8c0377ef3fa5c7f9c601f921e5a074");
 	}
 	catch (std::string &errmsg)
 	{
