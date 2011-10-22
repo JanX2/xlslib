@@ -56,7 +56,7 @@ CBinFile class declaration
     {
     private:
       int write_service(const char *buffer, size_t size);
-      static const int STROKE_CHUNK_SIZE;
+//	static const int STROKE_CHUNK_SIZE; now unused apparently
 
     public:
       CBinFile();
