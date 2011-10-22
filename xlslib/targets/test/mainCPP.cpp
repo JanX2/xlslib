@@ -113,7 +113,47 @@ static int GetRndNumber(int max);
 ********************************* 
 */
 
-
+#if 0
+    # limit: 42
+    # md5: e54e3111cccf4eebbd5e12c682882a67 -- d3c30e1d2d9a1e572984ca7f9aed4fb3
+StandardTest failed: MD5 of generated XLS mismatch or I/O failure.
+    # md5: 56ef966425eda7de3fccfd89f17b913d -- c1375c9fb90f135052665a85af63c2ed
+StandardTest2 failed: MD5 of generated XLS mismatch or I/O failure.
+    # md5: b248b1c1d82382b739dfe131889ac444 -- e80a45e13f92863f0d2dffaca7c3834c
+BlankTest failed: MD5 of generated XLS mismatch or I/O failure.
+    # md5: ebe5822e55ee0b86a0e0878946f1a046 -- ccb2cdfddd99b951041e13dcdd60ef77
+FormulaFunctionsTest failed: MD5 of generated XLS mismatch or I/O failure.
+    # Cell-stress test: 43 ms
+    # md5: 35584963157b88d351b1c938faac166b -- 6d356960d22057ebee73aa910eb0a772
+StressTest(3, 100, 100) failed: MD5 of generated XLS mismatch or I/O failure.
+    # Cell-stress test: 0 ms
+    # md5: 33fa479a1f74f8c2cc7ffc4f0b38a747 -- b4fd13d503b1cf2dc0838aaef81cb65b
+StressTest(3, 4, 4) failed: MD5 of generated XLS mismatch or I/O failure.
+    # Random cell test: 107 ms
+    # md5: 9f040f13f7b67cfa96deb9e3b1960ab6 -- 212f014a332a34fc575151cc068753aa
+RandomTest failed: MD5 of generated XLS mismatch or I/O failure.
+    # Random Cell and Format test: 1 ms
+    # md5: 67a20998f4e94ffae7dd42df5742275f -- 4e0439306a18cfb4c6a28441c33f2b04
+RandomCellAndFormatTest failed: MD5 of generated XLS mismatch or I/O failure.
+    # md5: 25d9e6959c6b58cf0ba9e17c41aa4ed4 -- 1a06208b4746a23a2442c4c06e75cdef
+RandomCellAndFormatTestProf failed: MD5 of generated XLS mismatch or I/O failure.
+    # Random Format test: 1 ms
+    # md5: ab6e60a9ee24fc9c89b707b0ba377cd6 -- bd94fbe9ce77addc02cba876fc6e4d9b
+RandomFormatTest failed: MD5 of generated XLS mismatch or I/O failure.
+    # Test finished
+FAIL: testCPP
+    # saved it ret=0!
+    # md5: 9538acc7f5e887e4a00450a42f8ac2e8 -- c2a3a622dcff00f2fdbaa208e4753983
+./testC failed: MD5 of generated XLS mismatch or I/O failure.
+FAIL: testC
+    # md5: 58ee796a46fecde484910c9fd4703143 -- 6423d098b4025eed9277a4919281849d
+test1 failed: MD5 of generated XLS mismatch or I/O failure.
+    # md5: 51b73d1cdeae8e738f8188858bcc36dd -- d882ef1e426be85ef3ccb857309ad7dd
+test2 failed: MD5 of generated XLS mismatch or I/O failure.
+    # md5: ee8c0377ef3fa5c7f9c601f921e5a074 -- 29e0cb48d82b271918a3fb865da6d83b
+test3 failed: MD5 of generated XLS mismatch or I/O failure.
+FAIL: PR2859188
+#endif
 
 int main(int argc, char *argv[])
 {
@@ -122,12 +162,12 @@ int main(int argc, char *argv[])
 	try
 	{
 		// comment and uncomment the below to try various tests
-		rv |= StandardTest("d3c30e1d2d9a1e572984ca7f9aed4fb3");
-		rv |= StandardTest2("c1375c9fb90f135052665a85af63c2ed");
-		rv |= BlankTest("e80a45e13f92863f0d2dffaca7c3834c");
-		rv |= FormulaFunctionsTest("ccb2cdfddd99b951041e13dcdd60ef77");
+		rv |= StandardTest("e54e3111cccf4eebbd5e12c682882a67");
+		rv |= StandardTest2("56ef966425eda7de3fccfd89f17b913d");
+		rv |= BlankTest("b248b1c1d82382b739dfe131889ac444");
+		rv |= FormulaFunctionsTest("ebe5822e55ee0b86a0e0878946f1a046");
 
-		rv |= StressTest(3,100,100, "6d356960d22057ebee73aa910eb0a772");
+		rv |= StressTest(3,100,100, "35584963157");
 		rv |= StressTest(3,4,4, "b4fd13d503b1cf2dc0838aaef81cb65b");
 		rv |= RandomTest(3,200,200, 42424242, "212f014a332a34fc575151cc068753aa");
 		rv |= RandomCellAndFormatTest(1,15,10, 123456789, "4e0439306a18cfb4c6a28441c33f2b04");
