@@ -418,7 +418,7 @@ CFont::CFont(CDataStorage &datastore, const font_t* fontdef):
 	AddValue8(fontdef->GetFamily());
 	AddValue8(fontdef->GetCharset());
 	AddValue8(FONT_RESERVED);
-	AddUnicodeString(fontdef->GetGlobalRecords(), fontdef->GetName(), LEN1_NOFLAGS_ASCII);
+	AddUnicodeString(fontdef->GetGlobalRecords(), fontdef->GetName(), LEN1_FLAGS_UNICODE);
 
 	SetRecordLength(GetDataSize()-4);
 }

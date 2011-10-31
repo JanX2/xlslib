@@ -627,11 +627,6 @@ signed8_t CUnit::AddUnicodeString(CGlobalRecords& gRecords, const std::string& s
 	
 	switch (fmt)
 	{
-	case LEN1_NOFLAGS_ASCII: // RECTYPE_FONT
-		strSize = 1;
-		strSize += 1;	// flags byte
-		break;
-
 	case LEN2_FLAGS_UNICODE: // RECTYPE_FORMAT, RECTYPE_LABEL -- 'regular'
 		strSize = 2;
 		strSize += 1;	// flags byte
@@ -679,13 +674,6 @@ signed8_t CUnit::AddUnicodeString(CGlobalRecords& gRecords, const std::string& s
 
    switch (fmt)
    {
-   case LEN1_NOFLAGS_ASCII: // RECTYPE_FONT
-	   XL_ASSERT(m_Store[m_Index].GetSize() > datasize);
-	   data[datasize++] = strLen & 0xFF;
-	   XL_ASSERT(m_Store[m_Index].GetSize() > datasize);
-	   data[datasize++] = 0x00;	// ASCII
-	   break;
-
    case LEN2_FLAGS_UNICODE: // RECTYPE_FORMAT, RECTYPE_LABEL -- 'regular'
 	   XL_ASSERT(m_Store[m_Index].GetSize() > datasize);
 	   data[datasize++] = strLen & 0xFF;
@@ -770,31 +758,6 @@ signed8_t CUnit::AddUnicodeString(CGlobalRecords& gRecords, const u16string& str
 
    switch (fmt)
    {
-   case LEN1_NOFLAGS_ASCII: // RECTYPE_FONT
-	   XL_ASSERT(m_Store[m_Index].GetSize() > datasize);
-	   data[datasize++] = strLen & 0xFF;
-	   if (!isASCII)
-	   {
-		   std::string s;
-
-		   gRecords.str16toascii(str16, s);
-		   
-		   std::string::const_iterator	b, e;
-
-		   b = s.begin();
-		   e = s.end();
-
-		   while(b != e) 
-		   {
-			   unsigned8_t c = (unsigned8_t)*b++;
-
-			   XL_ASSERT(m_Store[m_Index].GetSize() > datasize);
-			   data[datasize++] = c;
-		   }
-		   goto string_dump_done;
-	   }
-	   break;
-
    case LEN2_FLAGS_UNICODE: // RECTYPE_FORMAT, RECTYPE_LABEL -- 'regular'
 	   XL_ASSERT(m_Store[m_Index].GetSize() > datasize);
 	   data[datasize++] = strLen & 0xFF;
@@ -860,9 +823,6 @@ signed8_t CUnit::AddUnicodeString(CGlobalRecords& gRecords, const u16string& str
 			data[datasize++] = (c >> 8) & 0xFF;
 		}
 	}
-
-string_dump_done:
-
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
    m_Store[m_Index].SetDataSize(datasize);
 #endif
@@ -878,10 +838,6 @@ size_t CUnit::UnicodeStringLength(const u16string& str16, size_t& strLen, bool& 
 
 	switch (fmt)
 	{
-	case LEN1_NOFLAGS_ASCII: // RECTYPE_FONT
-		strSize += 1;
-		break;
-
 	case LEN2_FLAGS_UNICODE: // RECTYPE_FORMAT, RECTYPE_LABEL -- 'regular'
 		strSize += 2;
 		strSize += 1;	// flags byte
