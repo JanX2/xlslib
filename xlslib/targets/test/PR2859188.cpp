@@ -52,7 +52,6 @@ using namespace std;
 using namespace xlslib_core;
 
 
-
 int test1(const char *md5_checksum) 
 {
 	workbook book;
@@ -133,9 +132,9 @@ int main(int argc, char *argv[])
 
 	try
 	{
-		rv |= test1("58ee796a46fecde484910c9fd4703143");
-		rv |= test2("51b73d1cdeae8e738f8188858bcc36dd");
-		rv |= test3("ee8c0377ef3fa5c7f9c601f921e5a074");
+		rv |= test1("c9bfe0312f789f126880544eb23c9ebe");
+		rv |= test2("2699a70efadbc3eb795da07c8d010823");
+		rv |= test3("bdb9d4cd70b51b0400ea23fb983399c2");
 	}
 	catch (std::string &errmsg)
 	{
