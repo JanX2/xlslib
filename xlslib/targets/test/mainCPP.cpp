@@ -132,34 +132,6 @@ int main(int argc, char *argv[])
 		rv |= RandomCellAndFormatTestProf(1,15,10, 987654321, "d7a0c36c28b058bae27b3b90ab233876");
 		rv |= RandomFormatTest(1,15,10, 42004200, "5bb772aa3ae4ce6f15d5161bf8a81eab");
 
-    # md5: Actual= -- Expected="e54e3111cccf4eebbd5e12c682882a67"
-StandardTest failed: MD5 of generated XLS mismatch or I/O failure.
-    # md5: Actual= -- Expected="56ef966425eda7de3fccfd89f17b913d"
-StandardTest2 failed: MD5 of generated XLS mismatch or I/O failure.
-    # md5: Actual= -- Expected="b248b1c1d82382b739dfe131889ac444"
-BlankTest failed: MD5 of generated XLS mismatch or I/O failure.
-    # md5: Actual= -- Expected="ebe5822e55ee0b86a0e0878946f1a046"
-FormulaFunctionsTest failed: MD5 of generated XLS mismatch or I/O failure.
-    # Cell-stress test: 51 ms
-    # md5: Actual= -- Expected="35584963157b88d351b1c938faac166b"
-StressTest(3, 100, 100) failed: MD5 of generated XLS mismatch or I/O failure.
-    # Cell-stress test: 0 ms
-    # md5: Actual= -- Expected="33fa479a1f74f8c2cc7ffc4f0b38a747"
-StressTest(3, 4, 4) failed: MD5 of generated XLS mismatch or I/O failure.
-    # Random cell test: 119 ms
-    # md5: Actual= -- Expected="9f040f13f7b67cfa96deb9e3b1960ab6"
-RandomTest failed: MD5 of generated XLS mismatch or I/O failure.
-    # Random Cell and Format test: 2 ms
-    # md5: Actual= -- Expected="67a20998f4e94ffae7dd42df5742275f"
-RandomCellAndFormatTest failed: MD5 of generated XLS mismatch or I/O failure.
-    # md5: Actual= -- Expected="25d9e6959c6b58cf0ba9e17c41aa4ed4"
-RandomCellAndFormatTestProf failed: MD5 of generated XLS mismatch or I/O failure.
-    # Random Format test: 1 ms
-    # md5: Actual= -- Expected="ab6e60a9ee24fc9c89b707b0ba377cd6"
-RandomFormatTest failed: MD5 of generated XLS mismatch or I/O failure.
-    # Test finished
-FAIL: testCPP
-
 		std::cerr << "    # Test finished" << std::endl;
 	}
 	catch (std::string &errmsg)
