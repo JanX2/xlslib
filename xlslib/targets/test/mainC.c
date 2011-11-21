@@ -40,9 +40,15 @@
 #include "ac-config.win32.h"
 #endif
 
-
+#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <errno.h>
+#ifdef _X_DEBUG_
+#include <unistd.h>
+#endif
+
+
 #ifdef HAVE_STDINT_H	// [i_a] 
 #include <stdint.h>
 #endif
@@ -68,6 +74,8 @@ typedef enum
 
 #include "md5.h"
 
+extern void writeUnicodeLabel(worksheet *ws, unsigned int row, unsigned int col);
+extern void test_compile(void);
 
 static void my_xlslib_assertion_reporter(const char *expr, const char *filename, int lineno, const char *funcname)
 {
@@ -90,7 +98,7 @@ static void my_xlslib_assertion_reporter(const char *expr, const char *filename,
 }
 
 
-void writeUnicodeLabel(worksheet *ws, int row, int col)
+void writeUnicodeLabel(worksheet *ws, unsigned int row, unsigned int col)
 {
    const wchar_t *latin1wstr = L"\x0055\x006e\x0069\x0063\x006f\x0064\x0065\x0020\x0074\x0065\x0078\x0074\x0020\x00e3\x00f5\x00f1\x00e1\x00e9\x00fa\x00ed\x00f3\x002c\x00e0\x00e8\x00ec\x00f2\x00f9\x00e4\x00eb\x00ef\x00f6\x00fc\x00f1\x00e2\x00ea\x00ee\x00f4\x00fb";
    const wchar_t *wstr = L"\x3042\x3043"; // 2 Hiragana characters
@@ -133,6 +141,25 @@ int main(int argc, char *argv[])
 	workbook *w;
 	worksheet *ws;
 	int ret;
+	char check[40], *checkP = check;
+
+#ifdef _X_DEBUG_
+	// Used for internal testing
+	if(argc == 2) {
+		ret = chdir(argv[1]);
+		assert(!ret);
+	}
+#endif
+	{
+		FILE *fp = fopen("mainC.md5", "r");
+		if(fp) {
+			fscanf(fp, "%s", checkP);
+			fclose(fp);
+		} else {
+			strcpy(checkP, "00000000000000000000000000000000");
+		}
+		printf("MD5 = %s\n", checkP);
+	}
 
 	xlslib_register_assert_reporter(&my_xlslib_assertion_reporter);
 
@@ -146,7 +173,8 @@ int main(int argc, char *argv[])
 	writeUnicodeLabel(ws, 5, 1);
 	ret = xlsWorkbookDump(w, "testC.xls");
 
-	printf("    # saved it ret=%d!\n", ret);
+	printf("    # saved it ret=%d! errno=%s\n", ret, strerror(errno));
+
 	xlsDeleteWorkbook(w);
 
 	if (ret != NO_ERRORS)
@@ -154,17 +182,30 @@ int main(int argc, char *argv[])
 		fprintf(stderr, "%s failed: I/O failure %d.\n", argv[0], ret);
 		return EXIT_FAILURE;
 	}
-	if (0 != check_file("testC.xls", "d22f3a79a59762e4bd19a50cdb17953a"))
+	if ((checkP = check_file("testC.xls", checkP)))
 	{
 		fprintf(stderr, "%s failed: MD5 of generated XLS mismatch or I/O failure.\n", argv[0]);
+
+#ifdef _X_DEBUG_
+		if(argc == 2)
+		{
+			FILE *fp = fopen("mainC.md5", "w");
+			if(fp) {
+				fprintf(fp, "%s\n", checkP);
+				printf("UPDATE MD5 = %s\n", checkP);
+				fclose(fp);
+			} else {
+				printf("FAILED TO WRITE MD5\n");
+			}
+		}
+#endif
 		return EXIT_FAILURE;
 	}
-
 	return EXIT_SUCCESS;
 }
 
 
-#if 01
+#if 1
 
 /*
 only to test the compile and link phase: do we have 'em all?

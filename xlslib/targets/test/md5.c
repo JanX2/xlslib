@@ -374,7 +374,7 @@ int load_file(unsigned8_t **buf_ref, size_t *buflen_ref, const char *filepath)
 		bload = bsiz - blen;
 		bload = fread(b + blen, 1, bload, f);
 
-		if (bload < 0)
+		if ((signed32_t)bload < 0)
 			goto fail_dramatically;
 
 		blen += bload;
@@ -491,21 +491,23 @@ int mk_md5_4_file(char *md5_checksum, size_t md5_checksum_bufsize, const char *f
 	return 0;
 }
 
+static char digest[MD5_HEXSTRING_SIZE];
 
-int check_file(const char *filepath, const char *md5_checksum)
+char * check_file(const char *filepath, const char *md5_checksum)
 {
 	int rv;
-	char digest[MD5_HEXSTRING_SIZE];
 	
 	rv = mk_md5_4_file(digest, sizeof(digest), filepath);
 	if (rv != 0)
-		return -256;
+		return "File Not Found";
 
 	rv = strcasecmp(digest, md5_checksum);
 	if (rv)
 	{
 		printf("    # md5: Actual=\"%s\" -- Expected=\"%s\"\n", digest, md5_checksum);
+		return digest;
+	} else {
+		return NULL;
 	}
-	return rv;
 }
 

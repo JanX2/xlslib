@@ -46,6 +46,10 @@
 #include <stdio.h>
 #include <limits.h>
 
+#ifdef _X_DEBUG_
+#include <unistd.h>
+#endif
+
 using namespace std;
 using namespace xlslib_core;
 
@@ -66,7 +70,7 @@ static const bool PRINT_CELL_FORMAT	= 0;
 #define OPT_HIDDEN        7
 #define OPT_WRAP          8
 #define OPT_BORDERSTYLE   9
-#define OPT_MAX           9
+#define OPT_MAX           (unsigned32_t)9
 
 #define OPT_FONTHEIGHT      0 
 #define OPT_FONTBOLD        1 
@@ -77,7 +81,7 @@ static const bool PRINT_CELL_FORMAT	= 0;
 #define OPT_FONTSTRIKEOUT   6 
 #define OPT_FONTOUTLINE     7 
 #define OPT_FONTSHADOW      8 
-#define OPT_FONTMAX         8
+#define OPT_FONTMAX         (unsigned32_t)8
 
 // Macros
 #define TIMESPAN_START(id)                      \
@@ -88,51 +92,219 @@ static const bool PRINT_CELL_FORMAT	= 0;
    span_##id.StopClock();                                         \
    std::cerr<<"    # "<<str<<" "<<span_##id.GetUsedMilliseconds()<<" ms"<<std::endl
 
-int StressTest(int a,int b,int c, const char *md5_checksum);
-int RandomTest(int a,int b,int c, int random_seed, const char *md5_checksum);
+static char file_err[] = "00000000000000000000000000000000";
 
-int RandomCellAndFormatTest(int sheets_sz, int rows_sz, int cols_sz, int random_seed, const char *md5_checksum);
 static void RandomFormat(cell_t* cell, bool profile = false);
 static void RandomFontName(cell_t* cell, bool profile = false);
 static void RandomFontOption(cell_t* cell, bool profile = false);
+static void SeedRndNumber(unsigned32_t seed);
+static unsigned32_t GetRndNumber(unsigned32_t max);
 
-int RandomFormatTest(int sheets_sz, int rows_sz, int cols_sz, int random_seed, const char *md5_checksum);
-
-int RandomCellAndFormatTestProf(int sheets_sz, int rows_sz, int cols_sz, int random_seed, const char *md5_checksum);
-
-int StandardTest(const char *md5_checksum);
-int StandardTest2(const char *md5_checksum);
-int BlankTest(const char *md5_checksum);
-int FormulaFunctionsTest(const char *md5_checksum);
-
-static void SeedRndNumber(int seed);
-static int GetRndNumber(int max);
+char *StressTest(unsigned32_t a,unsigned32_t b,unsigned32_t c, const char *md5_checksum);
+char *RandomTest(unsigned32_t a,unsigned32_t b,unsigned32_t c, unsigned32_t random_seed, const char *md5_checksum);
+char *RandomCellAndFormatTest(unsigned32_t sheets_sz, unsigned32_t rows_sz, unsigned32_t cols_sz, unsigned32_t random_seed, const char *md5_checksum);
+char *RandomFormatTest(unsigned32_t sheets_sz, unsigned32_t rows_sz, unsigned32_t cols_sz, unsigned32_t random_seed, const char *md5_checksum);
+char *RandomCellAndFormatTestProf(unsigned32_t sheets_sz, unsigned32_t rows_sz, unsigned32_t cols_sz, unsigned32_t random_seed, const char *md5_checksum);
+char *StandardTest(const char *md5_checksum);
+char *StandardTest2(const char *md5_checksum);
+char *BlankTest(const char *md5_checksum);
+char *FormulaFunctionsTest(const char *md5_checksum);
 
 /*
 *********************************
 ********************************* 
 */
 
+#define NUM_TESTS	10
+
 int main(int argc, char *argv[])
 {
 	int rv = 0;
+	char check[NUM_TESTS][40];
 
+#ifdef _X_DEBUG_
+	// Used for internal testing
+	if(argc == 2) {
+		int ret = chdir(argv[1]);
+		assert(!ret);
+	}
+#endif
+	{
+		FILE *fp = fopen("mainCPP.md5", "r");
+		for(int i=0; i<NUM_TESTS; ++i) {
+			char *checkP = check[i];
+			if(fp) {
+				fscanf(fp, "%s", checkP);
+			} else {
+				strcpy(checkP, "00000000000000000000000000000000");
+			}
+			printf("MD5 = %s\n", checkP);
+		}
+		fclose(fp);
+	}
+	
 	try
 	{
+		int idx = 0;
+		int failed = 1;
+		char *checkP;
 		// comment and uncomment the below to try various tests
-		rv |= StandardTest("981526e4841610ae1340cf2a42443ec9");
-		rv |= StandardTest2("f3449484d266dd705a5d76a63865700b");
-		rv |= BlankTest("4eb98f8156b09f5563ec277082f63a0c");
-		rv |= FormulaFunctionsTest("7e62ecb418235c397863f1a4e0ecc4a1");
+#if 1
+		{
+			checkP = check[idx];
+			if((checkP = StandardTest(checkP)))
+			{
+				rv |= failed;
+#ifdef _X_DEBUG_
+				strcpy(check[idx], checkP);
+#endif
+			}
+		}
+#endif
+		failed <<= 1, ++idx;
+		
+#if 1
+		{
+			checkP = check[idx];
+			if((checkP = StandardTest2(checkP)))
+			{
+				rv |= failed;
+#ifdef _X_DEBUG_
+				strcpy(check[idx], checkP);
+#endif
+			}
+		}
+#endif				
+		failed <<= 1, ++idx;
+#if 1
+		{
+			checkP = check[idx];
+			if((checkP = BlankTest(checkP)))
+			{
+				rv |= failed;
+#ifdef _X_DEBUG_
+				strcpy(check[idx], checkP);
+#endif
+			}
+		}
+#endif				
+		failed <<= 1, ++idx;
 
-		rv |= StressTest(3,100,100, "f772f8d415c435833d114f328e0dfd11");
-		rv |= StressTest(3,4,4, "37f676419d5a48a9ceee00c85e0acebd");
-		rv |= RandomTest(3,200,200, 42424242, "8ac279d33c2a19113eaf1ff1145b3ad3");
-		rv |= RandomCellAndFormatTest(1,15,10, 123456789, "ae8ca9305464b1bb57d0decf0c0562c3");
-		rv |= RandomCellAndFormatTestProf(1,15,10, 987654321, "d7a0c36c28b058bae27b3b90ab233876");
-		rv |= RandomFormatTest(1,15,10, 42004200, "5bb772aa3ae4ce6f15d5161bf8a81eab");
+#if 1
+		{
+			checkP = check[idx];
+			if((checkP = FormulaFunctionsTest(checkP)))
+			{
+				rv |= failed;
+#ifdef _X_DEBUG_
+				strcpy(check[idx], checkP);
+#endif
+			}
+		}
+#endif				
+		failed <<= 1, ++idx;
+
+#if 1
+		{
+			checkP = check[idx];
+			if((checkP = StressTest(3,100,100, checkP)))
+			{
+				rv |= failed;
+#ifdef _X_DEBUG_
+				strcpy(check[idx], checkP);
+#endif
+			}
+		}
+#endif				
+		failed <<= 1, ++idx;
+
+#if 1
+		{
+			checkP = check[idx];
+			if((checkP = StressTest(3,4,4, checkP)))
+			{
+				rv |= failed;
+#ifdef _X_DEBUG_
+				strcpy(check[idx], checkP);
+#endif
+			}
+		}
+#endif				
+		failed <<= 1, ++idx;
+
+#if 1
+		{
+			checkP = check[idx];
+			if((checkP = RandomTest(3,200,200, 42424242, checkP)))
+			{
+				rv |= failed;
+#ifdef _X_DEBUG_
+				strcpy(check[idx], checkP);
+#endif
+			}
+		}
+#endif				
+		failed <<= 1, ++idx;
+
+#if 1
+		{
+			checkP = check[idx];
+			if((checkP = RandomCellAndFormatTest(1,15,10, 123456789, checkP)))
+			{
+				rv |= failed;
+#ifdef _X_DEBUG_
+				strcpy(check[idx], checkP);
+#endif
+			}
+		}
+#endif				
+		failed <<= 1, ++idx;
+
+#if 1
+		{
+			checkP = check[idx];
+			if((checkP = RandomCellAndFormatTestProf(1,15,10, 987654321, checkP)))
+			{
+				rv |= failed;
+#ifdef _X_DEBUG_
+				strcpy(check[idx], checkP);
+#endif
+			}
+		}
+#endif				
+		failed <<= 1, ++idx;
+
+#if 1
+		{
+			checkP = check[idx];
+			if((checkP = RandomFormatTest(1,15,10, 42004200, checkP)))
+			{
+				rv |= failed;
+#ifdef _X_DEBUG_
+				strcpy(check[idx], checkP);
+#endif
+			}
+		}
+#endif				
+		failed <<= 1, ++idx;
 
 		std::cerr << "    # Test finished" << std::endl;
+
+#ifdef _X_DEBUG_
+		if(rv && argc == 2) {
+			FILE *fp = fopen("mainCPP.md5", "w");
+			if(fp) {
+				for(int i=0; i<NUM_TESTS; ++i) {
+					checkP = check[i];
+					if(fp) {
+						fprintf(fp, "%s\n", checkP);
+					}
+					printf("MD5 = %s\n", checkP);
+				}
+				fclose(fp);
+			}
+		}
+#endif
 	}
 	catch (std::string &errmsg)
 	{
@@ -144,7 +316,7 @@ int main(int argc, char *argv[])
 	return (rv == 0 ? EXIT_SUCCESS : EXIT_FAILURE);
 }
 
-int StandardTest(const char *md5_checksum)
+char *StandardTest(const char *md5_checksum)
 {
    // Get the workbook handler
    workbook wb;
@@ -174,13 +346,13 @@ int StandardTest(const char *md5_checksum)
    printf("    # limit: "); 
    char buf[100];
    gets(buf);
-   int lim = atoi(buf);
+   unsigned32_t lim = atoi(buf);
 #else
-   int lim = 42;
+   unsigned32_t lim = 42;
 #endif
    printf("\n    # limit: %d\n", lim); // >= 14 --> error to load sheet #2; <= 13 = ok
 
-   int j, k;
+   unsigned32_t j, k;
 	for (j = 0 ; j <= 127; j++)
 	{
 		for (k = 0; k <= 128; k++)
@@ -200,56 +372,58 @@ int StandardTest(const char *md5_checksum)
    std::string s("This tab should should show three numbers: two in row 131/133 + one in row 132 at columns 129(DY)/173(FQ) respectively");
    sh->label(1,1,s);
 
-   int err = wb.Dump("./testCPP.xls");
+   int err = wb.Dump("testCPP.xls");
 
+   char *checkP = file_err;
    if (err != NO_ERRORS)
    {
 	   cerr << "StandardTest failed: I/O failure: " << err << std::endl;
-	   return -1;
+	   return checkP;
    }
-   if (0 != check_file("./testCPP.xls", md5_checksum))
+   if ((checkP = check_file("./testCPP.xls", md5_checksum)))
    {
 	   cerr << "StandardTest failed: MD5 of generated XLS mismatch or I/O failure." << std::endl;
-	   return -1;
    }
-	return 0;
+   return checkP;
 }
 
 
 
-int BlankTest(const char *md5_checksum)
+char *BlankTest(const char *md5_checksum)
 {
 	workbook wb;
 	wb.sheet("Sheet_01");
 	int err = wb.Dump("blank.xls");
 
+    char *checkP = file_err;
 	if (err != NO_ERRORS)
 	{
 		cerr << "BlankTest failed: I/O failure: " << err << std::endl;
-		return -1;
+		return checkP;
 	}
-	if (0 != check_file("blank.xls", md5_checksum))
+	if ((checkP = check_file("blank.xls", md5_checksum)))
 	{
 		cerr << "BlankTest failed: MD5 of generated XLS mismatch or I/O failure." << std::endl;
-		return -1;
 	}
-	return 0;
+	return checkP;
 }
 
 
-static expression_node_t *build_formula(int row, int col, worksheet *sh3, worksheet *sh4, int val, workbook &wb)
+static expression_node_t *build_formula(unsigned32_t row, unsigned32_t col, worksheet *sh3, worksheet *sh4, unsigned32_t val, workbook &wb)
 {
 	expression_node_factory_t& maker = wb.GetFormulaFactory();
 
+	if(!sh3) return NULL;
+	
 	cell_t *cref = sh4->FindCellOrMakeBlank(row+1, col+1);
 	assert(cref);
-	expression_node_t *root = maker.op(OP_ADD, maker.integer(val), maker.cell(*cref, sh4, CELL_RELATIVE_A1));
+	expression_node_t *root = maker.op(OP_ADD, maker.integer((signed32_t)val), maker.cell(*cref, sh4, CELL_RELATIVE_A1));
 	//expression_node_t *root = maker.integer(val);
 
 	return root;
 }
 
-int StandardTest2(const char *md5_checksum)
+char *StandardTest2(const char *md5_checksum)
 {
 	// Get the workbook handler
 	workbook wb;
@@ -278,7 +452,7 @@ int StandardTest2(const char *md5_checksum)
 
 	// WARNING: column and row numbers are zero based in xlslib, but Excel starts numbering the buggers at '1' instead!
 
-	int j, k;
+	unsigned32_t j, k;
 	for (j = 0 ; j <= 127; j++)
 	{
 		for (k = 0; k <= 128; k++)
@@ -294,7 +468,7 @@ int StandardTest2(const char *md5_checksum)
 				XLERR_N_A, // #N/A!
 			};
 
-			int v = (j + k) % (sizeof(errcvt)/sizeof(errcvt[0]));
+			unsigned32_t v = (j + k) % (sizeof(errcvt)/sizeof(errcvt[0]));
 			sh1->error(j + 4, k, errcvt[v]);
 
 			bool v2 = (((j + k) / 10) % 7 > 3) ^ ((128 * j + k) % 129 == 1);
@@ -306,44 +480,44 @@ int StandardTest2(const char *md5_checksum)
 			char buf[256];
 			sprintf(buf, "Remark item %d/%d/%d", j, k, v);
 
-			sh4->number(j + 4, k, v);
+			sh4->number(j + 4, k, (signed32_t)v);
 			//sh4->note(j + 4, k, buf, "GHO");
 		}
 	}
 
-	int err = wb.Dump("./testCPP2.xls");
+	int err = wb.Dump("testCPP2.xls");
 
+	char *checkP = file_err;
 	if (err != NO_ERRORS)
 	{
 		cerr << "StandardTest2 failed: I/O failure: " << err << std::endl;
-		return -1;
+		return file_err;
 	}
-	if (0 != check_file("./testCPP2.xls", md5_checksum))
+	if ((checkP = check_file("./testCPP2.xls", md5_checksum)))
 	{
 		cerr << "StandardTest2 failed: MD5 of generated XLS mismatch or I/O failure." << std::endl;
-		return -1;
 	}
-	return 0;
+	return checkP;
 }
 
 static unsigned32_t seed = 0;
 
-static void SeedRndNumber(int sv)
+static void SeedRndNumber(unsigned32_t sv)
 {
 	seed = sv;
 }
-static int GetRndNumber(int max)
+static unsigned32_t GetRndNumber(unsigned32_t max)
 {
 	// this is NOT a good random generator but suffices for our purposes!
 	seed *= 15482893;
 	seed %= 792241;
 
-	int rndnum;
-	rndnum = (int)(seed * ((max + 1.0) / (792241 - 1.0)));
+	unsigned32_t rndnum;
+	rndnum = (unsigned32_t)(seed * ((max + 1.0) / (792241 - 1.0)));
 	return rndnum;
 }
 
-static errcode_t PickErrorCode(int value)
+static errcode_t PickErrorCode(unsigned32_t value)
 {
 	static const errcode_t elist[] =
 	{
@@ -357,14 +531,14 @@ static errcode_t PickErrorCode(int value)
 	};
 	const double divider = (sizeof(elist[0]) * (double)INT_MAX) / sizeof(elist);
 
-	value = (int)(value / divider);
+	value = (unsigned32_t)(value / divider);
 	XL_ASSERT(value >= 0);
 	XL_ASSERT(value <= sizeof(elist)/sizeof(elist[0]));
 	return elist[value];
 }
 
 
-int RandomCellAndFormatTest(int sheets_sz, int rows_sz, int cols_sz, int random_seed, const char *md5_checksum)
+char *RandomCellAndFormatTest(unsigned32_t sheets_sz, unsigned32_t rows_sz, unsigned32_t cols_sz, unsigned32_t random_seed, const char *md5_checksum)
 {
    workbook wb;
    worksheet* sh;
@@ -373,33 +547,33 @@ int RandomCellAndFormatTest(int sheets_sz, int rows_sz, int cols_sz, int random_
 
    TIMESPAN_START(1);
 
-   for(int shnum = 0; shnum < sheets_sz; shnum++)
+   for(unsigned32_t shnum = 0; shnum < sheets_sz; shnum++)
    {
-	   char tmp[256];
+      char tmp[256];
 
 	  sprintf(tmp, "DUH_%d", shnum);
 	  string snamesheet(tmp);
 
       sh = wb.sheet(snamesheet);
 
-      for(int row = 0; row<rows_sz; row++)
+      for(unsigned32_t row=0; row<rows_sz; row++)
       {
 	     // height unit = point! Internally Excel works with 'twip': 1/20th of a point, but the interface works in /points/.
-         sh->rowheight(row,GetRndNumber(13)+20);
-         for(int col = 0; col<cols_sz; col++)
+         sh->rowheight(row, (unsigned16_t)(GetRndNumber(13)+20));
+         for(unsigned32_t col=0; col<cols_sz; col++)
          {
 		    // width unit = 1/256th of the width of '0'
-            sh->colwidth(row,GetRndNumber(2000)+4000);
+            sh->colwidth(row, (unsigned16_t)(GetRndNumber(2000)+4000));
 
-            int rndcol = GetRndNumber(rows_sz);
-            int rndrow = GetRndNumber(cols_sz);
+            unsigned32_t rndcol = GetRndNumber(rows_sz);
+            unsigned32_t rndrow = GetRndNumber(cols_sz);
 
 			sprintf(tmp, "S%d:%d-%d#%d-%d", shnum, row+1, col+1, rndrow, rndcol);
 			string snamelabel(tmp);
 
             cell_t* cell = sh->label(rndrow, rndcol, snamelabel);
 
-            int k, fmtries = GetRndNumber(OPT_MAX);
+            unsigned32_t k, fmtries = GetRndNumber(OPT_MAX);
             for(k = 0; k<fmtries; k++)
                RandomFormat(cell);
 
@@ -415,46 +589,46 @@ int RandomCellAndFormatTest(int sheets_sz, int rows_sz, int cols_sz, int random_
    int err = wb.Dump("rndcellandformat.xls");
    TIMESPAN_END(1,"Random Cell and Format test:");
 
+   char *checkP = file_err;
    if (err != NO_ERRORS)
    {
 	   cerr << "RandomCellAndFormatTest failed: I/O failure: " << err << std::endl;
-	   return -1;
+	   return file_err;
    }
-   if (0 != check_file("rndcellandformat.xls", md5_checksum))
+   if ((checkP = check_file("rndcellandformat.xls", md5_checksum)))
    {
 	   cerr << "RandomCellAndFormatTest failed: MD5 of generated XLS mismatch or I/O failure." << std::endl;
-	   return -1;
    }
-   return 0;
+   return checkP;
 }
 
-int RandomCellAndFormatTestProf(int sheets_sz, int rows_sz, int cols_sz, int random_seed, const char *md5_checksum)
+char *RandomCellAndFormatTestProf(unsigned32_t sheets_sz, unsigned32_t rows_sz, unsigned32_t cols_sz, unsigned32_t random_seed, const char *md5_checksum)
 {
    workbook wb;
    worksheet* sh;
 
    SeedRndNumber(random_seed);
 
-   for(int shnum = 0; shnum < sheets_sz; shnum++)
+   for(unsigned32_t shnum = 0; shnum < sheets_sz; shnum++)
    {
-	   char tmp[256];
+      char tmp[256];
 
 	  sprintf(tmp, "DUH_%d", shnum);
 	  string snamesheet(tmp);
 
       sh = wb.sheet(snamesheet);
 
-      for(int row = 0; row<rows_sz; row++)
+      for(unsigned32_t row = 0; row<rows_sz; row++)
       {
 	     // height unit = point! Internally Excel works with 'twip': 1/20th of a point, but the interface works in /points/.
-		  sh->rowheight(row,GetRndNumber(13)+20);
-		  for(int col = 0; col<cols_sz; col++)
+		  sh->rowheight(row,(unsigned16_t)(GetRndNumber(13)+20));
+		  for(unsigned32_t col = 0; col<cols_sz; col++)
 		  {
 			  // width unit = 1/256th of the width of '0'
-			  sh->colwidth(row,GetRndNumber(2000)+4000);
+            sh->colwidth(row, (unsigned16_t)(GetRndNumber(2000)+4000));
 
-            int rndcol = GetRndNumber(rows_sz);
-            int rndrow = GetRndNumber(cols_sz);
+            unsigned32_t rndcol = GetRndNumber(rows_sz);
+            unsigned32_t rndrow = GetRndNumber(cols_sz);
 
 			sprintf(tmp, "S%d:%d-%d#%d-%d", shnum, row+1, col+1, rndrow, rndcol);
 			string snamelabel(tmp);
@@ -472,7 +646,7 @@ int RandomCellAndFormatTestProf(int sheets_sz, int rows_sz, int cols_sz, int ran
             cout<<rndcol<<": ";
 			}
 
-			int k, fmtries = GetRndNumber(OPT_MAX);
+			unsigned32_t k, fmtries = GetRndNumber(OPT_MAX);
 
 			if (PRINT_CELL_FORMAT)
 			{
@@ -502,53 +676,53 @@ int RandomCellAndFormatTestProf(int sheets_sz, int rows_sz, int cols_sz, int ran
 
    int err = wb.Dump("rndcellandformat_prof.xls");
 
+   char *checkP = file_err;
    if (err != NO_ERRORS)
    {
 	   cerr << "RandomCellAndFormatTestProf failed: I/O failure: " << err << std::endl;
-	   return -1;
+	   return file_err;
    }
-   if (0 != check_file("rndcellandformat_prof.xls", md5_checksum))
+   if ((checkP = check_file("rndcellandformat_prof.xls", md5_checksum)))
    {
 	   cerr << "RandomCellAndFormatTestProf failed: MD5 of generated XLS mismatch or I/O failure." << std::endl;
-	   return -1;
    }
-   return 0;
+   return checkP;
 }
 
 
-int RandomFormatTest(int sheets_sz, int rows_sz, int cols_sz, int random_seed, const char *md5_checksum)
+char *RandomFormatTest(unsigned32_t sheets_sz, unsigned32_t rows_sz, unsigned32_t cols_sz, unsigned32_t random_seed, const char *md5_checksum)
 {
    SeedRndNumber(random_seed);
 
    TIMESPAN_START(1);
 
-      workbook wb;
+   workbook wb;
    worksheet* sh;
 
-   for(int shnum = 0; shnum < sheets_sz; shnum++)
+   for(unsigned32_t shnum = 0; shnum < sheets_sz; shnum++)
    {
-	   char tmp[256];
+      char tmp[256];
 
 	  sprintf(tmp, "DUH_%d", shnum);
 	  string snamesheet(tmp);
 
       sh = wb.sheet(snamesheet);
 
-      for(int row = 0; row<rows_sz; row++)
+      for(unsigned32_t row = 0; row<rows_sz; row++)
       {
 	     // height unit = point! Internally Excel works with 'twip': 1/20th of a point, but the interface works in /points/.
-		  sh->rowheight(row,GetRndNumber(13)+20);
-		  for(int col = 0; col<cols_sz; col++)
+		  sh->rowheight(row, (unsigned16_t)(GetRndNumber(13)+20));
+		  for(unsigned32_t col=0; col<cols_sz; col++)
 		  {
 			  // width unit = 1/256th of the width of '0'
-			  sh->colwidth(row,GetRndNumber(2000)+4000);
+            sh->colwidth(row, (unsigned16_t)(GetRndNumber(2000)+4000));
 
 			sprintf(tmp, "S%d:%d-%d", shnum, row+1, col+1);
 			string snamelabel(tmp);
 
             cell_t* cell = sh->label(row, col, snamelabel);
 
-            int k, fmtries = GetRndNumber(OPT_MAX);
+            unsigned32_t k, fmtries = GetRndNumber(OPT_MAX);
             for(k = 0; k<fmtries; k++)
                RandomFormat(cell);
 
@@ -564,17 +738,17 @@ int RandomFormatTest(int sheets_sz, int rows_sz, int cols_sz, int random_seed, c
    int err = wb.Dump("rndformat.xls");
    TIMESPAN_END(1,"Random Format test:");
 
+   char *checkP = file_err;
    if (err != NO_ERRORS)
    {
 	   cerr << "RandomFormatTest failed: I/O failure: " << err << std::endl;
-	   return -1;
+	   return checkP;
    }
-   if (0 != check_file("rndformat.xls", md5_checksum))
+   if ((checkP = check_file("rndformat.xls", md5_checksum)))
    {
 	   cerr << "RandomFormatTest failed: MD5 of generated XLS mismatch or I/O failure." << std::endl;
-	   return -1;
    }
-   return 0;
+   return checkP;
 }
 
 
@@ -765,28 +939,28 @@ static void RandomFontOption(cell_t* cell, bool profile)
       }
       case OPT_FONTBOLD:
       {
-         int bold = GetRndNumber((int)BOLDNESS_DOUBLE);
+         int bold = GetRndNumber((unsigned32_t)BOLDNESS_DOUBLE);
          cell->fontbold((boldness_option_t)bold);
          if(profile) cout<<"Bold "<<BOLD[bold]<<", ";         
          break;
       }
       case OPT_FONTUNDERLINE:
       {
-         int ul = GetRndNumber((int)UNDERLINE_DOUBLEACC);
+         int ul = GetRndNumber((unsigned32_t)UNDERLINE_DOUBLEACC);
          cell->fontunderline((underline_option_t)ul);
          if(profile) cout<<"Underline "<<UNDERLINE[ul]<<", ";          
          break;
       }
       case OPT_FONTSCRIPT:
       {
-         int script = GetRndNumber((int)SCRIPT_SUB);
+         int script = GetRndNumber((unsigned32_t)SCRIPT_SUB);
          cell->fontscript((script_option_t)script);
          if(profile) cout<<"Script "<<SCRIPT[script]<<", ";       
          break;
       }
       case OPT_FONTCOLOR:
       {
-         int color = GetRndNumber((int)CLR_WHITE);
+         int color = GetRndNumber((unsigned32_t)CLR_WHITE);
          cell->fontcolor((color_name_t)color);
          if(profile) cout<<"Font color "<<COLOR[color]<<", ";         
          break;
@@ -978,7 +1152,7 @@ static void RandomFormat(cell_t* cell, bool profile)
 *********************************
 *********************************
 */
-int StressTest(int sheets_sz, int rows_sz, int cols_sz, const char *md5_checksum)
+char *StressTest(unsigned32_t sheets_sz, unsigned32_t rows_sz, unsigned32_t cols_sz, const char *md5_checksum)
 {
    // Get the workbook handler
    workbook swb;
@@ -986,7 +1160,7 @@ int StressTest(int sheets_sz, int rows_sz, int cols_sz, const char *md5_checksum
    xf_t* sxf1 = swb.xformat();
 
    worksheet* ssh;
-   for(int sshnum = 0; sshnum < sheets_sz; sshnum++)
+   for(unsigned32_t sshnum = 0; sshnum < sheets_sz; sshnum++)
    {
       char* snum = (char*)malloc(42);
       sprintf(snum,"_%d",sshnum);
@@ -999,9 +1173,9 @@ int StressTest(int sheets_sz, int rows_sz, int cols_sz, const char *md5_checksum
 
       free(snum);
 
-      for(int srow = rows_sz; srow>=0; srow--)
+      for(unsigned32_t srow = rows_sz; (signed32_t)srow>=0; srow--)
 	  {
-         for(int scol = cols_sz; scol>=0; scol--)
+         for(unsigned32_t scol = cols_sz; (signed32_t)scol>=0; scol--)
          {
             char *slabel = (char*) malloc(42);
             sprintf(slabel,"s%d: %d_%d",sshnum,srow,scol);
@@ -1019,17 +1193,17 @@ int StressTest(int sheets_sz, int rows_sz, int cols_sz, const char *md5_checksum
    int err = swb.Dump(fnamebuf);
    TIMESPAN_END(1,"Cell-stress test:");
 
+   char *checkP = file_err;
    if (err != NO_ERRORS)
    {
 	   cerr << "StressTest(" << sheets_sz << ", " << rows_sz << ", " << cols_sz << ") failed: I/O failure: " << err << std::endl;
-	   return -1;
+	   return file_err;
    }
-   if (0 != check_file(fnamebuf, md5_checksum))
+   if ((checkP = check_file(fnamebuf, md5_checksum)))
    {
 	   cerr << "StressTest(" << sheets_sz << ", " << rows_sz << ", " << cols_sz << ") failed: MD5 of generated XLS mismatch or I/O failure." << std::endl;
-	   return -1;
    }
-   return 0;
+   return checkP;
 }
 
 /*
@@ -1037,7 +1211,7 @@ int StressTest(int sheets_sz, int rows_sz, int cols_sz, const char *md5_checksum
 *********************************
 */
 
-int RandomTest(int sheets_sz, int rows_sz, int cols_sz, int random_seed, const char *md5_checksum)
+char *RandomTest(unsigned32_t sheets_sz, unsigned32_t rows_sz, unsigned32_t cols_sz, unsigned32_t random_seed, const char *md5_checksum)
 {
    SeedRndNumber(random_seed);
    TIMESPAN_START(1);
@@ -1046,9 +1220,8 @@ int RandomTest(int sheets_sz, int rows_sz, int cols_sz, int random_seed, const c
 
    xf_t* sxf1 = swb.xformat();
 
-
    worksheet* ssh;
-   for(int sshnum = 0; sshnum < sheets_sz; sshnum++)
+   for(unsigned32_t sshnum = 0; sshnum < sheets_sz; sshnum++)
    {
       char* snum = (char*)malloc(42);
       sprintf(snum,"_%d",sshnum);
@@ -1057,12 +1230,12 @@ int RandomTest(int sheets_sz, int rows_sz, int cols_sz, int random_seed, const c
       ssh = swb.sheet(snamesheet);
       free(snum);
 
-      for(int srow = 0; srow<rows_sz; srow++)
+      for(unsigned32_t srow = 0; srow<rows_sz; srow++)
 	  {
-         for(int scol = 0; scol<cols_sz; scol++)
+         for(unsigned32_t scol = 0; scol<cols_sz; scol++)
          {
-            int rndcol, rndrow;
-			int koc = GetRndNumber(6);
+            unsigned32_t rndcol, rndrow;
+			unsigned32_t koc = GetRndNumber((unsigned32_t)6);
 
             rndcol = GetRndNumber(cols_sz - 1);
             rndrow = GetRndNumber(rows_sz - 1);
@@ -1081,7 +1254,7 @@ int RandomTest(int sheets_sz, int rows_sz, int cols_sz, int random_seed, const c
 
 			case 1: // integer (most probably; depends a bit: large ints end up as float anyhow in there
 				{
-					ssh->number(rndrow,rndcol,GetRndNumber(INT_MAX) - INT_MAX/2,sxf1);
+					ssh->number(rndrow,rndcol,(signed32_t)(GetRndNumber(INT_MAX) - INT_MAX/2),sxf1);
 				}
 				break;
 
@@ -1105,7 +1278,7 @@ int RandomTest(int sheets_sz, int rows_sz, int cols_sz, int random_seed, const c
 
 			case 5: // err
 				{
-					ssh->error(rndrow,rndcol,PickErrorCode(GetRndNumber(INT_MAX)), sxf1);
+					ssh->error(rndrow,rndcol,PickErrorCode(GetRndNumber((unsigned32_t)INT_MAX)), sxf1);
 				}
 				break;
 			}
@@ -1117,18 +1290,17 @@ int RandomTest(int sheets_sz, int rows_sz, int cols_sz, int random_seed, const c
    TIMESPAN_END(1,"Random cell test:");
 
    // cannot MD5 the file; not a real unit test, this one...
-
+   char *checkP = file_err;
    if (err != NO_ERRORS)
    {
 	   cerr << "RandomTest failed: I/O failure: " << err << std::endl;
-	   return -1;
+	   return checkP;
    }
-   if (0 != check_file("random.xls", md5_checksum))
+   if ((checkP = check_file("random.xls", md5_checksum)))
    {
 	   cerr << "RandomTest failed: MD5 of generated XLS mismatch or I/O failure." << std::endl;
-	   return -1;
    }
-   return 0;
+   return checkP;
 }
 
 
@@ -1671,7 +1843,7 @@ static const struct
 };
 
 
-int FormulaFunctionsTest(const char *md5_checksum)
+char *FormulaFunctionsTest(const char *md5_checksum)
 {
 	workbook wb;
 	worksheet* sh[4];
@@ -1681,11 +1853,11 @@ int FormulaFunctionsTest(const char *md5_checksum)
 	sh[2] = wb.sheet("2010");
 	sh[3] = wb.sheet("Formulas_04");
 
-	const int number_of_builtin_functions = sizeof(function_arr) / sizeof(function_arr[0]);
+	const unsigned32_t number_of_builtin_functions = sizeof(function_arr) / sizeof(function_arr[0]);
 
-	int row = 4;
+	unsigned32_t row = 4;
 	worksheet* cur_sh = sh[0];
-	for (int r = 0; r < number_of_builtin_functions; r++)
+	for (unsigned32_t r = 0; r < number_of_builtin_functions; r++)
 	{
 		expr_function_code_t fn = function_arr[r].code;
 		if (FUNC_BAHTTEXT == fn)
@@ -1746,7 +1918,7 @@ int FormulaFunctionsTest(const char *md5_checksum)
 		row++;
 	}
 
-	for (int i = 0; i < 4; i++)
+	for (unsigned32_t i = 0; i < 4; i++)
 	{
 		sh[i]->label(1, 0, "function name");
 		sh[i]->label(0, 1, "argument count");
@@ -1758,17 +1930,17 @@ int FormulaFunctionsTest(const char *md5_checksum)
 
 	int err = wb.Dump("formulas.xls");
 
+    char *checkP = file_err;
 	if (err != NO_ERRORS)
 	{
 		cerr << "FormulaFunctionsTest failed: I/O failure: " << err << std::endl;
-		return -1;
+		return checkP;
 	}
-	if (0 != check_file("formulas.xls", md5_checksum))
+	if ((checkP = check_file("formulas.xls", md5_checksum)))
 	{
 		cerr << "FormulaFunctionsTest failed: MD5 of generated XLS mismatch or I/O failure." << std::endl;
-		return -1;
 	}
-	return 0;
+	return checkP;
 }
 
 

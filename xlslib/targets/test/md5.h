@@ -84,10 +84,10 @@ Check whether the given file has the given MD5 checksum (which is passed in prin
 lowercase text in the @a md5_checksum parameter).
 
 @return 0 when the MD5 matches the file, otherwise a non-zero value is returned. The
-value -256 indicates that a load/memory failure occurred, while other non-zero
+value "File Not Found" indicates that a load/memory failure occurred, while other non-zero
 return values are due to an MD5 mismatch.
 */
-int check_file(const char *filepath, const char *md5_checksum);
+char * check_file(const char *filepath, const char *md5_checksum);
 
 
 
