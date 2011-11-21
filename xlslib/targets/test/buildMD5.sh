@@ -1,9 +1,9 @@
 #!/bin/sh
 
-./testMainC /Volumes/Data/Users/dhoerl/Development/xlslib/svn/trunk/xlslib/targets/test
-./testMainCPP /Volumes/Data/Users/dhoerl/Development/xlslib/svn/trunk/xlslib/targets/test
+./testC /Volumes/Data/Users/dhoerl/Development/xlslib/svn/trunk/xlslib/targets/test
+./testCPP /Volumes/Data/Users/dhoerl/Development/xlslib/svn/trunk/xlslib/targets/test
 ./PR2859188 /Volumes/Data/Users/dhoerl/Development/xlslib/svn/trunk/xlslib/targets/test
-./PR3076678 /Volumes/Data/Users/dhoerl/Development/xlslib/svn/trunk/xlslib/targets/test
+#./PR3076678 /Volumes/Data/Users/dhoerl/Development/xlslib/svn/trunk/xlslib/targets/test
 
 
 
