@@ -159,7 +159,7 @@ int main(int argc, char *argv[])
 			} else {
 				strcpy(checkP, "00000000000000000000000000000000");
 			}
-			printf("MD5 = %s\n", checkP);
+			//printf("MD5 = %s\n", checkP);
 		}
 		fclose(fp);
 	}
