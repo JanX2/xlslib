@@ -34,9 +34,9 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-noinst_PROGRAMS = testCPP$(EXEEXT) testC$(EXEEXT) PR2859188$(EXEEXT)
-check_PROGRAMS = testCPP$(EXEEXT) testC$(EXEEXT) PR2859188$(EXEEXT)
-TESTS = testCPP$(EXEEXT) testC$(EXEEXT) PR2859188$(EXEEXT)
+noinst_PROGRAMS = testCPP$(EXEEXT) testC$(EXEEXT) PR2859188$(EXEEXT) PR3076678$(EXEEXT)
+check_PROGRAMS = testCPP$(EXEEXT) testC$(EXEEXT) PR2859188$(EXEEXT) PR3076678$(EXEEXT)
+TESTS = testCPP$(EXEEXT) testC$(EXEEXT) PR2859188$(EXEEXT) PR3076678$(EXEEXT)
 subdir = targets/test
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -58,6 +58,14 @@ CONFIG_HEADER = $(top_builddir)/src/common/xlconfig.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 PROGRAMS = $(noinst_PROGRAMS)
+ PR3076678$(EXEEXT)
+ 
+am_PR3076678_OBJECTS = PR3076678.$(OBJEXT) md5.$(OBJEXT)
+PR3076678_OBJECTS = $(am_PR3076678_OBJECTS)
+PR3076678_DEPENDENCIES = $(top_builddir)/src/libxls.la
+PR3076678_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
+	$(CXXFLAGS) $(PR3076678_LDFLAGS) $(LDFLAGS) -o $@
 am_PR2859188_OBJECTS = PR2859188.$(OBJEXT) md5.$(OBJEXT)
 PR2859188_OBJECTS = $(am_PR2859188_OBJECTS)
 PR2859188_DEPENDENCIES = $(top_builddir)/src/libxls.la
@@ -98,9 +106,8 @@ CXXLD = $(CXX)
 CXXLINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-SOURCES = $(PR2859188_SOURCES) $(testC_SOURCES) $(testCPP_SOURCES)
-DIST_SOURCES = $(PR2859188_SOURCES) $(testC_SOURCES) \
-	$(testCPP_SOURCES)
+SOURCES = $(PR3076678_SOURCES) $(PR2859188_SOURCES) $(testC_SOURCES) $(testCPP_SOURCES)
+DIST_SOURCES = $(PR3076678_SOURCES) $(PR2859188_SOURCES) $(testC_SOURCES) $(testCPP_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 # If stdout is a non-dumb tty, use colors.  If test -t is not supported,
@@ -254,6 +261,10 @@ testC_LDFLAGS = -static -lstdc++
 PR2859188_SOURCES = PR2859188.cpp md5.c
 PR2859188_LDADD = $(top_builddir)/src/libxls.la 
 PR2859188_LDFLAGS = -static -lstdc++
+PR3076678_SOURCES = PR3076678.cpp md5.c
+PR3076678_LDADD = $(top_builddir)/src/libxls.la 
+PR3076678_LDFLAGS = -static -lstdc++
+
 all: all-am
 
 .SUFFIXES:
@@ -306,6 +317,12 @@ clean-noinstPROGRAMS:
 	list=`for p in $$list; do echo "$$p"; done | sed 's/$(EXEEXT)$$//'`; \
 	echo " rm -f" $$list; \
 	rm -f $$list
+	
+
+
+PR3076678$(EXEEXT): $(PR3076678_OBJECTS) $(PR3076678_DEPENDENCIES) 
+	@rm -f PR3076678$(EXEEXT)
+	$(PR3076678_LINK) $(PR3076678_OBJECTS) $(PR3076678_LDADD) $(LIBS)
 PR2859188$(EXEEXT): $(PR2859188_OBJECTS) $(PR2859188_DEPENDENCIES) 
 	@rm -f PR2859188$(EXEEXT)
 	$(PR2859188_LINK) $(PR2859188_OBJECTS) $(PR2859188_LDADD) $(LIBS)
@@ -322,6 +339,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PR3076678.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/PR2859188.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mainC.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mainCPP.Po@am__quote@
