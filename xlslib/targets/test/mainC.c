@@ -67,7 +67,6 @@ typedef enum
 #include <sys/types.h>
 #endif
 
-
 //#define RANGE_FEATURE
 #include <xlslib.h>
 
@@ -141,23 +140,29 @@ int main(int argc, char *argv[])
 	worksheet *ws;
 	int ret;
 	char check[40], *checkP = check;
-
-#ifdef _X_DEBUG_
+	char fileName[128];
+	
+	fileName[0] = 0;
+	
 	// Used for internal testing
 	if(argc == 2) {
-		ret = chdir(argv[1]);
-		assert(!ret);
-	}
+#ifdef _X_DEBUG_
+		chdir(argv[1]);
 #endif
+		strcpy(fileName, argv[1]);
+		strcat(fileName, "/");		
+	}
+	strcat(fileName, "mainC.md5");
+	
 	{
-		FILE *fp = fopen("mainC.md5", "r");
+		FILE *fp = fopen(fileName, "r");
 		if(fp) {
 			fscanf(fp, "%s", checkP);
 			fclose(fp);
 		} else {
 			strcpy(checkP, "00000000000000000000000000000000");
 		}
-		printf("MD5 = %s\n", checkP);
+		//printf("MD5 = %s\n", checkP);
 	}
 
 	xlslib_register_assert_reporter(&my_xlslib_assertion_reporter);
@@ -172,7 +177,7 @@ int main(int argc, char *argv[])
 	writeUnicodeLabel(ws, 5, 1);
 	ret = xlsWorkbookDump(w, "testC.xls");
 
-	printf("    # saved it ret=%d! errno=%s\n", ret, strerror(errno));
+	printf("    # saved it ret=%d errno=%s\n", ret, strerror(errno));
 
 	xlsDeleteWorkbook(w);
 
@@ -185,10 +190,9 @@ int main(int argc, char *argv[])
 	{
 		fprintf(stderr, "%s failed: MD5 of generated XLS mismatch or I/O failure.\n", argv[0]);
 
-#ifdef _X_DEBUG_
 		if(argc == 2)
 		{
-			FILE *fp = fopen("mainC.md5", "w");
+			FILE *fp = fopen(fileName, "w");
 			if(fp) {
 				fprintf(fp, "%s\n", checkP);
 				printf("UPDATE MD5 = %s\n", checkP);
@@ -197,7 +201,6 @@ int main(int argc, char *argv[])
 				printf("FAILED TO WRITE MD5\n");
 			}
 		}
-#endif
 		return EXIT_FAILURE;
 	}
 	return EXIT_SUCCESS;

@@ -74,16 +74,22 @@ char *BorderTest(const char *md5_checksum)
 int main(int argc, char *argv[]) 
 {
 	int rv = 0;
+	char fileName[128];
 	
-#ifdef _X_DEBUG_
+	fileName[0] = 0;
+
 	// Used for internal testing
 	if(argc == 2) {
-		int ret = chdir(argv[1]);
-		XL_ASSERT(!ret);
-	}
+#ifdef _X_DEBUG_
+		chdir(argv[1]);
 #endif
+		strcpy(fileName, argv[1]);
+		strcat(fileName, "/");		
+	}
+	strcat(fileName, "PR3076678.md5");
+	
 	{
-		FILE *fp = fopen("PR3076678.md5", "r");
+		FILE *fp = fopen(fileName, "r");
 		for(int i=0; i<NUM_TESTS; ++i) {
 			char *checkP = check[i];
 			if(fp) {
@@ -108,9 +114,7 @@ int main(int argc, char *argv[])
 			if((checkP = BorderTest(checkP)))
 			{
 				rv |= failed;
-#ifdef _X_DEBUG_
 				strcpy(check[idx], checkP);
-#endif
 			}
 		}
 #endif
@@ -123,21 +127,19 @@ int main(int argc, char *argv[])
 		rv = 1;
 	}
 
-#ifdef _X_DEBUG_
-		if(rv && argc == 2) {
-			FILE *fp = fopen("PR3076678.md5", "w");
-			if(fp) {
-				for(int i=0; i<NUM_TESTS; ++i) {
-					char *checkP = check[i];
-					if(fp) {
-						fprintf(fp, "%s\n", checkP);
-					}
-					printf("MD5 = %s\n", checkP);
+	if(rv && argc == 2) {
+		FILE *fp = fopen(fileName, "w");
+		if(fp) {
+			for(int i=0; i<NUM_TESTS; ++i) {
+				char *checkP = check[i];
+				if(fp) {
+					fprintf(fp, "%s\n", checkP);
 				}
-				fclose(fp);
+				printf("MD5 = %s\n", checkP);
 			}
+			fclose(fp);
 		}
-#endif
+	}
 	
 	return (rv == 0 ? EXIT_SUCCESS : EXIT_FAILURE);
 }

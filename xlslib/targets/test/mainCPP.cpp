@@ -46,10 +46,6 @@
 #include <stdio.h>
 #include <limits.h>
 
-#ifdef _X_DEBUG_
-#include <unistd.h>
-#endif
-
 using namespace std;
 using namespace xlslib_core;
 
@@ -121,16 +117,22 @@ int main(int argc, char *argv[])
 {
 	int rv = 0;
 	char check[NUM_TESTS][40];
+	char fileName[128];
+	
+	fileName[0] = 0;
 
-#ifdef _X_DEBUG_
 	// Used for internal testing
 	if(argc == 2) {
-		int ret = chdir(argv[1]);
-		assert(!ret);
-	}
+#ifdef _X_DEBUG_
+		chdir(argv[1]);
 #endif
+		strcpy(fileName, argv[1]);
+		strcat(fileName, "/");		
+	}
+	strcat(fileName, "mainCPP.md5");
+	
 	{
-		FILE *fp = fopen("mainCPP.md5", "r");
+		FILE *fp = fopen(fileName, "r");
 		for(int i=0; i<NUM_TESTS; ++i) {
 			char *checkP = check[i];
 			if(fp) {
@@ -155,9 +157,7 @@ int main(int argc, char *argv[])
 			if((checkP = StandardTest(checkP)))
 			{
 				rv |= failed;
-#ifdef _X_DEBUG_
 				strcpy(check[idx], checkP);
-#endif
 			}
 		}
 #endif
@@ -169,9 +169,7 @@ int main(int argc, char *argv[])
 			if((checkP = StandardTest2(checkP)))
 			{
 				rv |= failed;
-#ifdef _X_DEBUG_
 				strcpy(check[idx], checkP);
-#endif
 			}
 		}
 #endif				
@@ -182,9 +180,7 @@ int main(int argc, char *argv[])
 			if((checkP = BlankTest(checkP)))
 			{
 				rv |= failed;
-#ifdef _X_DEBUG_
 				strcpy(check[idx], checkP);
-#endif
 			}
 		}
 #endif				
@@ -196,9 +192,7 @@ int main(int argc, char *argv[])
 			if((checkP = FormulaFunctionsTest(checkP)))
 			{
 				rv |= failed;
-#ifdef _X_DEBUG_
 				strcpy(check[idx], checkP);
-#endif
 			}
 		}
 #endif				
@@ -210,9 +204,7 @@ int main(int argc, char *argv[])
 			if((checkP = StressTest(3,100,100, checkP)))
 			{
 				rv |= failed;
-#ifdef _X_DEBUG_
 				strcpy(check[idx], checkP);
-#endif
 			}
 		}
 #endif				
@@ -224,9 +216,7 @@ int main(int argc, char *argv[])
 			if((checkP = StressTest(3,4,4, checkP)))
 			{
 				rv |= failed;
-#ifdef _X_DEBUG_
 				strcpy(check[idx], checkP);
-#endif
 			}
 		}
 #endif				
@@ -238,9 +228,7 @@ int main(int argc, char *argv[])
 			if((checkP = RandomTest(3,200,200, 42424242, checkP)))
 			{
 				rv |= failed;
-#ifdef _X_DEBUG_
 				strcpy(check[idx], checkP);
-#endif
 			}
 		}
 #endif				
@@ -252,9 +240,7 @@ int main(int argc, char *argv[])
 			if((checkP = RandomCellAndFormatTest(1,15,10, 123456789, checkP)))
 			{
 				rv |= failed;
-#ifdef _X_DEBUG_
 				strcpy(check[idx], checkP);
-#endif
 			}
 		}
 #endif				
@@ -266,9 +252,7 @@ int main(int argc, char *argv[])
 			if((checkP = RandomCellAndFormatTestProf(1,15,10, 987654321, checkP)))
 			{
 				rv |= failed;
-#ifdef _X_DEBUG_
 				strcpy(check[idx], checkP);
-#endif
 			}
 		}
 #endif				
@@ -280,9 +264,7 @@ int main(int argc, char *argv[])
 			if((checkP = RandomFormatTest(1,15,10, 42004200, checkP)))
 			{
 				rv |= failed;
-#ifdef _X_DEBUG_
 				strcpy(check[idx], checkP);
-#endif
 			}
 		}
 #endif				
@@ -290,9 +272,8 @@ int main(int argc, char *argv[])
 
 		std::cerr << "    # Test finished" << std::endl;
 
-#ifdef _X_DEBUG_
 		if(rv && argc == 2) {
-			FILE *fp = fopen("mainCPP.md5", "w");
+			FILE *fp = fopen(fileName, "w");
 			if(fp) {
 				for(int i=0; i<NUM_TESTS; ++i) {
 					checkP = check[i];
@@ -304,7 +285,6 @@ int main(int argc, char *argv[])
 				fclose(fp);
 			}
 		}
-#endif
 	}
 	catch (std::string &errmsg)
 	{
@@ -532,7 +512,7 @@ static errcode_t PickErrorCode(unsigned32_t value)
 	const double divider = (sizeof(elist[0]) * (double)INT_MAX) / sizeof(elist);
 
 	value = (unsigned32_t)(value / divider);
-	XL_ASSERT(value >= 0);
+	XL_ASSERT((signed32_t)value >= 0);
 	XL_ASSERT(value <= sizeof(elist)/sizeof(elist[0]));
 	return elist[value];
 }
@@ -939,28 +919,28 @@ static void RandomFontOption(cell_t* cell, bool profile)
       }
       case OPT_FONTBOLD:
       {
-         int bold = GetRndNumber((unsigned32_t)BOLDNESS_DOUBLE);
+         unsigned32_t bold = GetRndNumber((unsigned32_t)BOLDNESS_DOUBLE);
          cell->fontbold((boldness_option_t)bold);
          if(profile) cout<<"Bold "<<BOLD[bold]<<", ";         
          break;
       }
       case OPT_FONTUNDERLINE:
       {
-         int ul = GetRndNumber((unsigned32_t)UNDERLINE_DOUBLEACC);
+         unsigned32_t ul = GetRndNumber((unsigned32_t)UNDERLINE_DOUBLEACC);
          cell->fontunderline((underline_option_t)ul);
          if(profile) cout<<"Underline "<<UNDERLINE[ul]<<", ";          
          break;
       }
       case OPT_FONTSCRIPT:
       {
-         int script = GetRndNumber((unsigned32_t)SCRIPT_SUB);
+         unsigned32_t script = GetRndNumber((unsigned32_t)SCRIPT_SUB);
          cell->fontscript((script_option_t)script);
          if(profile) cout<<"Script "<<SCRIPT[script]<<", ";       
          break;
       }
       case OPT_FONTCOLOR:
       {
-         int color = GetRndNumber((unsigned32_t)CLR_WHITE);
+         unsigned32_t color = GetRndNumber((unsigned32_t)CLR_WHITE);
          cell->fontcolor((color_name_t)color);
          if(profile) cout<<"Font color "<<COLOR[color]<<", ";         
          break;
@@ -1075,7 +1055,7 @@ static void RandomFormat(cell_t* cell, bool profile)
    {
       case OPT_HALIGN:
       {
-         int ha = GetRndNumber((int)HALIGN_CENTERACCROSS);
+         unsigned32_t ha = GetRndNumber((int)HALIGN_CENTERACCROSS);
          cell->halign((halign_option_t)ha);
          if(profile) cout<<"Halign "<<HALIGN[ha]<<", ";
          break;
@@ -1083,7 +1063,7 @@ static void RandomFormat(cell_t* cell, bool profile)
 
       case OPT_VALIGN:
       {
-         int va = GetRndNumber((int)VALIGN_JUSTIFY);
+         unsigned32_t va = GetRndNumber((int)VALIGN_JUSTIFY);
          cell->valign((valign_option_t)va);
          if(profile) cout<<"Valign "<<VALIGN[va]<<", ";
          break;
@@ -1091,7 +1071,7 @@ static void RandomFormat(cell_t* cell, bool profile)
 
       case OPT_ORIENTATION:
       {
-         int ori = GetRndNumber((int) ORI_90CLOCKTXT);
+         unsigned32_t ori = GetRndNumber((int) ORI_90CLOCKTXT);
          cell->orientation((txtori_option_t)ori);
          if(profile) cout<<"TxtOri "<<TXTORI[ori]<<", ";
          break;
@@ -1099,7 +1079,7 @@ static void RandomFormat(cell_t* cell, bool profile)
 
       case OPT_FILLFGCOLOR:
       {
-         int col = GetRndNumber((int) CLR_WHITE);
+         unsigned32_t col = GetRndNumber((int) CLR_WHITE);
          cell->fillfgcolor((color_name_t)col);
          if(profile) cout<<"FillFGColor "<<COLOR[col]<<", ";
          break;
@@ -1107,7 +1087,7 @@ static void RandomFormat(cell_t* cell, bool profile)
 
       case OPT_FILLBGCOLOR:
       {
-         int col = GetRndNumber((int) CLR_WHITE);
+         unsigned32_t col = GetRndNumber((int) CLR_WHITE);
          cell->fillbgcolor((color_name_t)col);
          if(profile) cout<<"FillBGColor "<<COLOR[col]<<", ";
          break;
@@ -1115,7 +1095,7 @@ static void RandomFormat(cell_t* cell, bool profile)
 
       case OPT_FILLSTYLE:
       {
-         int fsty = GetRndNumber((int) FILL_HORIZ_INTER_THICK);
+         unsigned32_t fsty = GetRndNumber((int) FILL_HORIZ_INTER_THICK);
          cell->fillstyle((fill_option_t)fsty);
          if(profile) cout<<"FillStyle "<<FILLSTYLE[fsty]<<", ";
          break;
@@ -1131,9 +1111,9 @@ static void RandomFormat(cell_t* cell, bool profile)
 
       case OPT_BORDERSTYLE:
       {
-         int side = GetRndNumber((int) BORDER_RIGHT);
-         int sty = GetRndNumber((int) BORDER_HAIR);
-         int col = GetRndNumber((int) CLR_WHITE);
+         unsigned32_t side = GetRndNumber((int) BORDER_RIGHT);
+         unsigned32_t sty = GetRndNumber((int) BORDER_HAIR);
+         unsigned32_t col = GetRndNumber((int) CLR_WHITE);
 
          cell->borderstyle((border_side_t)side,
                            (border_style_t)sty);
@@ -1895,7 +1875,7 @@ char *FormulaFunctionsTest(const char *md5_checksum)
 				cur_sh->formula(row, 3, binary_root, true); 
 			}
 
-			int argcnt;
+			size_t argcnt;
 			for (argcnt = 3; argcnt < 12; argcnt++)
 			{
 				if (argmask & (1U << argcnt))
@@ -1903,7 +1883,7 @@ char *FormulaFunctionsTest(const char *md5_checksum)
 					n_ary_func_node_t *n_ary_root = maker.f(fn, argcnt, NULL);
 
 					int a;
-					for (a = 0; a < argcnt; a++)
+					for (a = 0; a < (int)argcnt; a++)
 					{
 						expression_node_t *num = maker.integer(a + 1);
 						n_ary_root->PushArg(num);
@@ -1922,9 +1902,9 @@ char *FormulaFunctionsTest(const char *md5_checksum)
 	{
 		sh[i]->label(1, 0, "function name");
 		sh[i]->label(0, 1, "argument count");
-		for (int argcnt = 0; argcnt < 12; argcnt++)
+		for (size_t argcnt = 0; argcnt < 12; argcnt++)
 		{
-			sh[i]->number(1, 1 + argcnt, argcnt);
+			sh[i]->number(1, (unsigned32_t)(1 + argcnt), (signed32_t)argcnt);
 		}
 	}
 
