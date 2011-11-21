@@ -76,6 +76,23 @@ number_t::number_t(CGlobalRecords& gRecords,
 		num.dblNum	= (double)numval;	// original value
 	}
 }
+number_t::number_t(CGlobalRecords& gRecords, 
+		unsigned32_t rowval, 
+		unsigned32_t colval, 
+		unsigned32_t numval, 
+		xf_t* pxfval) :
+	cell_t(gRecords, rowval, colval, pxfval),
+	isDouble(false),
+	num()
+{
+	// 536870911 >= numval
+	if(numval >= 0xE0000000) {
+		num.intNum = (signed32_t)numval;
+	} else {
+		isDouble	= true;
+		num.dblNum	= (double)numval;	// original value
+	}
+}
 
 CUnit* number_t::GetData(CDataStorage &datastore) const
 {

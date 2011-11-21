@@ -62,6 +62,8 @@ namespace xlslib_core
       // 536870911 >= numval >= -536870912
       number_t(CGlobalRecords& gRecords, unsigned32_t rowval, unsigned32_t colval, 
                signed32_t numval, xf_t* pxfval = NULL);
+      number_t(CGlobalRecords& gRecords, unsigned32_t rowval, unsigned32_t colval, 
+               unsigned32_t numval, xf_t* pxfval = NULL);
       virtual ~number_t(){};
 	  
       virtual size_t GetSize(void) const {return isDouble ? 18 : 14;};
