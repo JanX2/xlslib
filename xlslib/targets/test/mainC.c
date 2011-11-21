@@ -40,7 +40,6 @@
 #include "ac-config.win32.h"
 #endif
 
-#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
