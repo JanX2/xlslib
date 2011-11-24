@@ -90,14 +90,12 @@ typedef std::basic_string<unsigned16_t> u16string;
 
 #elif defined(__FRAMEWORK__)				// MAC Framework
 
+#include "xlconfig.h"
 #undef HAVE_ICONV
-
 //typedef unichar unichar_t;
 #define unichar_t unsigned16_t
 
-//typedef std::basic_string<unsigned16_t> ustring;
 #define ustring basic_string<unsigned16_t>
-
 typedef std::basic_string<unsigned16_t> u16string;
 
 #else										// All other C++
