@@ -66,7 +66,7 @@ CIndex::CIndex(CDataStorage &datastore,
 	AddValue32(firstrow);
 	AddValue32(lastrow+1);
 
-	AddValue32(INDEX_DFLT_RESERVED);
+//	AddValue32(INDEX_DFLT_RESERVED); (now written when outputting sheet)
 	// NOTE: This record is created with an empty array. It should work if the rest
 	// of the record is not completed later, since the record's size reflects the
 	// lack of such array
