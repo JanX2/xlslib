@@ -30,7 +30,7 @@ cell. Is this a bug in Excel, in xlslib or is there something special I have
 to take care of? I observed that behaviour in Excel 2002, 2003 and 2010. The
 problem does not occur in Calc.
 */
-char *BorderTest(const char *md5_checksum);
+extern char *BorderTest(const char *md5_checksum);
 
 char *BorderTest(const char *md5_checksum)
 {
