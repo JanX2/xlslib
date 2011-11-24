@@ -185,8 +185,7 @@ int COleFileSystem::AddFile(string const &dir_path, CDataStorage* pdata)
 
       
       // Calculate the trail data size needed to complete a BIG_BLOCK
-      size_t trail_size = (pdata->GetDataSize() % BIG_BLOCK_SIZE)?
-         (BIG_BLOCK_SIZE - (pdata->GetDataSize() % BIG_BLOCK_SIZE)):0;
+      size_t trail_size = (pdata->GetDataSize() % BIG_BLOCK_SIZE) ? (BIG_BLOCK_SIZE - (pdata->GetDataSize() % BIG_BLOCK_SIZE)) : 0;
 
       // This library won't use Small Blocks, so all data elements shall be >0x1000
       if ((trail_size + pdata->GetDataSize()) < MIN_DATA_SIZE)
@@ -212,7 +211,6 @@ int COleFileSystem::AddFile(string const &dir_path, CDataStorage* pdata)
 #endif
 
       (*newnode)->SetDataPointer(pdata);
-
       (*newnode)->SetColor(PROPERTY_COLOR_NODE_BLACK);
       (*newnode)->SetCreatedSecs(PPT_DFLT_SECS1);
       (*newnode)->SetCreatedDays(PPT_DFLT_DAYS1);

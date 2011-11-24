@@ -375,7 +375,8 @@ int  COleDoc::DumpOleFile(void)
 
    bks = GetBATCount();
    size_t total_data_size = GetTotalDataSize();
-
+   //printf("TOTAL %lu blocks=%lu mod=%lu\n", total_data_size, total_data_size/512, total_data_size % 512);
+   
    errcode |= DumpHeader(bks, total_data_size);
    XL_ASSERT((Position() % 512) == 0 /*1*/);
 
@@ -538,6 +539,8 @@ int COleDoc::DumpNode(COleProp& node)
    WriteSigned32(node.GetNextIndex());
    // [4c] CHILD_PROP
    WriteSigned32(node.GetChildIndex());
+
+   // printf("NAME: %s TYPE=%d Color=%d Indexes: %4.4x %4.4x %4.4x\n", node.GetName().c_str(), node.GetType(), node.GetColor(), node.GetPreviousIndex(), node.GetNextIndex(), node.GetChildIndex() );
 
    // Fill empty block
    SerializeFixedArray(PROPERTY_DFLT_NOTUSED, (PPTPOS_SECS1 - PPTPOS_UNUSED_EMPTY0));
