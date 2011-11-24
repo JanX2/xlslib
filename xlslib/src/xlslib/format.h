@@ -154,7 +154,9 @@ class format_t
   	  format_t(const format_t& orig);
 	  format_t(CGlobalRecords& gRecords, const std::string& fmtstr);
 	  format_t(CGlobalRecords& gRecords, const std::ustring& fmtstr);
+#ifndef __FRAMEWORK__
       format_t(CGlobalRecords& gRecords, const u16string& fmtstr);
+#endif
       virtual ~format_t(){};
 	  /* MSVC2005: C4512: 'xlslib_core::format_t' : assignment operator could not be generated */
 	  format_t &operator =(const format_t &src);

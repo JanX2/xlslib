@@ -56,7 +56,9 @@ namespace xlslib_core
     private:
 		note_t(CGlobalRecords& gRecords, unsigned32_t rowval, unsigned32_t colval, const std::string& text, const std::string& author, xf_t* pxfval = NULL);
 		note_t(CGlobalRecords& gRecords, unsigned32_t rowval, unsigned32_t colval, const std::ustring& text, const std::ustring& author, xf_t* pxfval = NULL);
+#ifndef __FRAMEWORK__
 		note_t(CGlobalRecords& gRecords, unsigned32_t rowval, unsigned32_t colval, const u16string& text, const u16string& author, xf_t* pxfval = NULL);
+#endif
 	  virtual ~note_t();
 	  
     public:

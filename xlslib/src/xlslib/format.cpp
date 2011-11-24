@@ -125,6 +125,7 @@ format_t::format_t(CGlobalRecords& gRecords, const std::ustring& fmtstr) :
 	gRecords.wide2str16(fmtstr, formatstr);
 }
 
+#ifndef __FRAMEWORK__
 format_t::format_t(CGlobalRecords& gRecords, const u16string& fmtstr) :
 		formatstr(fmtstr),
 		index(0),
@@ -132,7 +133,7 @@ format_t::format_t(CGlobalRecords& gRecords, const u16string& fmtstr) :
 		m_GlobalRecords(gRecords)
 {
 }
-
+#endif
 
 format_t &format_t::operator =(const format_t &src)
 {

@@ -40,7 +40,6 @@
 #include <unit.h>
 #include <datast.h>
 
-
 using namespace xlslib_core;
 
 /*
@@ -1548,12 +1547,14 @@ m_GlobalRecords(gRecords)
 {
 	m_GlobalRecords.wide2str16(v, this->value);
 }
+#ifndef __FRAMEWORK__
 text_value_node_t::text_value_node_t(CGlobalRecords& gRecords, const u16string& v) :
 terminal_node_t(gRecords),
 value(v),
 m_GlobalRecords(gRecords)
 {
 }
+#endif
 text_value_node_t::~text_value_node_t()
 {
 
@@ -3158,11 +3159,13 @@ const u16string& estimated_formula_result_t::SetText(const std::ustring& v)
 	m_GlobalRecords.wide2str16(v, *value.s);
 	return *value.s;
 }
+#ifndef __FRAMEWORK__
 const u16string& estimated_formula_result_t::SetText(const u16string& v)
 {
 	clear_value(ESTVAL_STRING);
 	return *value.s = v;
 }
+#endif
 errcode_t estimated_formula_result_t::SetErrorCode(errcode_t v)
 {
 	clear_value(ESTVAL_ERRORCODE);

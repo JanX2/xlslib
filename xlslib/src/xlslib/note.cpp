@@ -64,12 +64,14 @@ cell_t(gRecords, rowval, colval, pxfval)
 	gRecords.wide2str16(auth, this->author);
 }
 
+#ifndef __FRAMEWORK__
 note_t::note_t(CGlobalRecords& gRecords, unsigned32_t rowval, unsigned32_t colval, const u16string& msg, const u16string& auth, xf_t* pxfval) :
 cell_t(gRecords, rowval, colval, pxfval),
 text(msg),
 author(auth)
 {
 }
+#endif
 
 note_t::~note_t()
 {

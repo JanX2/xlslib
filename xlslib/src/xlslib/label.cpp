@@ -69,6 +69,7 @@ cell_t(gRecords, rowval, colval, pxfval),
 	setType();
 }
 
+#ifndef __FRAMEWORK__
 xlslib_core::label_t::label_t(CGlobalRecords& gRecords, 
 							  unsigned32_t rowval, unsigned32_t colval, const std::ustring& labelstrval, xf_t* pxfval) :
 	cell_t(gRecords, rowval, colval, pxfval),
@@ -78,6 +79,7 @@ xlslib_core::label_t::label_t(CGlobalRecords& gRecords,
 	gRecords.wide2str16(labelstrval, strLabel);
 	setType();
 }
+#endif
 
 void xlslib_core::label_t::setType()
 {

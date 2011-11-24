@@ -1269,7 +1269,9 @@ namespace xlslib_core
 		double SetFloatingPoint(double value);
 		const u16string& SetText(const std::string& value);
 		const u16string& SetText(const std::ustring& value);
+#ifndef __FRAMEWORK__
 		const u16string& SetText(const u16string& value);
+#endif
 		errcode_t SetErrorCode(errcode_t value);
 
 		unsigned64_t GetEncodedValue(void) const;
@@ -1413,7 +1415,9 @@ namespace xlslib_core
 	public:
 		text_value_node_t(CGlobalRecords& gRecords, const std::string& value);
 		text_value_node_t(CGlobalRecords& gRecords, const std::ustring& value);
+#ifndef __FRAMEWORK__
 		text_value_node_t(CGlobalRecords& gRecords, const u16string& value);
+#endif
 		virtual ~text_value_node_t();
 
 	private:
