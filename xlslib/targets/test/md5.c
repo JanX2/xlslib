@@ -351,13 +351,12 @@ int load_file(unsigned8_t **buf_ref, size_t *buflen_ref, const char *filepath)
 	unsigned8_t *b = NULL;
 	size_t bsiz = 4096;
 	size_t blen = 0;
-	int bload;
 
 	f = fopen(filepath, "rb");
 
 	while (f && !feof(f))
 	{
-		size_t bload;
+		size_t bload2;
 
 		if (!b)
 		{
@@ -371,13 +370,13 @@ int load_file(unsigned8_t **buf_ref, size_t *buflen_ref, const char *filepath)
 		if (!b)
 			goto fail_dramatically;
 
-		bload = bsiz - blen;
-		bload = fread(b + blen, 1, bload, f);
+		bload2 = bsiz - blen;
+		bload2 = fread(b + blen, 1, bload2, f);
 
-		if ((signed32_t)bload < 0)
+		if ((signed32_t)bload2 < 0)
 			goto fail_dramatically;
 
-		blen += bload;
+		blen += bload2;
 	}
 
 	fclose(f);
@@ -445,7 +444,7 @@ fail_dramatically:
 	*buf_ref = NULL;
 	*buflen_ref = 0;
 
-	bload = 0;
+	int bload = 0;
 	if (f)
 	{
 		bload = ferror(f);
