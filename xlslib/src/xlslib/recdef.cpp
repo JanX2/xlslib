@@ -424,7 +424,7 @@ CBSheet::CBSheet(CDataStorage &datastore, const boundsheet_t* bsheetdef):
 	attrflags |= (bsheetdef->IsVeryHidden()	? BSHEET_ATTR_VERYHIDDEN:0);
 
 	AddValue16(attrflags);
-	AddUnicodeString(bsheetdef->GetGlobalRecords(), bsheetdef->GetSheetName(), LEN1_FLAGS_UNICODE);
+	AddUnicodeString(bsheetdef->GetSheetName(), LEN1_FLAGS_UNICODE);
 
 	SetRecordLength(GetDataSize()-4);   
 }

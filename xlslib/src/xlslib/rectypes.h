@@ -45,22 +45,19 @@
 #include <systype.h>
 
 // SIZES
+#define RECORD_HEADER_SIZE	   4
 #define MAX_RECORD_SIZE		8224			// see OpenOffice Doc, CONTINUE record 5.21. This is the payload size not including the header
-
-#define BOF_SIZE 20
-
-#define EOF_SIZE 4
-
-#define WINDOW2_SIZE 22
-
-#define DIMENSION_SIZE 18
+#define BOF_SIZE			  20
+#define EOF_SIZE			   4
+#define WINDOW2_SIZE		  22
+#define DIMENSION_SIZE		  18
 // End SIZES
 
 #define RECTYPE_NULL                            \
   0x00
 
 /* DATEMODE: 1900 / 1904 Date System (PC=0, MAC=1, still) */
-#define RECTYPE_DATEMODE                           \
+#define RECTYPE_DATEMODE                        \
   0x22
  
 /* ADDIN: Workbook Is an Add-in Macro */

@@ -101,11 +101,17 @@ namespace xlslib_core
     // Operations
   protected: // deny these operations to others...
     CUnit(CDataStorage &datastore);
+
   private: // deny these operations to others...
 	bool alreadyContinued;
     CUnit(const CUnit& orig);
     CUnit& operator=(const CUnit& right);
+
   public:
+	// primarily for Continue Records
+	CDataStorage & DataStore() { return m_Store; }
+	unsigned16_t BackPatchingLevel() const { return m_Backpatching_Level; };
+
 	virtual ~CUnit();
 
     unsigned8_t& operator[](const size_t index) const;
@@ -141,7 +147,7 @@ namespace xlslib_core
 	};
 
 	signed8_t AddUnicodeString(CGlobalRecords& gRecords, const std::string& str, XlsUnicodeStringFormat_t fmt /* = LEN2_FLAGS_UNICODE */ );
-    signed8_t AddUnicodeString(CGlobalRecords& gRecords, const u16string& newdata, XlsUnicodeStringFormat_t fmt /* = LEN2_FLAGS_UNICODE */ );
+    signed8_t AddUnicodeString(const u16string& newdata, XlsUnicodeStringFormat_t fmt /* = LEN2_FLAGS_UNICODE */ );
     size_t UnicodeStringLength(const u16string& str16, size_t& strLen, bool& isAscii, XlsUnicodeStringFormat_t fmt /* = LEN2_FLAGS_UNICODE */ );
 
     signed8_t GetValue16From(unsigned16_t* val, unsigned32_t index) const;
@@ -164,11 +170,11 @@ namespace xlslib_core
     //  signed8_t GetData(unsigned8_t** data, unsigned32_t from, unsigned32_t to );
 
   public:
-    signed8_t RemoveTrailData(size_t remove_size);
+    signed8_t Inflate(size_t newsize);
+	signed32_t GetIndex() const { return m_Index; }
+
   protected:
     signed8_t InitFill(unsigned8_t data, size_t size);
-  public:
-    signed8_t Inflate(size_t newsize);
   };
 }
 

@@ -172,7 +172,7 @@ CFormat::CFormat(CDataStorage &datastore, const format_t* formatdef):
 	AddValue16(formatdef->GetIndex());
 	//cerr << "Format: index=" << formatdef->GetIndex() << endl << flush;
 
-	AddUnicodeString(formatdef->GetGlobalRecords(), formatdef->GetFormatStr(), LEN2_FLAGS_UNICODE);
+	AddUnicodeString(formatdef->GetFormatStr(), LEN2_FLAGS_UNICODE);
 
 	SetRecordLength(GetDataSize()-4);
 }

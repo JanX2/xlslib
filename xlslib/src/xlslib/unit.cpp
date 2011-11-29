@@ -495,52 +495,6 @@ signed8_t CUnit::AddFixedDataArray(const unsigned8_t value, size_t size)
 /************************************************
  ************************************************/
 
-/*
-[i_a] What The Heck is this routine good for?
-*/
-signed8_t CUnit::RemoveTrailData(size_t remove_size)
-{
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
-
-   size_t newlen = GetDataSize() + remove_size;
-
-   XL_ASSERT(m_Index != INVALID_STORE_INDEX);
-   signed8_t ret = m_Store[m_Index].Resize(newlen);
-   if (ret == NO_ERRORS)
-   {
-	   memset(m_Store[m_Index].GetBuffer() + m_Store[m_Index].GetDataSize(), 0, remove_size);
-	   m_Store[m_Index].SetDataSize(newlen);
-   }
-
-#else
-
-   /*
-     total_to_remove = (m_nSize - m_nDataSize) - remove_size;
-     size of temp_data = m_nSize - total_to_remove = m_nDataSize + remove_size
-   */
-   size_t temp_size = m_nDataSize + remove_size;
-   unsigned8_t* temp_data = new unsigned8_t[temp_size];
-  
-   if(temp_data != NULL)
-   {
-      for(size_t i=0; i<temp_size; i++)
-         temp_data[i] = m_pData[i];
-   } else {
-      return GENERAL_ERROR;
-   }
-  
-   m_nDataSize = temp_size;
-   m_nSize = m_nDataSize;
-   delete[] m_pData;
-   m_pData = temp_data;
-
-#endif
-
-   return ret;
-}
-
-/************************************************
- ************************************************/
 
 signed8_t CUnit::SetArrayAt(const unsigned8_t* newdata, size_t size, unsigned32_t index)
 {
@@ -620,7 +574,7 @@ signed8_t CUnit::AddUnicodeString(CGlobalRecords& gRecords, const std::string& s
 		XL_ASSERT(!"Should never happen!");
 
 		gRecords.char2str16(str, s16);
-		return AddUnicodeString(gRecords, s16, fmt);
+		return AddUnicodeString(s16, fmt);
 	}
 
 	strLen = str.length();
@@ -728,7 +682,7 @@ signed8_t CUnit::AddUnicodeString(CGlobalRecords& gRecords, const std::string& s
 
    return errcode;
 }
-signed8_t CUnit::AddUnicodeString(CGlobalRecords& gRecords, const u16string& str16, XlsUnicodeStringFormat_t fmt)
+signed8_t CUnit::AddUnicodeString(const u16string& str16, XlsUnicodeStringFormat_t fmt)
 {
 	u16string::const_iterator cBegin, cEnd;
 	signed8_t errcode = NO_ERRORS;

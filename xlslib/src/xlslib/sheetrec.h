@@ -177,6 +177,7 @@ worksheet class declaration
 		unsigned32_t			m_RowCounter;
 		unsigned32_t			m_CellCounter;
 		size_t					m_DBCellOffset;
+		size_t					m_FirstRowOffset;
 		CellOffsets_Vect_t		m_CellOffsets;
 
 		//unsigned32_t			m_CurrentRowBlock;
@@ -193,11 +194,11 @@ worksheet class declaration
 		//void					GetFirstLastRows(unsigned32_t* first_row, unsigned32_t* last_row);
 		size_t GetNumRowBlocks(rowblocksize_t* rbsize_ref = NULL);
 		bool					GetRowBlockSizes(rowblocksize_t& rbsize);
-		CUnit*					RowBlocksDump(CDataStorage &datastore);
+		CUnit*					RowBlocksDump(CDataStorage &datastore, const size_t offset);
 		size_t EstimateNumBiffUnitsNeeded(void);
 
 		void					AddCell(cell_t* pcell);
-		CUnit*					DumpData(CDataStorage &datastore, size_t offset, size_t writeLen, size_t &Last_BOF_offset);
+		CUnit*					DumpData(CDataStorage &datastore, size_t offset, size_t writeLen/*, size_t &Last_BOF_offset*/);
 		
     private:
 		worksheet(const worksheet& that);
@@ -239,6 +240,8 @@ worksheet class declaration
 		// 536870911 >= numval >= -536870912
 		cell_t* number(unsigned32_t row, unsigned32_t col, 
 					signed32_t numval, xf_t* pxformat = NULL);
+		cell_t* number(unsigned32_t row, unsigned32_t col, 
+					unsigned32_t numval, xf_t* pxformat = NULL);
 
 		cell_t* boolean(unsigned32_t row, unsigned32_t col, 
 			bool boolval, xf_t* pxformat = NULL);

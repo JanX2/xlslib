@@ -144,7 +144,7 @@ CLabel::CLabel(CDataStorage &datastore, const label_t& labeldef):
 		size_t index = labeldef.GetGlobalRecords().GetLabelSSTIndex(labeldef);
 		AddValue32(index);
 	} else {
-		AddUnicodeString(labeldef.GetGlobalRecords(), labeldef.GetStrLabel(), LEN2_FLAGS_UNICODE);
+		AddUnicodeString(labeldef.GetStrLabel(), LEN2_FLAGS_UNICODE);
 	}
 	SetRecordLength(GetDataSize()-4);
 }

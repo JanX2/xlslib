@@ -307,6 +307,7 @@ namespace xlslib_core
 
 	public:
 		void Push(CUnit* unit);
+		size_t Clip(CUnit* unit);	// When using Continue record
 		static const unsigned16_t BACKPATCH_LEVEL_EVERYONE = (unsigned16_t)~0;
 		void FlushEm(unsigned16_t backpatch_level = 0);
 		void FlushLowerLevelUnits(const CUnit *unit);
@@ -337,7 +338,7 @@ namespace xlslib_core
 		CLabel* MakeCLabel(const label_t& labeldef);
 		CIndex* MakeCIndex(unsigned32_t firstrow, unsigned32_t lastrow);
 		CExtFormat* MakeCExtFormat(const xf_t* xfdef);
-		CContinue* MakeCContinue(const unsigned8_t* data, size_t size);
+		CContinue* MakeCContinue(CUnit* unit, const unsigned8_t* data, size_t size);
 		CPalette* MakeCPalette(const color_entry_t *colors);
 		CColInfo* MakeCColInfo(const colinfo_t* newci);
 		CBlank* MakeCBlank(const blank_t& blankdef);

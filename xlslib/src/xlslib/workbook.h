@@ -42,7 +42,6 @@
 #include <datast.h>
 #include <sheetrec.h>
 #include <recdef.h>
-#include <continue.h>
 #include <summinfo.h>
 #include <docsumminfo.h>
 #include <formula.h>
@@ -128,15 +127,15 @@ namespace xlslib_core
 
 		// Continue record variables:
 		CUnit*					m_pContinueRecord;
-		size_t			writeLen;
-		size_t			offset;              
+		size_t					m_ContinuesRealRecordSize;
 		unsigned16_t			m_ContinueIndex;
-		unsigned16_t			current_sheet;
-
+		
 		// INDEX / DBCELL assistant variables:
-		size_t			Last_BOF_offset;
+		size_t					writeLen;
+		size_t					offset;              
+		unsigned16_t			current_sheet;
+		//size_t					Last_BOF_offset;
     };
-
 }
 
 // #include <xls_poppack.h>

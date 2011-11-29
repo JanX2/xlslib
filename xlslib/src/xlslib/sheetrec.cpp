@@ -33,24 +33,28 @@
  *
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
+ 
+//#define __DEBUG__
+ 
 #include <xlsys.h>
-
 #include <globalrec.h>
-
 #include <sheetrec.h>
-
 #include <datast.h>
 
 using namespace xlslib_core;
 
+#define MAX_ROWBLOCK_SIZE			 16 // was: 32, but CONTINUE-d DBCELLs are not liked by 2003 ???
 
-#define MAX_ROWBLOCK_SIZE 16 // was: 32, but CONTINUE-d DBCELLs are not liked by 2003 ???
+#define RB_DBCELL_MINSIZE			  8
+#define RB_DBCELL_CELLSIZEOFFSET	  2
 
-#define RB_DBCELL_MINSIZE          8
-#define RB_DBCELL_CELLSIZEOFFSET   2
+// People using xlslib with at least 1200 colums maybe more - bug fix to such a file - so this comment has to be incorrect for current Excel versions
+#define MAX_COLUMNS_PER_ROW			256 // (out of date): Excel 2003 limit: 256 columns per row. (Update this when we upgrade this lib to support BIFF12 !)
 
-#define MAX_COLUMNS_PER_ROW			256 // Excel 2003 limit: 256 columns per row. (Update this when we upgrade this lib to support BIFF12 !)
+// Adapted from Workbook macro - useful if we need to add log messages etc
+#define CHANGE_DUMPSTATE(state) {               \
+   m_DumpState = state;                         \
+}
 
 
 /*
@@ -84,6 +88,7 @@ worksheet::worksheet(CGlobalRecords& gRecords, unsigned16_t idx) :
 	m_RowCounter(0),
 	m_CellCounter(0),
 	m_DBCellOffset(0),
+	m_FirstRowOffset(0),
 	m_CellOffsets(),
 	//m_CurrentRowBlock(0),
 	m_Starting_RBCell(),
@@ -171,17 +176,18 @@ worksheet::~worksheet()
 
 #define RB_INDEX_MINSIZE 20
 
-CUnit* worksheet::DumpData(CDataStorage &datastore, size_t offset, size_t writeLen, size_t &Last_BOF_offset)
+CUnit* worksheet::DumpData(CDataStorage &datastore, size_t offset, size_t writeLen/*, size_t &Last_BOF_offset*/)
 {
    bool repeat = false;
 
    XTRACE("worksheet::DumpData");
-
+   
    do
    {
+	 //printf("OFFSET=%ld writeLen=%ld DATASIZE=%ld\n", offset, writeLen, datastore.GetDataSize());
 	 switch(m_DumpState) {
 	 case SHEET_INIT:
-		m_DumpState = SHEET_BOF;
+		CHANGE_DUMPSTATE(SHEET_BOF);
 		m_Current_Colinfo = m_Colinfos.begin();
 		m_CurrentSizeCell = m_Cells.begin();
 		m_CurrentCell = m_Cells.begin();
@@ -199,17 +205,20 @@ CUnit* worksheet::DumpData(CDataStorage &datastore, size_t offset, size_t writeL
 		//Delete_Pointer(m_pCurrentData);
 		m_pCurrentData = (CUnit*)(new CBof(datastore, BOF_TYPE_WORKSHEET));
 #endif
-		Last_BOF_offset = offset + writeLen;
-		m_DumpState = SHEET_INDEX;
+		//Last_BOF_offset = offset + writeLen;
+		CHANGE_DUMPSTATE(SHEET_INDEX);
 		break;
 
 	 case SHEET_INDEX:
 		XTRACE("\tINDEX");
 		{
+			// printf("INDEX=%ld 0x%lx\n", offset, offset);
+
 			// NOTE: GetNumRowBlocks() has the side-effect of coughing up first/last col/row for the given sheet :-)
 			rowblocksize_t rbsize;
 			size_t numrb = GetNumRowBlocks(&rbsize);
 
+			// printf("NUM BLOCKS=%ld\n", (long)numrb);
 			// Get first/last row from the list of row blocks
 			//unsigned32_t first_row, last_row;
 			//GetFirstLastRowsAndColumns(&first_row, &last_row, NULL, NULL);
@@ -222,6 +231,11 @@ CUnit* worksheet::DumpData(CDataStorage &datastore, size_t offset, size_t writeL
 
 			size_t rb_size_acc = 0;
 			size_t index_size = RB_INDEX_MINSIZE + 4*numrb;
+			size_t dbcelloffset = offset + writeLen + index_size;
+			((CIndex*)m_pCurrentData)->AddDBCellOffset(0);	// dbcelloffset or 0
+			// printf("GUESS DIMENSION IS AT %ld\n", (long)dbcelloffset);
+
+			dbcelloffset +=  DIMENSION_SIZE;
 
 			for(size_t rb = 0; rb < numrb; rb++)
 			{
@@ -236,46 +250,52 @@ CUnit* worksheet::DumpData(CDataStorage &datastore, size_t offset, size_t writeL
 			   XL_ASSERT(rb == numrb - 1 ? state == false : state == true);
 			   // Update the offset accumulator and create the next DBCELL's offset
 			   rb_size_acc += rbsize2.rowandcell_size;
-			   size_t dbcelloffset = offset - Last_BOF_offset + BOF_RECORD_SIZE + index_size + rb_size_acc;
+			   
+			   dbcelloffset += rb_size_acc;
+			   //printf("GUESS DBCELL AT %ld\n", (long)dbcelloffset);
 			   ((CIndex*)m_pCurrentData)->AddDBCellOffset(dbcelloffset);
 
 			   // Update the offset for the next DBCELL's offset
 			   rb_size_acc += rbsize2.dbcell_size;
 			}
 		}
-		m_DumpState = SHEET_DIMENSION; // Change to the next state
+		CHANGE_DUMPSTATE(SHEET_DIMENSION); // Change to the next state
 		break;
 
 	 case SHEET_DIMENSION:
 		XTRACE("\tDIMENSION");
+		//printf("DIMENSION IS AT %ld\n", datastore.GetDataSize());
+		//printf("    DIM %ld\n", (unsigned long)writeLen + offset);
 
 		repeat = false;
 
 		//Delete_Pointer(m_pCurrentData);
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 		m_pCurrentData = datastore.MakeCDimension(minRow, maxRow, minCol, maxCol);
+		//printf("DIMENSION %d %d %d %d\n", minRow, maxRow, minCol, maxCol);
 #else
 		m_pCurrentData = (CUnit*)(new CDimension(datastore, minRow, maxRow, minCol, maxCol));
 #endif
-		m_DumpState = SHEET_ROWBLOCKS;
+		CHANGE_DUMPSTATE(SHEET_ROWBLOCKS);
 		break;
 
 	 case SHEET_ROWBLOCKS:
+		//printf("ROW_BLOCKS %ld\n", (long)writeLen + offset);
 		XTRACE("\tROWBLOCKS");
 		if(!m_Cells.empty()) // was if(GetNumRowBlocks())
 		{
 		   // First check if the list of RBs is not empty...
-		   m_pCurrentData = RowBlocksDump(datastore);
+		   m_pCurrentData = RowBlocksDump(datastore, writeLen + offset);
 
 		   if(m_pCurrentData == NULL)
 		   {
 			  repeat = true;
-			  m_DumpState = SHEET_MERGED;
+			  CHANGE_DUMPSTATE(SHEET_MERGED);
 		   }  
 		} else {
 		   // if the list is empty, change the dump state.
 		   repeat = true;
-		   m_DumpState = SHEET_MERGED;
+		   CHANGE_DUMPSTATE(SHEET_MERGED);
 		}
 		break;
 
@@ -299,7 +319,7 @@ CUnit* worksheet::DumpData(CDataStorage &datastore, size_t offset, size_t writeL
 		   repeat = true;
 		}
 
-		m_DumpState = SHEET_COLINFO;
+		CHANGE_DUMPSTATE(SHEET_COLINFO);
 		break;
 
 	 case SHEET_COLINFO:
@@ -323,12 +343,12 @@ CUnit* worksheet::DumpData(CDataStorage &datastore, size_t offset, size_t writeL
 			  m_Current_Colinfo++;
 		   } else {
 			  // if it was the last from the list, change the DumpState
-			  m_DumpState = SHEET_WINDOW2;
+			  CHANGE_DUMPSTATE(SHEET_WINDOW2);
 			  m_Current_Colinfo = m_Colinfos.begin();
 		   }
 		} else {
 		   // if the list is empty, change the dump state.
-		   m_DumpState = SHEET_WINDOW2;
+		   CHANGE_DUMPSTATE(SHEET_WINDOW2);
 		   //font = m_Fonts.begin();
 		   repeat = true;
 		}
@@ -343,7 +363,7 @@ CUnit* worksheet::DumpData(CDataStorage &datastore, size_t offset, size_t writeL
 		//Delete_Pointer(m_pCurrentData);
 		m_pCurrentData = (CUnit*)(new CWindow2(datastore, (sheetIndex == m_GlobalRecords.GetWindow1().GetActiveSheet())));
 #endif
-		m_DumpState = SHEET_EOF;
+		CHANGE_DUMPSTATE(SHEET_EOF);
 		break;
 
 	 case SHEET_EOF:
@@ -354,7 +374,7 @@ CUnit* worksheet::DumpData(CDataStorage &datastore, size_t offset, size_t writeL
 		//Delete_Pointer(m_pCurrentData);
 		m_pCurrentData = (CUnit*)(new CEof(datastore));
 #endif
-		m_DumpState = SHEET_FINISH;
+		CHANGE_DUMPSTATE(SHEET_FINISH);
 		break;
 
 	 case SHEET_FINISH:
@@ -364,7 +384,7 @@ CUnit* worksheet::DumpData(CDataStorage &datastore, size_t offset, size_t writeL
 		//Delete_Pointer(m_pCurrentData);
 #endif
 		m_pCurrentData = NULL;
-		m_DumpState = SHEET_INIT;
+		CHANGE_DUMPSTATE(SHEET_INIT);
 		break;
       }
    } while(repeat);
@@ -372,7 +392,7 @@ CUnit* worksheet::DumpData(CDataStorage &datastore, size_t offset, size_t writeL
    return m_pCurrentData;
 }
 
-CUnit* worksheet::RowBlocksDump(CDataStorage &datastore)
+CUnit* worksheet::RowBlocksDump(CDataStorage &datastore, const size_t offset)
 {
    bool repeat = false;
    CUnit* rb_record = NULL;
@@ -382,6 +402,7 @@ CUnit* worksheet::RowBlocksDump(CDataStorage &datastore)
 	 switch(m_DumpRBState) 
 	 {
 	 case RB_INIT:
+		XTRACE("\t\tINIT");
 		m_DumpRBState = RB_ROWS;
 		//m_CurrentRowBlock = 0;
 		m_RowCounter = 0;
@@ -395,6 +416,7 @@ CUnit* worksheet::RowBlocksDump(CDataStorage &datastore)
 		break;
 
 	 case RB_FIRST_ROW:
+		XTRACE("\t\tFIRST_ROW");
 		repeat = true;
    
 		XL_ASSERT(!m_Cells.empty());
@@ -403,6 +425,7 @@ CUnit* worksheet::RowBlocksDump(CDataStorage &datastore)
 		   m_Starting_RBCell = m_CurrentCell;      
 		   m_CellCounter = 0;
 		   m_DBCellOffset = 0;
+		   m_FirstRowOffset = offset;
 		   m_CellOffsets.clear();
 
 		   m_DumpRBState = RB_ROWS;
@@ -414,6 +437,7 @@ CUnit* worksheet::RowBlocksDump(CDataStorage &datastore)
 		break;
 
 	 case RB_ROWS:
+		XTRACE("\t\tROWS");
 	 {
 		repeat = false;
 
@@ -462,6 +486,8 @@ CUnit* worksheet::RowBlocksDump(CDataStorage &datastore)
 		   if((*m_Current_RowHeight)->GetRowNum() == row_num)
 		   {
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+			//printf("ROW OFFSET %ld\n", datastore.GetDataSize());
+
 			  rb_record = datastore.MakeCRow(row_num, first_col, 
 											 last_col, 
 											 (*m_Current_RowHeight)->GetRowHeight(),
@@ -486,6 +512,7 @@ CUnit* worksheet::RowBlocksDump(CDataStorage &datastore)
 		else 
 		{
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+			//printf("ROW OFFSET %ld\n", datastore.GetDataSize());
 		   rb_record = datastore.MakeCRow(row_num, first_col, last_col);
 #else
 		   rb_record = (CUnit*) (new CRow(datastore, row_num, first_col, last_col) );
@@ -494,7 +521,7 @@ CUnit* worksheet::RowBlocksDump(CDataStorage &datastore)
 
 		m_DBCellOffset += ROW_RECORD_SIZE;
 		XL_ASSERT(rb_record->GetDataSize() == ROW_RECORD_SIZE);
-
+		//printf("m_DBCellOffset[rows]=%ld OFFSET=%ld\n", m_DBCellOffset, offset);
 		// If the current row-block is full OR there are no more cells
 		if(++m_RowCounter >= MAX_ROWBLOCK_SIZE || m_CurrentCell == m_Cells.end())
 		{
@@ -507,14 +534,19 @@ CUnit* worksheet::RowBlocksDump(CDataStorage &datastore)
 	 }
 
 	 case RB_FIRSTCELL:
+		XTRACE("\t\tFIRST_CELL");
 		rb_record = (*m_Starting_RBCell)->GetData(datastore);
    
 		// Update the offset to be used in the DBCell Record
 		m_DBCellOffset += rb_record->GetDataSize();
+		//printf("m_DBCellOffset[firstCell]=%ld OFFSET=%ld\n", m_DBCellOffset, offset);
 
-		// The first cell of the rowblock has an offset that includes (among others)
-		// the rows size (without counting the first row)
-		m_CellOffsets.push_back(m_DBCellOffset - ROW_RECORD_SIZE);
+		// The first cell of the rowblock has an offset that includes (among others)	NO
+		// the rows size (without counting the first row)								NO
+		//m_CellOffsets.push_back(m_DBCellOffset - ROW_RECORD_SIZE);
+		m_CellOffsets.push_back(offset - m_FirstRowOffset);
+		//printf("FIRST CELL Pushback=%ld\n", offset - m_FirstRowOffset);
+		//printf("m_CellOffsets[firstCell]=%ld\n", offset - m_FirstRowOffset);
 
 		// Update the pointer (iterator) to the next cell
 		if(--m_CellCounter == 0)
@@ -528,6 +560,7 @@ CUnit* worksheet::RowBlocksDump(CDataStorage &datastore)
 		break;
 
 	 case RB_CELLS:
+		XTRACE("\t\tCELLS");
 		repeat = false;
 		if(m_CellCounter == 0)
 		{
@@ -540,6 +573,7 @@ CUnit* worksheet::RowBlocksDump(CDataStorage &datastore)
 
 		   m_DBCellOffset += rb_record->GetDataSize();
 
+			//printf("PUSH_BACK[RB_CELLS]=%ld\n", rb_record->GetDataSize());
 		   m_CellOffsets.push_back(rb_record->GetDataSize());
 		   m_CellCounter--;
 		   m_Starting_RBCell++;
@@ -547,16 +581,21 @@ CUnit* worksheet::RowBlocksDump(CDataStorage &datastore)
 		break;
 
 	 case RB_DBCELL:
+		XTRACE("\t\tDBCELL");
 	    {
 			repeat = false;
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+			//printf("DBCELL OFFSET %ld\n", datastore.GetDataSize());
 			CDBCell* rec = datastore.MakeCDBCell(m_DBCellOffset);
 			rb_record = rec;
+			//printf("  DBCELL[1st Entry]=%ld\n", m_DBCellOffset);
 #else
 #endif
 			CellOffsets_Vect_Itor_t celloffset;
-			for(celloffset = m_CellOffsets.begin(); celloffset != m_CellOffsets.end(); celloffset++)
+			for(celloffset = m_CellOffsets.begin(); celloffset != m_CellOffsets.end(); celloffset++) {
 			   rec->AddRowOffset(*celloffset);
+				//printf("  DBOFF=%ld\n", *celloffset);
+			}
 
 			if(m_CurrentCell == (--m_Cells.end()) )
 			   m_DumpRBState = RB_FINISH;
@@ -566,6 +605,8 @@ CUnit* worksheet::RowBlocksDump(CDataStorage &datastore)
 			break;
 	    }
 	 case RB_FINISH:
+		XTRACE("\t\tFINISH");
+
 		repeat = false;
 		rb_record = NULL;
 		m_DumpRBState =  RB_INIT;
@@ -576,6 +617,7 @@ CUnit* worksheet::RowBlocksDump(CDataStorage &datastore)
      }
    } while(repeat);
 
+//XL_ASSERT(rb_record->GetDataSize() <= MAX_RECORD_SIZE);
    return rb_record;
 }
 
@@ -684,7 +726,13 @@ cell_t* worksheet::number(unsigned32_t row, unsigned32_t col, // 536870911 >= nu
 	AddCell(num);
 	return num;
 }
-
+cell_t* worksheet::number(unsigned32_t row, unsigned32_t col, // 536870911 >= numval >= -536870912
+                          unsigned32_t numval, xf_t* pxformat)
+{
+	number_t* num = new number_t(m_GlobalRecords, row, col, numval, pxformat);
+	AddCell(num);
+	return num;
+}
 
 /*
 ***********************************

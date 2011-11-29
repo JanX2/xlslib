@@ -230,9 +230,31 @@ CUnitStore& CDataStorage::operator[](signed32_t index)
 	return (index >= 0 ? store[(size_t)index] : store[-1ul ^ (size_t)index]);
 }
 
+// Queue a new unit
 void CDataStorage::Push(CUnit* unit)
 {
 	m_FlushStack.push_back(unit);
+}
+
+/*
+ * Clip to Max Data Size, as the rest of the record will be placed in continue records.
+ * This means that we will duplicate data. Its possible to create a new UnitStorage that takes just a pointer;
+ *     however, these records are quite rare, so why go to the effort.
+ */
+size_t CDataStorage::Clip(CUnit* unit)
+{
+	XL_ASSERT(unit == m_FlushStack.back());
+	CRecord *record = (CRecord *)unit;
+	
+	// Use this record, but only record the first big chunk
+	record->SetRecordLength(MAX_RECORD_SIZE);
+	
+	// No way to directly change the size of a Unit's storage space, so we fake it by telling the UnitStore that its now smaller
+	CUnitStore& unitStore = (*this)[record->GetIndex()];
+	size_t realSize = unitStore.GetDataSize() - RECORD_HEADER_SIZE;
+	unitStore.SetDataSize( MAX_RECORD_SIZE + RECORD_HEADER_SIZE );
+
+	return realSize;	
 }
 
 void CDataStorage::FlushEm(unsigned16_t backpatch_level)
@@ -243,6 +265,7 @@ void CDataStorage::FlushEm(unsigned16_t backpatch_level)
 	In the same loop, we shrink the 'stack' for 
 	future speed and to keep storage requirements in check.
 	*/
+	//printf("FLUSH-EM %d\n", backpatch_level);
 	UnitList_Itor_t start = m_FlushStack.begin();
 	if (m_FlushLastEndLevel == backpatch_level 
 		&& backpatch_level != BACKPATCH_LEVEL_EVERYONE	// do not use cached position when 'flushing all'
@@ -432,9 +455,9 @@ CExtFormat* CDataStorage::MakeCExtFormat(const xf_t* xfdef)
 	return new CExtFormat(*this, xfdef);
 }
 
-CContinue* CDataStorage::MakeCContinue(const unsigned8_t* data, size_t size)
+CContinue* CDataStorage::MakeCContinue(CUnit* unit, const unsigned8_t* data, size_t size)
 {
-	return new CContinue(*this, data, size);
+	return new CContinue(unit, data, size);
 }
 
 CPalette* CDataStorage::MakeCPalette(const color_entry_t *colors)
@@ -500,20 +523,20 @@ CUnit* CDataStorage::MakeSST(const Label_Vect_t& labels)
 		// Payload is always 4 less than currSize, so account for that here
 		if((currSize + strSize) > (MAX_RECORD_SIZE+4)) {
 			 
-			record->SetRecordLengthIndexed(currSize-4, offset);
+			record->SetRecordLengthIndexed(currSize-RECORD_HEADER_SIZE, offset);
 
 			offset = record->GetDataSize();				// new offset is where we are now
 			//printf("CHUNK: size=%ld END=%ld\n", currSize, offset);
 			record->AddFixedDataArray(0, 4);			// space for header
 			record->SetRecordTypeIndexed(RECTYPE_CONTINUE, offset);
 		}
-		record->AddUnicodeString(currLabel->GetGlobalRecords(), str16, CUnit::LEN2_FLAGS_UNICODE);
+		record->AddUnicodeString(str16, CUnit::LEN2_FLAGS_UNICODE);
 		currSize = record->GetDataSize() - offset;	// at end so its valid when we break out of the loop
 		//printf("WROTE %ld bytes:  total=%ld currBlock=%ld offset=%ld\n", strSize, record->GetDataSize(), currSize, offset);
 	}
 	//totalSize = record->GetDataSize();		// total size of this record
 	//printf("FINAL: cursize=%ld offset=%ld\n", currSize, offset);		
-	record->SetRecordLengthIndexed(currSize-4, offset);
+	record->SetRecordLengthIndexed(currSize-RECORD_HEADER_SIZE, offset);
 			
 	//printf("TOTAL STRING SIZE: %ld\n", record->GetDataSize());		
 	return record;

@@ -1583,7 +1583,7 @@ signed8_t text_value_node_t::DumpData(CUnit &dst, bool include_subtree) const
 
 	errcode = dst.AddValue8(OP_STR);
 	// TODO: clip string to 255 chars max!
-	errcode |= dst.AddUnicodeString(m_GlobalRecords, value, CUnit::LEN1_FLAGS_UNICODE);
+	errcode |= dst.AddUnicodeString(value, CUnit::LEN1_FLAGS_UNICODE);
 
 	return errcode;
 }
@@ -3335,8 +3335,8 @@ CFormula::CFormula(CDataStorage &datastore, const formula_t& expr):
 	   const u16string* str = estimate.GetStringValue();
 
 	   XL_ASSERT(str);
-		XL_ASSERT(str->length() < 256); // dbg
-	   AddUnicodeString(expr.GetGlobalRecords(), *str, LEN2_FLAGS_UNICODE);
+	   XL_ASSERT(str->length() < 256); // dbg
+	   AddUnicodeString(*str, LEN2_FLAGS_UNICODE);
 	   
 	   SetValueAt16((unsigned16_t)(GetDataSize() - basepos - 4), basepos + 2);
    }

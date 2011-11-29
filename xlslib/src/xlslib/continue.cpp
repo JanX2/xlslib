@@ -50,9 +50,11 @@ using namespace std;
 using namespace xlslib_core;
 
 
-CContinue::CContinue(CDataStorage &datastore, const unsigned8_t* data, size_t size):
-		CRecord(datastore)
+CContinue::CContinue(CUnit *unit, const unsigned8_t* data, size_t size):
+		CRecord(unit->DataStore())
 {
+   m_Backpatching_Level = unit->BackPatchingLevel();
+
    SetRecordType(RECTYPE_CONTINUE);
    AddDataArray(data,size);
 

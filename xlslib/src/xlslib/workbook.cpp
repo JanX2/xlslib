@@ -35,10 +35,9 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 #include <xlsys.h>
-
 #include <globalrec.h>
-
 #include <workbook.h>
+#include <continue.h>
 
 #ifdef HAVE_ICONV
 #include <errno.h>
@@ -46,6 +45,7 @@
 
 using namespace std;
 using namespace xlslib_core;
+
 
 #define CHANGE_DUMPSTATE(state) {               \
    m_PreviousDumpState = m_DumpState;           \
@@ -68,11 +68,11 @@ workbook::workbook() :
 	sheetIndex(0),
 	m_pCurrentData(NULL),
 	m_pContinueRecord(NULL),
+	m_ContinueIndex(0),
 	writeLen(0),
 	offset(0),
-	m_ContinueIndex(0),
-	current_sheet(0),
-	Last_BOF_offset(0)
+	current_sheet(0)
+	//Last_BOF_offset(0)
 {
 #if HAVE_ICONV
 	m_GlobalRecords.SetIconvCode("wchar_t");
@@ -387,7 +387,7 @@ CUnit* workbook::DumpData(CDataStorage &datastore)
 			writeLen = 0;
             current_sheet = 0;
 			offset = 0;
-			Last_BOF_offset = 0;
+			//Last_BOF_offset = 0;
 
             CHANGE_DUMPSTATE(WB_GLOBALRECORDS);
 
@@ -403,7 +403,7 @@ CUnit* workbook::DumpData(CDataStorage &datastore)
             {
 				offset = writeLen;
 				writeLen = 0;
-				Last_BOF_offset = 0;
+				//Last_BOF_offset = 0;
 			   
 				repeat = true;
 				CHANGE_DUMPSTATE(WB_SHEETS);
@@ -417,8 +417,8 @@ CUnit* workbook::DumpData(CDataStorage &datastore)
          case WB_SHEETS:
          {
             XTRACE("\tSHEETS");
-
-            m_pCurrentData = m_Sheets[current_sheet]->DumpData(datastore, offset, writeLen, Last_BOF_offset);
+			//printf("DUMP SHEETS WITH DATASIZE=%ld offset=%ld writeLen=%ld\n", datastore.GetDataSize(), offset, writeLen );
+            m_pCurrentData = m_Sheets[current_sheet]->DumpData(datastore, offset, writeLen/*, Last_BOF_offset*/);	// writelen passed as its cumulatively increased
             if(m_pCurrentData == NULL)
             {
 				Boundsheet_Vect_Itor_t bs = m_GlobalRecords.GetBoundSheetAt(current_sheet);
@@ -440,9 +440,9 @@ CUnit* workbook::DumpData(CDataStorage &datastore)
            } else {
 				writeLen += m_pCurrentData->GetDataSize();
 				repeat = false;
-			}
-            break;
-         }
+		   }
+         }	break;
+
          case WB_FINISH:
             XTRACE("\tFINISH");
 
@@ -454,81 +454,73 @@ CUnit* workbook::DumpData(CDataStorage &datastore)
             break;
 
          case WB_CONTINUE_REC:
-            XTRACE("\tCONTINUE-REC");
+			XTRACE("\tCONTINUE-REC");
+			repeat = false;
 
-            repeat = false;
-
-            if(m_ContinueIndex == 0)
-            {
-               //Create a new data unit containing the max data size
+			if(m_ContinueIndex == 0)
+			{
+			   //Create a new data unit containing the max data size
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
-				m_pContinueRecord = datastore.MakeCRecord();
+			   m_ContinuesRealRecordSize = datastore.Clip((CRecord*)m_pCurrentData);
 #else
-               m_pContinueRecord = (CUnit*)(new CRecord(datastore));
+			   m_pContinueRecord = (CUnit*)(new CRecord(datastore));
 #endif
-
-               // The real size of the record is the size of the buffer minus the
-               // size of the header record
-
-               ((CUnit*)(m_pContinueRecord))->AddDataArray(((CRecord*)m_pCurrentData)->GetRecordDataBuffer(), MAX_RECORD_SIZE);
-               ((CRecord*)(m_pContinueRecord))->SetRecordType(((CRecord*)m_pCurrentData)->GetRecordType());
-               ((CRecord*)(m_pContinueRecord))->SetRecordLength(MAX_RECORD_SIZE);
-
 				//m_pContinueRecord->SetValueAt(MAX_RECORD_SIZE-4,2);
-               m_ContinueIndex++;
+			   m_ContinueIndex++;
 
-               return m_pContinueRecord;
-            } else {
-               //Delete_Pointer(m_pContinueRecord);
+			   return m_pCurrentData;
+			} else {
+			   //Delete_Pointer(m_pContinueRecord);
 
-               // Get a pointer to the next chunk of data
-               const unsigned8_t* pdata = (((CRecord*)m_pCurrentData)->GetRecordDataBuffer()) + m_ContinueIndex*MAX_RECORD_SIZE;
+			   // Get a pointer to the next chunk of data
+			   const unsigned8_t* pdata = (((CRecord*)m_pCurrentData)->GetRecordDataBuffer()) + m_ContinueIndex*MAX_RECORD_SIZE;
 
-               // Get the size of the chunk of data (that is the MAX_REC_SIZE except by the last one)
-               size_t csize = 0;
-               if(( ((CRecord*)m_pCurrentData)->GetRecordDataSize()/MAX_RECORD_SIZE) > m_ContinueIndex)
-               {
-                  csize = MAX_RECORD_SIZE;
-                  m_ContinueIndex++;
+			   // Get the size of the chunk of data (that is the MAX_REC_SIZE except by the last one)
+			   size_t csize = 0;
+
+			   if((m_ContinuesRealRecordSize/MAX_RECORD_SIZE) > m_ContinueIndex)
+			   {
+				  csize = MAX_RECORD_SIZE;
+				  m_ContinueIndex++;
+
 
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
-                  m_pContinueRecord = datastore.MakeCContinue(pdata, csize);
+				  m_pContinueRecord = datastore.MakeCContinue(m_pCurrentData, pdata, csize);
+				  if(m_PreviousDumpState == WB_SHEETS) writeLen += RECORD_HEADER_SIZE;
 #else
-                  m_pContinueRecord =(CUnit*) ( new CContinue(datastore, pdata, csize));
+				  m_pContinueRecord =(CUnit*) ( new CContinue(datastore, pdata, csize));
 #endif
+				  return m_pContinueRecord;
+			   } else {
+				  CUnit *unit = m_pCurrentData;
+				  csize = m_ContinuesRealRecordSize - m_ContinueIndex * MAX_RECORD_SIZE;
 
-                  return m_pContinueRecord;
-               } else {
-				  size_t data_size = ((CRecord*)m_pCurrentData)->GetRecordDataSize();
-
-                  csize = data_size - m_ContinueIndex * MAX_RECORD_SIZE;
-
-                  // Restore the previous state (*Don't use the macro*)
-                  m_DumpState = m_PreviousDumpState;
-                  m_PreviousDumpState = WB_CONTINUE_REC;
-
-                  m_ContinueIndex = 0;
-
-                  if(csize)
-                  {
+				  // Restore the previous state (*Don't use the macro*)
+				  m_DumpState = m_PreviousDumpState;
+				  m_PreviousDumpState = WB_CONTINUE_REC;
+				  m_pCurrentData = NULL;
+				  m_ContinueIndex = 0;
+				  // done with it now, so can delete it
+				  //Delete_Pointer(m_pCurrentData);
+				  
+				  if(csize)
+				  {
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
-                     m_pContinueRecord = datastore.MakeCContinue(pdata, csize);
-					 //((CRecord*)m_pCurrentData)->SetRecordLength(MAX_RECORD_SIZE);
+					 m_pContinueRecord = datastore.MakeCContinue(unit, pdata, csize);
+				     if(m_PreviousDumpState == WB_SHEETS) writeLen += RECORD_HEADER_SIZE;
 #else
-                     m_pContinueRecord = (CUnit*) new CContinue(datastore, pdata, csize);
-					 Delete_Pointer(m_pCurrentData);
+					 m_pContinueRecord = (CUnit*) new CContinue(datastore, pdata, csize);
 #endif
 					 return m_pContinueRecord;
-                  } else {
+				  } else {
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
-					 //((CRecord*)m_pCurrentData)->SetRecordLength(MAX_RECORD_SIZE);
 #else
 					 Delete_Pointer(m_pCurrentData);
 #endif
-                     repeat = true;
-                  }
-               }
-            }
+					 repeat = true;
+				  }
+			   }
+			}
 
             break;
 
@@ -539,14 +531,14 @@ CUnit* workbook::DumpData(CDataStorage &datastore)
 
       if(m_pCurrentData != NULL) 
 	  {
-         // SST Table most likely record to exceed size, but its handled now in the recrod itself (breaks have to occur at defined places)
-		 // WARNING: the test below was >= MAX_..., but MAX size is OK - only continue if > (I think!) DFH 12-12-08
+         // SST Table most likely record to exceed size, but its handled now in the record itself (breaks have to occur at defined places)
 		 // Should only happen with single cells having data > MAX_RECORD_SIZE. Have no idea if this works or not (DFH)
          if(!((CRecord*)m_pCurrentData)->AlreadyContinued() && ((CRecord*)m_pCurrentData)->GetRecordDataSize() > MAX_RECORD_SIZE && m_DumpState != WB_CONTINUE_REC)
 
          {
             // Save the current dump state and change to the CONTINUE Record state
             CHANGE_DUMPSTATE(WB_CONTINUE_REC);
+			//printf("ALREADY=%d dataSize=%lu MAX=%d (dumpState == CONTINUE) = %d\n", ((CRecord*)m_pCurrentData)->AlreadyContinued(), ((CRecord*)m_pCurrentData)->GetRecordDataSize(), MAX_RECORD_SIZE ,m_DumpState == WB_CONTINUE_REC);
 
             m_ContinueIndex = 0;
 

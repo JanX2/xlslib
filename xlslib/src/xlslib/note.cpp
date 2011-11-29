@@ -166,7 +166,7 @@ CNote::CNote(CDataStorage &datastore, const note_t& notedef):
    AddValue16((unsigned16_t)notedef.GetCol());
    AddValue16(0); // grBit
    AddValue16(idx);
-   AddUnicodeString(notedef.GetGlobalRecords(), notedef.GetAuthor(), LEN2_NOFLAGS_PADDING_UNICODE);
+   AddUnicodeString(notedef.GetAuthor(), LEN2_NOFLAGS_PADDING_UNICODE);
 
    SetRecordLength(GetDataSize()-4);
 }

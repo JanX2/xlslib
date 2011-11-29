@@ -57,7 +57,7 @@ namespace xlslib_core
 #endif
 
     protected:
-      CContinue(CDataStorage &datastore, const unsigned8_t* data, size_t size);
+      CContinue(CUnit *unit, const unsigned8_t* data, size_t size);
 	private:
       virtual ~CContinue();
     };

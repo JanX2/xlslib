@@ -126,7 +126,7 @@ size_t CRecord::GetRecordLength() const
 */
 const unsigned8_t* CRecord::GetRecordDataBuffer() const
 {
-   return GetBuffer() + 4;
+   return GetBuffer() + RECORD_HEADER_SIZE;
 }
 
 
@@ -136,7 +136,7 @@ const unsigned8_t* CRecord::GetRecordDataBuffer() const
 */
 size_t CRecord::GetRecordDataSize() const
 {
-   size_t len = GetDataSize() - 4;
+   size_t len = GetDataSize() - RECORD_HEADER_SIZE;
 
    return len;
 }
