@@ -42,8 +42,8 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 subdir = src
-DIST_COMMON = $(pkginclude_HEADERS) $(srcdir)/Makefile.am \
-	$(srcdir)/Makefile.in
+DIST_COMMON = $(nobase_pkginclude_HEADERS) $(pkginclude_HEADERS) \
+	$(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps =  \
 	$(top_srcdir)/m4/ac___function___c99_vpredef_vars.m4 \
@@ -83,7 +83,8 @@ am__nobase_list = $(am__nobase_strip_setup); \
 am__base_list = \
   sed '$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;s/\n/ /g' | \
   sed '$$!N;$$!N;$$!N;$$!N;s/\n/ /g'
-am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(pkgincludedir)"
+am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(pkgincludedir)" \
+	"$(DESTDIR)$(pkgincludedir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libxls_la_LIBADD =
 am_libxls_la_OBJECTS = overnew.lo assert_assist.lo blank.lo boolean.lo \
@@ -112,7 +113,7 @@ CXXLINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	$(LDFLAGS) -o $@
 SOURCES = $(libxls_la_SOURCES)
 DIST_SOURCES = $(libxls_la_SOURCES)
-HEADERS = $(pkginclude_HEADERS)
+HEADERS = $(nobase_pkginclude_HEADERS) $(pkginclude_HEADERS)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -221,7 +222,6 @@ libdir = @libdir@
 libexecdir = @libexecdir@
 localedir = @localedir@
 localstatedir = @localstatedir@
-lt_ECHO = @lt_ECHO@
 mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
@@ -284,24 +284,28 @@ oledoc/oledoc.cpp		      \
 oledoc/olefs.cpp		      \
 oledoc/oleprop.cpp
 
+
+# http://www.gnu.org/software/automake/manual/automake.html#index-pkginclude_005fHEADERS-633 nobase might work fix xlslib.h
 pkginclude_HEADERS = \
-common/xlconfig.h                     \
+common/xlslib.h
+
+nobase_pkginclude_HEADERS = \
+common/xlconfig.h             \
 common/xlsys.h			      \
 common/overnew.h		      \
 common/stringtok.h		      \
 common/systype.h		      \
 common/timespan.h		      \
-common/xls_poppack.h		      \
-common/xls_pshpack1.h		      \
-common/xls_pshpack2.h		      \
-common/xls_pshpack4.h		      \
-common/xlslib.h		    	      \
+common/xls_poppack.h		  \
+common/xls_pshpack1.h		  \
+common/xls_pshpack2.h		  \
+common/xls_pshpack4.h		  \
 common/xlstypes.h		      \
 oledoc/binfile.h		      \
 oledoc/oledoc.h			      \
 oledoc/olefs.h			      \
 oledoc/oleprop.h		      \
-xlslib/biffsection.h		      \
+xlslib/biffsection.h		  \
 xlslib/blank.h			      \
 xlslib/boolean.h		      \
 xlslib/cell.h			      \
@@ -310,12 +314,11 @@ xlslib/colors.h			      \
 xlslib/common.h			      \
 xlslib/continue.h		      \
 xlslib/datast.h			      \
-xlslib/docsumminfo.h		      \
+xlslib/docsumminfo.h		  \
 xlslib/err.h			      \
 xlslib/extformat.h		      \
 xlslib/font.h			      \
 xlslib/format.h			      \
-xlslib/formtags.h		      \
 xlslib/formula.h		      \
 xlslib/globalrec.h		      \
 xlslib/HPSF.h			      \
@@ -328,7 +331,7 @@ xlslib/range.h			      \
 xlslib/recdef.h			      \
 xlslib/record.h			      \
 xlslib/rectypes.h		      \
-xlslib/row.h			      \
+xlslib/row.h                  \
 xlslib/sheetrec.h		      \
 xlslib/summinfo.h		      \
 xlslib/unit.h			      \
@@ -715,6 +718,29 @@ mostlyclean-libtool:
 
 clean-libtool:
 	-rm -rf .libs _libs
+install-nobase_pkgincludeHEADERS: $(nobase_pkginclude_HEADERS)
+	@$(NORMAL_INSTALL)
+	test -z "$(pkgincludedir)" || $(MKDIR_P) "$(DESTDIR)$(pkgincludedir)"
+	@list='$(nobase_pkginclude_HEADERS)'; test -n "$(pkgincludedir)" || list=; \
+	$(am__nobase_list) | while read dir files; do \
+	  xfiles=; for file in $$files; do \
+	    if test -f "$$file"; then xfiles="$$xfiles $$file"; \
+	    else xfiles="$$xfiles $(srcdir)/$$file"; fi; done; \
+	  test -z "$$xfiles" || { \
+	    test "x$$dir" = x. || { \
+	      echo "$(MKDIR_P) '$(DESTDIR)$(pkgincludedir)/$$dir'"; \
+	      $(MKDIR_P) "$(DESTDIR)$(pkgincludedir)/$$dir"; }; \
+	    echo " $(INSTALL_HEADER) $$xfiles '$(DESTDIR)$(pkgincludedir)/$$dir'"; \
+	    $(INSTALL_HEADER) $$xfiles "$(DESTDIR)$(pkgincludedir)/$$dir" || exit $$?; }; \
+	done
+
+uninstall-nobase_pkgincludeHEADERS:
+	@$(NORMAL_UNINSTALL)
+	@list='$(nobase_pkginclude_HEADERS)'; test -n "$(pkgincludedir)" || list=; \
+	$(am__nobase_strip_setup); files=`$(am__nobase_strip)`; \
+	test -n "$$files" || exit 0; \
+	echo " ( cd '$(DESTDIR)$(pkgincludedir)' && rm -f" $$files ")"; \
+	cd "$(DESTDIR)$(pkgincludedir)" && rm -f $$files
 install-pkgincludeHEADERS: $(pkginclude_HEADERS)
 	@$(NORMAL_INSTALL)
 	test -z "$(pkgincludedir)" || $(MKDIR_P) "$(DESTDIR)$(pkgincludedir)"
@@ -822,7 +848,7 @@ check-am: all-am
 check: check-am
 all-am: Makefile $(LTLIBRARIES) $(HEADERS)
 installdirs:
-	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(pkgincludedir)"; do \
+	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(pkgincludedir)" "$(DESTDIR)$(pkgincludedir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -873,7 +899,8 @@ info: info-am
 
 info-am:
 
-install-data-am: install-pkgincludeHEADERS
+install-data-am: install-nobase_pkgincludeHEADERS \
+	install-pkgincludeHEADERS
 
 install-dvi: install-dvi-am
 
@@ -919,7 +946,8 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-libLTLIBRARIES uninstall-pkgincludeHEADERS
+uninstall-am: uninstall-libLTLIBRARIES \
+	uninstall-nobase_pkgincludeHEADERS uninstall-pkgincludeHEADERS
 
 .MAKE: install-am install-strip
 
@@ -930,13 +958,15 @@ uninstall-am: uninstall-libLTLIBRARIES uninstall-pkgincludeHEADERS
 	install install-am install-data install-data-am install-dvi \
 	install-dvi-am install-exec install-exec-am install-html \
 	install-html-am install-info install-info-am \
-	install-libLTLIBRARIES install-man install-pdf install-pdf-am \
+	install-libLTLIBRARIES install-man \
+	install-nobase_pkgincludeHEADERS install-pdf install-pdf-am \
 	install-pkgincludeHEADERS install-ps install-ps-am \
 	install-strip installcheck installcheck-am installdirs \
 	maintainer-clean maintainer-clean-generic mostlyclean \
 	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
 	pdf pdf-am ps ps-am tags uninstall uninstall-am \
-	uninstall-libLTLIBRARIES uninstall-pkgincludeHEADERS
+	uninstall-libLTLIBRARIES uninstall-nobase_pkgincludeHEADERS \
+	uninstall-pkgincludeHEADERS
 
 
 #clean-local:
