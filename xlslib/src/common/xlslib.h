@@ -41,10 +41,8 @@
 #include <string>
 
 #include "common/xlsys.h"
-
-
-
 #include "common/xlstypes.h"
+
 #include "xlslib/globalrec.h"
 #include "xlslib/workbook.h"
 
