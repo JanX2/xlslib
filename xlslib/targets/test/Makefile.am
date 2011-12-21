@@ -1,8 +1,6 @@
 
 AM_CPPFLAGS		=  \
--I$(top_srcdir)/src/common \
--I$(top_srcdir)/src/xlslib \
--I$(top_srcdir)/src/oledoc 
+-I$(top_srcdir)/src
 
 
 noinst_PROGRAMS	  = testCPP testC PR2859188 PR3076678
