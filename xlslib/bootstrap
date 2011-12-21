@@ -35,7 +35,8 @@
 # modified for CRM114 by Joost van Baal
 # augmented by Ger Hobbelt (2008)
 
-cd `echo $0 | sed -e 's,[\\/][^\\/]\+$,,'`
+# Should be run from xlslib - so no need for below (however below doesn't work anyway)
+#cd `echo $0 | sed -e 's,[\\/][^\\/]\+$,,'`
 
 PGM=XLSlib
 configure_ac="./configure.ac"
