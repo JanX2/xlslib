@@ -37,14 +37,12 @@
 #ifndef UNIT_H
 #define UNIT_H
 
-#include <xlsys.h>
-#include <common.h>
 
-#include <xlstypes.h>
+#include "common/xlsys.h"
+#include "common/systype.h"
+// #include "common/xls_pshpack2.h"
 
-
-
-// #include <xls_pshpack2.h>
+#include "xlslib/common.h"
 
 namespace xlslib_core
 {
@@ -178,7 +176,7 @@ namespace xlslib_core
   };
 }
 
-// #include <xls_poppack.h>
+// #include "common/xls_poppack.h"
 
 #endif // UNIT_H
 

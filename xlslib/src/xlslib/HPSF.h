@@ -37,16 +37,19 @@
 #define HPSF_H
 
 #include <time.h>
-#include <xlsys.h>
-#include <common.h>
-#include <unit.h>
+
+#include "common/xlsys.h"
+#include "common/systype.h"
+
+#include "xlslib/common.h"
+#include "xlslib/unit.h"
 
 #define SUMMARY_SIZE		4096		// one big blocks
 
 #define FILETIME2UNIX_NS	11644473600000000ll		// from the web
 
 
-// #include <xls_pshpack2.h>
+// #include "common/xls_pshpack2.h"
 
 namespace xlslib_core
 {
@@ -172,6 +175,6 @@ namespace xlslib_core
 }
 
 
-// #include <xls_poppack.h>
+// #include "common/xls_poppack.h"
 
 #endif

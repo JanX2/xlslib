@@ -32,11 +32,11 @@
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-#include <xlsys.h>
+#include "common/xlsys.h"
 
-#include <olefs.h>
+#include "oledoc/olefs.h"
 #include <string>
-#include <stringtok.h>
+#include "common/stringtok.h"
 
 using namespace std;
 using namespace xlslib_core;

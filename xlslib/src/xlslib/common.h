@@ -37,13 +37,6 @@
 #ifndef XLSLIB_COMMON_H
 #define XLSLIB_COMMON_H
 
-#include <systype.h>
-
-#include <list>
-#include <vector>
-#include <algorithm>
-#include <string>
-
 #ifdef HAVE_ICONV
 #include <iconv.h>
 
@@ -65,7 +58,7 @@
 
 #define RANGE_FEATURE
 
-// #include <xls_pshpack2.h>
+// #include "common/xls_pshpack2.h"
 
 namespace xlslib_core
 {
@@ -93,7 +86,7 @@ namespace xlslib_core
   typedef std::vector<range* XLSLIB_DFLT_ALLOCATOR> RangeObj_Vect_t;
   typedef RangeObj_Vect_t::iterator RangeObj_Vect_Itor_t;
 #endif // RANGE_FEATURE
-#else  
+#else
   typedef std::vector<xlslib_core::range_t* XLSLIB_DFLT_ALLOCATOR> Range_Vect_t;
   typedef Range_Vect_t::iterator Range_Vect_Itor_t;
 #ifdef RANGE_FEATURE
@@ -105,7 +98,7 @@ namespace xlslib_core
 }
 
 
-// #include <xls_poppack.h>
+// #include "common/xls_poppack.h"
 
 #endif //XLSLIB_COMMON_H
 

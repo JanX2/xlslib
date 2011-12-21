@@ -35,9 +35,9 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 
-#include <xlsys.h>
+#include "common/xlsys.h"
 
-#include <record.h>
+#include "xlslib/record.h"
 
 using namespace std;
 using namespace xlslib_core;

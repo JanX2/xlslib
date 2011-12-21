@@ -36,12 +36,14 @@
 
 
 #ifndef DOCSUMMARYINFO_H
-#define DOCSUMMARYINFO_H 
+#define DOCSUMMARYINFO_H
 
-#include <xlsys.h>
-#include <common.h>
-#include <datast.h>
-#include <HPSF.h>
+#include "common/xlsys.h"
+#include "common/systype.h"
+
+#include "xlslib/common.h"
+#include "xlslib/datast.h"
+#include "xlslib/HPSF.h"
 
 
 // All known fields, but not all used
@@ -65,7 +67,7 @@
 #define DocSumInfo_Max						DocSumInfo_LinksUpToDate
 
 
-// #include <xls_pshpack2.h>
+// #include "common/xls_pshpack2.h"
 
 namespace xlslib_core
 {
@@ -99,7 +101,7 @@ CDocSummaryInfo class declaration
 
 }
 
-// #include <xls_poppack.h>
+// #include "common/xls_poppack.h"
 
 #endif //DOCSUMMARYINFO_H
 

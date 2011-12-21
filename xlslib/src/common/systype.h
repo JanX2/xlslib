@@ -45,7 +45,7 @@
 #endif
 
 
-#include <xlsys.h>
+#include "common/xlsys.h"
 
 
 //#   define PHPEXT_TSRMLS_C  tsrm_ls
@@ -107,7 +107,7 @@
 
 
 
-#include <xlstypes.h>  /* [i_a]   better to get the definition from a single place */
+#include "common/xlstypes.h"  /* [i_a]   better to get the definition from a single place */
 
 
 
@@ -308,7 +308,7 @@ will be properly 'munched'.
 #define XL_VERIFY(expr)																\
 	(void)(expr)
 
-#undef XL_WITH_ASSERTIONS			
+#undef XL_WITH_ASSERTIONS
 
 #endif
 

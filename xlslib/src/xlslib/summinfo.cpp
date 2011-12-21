@@ -35,10 +35,10 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 
-#include <xlsys.h>
+#include "common/xlsys.h"
 
 #include <time.h>
-#include <summinfo.h>
+#include "xlslib/summinfo.h"
 
 using namespace std;
 using namespace xlslib_core;

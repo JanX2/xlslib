@@ -39,7 +39,7 @@
 #define XLSLIB_CONFIG_H
 
 #ifdef HAVE_CONFIG_H
-#include <xlconfig.h>
+#include "xlconfig.h"
 
 
 #define CFG_TRUE          1

@@ -35,8 +35,8 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 
-#include <format.h>
-#include <globalrec.h>
+#include "xlslib/format.h"
+#include "xlslib/globalrec.h"
 
 using namespace std;
 using namespace xlslib_core;

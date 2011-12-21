@@ -34,11 +34,11 @@
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-#include <xlsys.h>
+#include "common/xlsys.h"
 
-#include <label.h>
-#include <globalrec.h>
-#include <datast.h>
+#include "xlslib/label.h"
+#include "xlslib/globalrec.h"
+#include "xlslib/datast.h"
 
 
 using namespace std;

@@ -37,7 +37,8 @@
 #ifndef BIFFSECTION_H
 #define BIFFSECTION_H
 
-#include <xlsys.h>
+#include "common/xlsys.h"
+//#include "common/systype.h"
 
 /*
 ******************************
@@ -47,7 +48,7 @@ CBiffSection class declaration
 
 
 
-// #include <xls_pshpack2.h>
+// #include "common/xls_pshpack2.h"
 
 namespace xlslib_core
 {
@@ -64,7 +65,7 @@ namespace xlslib_core
 }
 
 
-// #include <xls_poppack.h>
+// #include "common/xls_poppack.h"
 
 #endif //BIFFSECTION_H
 

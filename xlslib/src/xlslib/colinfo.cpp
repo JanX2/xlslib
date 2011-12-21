@@ -34,9 +34,9 @@
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-#include <xlsys.h>
+#include "common/xlsys.h"
 
-#include <colinfo.h>
+#include "xlslib/colinfo.h"
 
 using namespace std;
 using namespace xlslib_core;

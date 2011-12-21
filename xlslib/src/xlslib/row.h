@@ -38,10 +38,12 @@
 #ifndef ROW_H
 #define ROW_H
 
-#include <xlsys.h>
-#include <common.h>
-#include <record.h>
-#include <extformat.h>
+#include "common/xlsys.h"
+#include "common/systype.h"
+
+#include "xlslib/common.h"
+#include "xlslib/record.h"
+#include "xlslib/extformat.h"
 
 /*
 ******************************
@@ -50,7 +52,7 @@ CRow class declaration
 */
 
 
-// #include <xls_pshpack2.h>
+// #include "common/xls_pshpack2.h"
 
 namespace xlslib_core
 {
@@ -166,7 +168,7 @@ CDBCell class declaration
 }
 
 
-// #include <xls_poppack.h>
+// #include "common/xls_poppack.h"
 
 #endif //ROW_H
 

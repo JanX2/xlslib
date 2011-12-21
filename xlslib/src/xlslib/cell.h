@@ -37,15 +37,16 @@
 #ifndef CELL_H
 #define CELL_H
 
-#include <xlsys.h>
-#include"common.h"
+#include "common/xlsys.h"
+#include "common/systype.h"
 
-#include <unit.h>
-#include <font.h>
-#include <extformat.h>
+#include "xlslib/common.h"
+#include "xlslib/unit.h"
+#include "xlslib/font.h"
+#include "xlslib/extformat.h"
 
 
-// #include <xls_pshpack2.h>
+// #include "common/xls_pshpack2.h"
 
 namespace xlslib_core
 {
@@ -144,7 +145,7 @@ namespace xlslib_core
 }
 
 
-// #include <xls_poppack.h>
+// #include "common/xls_poppack.h"
 
 #endif // CELL_H
 

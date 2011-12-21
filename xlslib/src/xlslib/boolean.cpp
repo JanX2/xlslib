@@ -33,10 +33,10 @@
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-#include <xlsys.h>
+#include "common/xlsys.h"
 
-#include <boolean.h>
-#include <datast.h>
+#include "xlslib/boolean.h"
+#include "xlslib/datast.h"
 
 
 using namespace xlslib_core;

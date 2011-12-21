@@ -22,7 +22,7 @@ Code adapted from citadel (www.citadel.org ???)
 #ifndef MD5_H
 #define MD5_H
 
-#include <systype.h>
+#include "common/systype.h"
 //#include <xlslib.h>
 
 

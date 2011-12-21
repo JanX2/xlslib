@@ -33,8 +33,8 @@
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-#include <xlsys.h>
-#include <systype.h>
+#include "common/xlsys.h"
+#include "common/systype.h"
 #include <tostr.h>
 
 

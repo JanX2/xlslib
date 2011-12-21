@@ -35,9 +35,9 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 
-#include <xlsys.h>
+#include "common/xlsys.h"
 
-#include <continue.h>
+#include "xlslib/continue.h"
 
 
 /*

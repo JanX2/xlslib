@@ -37,14 +37,16 @@
 #ifndef COLORS_H
 #define COLORS_H
 
-#include <xlsys.h>
-#include <common.h>
+#include "common/xlsys.h"
+#include "common/systype.h"
 
-#include <record.h>
-#include <unit.h>
+#include "xlslib/common.h"
+
+#include "xlslib/record.h"
+#include "xlslib/unit.h"
 
 
-// #include <xls_pshpack2.h>
+// #include "common/xls_pshpack2.h"
 
 namespace xlslib_core
 {
@@ -186,7 +188,7 @@ CPalette class declaration
 
 }
 
-// #include <xls_poppack.h>
+// #include "common/xls_poppack.h"
 
 #endif //COLORS_H
 

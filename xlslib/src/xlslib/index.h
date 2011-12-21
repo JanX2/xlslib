@@ -38,12 +38,14 @@
 #ifndef INDEX_H
 #define INDEX_H
 
-#include <xlsys.h>
-#include <common.h>
-#include <record.h>
+#include "common/xlsys.h"
+#include "common/systype.h"
+
+#include "xlslib/common.h"
+#include "xlslib/record.h"
 
 
-// #include <xls_pshpack2.h>
+// #include "common/xls_pshpack2.h"
 
 namespace xlslib_core
 {
@@ -84,7 +86,7 @@ CIndex class declaration
     };
 }
 
-// #include <xls_poppack.h>
+// #include "common/xls_poppack.h"
 
 #endif //INDEX_H
 

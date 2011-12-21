@@ -37,8 +37,8 @@
 #ifndef OVERNEW_H
 #define OVERNEW_H
 
-#include <xlsys.h>
-#include <systype.h>
+#include "common/xlsys.h"
+#include "common/systype.h"
 
 /********************************************************************
   The new() operator is overloaded only for the PHP_EXTENSION version
@@ -55,7 +55,7 @@ void* operator new[](size_t sz) throw (std::bad_alloc);
 void  operator delete[](void* m);
 
 
-#endif 
+#endif
 #endif  //OVERNEW_H
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

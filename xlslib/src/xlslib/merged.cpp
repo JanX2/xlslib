@@ -35,9 +35,9 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 
-#include <xlsys.h>
+#include "common/xlsys.h"
 
-#include <merged.h>
+#include "xlslib/merged.h"
 
 using namespace std;
 using namespace xlslib_core;

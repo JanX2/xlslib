@@ -1,7 +1,7 @@
 #SUBDIRS 		= common oledoc xlslib
 
-# WAS CXXFLAGS = -O2 DFH 
-# SEE IF WE REALLY NEED IT THOUGH 
+# WAS CXXFLAGS = -O2 DFH
+# SEE IF WE REALLY NEED IT THOUGH
 # AM_CXXFLAGS = -O2
 
 AM_CPPFLAGS		=  \
@@ -52,24 +52,27 @@ oledoc/oledoc.cpp		      \
 oledoc/olefs.cpp		      \
 oledoc/oleprop.cpp
 
-pkginclude_HEADERS =                  \
-common/xlconfig.h                     \
+# http://www.gnu.org/software/automake/manual/automake.html#index-pkginclude_005fHEADERS-633 nobase might work fix xlslib.h
+pkginclude_HEADERS =          \
+common/xlslib.h
+
+nobase_pkginclude_HEADERS =   \
+common/xlconfig.h             \
 common/xlsys.h			      \
 common/overnew.h		      \
 common/stringtok.h		      \
 common/systype.h		      \
 common/timespan.h		      \
-common/xls_poppack.h		      \
-common/xls_pshpack1.h		      \
-common/xls_pshpack2.h		      \
-common/xls_pshpack4.h		      \
-common/xlslib.h		    	      \
+common/xls_poppack.h		  \
+common/xls_pshpack1.h		  \
+common/xls_pshpack2.h		  \
+common/xls_pshpack4.h		  \
 common/xlstypes.h		      \
 oledoc/binfile.h		      \
 oledoc/oledoc.h			      \
 oledoc/olefs.h			      \
 oledoc/oleprop.h		      \
-xlslib/biffsection.h		      \
+xlslib/biffsection.h		  \
 xlslib/blank.h			      \
 xlslib/boolean.h		      \
 xlslib/cell.h			      \
@@ -78,12 +81,11 @@ xlslib/colors.h			      \
 xlslib/common.h			      \
 xlslib/continue.h		      \
 xlslib/datast.h			      \
-xlslib/docsumminfo.h		      \
+xlslib/docsumminfo.h		  \
 xlslib/err.h			      \
 xlslib/extformat.h		      \
 xlslib/font.h			      \
 xlslib/format.h			      \
-xlslib/formtags.h		      \
 xlslib/formula.h		      \
 xlslib/globalrec.h		      \
 xlslib/HPSF.h			      \
@@ -96,7 +98,7 @@ xlslib/range.h			      \
 xlslib/recdef.h			      \
 xlslib/record.h			      \
 xlslib/rectypes.h		      \
-xlslib/row.h			      \
+xlslib/row.h                  \
 xlslib/sheetrec.h		      \
 xlslib/summinfo.h		      \
 xlslib/unit.h			      \

@@ -37,17 +37,19 @@
 #ifndef EXTFORMAT_H
 #define EXTFORMAT_H
 
-#include <xlsys.h>
-#include <common.h>
-#include <rectypes.h>
-#include <record.h>
-#include <colors.h>
-#include <font.h>
-#include <format.h>
-//#include <workbook.h>
+#include "common/xlsys.h"
+#include "common/systype.h"
+
+#include "xlslib/common.h"
+#include "xlslib/rectypes.h"
+#include "xlslib/record.h"
+#include "xlslib/colors.h"
+#include "xlslib/font.h"
+#include "xlslib/format.h"
+//#include "xlslib/workbook.h"
 
 
-// #include <xls_pshpack2.h>
+// #include "common/xls_pshpack2.h"
 
 namespace xlslib_core
 {
@@ -645,7 +647,7 @@ CExtFormat class declaration
 
 }
 
-// #include <xls_poppack.h>
+// #include "common/xls_poppack.h"
 
 #endif //EXTFORMAT_H
 

@@ -34,10 +34,10 @@
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-#include <xlsys.h>
+#include "common/xlsys.h"
 
-#include <blank.h>
-#include <datast.h>
+#include "xlslib/blank.h"
+#include "xlslib/datast.h"
 
 
 using namespace std;

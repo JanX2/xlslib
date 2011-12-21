@@ -37,16 +37,18 @@
 #define FORMULA_H
 
 
-#include <xlsys.h>
-#include <common.h>
-#include <cell.h>
-#include <err.h>
-#include <record.h>
-#include <unit.h>
+#include "common/xlsys.h"
+#include "common/systype.h"
+
+#include "xlslib/common.h"
+#include "xlslib/cell.h"
+#include "xlslib/err.h"
+#include "xlslib/record.h"
+#include "xlslib/unit.h"
 
 
 
-// #include <xls_pshpack2.h>
+// #include "common/xls_pshpack2.h"
 
 namespace xlslib_core
 {
@@ -1725,7 +1727,7 @@ namespace xlslib_core
 }
 
 
-// #include <xls_poppack.h>
+// #include "common/xls_poppack.h"
 
 #endif //FORMULA_H
 

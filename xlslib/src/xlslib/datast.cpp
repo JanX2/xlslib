@@ -34,30 +34,31 @@
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-#include <xlsys.h>
+#include "common/xlsys.h"
 
-#include <datast.h>
-#include <systype.h>  // XTRACE2()      [i_a]
+#include "xlslib/datast.h"
+  // XTRACE2()      [i_a]
+#include "common/systype.h"
 
 // for factory:
-#include <record.h>
-#include <row.h>
-#include <font.h>
-#include <format.h>
-#include <number.h>
-#include <boolean.h>
-#include <err.h>
-#include <note.h>
-#include <formula.h>
-#include <merged.h>
-#include <label.h>
-#include <index.h>
-#include <extformat.h>
-#include <continue.h>
-#include <colinfo.h>
-#include <blank.h>
-#include <recdef.h>
-// DFH #include <unit.h>
+#include "xlslib/record.h"
+#include "xlslib/row.h"
+#include "xlslib/font.h"
+#include "xlslib/format.h"
+#include "xlslib/number.h"
+#include "xlslib/boolean.h"
+#include "xlslib/err.h"
+#include "xlslib/note.h"
+#include "xlslib/formula.h"
+#include "xlslib/merged.h"
+#include "xlslib/label.h"
+#include "xlslib/index.h"
+#include "xlslib/extformat.h"
+#include "xlslib/continue.h"
+#include "xlslib/colinfo.h"
+#include "xlslib/blank.h"
+#include "xlslib/recdef.h"
+// DFH #include "xlslib/unit.h"
 
 
 namespace xlslib_core

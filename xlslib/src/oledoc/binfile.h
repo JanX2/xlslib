@@ -41,9 +41,11 @@
 #include <fstream>
 #include <string>
 
-#include <xlsys.h>
-#include <common.h>
-#include <unit.h>
+#include "common/xlsys.h"
+#include "common/systype.h"
+
+#include "xlslib/common.h"
+#include "xlslib/unit.h"
 
 namespace xlslib_core
 {

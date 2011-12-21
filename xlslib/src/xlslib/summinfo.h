@@ -37,16 +37,16 @@
 
 
 #ifndef SUMMARYINFO_H
-#define SUMMARYINFO_H 
+#define SUMMARYINFO_H
 
-#include <xlsys.h>
-#include <common.h>
-#include <datast.h>
-#include <HPSF.h>
+#include "common/xlsys.h"
+#include "common/systype.h"
 
+#include "xlslib/common.h"
+#include "xlslib/datast.h"
+#include "xlslib/HPSF.h"
 
-
-// #include <xls_pshpack2.h>
+// #include "common/xls_pshpack2.h"
 
 // all of these defined, not all used
 #define SumInfo_Unknown						 1
@@ -115,7 +115,7 @@ CSummaryInfo class declaration
     };
 }
 
-// #include <xls_poppack.h>
+// #include "common/xls_poppack.h"
 
 #endif
 

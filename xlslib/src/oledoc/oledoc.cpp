@@ -36,9 +36,9 @@
 
 #define OLE_DEBUG	0
 
-#include <xlsys.h>
+#include "common/xlsys.h"
 
-#include <oledoc.h>
+#include "oledoc/oledoc.h"
 
 using namespace std;
 using namespace xlslib_core;

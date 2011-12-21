@@ -34,12 +34,12 @@
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-#include <xlsys.h>
+#include "common/xlsys.h"
 
-#include <cell.h>
+#include "xlslib/cell.h"
 
-#include <format.h>
-#include <globalrec.h>
+#include "xlslib/format.h"
+#include "xlslib/globalrec.h"
 
 using namespace xlslib_core;
 
@@ -136,13 +136,13 @@ void cell_t::indent(indent_option_t indent_option)
 void cell_t::orientation(txtori_option_t ori_option)
 {
 	set_xf_common();
-   pxf->SetTxtOrientation(ori_option);
+	pxf->SetTxtOrientation(ori_option);
 }
 
 void cell_t::fillfgcolor(color_name_t color)
 {
 	set_xf_common();
-   pxf->SetFillFGColor(color);
+	pxf->SetFillFGColor(color);
 }
 
 void cell_t::fillfgcolor(unsigned8_t color)
@@ -154,13 +154,13 @@ void cell_t::fillfgcolor(unsigned8_t color)
 void cell_t::fillbgcolor(color_name_t color)
 {
    	set_xf_common();
-		pxf->SetFillBGColor(color);
+	pxf->SetFillBGColor(color);
 }
 
 void cell_t::fillbgcolor(unsigned8_t color)
 {
    	set_xf_common();
-		pxf->SetFillBGColor(color);
+	pxf->SetFillBGColor(color);
 }
 
 void cell_t::fillstyle(fill_option_t fill)

@@ -33,10 +33,10 @@
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-#include <xlsys.h>
+#include "common/xlsys.h"
 
-#include <err.h>
-#include <datast.h>
+#include "xlslib/err.h"
+#include "xlslib/datast.h"
 
 
 using namespace xlslib_core;

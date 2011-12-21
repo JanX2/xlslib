@@ -32,10 +32,10 @@
  *
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-#include <xlsys.h>
+#include "common/xlsys.h"
 
-#include <colors.h>
-#include <datast.h>
+#include "xlslib/colors.h"
+#include "xlslib/datast.h"
 
 
 

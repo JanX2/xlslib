@@ -35,10 +35,11 @@
 #ifndef OLEFS_H
 #define OLEFS_H
  
-#include <xlsys.h>
+#include "common/xlsys.h"
 
-#include <oleprop.h>
-#include <datast.h>
+#include "oledoc/oleprop.h"
+
+#include "xlslib/datast.h"
 
 namespace xlslib_core
 {

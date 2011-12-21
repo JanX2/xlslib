@@ -34,12 +34,12 @@
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-#include <xlsys.h>
+#include "common/xlsys.h"
 
-#include <unit.h>
-#include <globalrec.h>
-#include <rectypes.h>
-#include <datast.h>
+#include "xlslib/unit.h"
+#include "xlslib/globalrec.h"
+#include "xlslib/rectypes.h"
+#include "xlslib/datast.h"
 
 using namespace xlslib_core;
 
@@ -272,7 +272,7 @@ signed8_t CUnit::AddValue64FP(double newval)
 {
 	signed8_t errcode = NO_ERRORS;
 
-#include <xls_pshpack1.h>
+#include "common/xls_pshpack1.h"
 
 	union 
 	{
@@ -281,7 +281,7 @@ signed8_t CUnit::AddValue64FP(double newval)
 		unsigned8_t b[8];
 	} v;
 	
-#include <xls_poppack.h>
+#include "common/xls_poppack.h"
 
 	v.f = newval;
 

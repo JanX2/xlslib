@@ -38,15 +38,17 @@
 #define NUMBER_H
 
 
-#include <xlsys.h>
-#include <common.h>
-#include <cell.h>
-#include <record.h>
-#include <unit.h>
+#include "common/xlsys.h"
+#include "common/systype.h"
+
+#include "xlslib/common.h"
+#include "xlslib/cell.h"
+#include "xlslib/record.h"
+#include "xlslib/unit.h"
 
 
 
-// #include <xls_pshpack2.h>
+// #include "common/xls_pshpack2.h"
 
 namespace xlslib_core
 {
@@ -113,7 +115,7 @@ __attribute__((unused))
 }
 
 
-// #include <xls_poppack.h>
+// #include "common/xls_poppack.h"
 
 #endif //NUMBER_H
 

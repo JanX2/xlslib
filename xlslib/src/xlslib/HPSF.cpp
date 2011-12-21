@@ -33,8 +33,8 @@
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-#include <xlsys.h>
-#include <datast.h>
+#include "common/xlsys.h"
+#include "xlslib/datast.h"
 
 #include "HPSF.h"
 

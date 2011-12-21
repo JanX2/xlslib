@@ -34,9 +34,9 @@
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-#include <xlsys.h>
+#include "common/xlsys.h"
 
-#include <overnew.h>
+#include "common/overnew.h"
 
 /********************************************************************
   The new() operator is overloaded only for the PHP_EXTENSION version
@@ -80,7 +80,7 @@ void  operator delete[](void* m)
    efree(m);
 }
 
-#endif 
+#endif
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * $Log: overnew.cpp,v $

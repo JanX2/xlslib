@@ -37,13 +37,15 @@
 #ifndef COLINFO_H
 #define COLINFO_H
 
-#include <xlsys.h>
-#include <common.h>
-#include <record.h>
-#include <extformat.h>
+#include "common/xlsys.h"
+#include "common/systype.h"
+
+#include "xlslib/common.h"
+#include "xlslib/record.h"
+#include "xlslib/extformat.h"
 
 
-// #include <xls_pshpack2.h>
+// #include "common/xls_pshpack2.h"
 
 namespace xlslib_core
 {
@@ -86,7 +88,7 @@ namespace xlslib_core
 }
 
 
-// #include <xls_poppack.h>
+// #include "common/xls_poppack.h"
 
 #endif //COLINFO_H
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

@@ -35,13 +35,15 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 #ifndef OLEDOC_H
-#define OLEDOC_H 
+#define OLEDOC_H
 
-#include <xlsys.h>
-#include <common.h>
-#include <binfile.h>
-#include <olefs.h>
-#include <datast.h>
+#include "common/xlsys.h"
+
+#include "oledoc/binfile.h"
+#include "oledoc/olefs.h"
+
+#include "xlslib/common.h"
+#include "xlslib/datast.h"
 
 namespace xlslib_core
 {
@@ -63,47 +65,53 @@ namespace xlslib_core
 #define HEADPOS_UK9                 (0x34)
 #define HEADPOS_UK10                (0x38)
 #define HEADPOS_SBAT_COUNT          (0x40)
-#define HEADPOS_SBAT_START          (0x3c) 
+#define HEADPOS_SBAT_START          (0x3c)
 #define HEADPOS_XBAT_START          (0x44)
 #define HEADPOS_XBAT_COUNT          (0x48)
 #define HEADPOS_BAT_ARRAY           (0x4c)
 
 
-#define HEADVAL_DFLT_NOTUSED        (0xff)  
-#define HEADVAL_DFLT_UK1            (0x00)  
-#define HEADVAL_DFLT_UK2            (0x00)  
-#define HEADVAL_DFLT_UK2b           (0x00)  /* According to the Excel sample... but undocummented */
-#define HEADVAL_DFLT_UK3            (0x00)  
-#define HEADVAL_DFLT_UK4            (0x3e)  /* POIFS documentation says 0x3b... let's stick with the Excel sample ...*/
-#define HEADVAL_DFLT_UK5            (0x03)  
-#define HEADVAL_DFLT_UK6              (-2)    
-#define HEADVAL_DFLT_UK7            (0x00)  
-#define HEADVAL_DFLT_UK8            (0x00)  
-#define HEADVAL_DFLT_UK9            (0x00)  
+#define HEADVAL_DFLT_NOTUSED        (0xff)
+#define HEADVAL_DFLT_UK1            (0x00)
+#define HEADVAL_DFLT_UK2            (0x00)
+/* According to the Excel sample... but undocummented */
+#define HEADVAL_DFLT_UK2b           (0x00)
+#define HEADVAL_DFLT_UK3            (0x00)
+/* POIFS documentation says 0x3b... let's stick with the Excel sample ...*/
+#define HEADVAL_DFLT_UK4            (0x3e)
+#define HEADVAL_DFLT_UK5            (0x03)
+#define HEADVAL_DFLT_UK6              (-2)
+#define HEADVAL_DFLT_UK7            (0x00)
+#define HEADVAL_DFLT_UK8            (0x00)
+#define HEADVAL_DFLT_UK9            (0x00)
 #define HEADVAL_DFLT_UK10         (0x1000)
 
 
-#define HEADVAL_DFLT_LOG2_BIGBLOCK      (9) 
-#define HEADVAL_DFLT_LOG2_SMALLBLOCK    (6) 
-#define HEADVAL_DFLT_BATCOUNT			(0)    
-#define HEADVAL_DFLT_PROPERTIES_SB     (-2)  
-#define HEADVAL_DFLT_SBAT_START        (-2)  
-#define HEADVAL_DFLT_SBAT_COUNT         (0)   //POIFS says it should be 1 ... let's stick to M$
-#define HEADVAL_DFLT_XBAT_START        (-2)  
-#define HEADVAL_DFLT_XBAT_COUNT         (0)   
+#define HEADVAL_DFLT_LOG2_BIGBLOCK      (9)
+#define HEADVAL_DFLT_LOG2_SMALLBLOCK    (6)
+#define HEADVAL_DFLT_BATCOUNT			(0)
+#define HEADVAL_DFLT_PROPERTIES_SB     (-2)
+#define HEADVAL_DFLT_SBAT_START        (-2)
+//POIFS says it should be 1 ... let's stick to M$
+#define HEADVAL_DFLT_SBAT_COUNT         (0)
+#define HEADVAL_DFLT_XBAT_START        (-2)
+#define HEADVAL_DFLT_XBAT_COUNT         (0)
 // #define HEADVAL_DFLT_BAT_ARRAY    /* Cannot have a default value */ 
 
 #define HEAD_SIZE                BIG_BLOCK_SIZE
 #define HEAD_ID_SZ               (0x08)
 
-#define BAT_NOT_USED_BYTE	(0xff)	// could be char is not signed
+// could be char is not signed
+#define BAT_NOT_USED_BYTE	(0xff)
 #define BAT_NOT_USED		(-1)
 #define BAT_END_CHAIN		(-2)
 #define BAT_SELF_PLACE		(-3)
 #define BAT_MSAT_PLACE		(-4)
 
-#define BAT_ENTRIES_PER_BLOCK		(BIG_BLOCK_SIZE/4)			// BAT blocks are filled - no pointers
-#define BAT_BLOCKS_PER_MSAT_BLOCK	(BAT_ENTRIES_PER_BLOCK - 1)	// pointer to next, or final terminator
+// BAT blocks are filled - no pointers
+#define BAT_ENTRIES_PER_BLOCK		(BIG_BLOCK_SIZE/4)
+// pointer to next, or final terminator
+#define BAT_BLOCKS_PER_MSAT_BLOCK	(BAT_ENTRIES_PER_BLOCK - 1)
 #define HEADER_SAT_SIZE				109
 
 /* 

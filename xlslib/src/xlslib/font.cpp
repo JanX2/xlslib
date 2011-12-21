@@ -34,8 +34,8 @@
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-#include <font.h>
-#include <globalrec.h>
+#include "xlslib/font.h"
+#include "xlslib/globalrec.h"
 
 using namespace xlslib_core;
 

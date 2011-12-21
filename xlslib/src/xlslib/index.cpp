@@ -35,10 +35,10 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 
-#include <xlsys.h>
+#include "common/xlsys.h"
 
-#include <index.h>
-#include <datast.h>
+#include "xlslib/index.h"
+#include "xlslib/datast.h"
 
 using namespace std;
 using namespace xlslib_core;

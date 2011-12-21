@@ -37,7 +37,7 @@
 #ifndef XLSLIB_TIMESPAN_H
 #define XLSLIB_TIMESPAN_H
 
-/* #include <xlsys.h> */
+/* #include "common/xlsys.h" */
 
 #include <time.h>
 #include <assert.h>	// YES

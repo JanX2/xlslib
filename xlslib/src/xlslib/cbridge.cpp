@@ -33,14 +33,16 @@
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-#include <xlsys.h>
+#include "common/xlsys.h"
+#include "common/systype.h"
 
 #include <sys/types.h>
 #include <string>
 
 #define CPP_BRIDGE_XLS
 
-#include <common.h> /* RANGE_FEATURE */
+#include "xlslib/common.h" /* RANGE_FEATURE */
+
 #include <xlslib.h>
 
 using namespace std;
@@ -198,7 +200,7 @@ extern "C" {
 
 	unsigned32_t xlsCellGetRow(cell_t *c)						{ return c->GetRow(); }
 	unsigned32_t xlsCellGetCol(cell_t *c)						{ return c->GetCol(); }
-#ifdef RANGE_FEATURE	
+#ifdef RANGE_FEATURE
 	// range
 	void xlsRangeCellcolor(range *r, color_name_t color)		{ return r->cellcolor(color); }
 #endif // RANGE_FEATURE

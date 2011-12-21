@@ -36,15 +36,16 @@
 #ifndef NOTE_H
 #define NOTE_H
 
-#include <xlsys.h>
-#include <common.h>
+#include "common/xlsys.h"
+#include "common/systype.h"
 
-#include <cell.h>
-#include <record.h>
-#include <unit.h>
+#include "xlslib/common.h"
+#include "xlslib/cell.h"
+#include "xlslib/record.h"
+#include "xlslib/unit.h"
 
 
-// #include <xls_pshpack2.h>
+// #include "common/xls_pshpack2.h"
 
 namespace xlslib_core
 {
@@ -99,7 +100,7 @@ namespace xlslib_core
 }
 
 
-// #include <xls_poppack.h>
+// #include "common/xls_poppack.h"
 
 #endif
 

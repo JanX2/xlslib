@@ -33,12 +33,12 @@
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-#include <xlsys.h>
+#include "common/xlsys.h"
 
-#include <formula.h>
-#include <globalrec.h>
-#include <unit.h>
-#include <datast.h>
+#include "xlslib/formula.h"
+#include "xlslib/globalrec.h"
+#include "xlslib/unit.h"
+#include "xlslib/datast.h"
 
 using namespace xlslib_core;
 
@@ -3175,7 +3175,7 @@ errcode_t estimated_formula_result_t::SetErrorCode(errcode_t v)
 static inline unsigned64_t encode_fp2u64(double value)
 {
 
-#include <xls_pshpack1.h>
+#include "common/xls_pshpack1.h"
 
 	union 
 	{
@@ -3184,7 +3184,7 @@ static inline unsigned64_t encode_fp2u64(double value)
 		unsigned8_t b[8];
 	} v;
 
-#include <xls_poppack.h>
+#include "common/xls_poppack.h"
 
 	v.f = value;
 	return v.i;

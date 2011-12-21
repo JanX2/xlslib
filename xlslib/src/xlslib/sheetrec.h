@@ -37,27 +37,29 @@
 #ifndef SHEETREC_H
 #define SHEETREC_H
 
-#include <xlsys.h>
-#include <common.h>
-#include <unit.h>
-#include <biffsection.h>
-#include <recdef.h>
-#include <index.h>
-#include <extformat.h>
-#include <label.h>
-#include <boolean.h>
-#include <err.h>
-#include <blank.h>
-#include <number.h>
-#include <note.h>
-#include <formula.h>
-#include <row.h>
-#include <merged.h>
-#include <colinfo.h>
-#include <range.h>
+#include "common/xlsys.h"
+#include "common/systype.h"
+
+#include "xlslib/common.h"
+#include "xlslib/unit.h"
+#include "xlslib/biffsection.h"
+#include "xlslib/recdef.h"
+#include "xlslib/index.h"
+#include "xlslib/extformat.h"
+#include "xlslib/label.h"
+#include "xlslib/boolean.h"
+#include "xlslib/err.h"
+#include "xlslib/blank.h"
+#include "xlslib/number.h"
+#include "xlslib/note.h"
+#include "xlslib/formula.h"
+#include "xlslib/row.h"
+#include "xlslib/merged.h"
+#include "xlslib/colinfo.h"
+#include "xlslib/range.h"
 
 
-// #include <xls_pshpack2.h>
+// #include "common/xls_pshpack2.h"
 
 namespace xlslib_core
 {
@@ -264,7 +266,7 @@ worksheet class declaration
 }
 
 
-// #include <xls_poppack.h>
+// #include "common/xls_poppack.h"
 
 #endif // SHEETREC_H
 

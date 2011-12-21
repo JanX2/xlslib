@@ -37,11 +37,12 @@
 #ifndef OLEPROP_H
 #define OLEPROP_H
 
-#include <xlsys.h>
-
 #include <list>
 #include <string>
-#include <datast.h>
+
+#include "common/xlsys.h"
+
+#include "xlslib/datast.h"
 
  
 namespace xlslib_core

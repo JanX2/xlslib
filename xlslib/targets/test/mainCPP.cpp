@@ -36,7 +36,7 @@
 
 #include <xlslib.h>
 
-#include <timespan.h>
+#include "common/timespan.h"
 
 #include "md5.h"
 
@@ -68,15 +68,15 @@ static const bool PRINT_CELL_FORMAT	= 0;
 #define OPT_BORDERSTYLE   9
 #define OPT_MAX           (unsigned32_t)9
 
-#define OPT_FONTHEIGHT      0 
-#define OPT_FONTBOLD        1 
-#define OPT_FONTUNDERLINE   2 
-#define OPT_FONTSCRIPT      3 
-#define OPT_FONTCOLOR       4 
-#define OPT_FONTITALIC      5 
-#define OPT_FONTSTRIKEOUT   6 
-#define OPT_FONTOUTLINE     7 
-#define OPT_FONTSHADOW      8 
+#define OPT_FONTHEIGHT      0
+#define OPT_FONTBOLD        1
+#define OPT_FONTUNDERLINE   2
+#define OPT_FONTSCRIPT      3
+#define OPT_FONTCOLOR       4
+#define OPT_FONTITALIC      5
+#define OPT_FONTSTRIKEOUT   6
+#define OPT_FONTOUTLINE     7
+#define OPT_FONTSHADOW      8
 #define OPT_FONTMAX         (unsigned32_t)8
 
 // Macros
@@ -172,7 +172,7 @@ int main(int argc, char *argv[])
 				strcpy(check[idx], checkP);
 			}
 		}
-#endif				
+#endif
 		failed <<= 1, ++idx;
 #if 1
 		{
@@ -183,7 +183,7 @@ int main(int argc, char *argv[])
 				strcpy(check[idx], checkP);
 			}
 		}
-#endif				
+#endif
 		failed <<= 1, ++idx;
 
 #if 1
@@ -195,7 +195,7 @@ int main(int argc, char *argv[])
 				strcpy(check[idx], checkP);
 			}
 		}
-#endif				
+#endif
 		failed <<= 1, ++idx;
 
 #if 1
@@ -207,7 +207,7 @@ int main(int argc, char *argv[])
 				strcpy(check[idx], checkP);
 			}
 		}
-#endif				
+#endif
 		failed <<= 1, ++idx;
 
 #if 1
@@ -219,7 +219,7 @@ int main(int argc, char *argv[])
 				strcpy(check[idx], checkP);
 			}
 		}
-#endif				
+#endif
 		failed <<= 1, ++idx;
 
 #if 1
@@ -231,7 +231,7 @@ int main(int argc, char *argv[])
 				strcpy(check[idx], checkP);
 			}
 		}
-#endif				
+#endif
 		failed <<= 1, ++idx;
 
 #if 1
@@ -243,7 +243,7 @@ int main(int argc, char *argv[])
 				strcpy(check[idx], checkP);
 			}
 		}
-#endif				
+#endif
 		failed <<= 1, ++idx;
 
 #if 1
@@ -255,7 +255,7 @@ int main(int argc, char *argv[])
 				strcpy(check[idx], checkP);
 			}
 		}
-#endif				
+#endif
 		failed <<= 1, ++idx;
 
 #if 1
@@ -267,7 +267,7 @@ int main(int argc, char *argv[])
 				strcpy(check[idx], checkP);
 			}
 		}
-#endif				
+#endif
 		failed <<= 1, ++idx;
 
 		std::cerr << "    # Test finished" << std::endl;

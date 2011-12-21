@@ -38,15 +38,17 @@
 #ifndef LABEL_H
 #define LABEL_H
 
-#include <xlsys.h>
-#include <common.h>
-#include <cell.h>
-#include <record.h>
-#include <unit.h>
-#include <extformat.h>
+#include "common/xlsys.h"
+#include "common/systype.h"
+
+#include "xlslib/common.h"
+#include "xlslib/cell.h"
+#include "xlslib/record.h"
+#include "xlslib/unit.h"
+#include "xlslib/extformat.h"
 
 
-// #include <xls_pshpack2.h>
+// #include "common/xls_pshpack2.h"
 
 namespace xlslib_core
 {
@@ -100,7 +102,7 @@ namespace xlslib_core
   typedef Label_Vect_t::iterator Label_Vect_Itor_t;
   typedef Label_Vect_t::const_iterator cLabel_Vect_Itor_t;
 
-// #include <xls_poppack.h>
+// #include "common/xls_poppack.h"
 
 #endif //LABEL_H
 

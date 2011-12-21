@@ -35,9 +35,9 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 
-#include <xlsys.h>
+#include "common/xlsys.h"
 
-#include <binfile.h>
+#include "oledoc/binfile.h"
 
 using namespace std;
 using namespace xlslib_core;

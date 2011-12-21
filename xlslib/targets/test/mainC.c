@@ -35,7 +35,7 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 #ifdef HAVE_CONFIG_H
-#include <xlconfig.h>
+#include "common/xlconfig.h"
 #elif defined(_MSC_VER) && defined(WIN32)
 #include "ac-config.win32.h"
 #endif
@@ -47,11 +47,11 @@
 #include <unistd.h>
 #endif
 
-
-#ifdef HAVE_STDINT_H	// [i_a] 
+// [i_a] 
+#ifdef HAVE_STDINT_H
 #include <stdint.h>
 #endif
-#ifdef HAVE_STDBOOL_H	// [i_a] 
+#ifdef HAVE_STDBOOL_H
 #include <stdbool.h>
 #else
 typedef enum

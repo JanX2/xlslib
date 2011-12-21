@@ -38,12 +38,15 @@
 
 #if defined(__cplusplus)
 
-#include <xlsys.h>
-
 #include <string>
-#include <xlstypes.h>
-#include <globalrec.h>
-#include <workbook.h>
+
+#include "common/xlsys.h"
+
+
+
+#include "common/xlstypes.h"
+#include "xlslib/globalrec.h"
+#include "xlslib/workbook.h"
 
 #if defined(__FRAMEWORK__)
 using namespace xlslib_core;
@@ -52,7 +55,7 @@ using namespace xlslib_core;
 #else // defined(__cplusplus)
 
 #ifndef __OBJC__    // framework needs a more qualified path
-#include <xlstypes.h>
+#include "common/xlstypes.h"
 #endif
 
 // Summary options
@@ -311,7 +314,7 @@ typedef enum
 
 #ifdef CPP_BRIDGE_XLS
 
-#define EXTERN_TYPE 
+#define EXTERN_TYPE
 extern "C" {
 using namespace xlslib_core;
 
@@ -410,9 +413,9 @@ EXTERN_TYPE void xlsCellFontoutline(cell_t *c, bool ol);
 EXTERN_TYPE void xlsCellFontshadow(cell_t *c, bool sh);
 EXTERN_TYPE unsigned32_t xlsCellGetRow(cell_t *c);
 EXTERN_TYPE unsigned32_t xlsCellGetCol(cell_t *c);
-#ifdef RANGE_FEATURE	
+#ifdef RANGE_FEATURE
 EXTERN_TYPE void xlsRangeCellcolor(range *r, color_name_t color);
-#endif // RANGE_FEATURE
+#endif
 EXTERN_TYPE unsigned16_t xlsCellGetXFIndex(cell_t *c);
 EXTERN_TYPE void xlsCellSetXF(cell_t *c, xf_t *pxfval);
 // xformat

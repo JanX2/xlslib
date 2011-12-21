@@ -38,19 +38,19 @@
 #define RANGE_H
 
 
-#include <xlsys.h>
-#include <common.h>
+#include "common/xlsys.h"
+#include "common/systype.h"
 
-
-#include <sheetrec.h>
-#include <font.h>
-#include <cell.h>
-#include <extformat.h>
+#include "xlslib/common.h"
+#include "xlslib/sheetrec.h"
+#include "xlslib/font.h"
+#include "xlslib/cell.h"
+#include "xlslib/extformat.h"
 
 #ifdef RANGE_FEATURE
 
 
-// #include <xls_pshpack2.h>
+// #include "common/xls_pshpack2.h"
 
 namespace xlslib_core
 {
@@ -140,11 +140,14 @@ namespace xlslib_core
 }
 
 
-// #include <xls_poppack.h>
+// #include "common/xls_poppack.h"
 
-#endif //RANGE_H 
+#endif
+//RANGE_H 
 
-#endif // RANGE_FEATURE
+#endif
+// RANGE_FEATURE
+
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * $Log: range.h,v $
  * Revision 1.6  2009/03/02 04:08:43  dhoerl

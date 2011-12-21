@@ -38,12 +38,14 @@
 #ifndef CONTINUE_H
 #define CONTINUE_H
 
-#include <xlsys.h>
-#include <common.h>
-#include <record.h>
+#include "common/xlsys.h"
+#include "common/systype.h"
+
+#include "xlslib/common.h"
+#include "xlslib/record.h"
 
 
-// #include <xls_pshpack2.h>
+// #include "common/xls_pshpack2.h"
 
 namespace xlslib_core
 {
@@ -64,7 +66,7 @@ namespace xlslib_core
 }
 
 
-// #include <xls_poppack.h>
+// #include "common/xls_poppack.h"
 
 #endif //CONTINUE_H
 

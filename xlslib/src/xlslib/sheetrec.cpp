@@ -36,10 +36,10 @@
  
 //#define __DEBUG__
  
-#include <xlsys.h>
-#include <globalrec.h>
-#include <sheetrec.h>
-#include <datast.h>
+#include "common/xlsys.h"
+#include "xlslib/globalrec.h"
+#include "xlslib/sheetrec.h"
+#include "xlslib/datast.h"
 
 using namespace xlslib_core;
 

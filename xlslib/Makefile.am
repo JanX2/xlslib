@@ -1,4 +1,4 @@
-#auxdir					= m4 
+#auxdir					= m4
 #@AC_AUX_DIR@
 AUX_DIST				= $(auxdir)/install-sh $(auxdir)/missing \
 							$(auxdir)/mkinstalldirs

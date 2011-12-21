@@ -34,11 +34,11 @@
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-#include <xlsys.h>
+#include "common/xlsys.h"
 
-#include <note.h>
-#include <globalrec.h>
-#include <datast.h>
+#include "xlslib/note.h"
+#include "xlslib/globalrec.h"
+#include "xlslib/datast.h"
 
 
 using namespace xlslib_core;

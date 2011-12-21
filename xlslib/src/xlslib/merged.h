@@ -37,13 +37,15 @@
 #ifndef MERGED_H
 #define MERGED_H
 
-#include <xlsys.h>
-#include <common.h>
-#include <rectypes.h>
-#include <record.h>
+#include "common/xlsys.h"
+#include "common/systype.h"
+
+#include "xlslib/common.h"
+#include "xlslib/rectypes.h"
+#include "xlslib/record.h"
 
 
-// #include <xls_pshpack2.h>
+// #include "common/xls_pshpack2.h"
 
 namespace xlslib_core
 {
@@ -74,9 +76,9 @@ CMergedCells class declaration
 }
 
 
-// #include <xls_poppack.h>
+// #include "common/xls_poppack.h"
 
-#endif //MERGED_H 
+#endif
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * $Log: merged.h,v $

@@ -38,12 +38,14 @@
 #ifndef RECDEF_H
 #define RECDEF_H
 
-//#include <xlsys.h>
-#include <common.h>
-#include <rectypes.h>
-#include <record.h>
+#include "common/xlsys.h"
+#include "common/systype.h"
 
-// #include <xls_pshpack2.h>
+#include "xlslib/common.h"
+#include "xlslib/rectypes.h"
+#include "xlslib/record.h"
+
+// #include "common/xls_pshpack2.h"
 
 namespace xlslib_core
 {
@@ -402,7 +404,7 @@ CBSheet class declaration
     };
 }
 
-// #include <xls_poppack.h>
+// #include "common/xls_poppack.h"
 
 #endif //RECDEF_H
 

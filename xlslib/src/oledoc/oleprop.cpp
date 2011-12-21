@@ -34,9 +34,9 @@
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-#include <xlsys.h>
+#include "common/xlsys.h"
 
-#include <oleprop.h>
+#include "oledoc/oleprop.h"
 
 /* 
 ***********************************

@@ -35,11 +35,11 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 
-#include <xlsys.h>
+#include "common/xlsys.h"
 
-#include <colors.h>
-#include <recdef.h>
-#include <datast.h>
+#include "xlslib/colors.h"
+#include "xlslib/recdef.h"
+#include "xlslib/datast.h"
 
 using namespace std;
 using namespace xlslib_core;
@@ -230,7 +230,7 @@ CDateMode::~CDateMode()
 
 bool CDateMode::Is_In_1904_Mode(void)
 {
-#ifdef __APPLE__ 
+#ifdef __APPLE__
    return true;	// 1904  [i_a]
 #else
    return false;	// 1900

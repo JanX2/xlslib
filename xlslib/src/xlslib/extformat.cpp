@@ -34,12 +34,12 @@
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-#include <xlsys.h>
+#include "common/xlsys.h"
 
 #include <sstream>
 
-#include <extformat.h>
-#include <globalrec.h>	// order real important here
+#include "xlslib/extformat.h"
+#include "xlslib/globalrec.h"	// order real important here
 
 using namespace std;
 using namespace xlslib_core;

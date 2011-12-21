@@ -34,10 +34,10 @@
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-#include <xlsys.h>
+#include "common/xlsys.h"
 
-#include <summinfo.h>		// pseudo base class
-#include <docsumminfo.h>
+#include "xlslib/summinfo.h"		// pseudo base class
+#include "xlslib/docsumminfo.h"
 
 using namespace std;
 using namespace xlslib_core;

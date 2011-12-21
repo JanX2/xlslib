@@ -36,7 +36,8 @@
 #ifndef TOSTR_H
 #define TOSTR_H
 
-#include <xlsys.h>
+#include "common/xlsys.h"
+#include "common/systype.h"
 
 #include <string>
 #include <sstream>

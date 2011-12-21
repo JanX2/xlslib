@@ -38,13 +38,15 @@
 #ifndef FORMAT_H
 #define FORMAT_H
 
-#include <xlsys.h>
-#include <common.h>
-#include <rectypes.h>
-#include <record.h>
+#include "common/xlsys.h"
+#include "common/systype.h"
+
+#include "xlslib/common.h"
+#include "xlslib/rectypes.h"
+#include "xlslib/record.h"
 
 
-// #include <xls_pshpack2.h>
+// #include "common/xls_pshpack2.h"
 
 namespace xlslib_core
 {
@@ -54,8 +56,8 @@ namespace xlslib_core
 #define FORMAT_OFFSET_NAMELENGTH    6
 #define FORMAT_OFFSET_NAME          7
 
-#define FMTCODE_GENERAL            0x0000 
-#define FMTCODE_NUMBER1            0x0001 
+#define FMTCODE_GENERAL            0x0000
+#define FMTCODE_NUMBER1            0x0001
 #define FMTCODE_NUMBER2            0x0002
 #define FMTCODE_NUMBER3            0x0003
 #define FMTCODE_NUMBER4            0x0004
@@ -214,7 +216,7 @@ class format_t
 }
 
 
-// #include <xls_poppack.h>
+// #include "common/xls_poppack.h"
 
 #endif //FORMAT_H
 

@@ -35,10 +35,10 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 
-#include <xlsys.h>
+#include "common/xlsys.h"
 
-#include <range.h>
-#include <extformat.h>
+#include "xlslib/range.h"
+#include "xlslib/extformat.h"
 
 #ifdef RANGE_FEATURE
 

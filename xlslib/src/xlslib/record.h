@@ -38,13 +38,15 @@
 #ifndef RECORD_H
 #define RECORD_H
 
-#include <xlsys.h>
-#include <common.h>
-#include <rectypes.h>
-#include <unit.h>
+#include "common/xlsys.h"
+#include "common/systype.h"
+
+#include "xlslib/common.h"
+#include "xlslib/rectypes.h"
+#include "xlslib/unit.h"
 
 
-// #include <xls_pshpack2.h>
+// #include "common/xls_pshpack2.h"
 
 namespace xlslib_core
 {
@@ -88,7 +90,7 @@ CRecord class declaration
     };
 }
 
-// #include <xls_poppack.h>
+// #include "common/xls_poppack.h"
 
 #endif //RECORD_H
 

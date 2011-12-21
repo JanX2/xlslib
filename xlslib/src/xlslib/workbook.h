@@ -33,23 +33,24 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 #ifndef WORKBOOK_H
-#define WORKBOOK_H 
+#define WORKBOOK_H
 
-#include <xlsys.h>
+#include "common/xlsys.h"
+#include "common/systype.h"
 
-#include <common.h>
-#include <oledoc.h>
-#include <datast.h>
-#include <sheetrec.h>
-#include <recdef.h>
-#include <summinfo.h>
-#include <docsumminfo.h>
-#include <formula.h>
+// #include "common/xls_pshpack2.h"
+
+#include "oledoc/oledoc.h"
+
+#include "xlslib/common.h"
+#include "xlslib/datast.h"
+#include "xlslib/sheetrec.h"
+#include "xlslib/recdef.h"
+#include "xlslib/summinfo.h"
+#include "xlslib/docsumminfo.h"
+#include "xlslib/formula.h"
 
 #define XLSLIB_VERSION PACKAGE_VERSION // "2.0.0"
-
-
-// #include <xls_pshpack2.h>
 
 namespace xlslib_core
 {
@@ -138,7 +139,7 @@ namespace xlslib_core
     };
 }
 
-// #include <xls_poppack.h>
+// #include "common/xls_poppack.h"
 
 #endif //WORKBOOK_H
 

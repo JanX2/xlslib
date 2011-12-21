@@ -34,10 +34,10 @@
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-#include <xlsys.h>
-#include <globalrec.h>
-#include <workbook.h>
-#include <continue.h>
+#include "common/xlsys.h"
+#include "xlslib/globalrec.h"
+#include "xlslib/workbook.h"
+#include "xlslib/continue.h"
 
 #ifdef HAVE_ICONV
 #include <errno.h>
