@@ -36,10 +36,14 @@
 #ifndef XLSTYPES_H
 #define XLSTYPES_H
 
+#if defined(__cplusplus)					// ALL C++ users
+
 #include <list>
 #include <vector>
 #include <algorithm>
 #include <string>
+
+#endif
 
 // Setup our typedefs now - would like to get them from systype.h
 #ifdef uint8_t				// if we have this one we will have all the others too
