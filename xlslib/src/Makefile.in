@@ -284,10 +284,8 @@ oledoc/oledoc.cpp		      \
 oledoc/olefs.cpp		      \
 oledoc/oleprop.cpp
 
-
-# http://www.gnu.org/software/automake/manual/automake.html#index-pkginclude_005fHEADERS-633 nobase might work fix xlslib.h
 pkginclude_HEADERS = \
-common/xlslib.h
+xlslib.h
 
 nobase_pkginclude_HEADERS = \
 common/xlconfig.h             \
