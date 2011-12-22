@@ -41,6 +41,12 @@
 #include "xlslib/rectypes.h"
 #include "xlslib/datast.h"
 
+#ifdef __BCPLUSPLUS__
+#include <memory.h>
+// string.h needed for memcpy(). RLN 111215
+// This may be applicable to other compilers as well.
+#endif
+
 using namespace xlslib_core;
 
 /* 

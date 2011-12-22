@@ -1,4 +1,4 @@
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+﻿/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *
  * This file is part of xlslib -- A multiplatform, C/C++ library
  * for dynamic generation of Excel(TM) files.
@@ -39,6 +39,14 @@
 #include "xlslib/globalrec.h"
 #include "xlslib/unit.h"
 #include "xlslib/datast.h"
+
+#ifdef __BCPLUSPLUS__
+#include <malloc.h>
+// malloc.h needed for calloc. RLN 111208
+#include <memory.h>
+// memory.h needed for memset. RLN 111215
+// These may be needed for other compilers as well.
+#endif
 
 using namespace xlslib_core;
 

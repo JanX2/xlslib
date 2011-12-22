@@ -1444,9 +1444,16 @@ namespace xlslib_core
 	typedef enum cell_addr_mode_t
 	{
 		CELL_RELATIVE_A1   = 0xC000,
+#ifdef __BCPLUSPLUS__
+// C++ identifiers cannot have $ in several compilers. RLN 111208
+		CELL_ABSOLUTE_As1  = 0x8000,
+		CELL_ABSOLUTE_sA1  = 0x4000,
+		CELL_ABSOLUTE_sAs1 = 0,
+#else
 		CELL_ABSOLUTE_A$1  = 0x8000,
 		CELL_ABSOLUTE_$A1  = 0x4000,
 		CELL_ABSOLUTE_$A$1 = 0,
+#endif
 	} cell_addr_mode_t;
 
 	// 'operand class'

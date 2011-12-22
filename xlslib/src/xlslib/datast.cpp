@@ -60,6 +60,14 @@
 #include "xlslib/recdef.h"
 // DFH #include "xlslib/unit.h"
 
+#ifdef __BCPLUSPLUS__
+#include <malloc.h>
+// malloc.h needed for calloc. RLN 111208
+// They may be needed for other compilers as well
+#include <memory.h>
+// memory.h needed for memset. RLN 111215
+// These may be needed for other compilers as well.
+#endif
 
 namespace xlslib_core
 {

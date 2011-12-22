@@ -123,7 +123,14 @@ namespace Private
 	 inline typename return_from_write_to_stream< type>::return_type
 	 write_to_stream ( const str_stream & streamOut, const type & value)
   {
-	 streamOut.underlying_stream() << value;
+#if ((__BCPLUSPLUS__ >= 00) && (__BCPLUSPLUS__ <= 0x0600))
+   // I am not sure why Borland Development Suite (2006) complains
+   // about ambiguous << operator. RLN 111215
+   // RadStudio 2010 doesn't compain I am presuming R.S. 2009 is also OK
+      streamOut.underlying_stream().operator<<(value);
+#else
+      streamOut.underlying_stream()<< value;
+#endif
 #ifndef NDEBUG
 	 streamOut.recalculate_string();
 #endif

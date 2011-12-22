@@ -886,7 +886,15 @@ void  CGlobalRecords::wide2str16(const ustring& str1, u16string& str2)
 #if !defined(_MSC_VER) && !defined(__MINGW32__) /*  MSVC2005 doesn't accept this for ANSI builds at least! */
 	// if character size of both strings is the same, well, we should be able to just assign them
 	if(sizeof(unichar_t) == sizeof(unsigned16_t)) {
+#    ifdef __BCPLUSPLUS__
+      // Not sure why the assignment didn't work in BC++. 
+      // It looks like mismatched types.  I think will do the same thing
+      // RLN 111208
+      for (int i = 0; i < str1.length();i++)
+         str2.append(1,(wchar_t)str1.c_str()[i]);
+#    else
 		str2 = str1;
+#    endif
 		return;
 	}
 #endif
