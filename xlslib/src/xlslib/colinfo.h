@@ -90,7 +90,8 @@ namespace xlslib_core
 
 // #include "common/xls_poppack.h"
 
-#endif //COLINFO_H
+#endif 
+//COLINFO_H
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * $Log: colinfo.h,v $
  * Revision 1.4  2009/01/10 21:10:50  dhoerl

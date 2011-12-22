@@ -170,7 +170,8 @@ CDBCell class declaration
 
 // #include "common/xls_poppack.h"
 
-#endif //ROW_H
+#endif 
+//ROW_H
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * $Log: row.h,v $

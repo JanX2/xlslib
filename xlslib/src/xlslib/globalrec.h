@@ -189,7 +189,8 @@ CGlobalRecords class declaration
 
 // #include "common/xls_poppack.h"
 
-#endif // GLOBALREC_H
+#endif 
+// GLOBALREC_H
 
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

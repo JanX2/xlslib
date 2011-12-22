@@ -84,7 +84,8 @@ namespace xlslib_core
 
 // #include "common/xls_poppack.h"
 
-#endif //BLANK_H
+#endif 
+//BLANK_H
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * $Log: blank.h,v $

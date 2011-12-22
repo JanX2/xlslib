@@ -268,7 +268,8 @@ worksheet class declaration
 
 // #include "common/xls_poppack.h"
 
-#endif // SHEETREC_H
+#endif 
+// SHEETREC_H
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * $Log: sheetrec.h,v $

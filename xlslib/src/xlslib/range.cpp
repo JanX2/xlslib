@@ -356,7 +356,8 @@ void range::fontshadow(bool sh)
    SET_RANGE_FUNCTION(fontshadow,sh);
 }
 
-#endif // RANGE_FEATURE
+#endif 
+// RANGE_FEATURE
 
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

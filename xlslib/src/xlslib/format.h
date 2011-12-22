@@ -61,10 +61,11 @@ namespace xlslib_core
 #define FMTCODE_NUMBER2            0x0002
 #define FMTCODE_NUMBER3            0x0003
 #define FMTCODE_NUMBER4            0x0004
-#define FMTCODE_CURRENCY1          0x0005 // ends up 'customized' in XLS
-#define FMTCODE_CURRENCY2          0x0006 // ends up 'customized' in XLS
-#define FMTCODE_CURRENCY3          0x0007 // ends up 'customized' in XLS
-#define FMTCODE_CURRENCY4          0x0008 // ends up 'customized' in XLS
+#define FMTCODE_CURRENCY1          0x0005 
+#define FMTCODE_CURRENCY2          0x0006 
+#define FMTCODE_CURRENCY3          0x0007 
+#define FMTCODE_CURRENCY4          0x0008 
+// CURRENCY ends up 'customized' in XLS
 #define FMTCODE_PERCENT1           0x0009
 #define FMTCODE_PERCENT2           0x000a
 #define FMTCODE_SCIENTIFIC1        0x000b
@@ -83,10 +84,11 @@ namespace xlslib_core
 #define FMTCODE_ACCOUNTING2        0x0026
 #define FMTCODE_ACCOUNTING3        0x0027
 #define FMTCODE_ACCOUNTING4        0x0028
-#define FMTCODE_CURRENCY5          0x0029 // ends up 'customized' in XLS
-#define FMTCODE_CURRENCY6          0x002a // ends up 'customized' in XLS
-#define FMTCODE_CURRENCY7          0x002b // ends up 'customized' in XLS
-#define FMTCODE_CURRENCY8          0x002c // ends up 'customized' in XLS
+#define FMTCODE_CURRENCY5          0x0029 
+#define FMTCODE_CURRENCY6          0x002a 
+#define FMTCODE_CURRENCY7          0x002b 
+#define FMTCODE_CURRENCY8          0x002c 
+// CURRENCY ends up 'customized' in XLS
 #define FMTCODE_HOUR5              0x002d
 #define FMTCODE_HOUR6              0x002e
 #define FMTCODE_HOUR7              0x002f
@@ -218,7 +220,8 @@ class format_t
 
 // #include "common/xls_poppack.h"
 
-#endif //FORMAT_H
+#endif 
+//FORMAT_H
 
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

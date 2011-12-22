@@ -46,7 +46,8 @@
 
 // SIZES
 #define RECORD_HEADER_SIZE	   4
-#define MAX_RECORD_SIZE		8224			// see OpenOffice Doc, CONTINUE record 5.21. This is the payload size not including the header
+#define MAX_RECORD_SIZE		8224			
+// see OpenOffice Doc, CONTINUE record 5.21. This is the payload size not including the header
 #define BOF_SIZE			  20
 #define EOF_SIZE			   4
 #define WINDOW2_SIZE		  22
@@ -750,7 +751,8 @@
 #define RECTYPE_MERGEDCELLS                     \
   0xe5
 
-#endif //RECTYPES_H
+#endif 
+//RECTYPES_H
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * $Log: rectypes.h,v $

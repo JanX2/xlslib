@@ -88,7 +88,8 @@
 #include "common/xlsys.h"
 
 #include <string>
-#include <cstring>    // for strchr
+#include <cstring>    
+// for strchr
 
 /*****************************************************************
  * This is the only part of the implementation that I don't like.

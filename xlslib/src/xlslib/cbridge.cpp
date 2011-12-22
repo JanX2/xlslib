@@ -41,7 +41,8 @@
 
 #define CPP_BRIDGE_XLS
 
-#include "xlslib/common.h" /* RANGE_FEATURE */
+#include "xlslib/common.h" 
+/* RANGE_FEATURE */
 
 #include <xlslib.h>
 
@@ -117,7 +118,8 @@ extern "C" {
 																	// Ranges
 	range *xlsWorksheetRangegroup(worksheet *w, unsigned32_t row1, unsigned32_t col1, unsigned32_t row2, unsigned32_t col2)
 																{ return w->rangegroup(row1, col1, row2, col2); }
-#endif // RANGE_FEATURE
+#endif 
+// RANGE_FEATURE
 
 	// Cells
 	cell_t *xlsWorksheetLabel(worksheet *w, unsigned32_t row, unsigned32_t col, const char *strlabel, xf_t *pxformat)
@@ -203,7 +205,8 @@ extern "C" {
 #ifdef RANGE_FEATURE
 	// range
 	void xlsRangeCellcolor(range *r, color_name_t color)		{ return r->cellcolor(color); }
-#endif // RANGE_FEATURE
+#endif 
+// RANGE_FEATURE
 	
 	// xformat
 	void xlsXformatSetFont(xf_t *x, font_t* fontidx)			{ return x->SetFont(fontidx); }

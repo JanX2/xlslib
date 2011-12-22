@@ -71,7 +71,8 @@ namespace xlslib_core
 #define XF_ALIGN_HORIZONTAL  0x0007
 #define XF_ALIGN_WRAP        0x0008
 #define XF_ALIGN_VERTICAL    0x0070
-#define XF_ALIGN_JUSTLAST    0x0080 /* BIFF8: Used only in far-east versions of excel */
+#define XF_ALIGN_JUSTLAST    0x0080 
+/* BIFF8: Used only in far-east versions of excel */
 
   // Style options
 #define XF_FILL_NONE                0x00
@@ -202,9 +203,12 @@ namespace xlslib_core
 #define XF_OFFSET_FONT          4
 #define XF_OFFSET_FORMAT        6
 #define XF_OFFSET_PROP          8
-#define XF_OFFSET_ALIGN        10	// 4 bytes
-#define XF_OFFSET_BORDERA      14	// 4 bytes
-#define XF_OFFSET_BORDERB      18	// 4 bytes
+#define XF_OFFSET_ALIGN        10	
+// 4 bytes
+#define XF_OFFSET_BORDERA      14	
+// 4 bytes
+#define XF_OFFSET_BORDERB      18	
+// 4 bytes
 #define XF_OFFSET_COLOR        22
 
   // Geometric Align options
@@ -288,7 +292,8 @@ namespace xlslib_core
     } indent_option_t;
 
   // XF_USED_ATTRIB
-#define XF_ATTRIB_SHIFTPOS		16	// bits shifted by 8 already
+#define XF_ATTRIB_SHIFTPOS		16	
+// bits shifted by 8 already
 
   // The Border A field bit or-masks:
 
@@ -308,8 +313,10 @@ namespace xlslib_core
 
 #define XF_BORDER_LEFTCOLOR		0x007f0000
 #define XF_BORDER_RIGHTCOLOR	0x3f800000
-#define XF_DIAG_TL2BR			0x40000000 // diagonal down (part of 'grbitDiag' in BIFF8 spec)
-#define XF_DIAG_BL2TR			0x80000000 // diagonal up   (part of 'grbitDiag' in BIFF8 spec)
+#define XF_DIAG_TL2BR			0x40000000 
+// diagonal down (part of 'grbitDiag' in BIFF8 spec)
+#define XF_DIAG_BL2TR			0x80000000 
+// diagonal up   (part of 'grbitDiag' in BIFF8 spec)
 
   // BORDER B 
 
@@ -432,7 +439,8 @@ CExtFormat class declaration
 
 		xf_t& operator=(const xf_t& right);
 
-#if 0 // [i_a] xls C i/f & C++ facade export these?
+#if 0 
+// [i_a] xls C i/f & C++ facade export these?
 	private:
 #else
 	public:
@@ -538,7 +546,8 @@ CExtFormat class declaration
       bool IsHidden(void) const;
 	  // END XF_ALIGN_ATRPROT
 	  
-#if 0 // [i_a] xls C i/f & C++ facade export these?
+#if 0 
+// [i_a] xls C i/f & C++ facade export these?
 	private:
 #else
 	public:
@@ -649,7 +658,8 @@ CExtFormat class declaration
 
 // #include "common/xls_poppack.h"
 
-#endif //EXTFORMAT_H
+#endif 
+//EXTFORMAT_H
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * $Log: extformat.h,v $

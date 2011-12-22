@@ -178,7 +178,8 @@ namespace xlslib_core
 
 // #include "common/xls_poppack.h"
 
-#endif // UNIT_H
+#endif 
+// UNIT_H
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * $Log: unit.h,v $

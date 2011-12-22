@@ -147,7 +147,8 @@ namespace xlslib_core
 
 // #include "common/xls_poppack.h"
 
-#endif // CELL_H
+#endif 
+// CELL_H
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * $Log: cell.h,v $

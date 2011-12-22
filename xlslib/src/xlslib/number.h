@@ -117,7 +117,8 @@ __attribute__((unused))
 
 // #include "common/xls_poppack.h"
 
-#endif //NUMBER_H
+#endif 
+//NUMBER_H
 
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

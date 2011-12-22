@@ -103,7 +103,8 @@ CDocSummaryInfo class declaration
 
 // #include "common/xls_poppack.h"
 
-#endif //DOCSUMMARYINFO_H
+#endif 
+//DOCSUMMARYINFO_H
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * $Log: docsumminfo.h,v $

@@ -44,9 +44,11 @@
 #include "xlslib/common.h"
 #include "xlslib/unit.h"
 
-#define SUMMARY_SIZE		4096		// one big blocks
+#define SUMMARY_SIZE		4096		
+// one big blocks
 
-#define FILETIME2UNIX_NS	11644473600000000ll		// from the web
+#define FILETIME2UNIX_NS	11644473600000000ll		
+// from the web
 
 
 // #include "common/xls_pshpack2.h"

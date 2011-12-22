@@ -51,8 +51,10 @@
 namespace xlslib_core
 {
 // Colors can be "base" (< 8) or palette (changes with BIFF)
-#define COLOR_CODE_BLACK				0x08	// If you use 0x00, Excel won't open the Cell Format dialog box!
-#define COLOR_CODE_WHITE				0x09	// If you use 0x01, Excel won't open the Cell Format dialog box!
+#define COLOR_CODE_BLACK				0x08	
+// If you use 0x00, Excel won't open the Cell Format dialog box!
+#define COLOR_CODE_WHITE				0x09	
+// If you use 0x01, Excel won't open the Cell Format dialog box!
 
 #define COLOR_CODE_RED					0x0a
 #define COLOR_CODE_BRIGHT_GREEN			0x0b
@@ -190,7 +192,8 @@ CPalette class declaration
 
 // #include "common/xls_poppack.h"
 
-#endif //COLORS_H
+#endif 
+//COLORS_H
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * $Log: colors.h,v $

@@ -213,7 +213,8 @@ DataList_Itor_t CDataStorage::end()
   return data.end();
 }
 
-#endif // defined(LEIGHTWEIGHT_UNIT_FEATURE)
+#endif 
+// defined(LEIGHTWEIGHT_UNIT_FEATURE)
 
 
 
@@ -746,7 +747,8 @@ signed8_t CUnitStore::InitWithValue(unsigned8_t value, size_t size)
 	return ret;
 }
 
-#endif // defined(LEIGHTWEIGHT_UNIT_FEATURE)
+#endif 
+// defined(LEIGHTWEIGHT_UNIT_FEATURE)
 
 }
 

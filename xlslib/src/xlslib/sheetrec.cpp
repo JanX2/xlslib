@@ -43,13 +43,15 @@
 
 using namespace xlslib_core;
 
-#define MAX_ROWBLOCK_SIZE			 16 // was: 32, but CONTINUE-d DBCELLs are not liked by 2003 ???
+#define MAX_ROWBLOCK_SIZE			 16 
+// was: 32, but CONTINUE-d DBCELLs are not liked by 2003 ???
 
 #define RB_DBCELL_MINSIZE			  8
 #define RB_DBCELL_CELLSIZEOFFSET	  2
 
 // People using xlslib with at least 1200 colums maybe more - bug fix to such a file - so this comment has to be incorrect for current Excel versions
-#define MAX_COLUMNS_PER_ROW			256 // (out of date): Excel 2003 limit: 256 columns per row. (Update this when we upgrade this lib to support BIFF12 !)
+#define MAX_COLUMNS_PER_ROW			256 
+// (out of date): Excel 2003 limit: 256 columns per row. (Update this when we upgrade this lib to support BIFF12 !)
 
 // Adapted from Workbook macro - useful if we need to add log messages etc
 #define CHANGE_DUMPSTATE(state) {               \
@@ -164,7 +166,8 @@ worksheet::~worksheet()
          delete *rh;
       m_Ranges.clear();
    }
-#endif // RANGE_FEATURE
+#endif 
+// RANGE_FEATURE
 }
 
 
@@ -1217,7 +1220,8 @@ range* worksheet::rangegroup(unsigned32_t row1, unsigned32_t col1,
 
 	return newrange;
 }
-#endif // RANGE_FEATURE
+#endif 
+// RANGE_FEATURE
 
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

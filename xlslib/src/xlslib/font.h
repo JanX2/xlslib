@@ -98,12 +98,16 @@ namespace xlslib_core
 
   // The following are default values used when the font's
   // constructor is called without args:
-#define FONT_DFLT_FAMILY			0x00			// NONE (don't know, don't care)
-#define FONT_DFLT_CHARSET			0x01			// 0 == ANSI Latin, 1 == System Default (this was 0x00 before 12/2008)
+#define FONT_DFLT_FAMILY			0x00			
+// NONE (don't know, don't care)
+#define FONT_DFLT_CHARSET			0x01			
+// 0 == ANSI Latin, 1 == System Default (this was 0x00 before 12/2008)
 #define FONT_DFLT_HEIGHT			0x00c8
 #define FONT_DFLT_ATTRIBUTES		0x0000
-#define FONT_DFLT_PALETTE			0x7fff		// See Palette record - this is a special flag meaning the window color
-#define FONT_DFLT_FONTNAME			std::string("Verdana")	// Was Arial before 12/2008
+#define FONT_DFLT_PALETTE			0x7fff		
+// See Palette record - this is a special flag meaning the window color
+#define FONT_DFLT_FONTNAME			std::string("Verdana")	
+// Was Arial before 12/2008
 
 #define FONT_RESERVED				0x00
 
@@ -121,15 +125,20 @@ namespace xlslib_core
 
 
   // The attribute bit or-masks:
-#define FONT_ATTR_BOLD				0x0001 // documented as 'reserved' in the Microsoft Excel 2003 documentation!
+#define FONT_ATTR_BOLD				0x0001 
+// documented as 'reserved' in the Microsoft Excel 2003 documentation!
 #define FONT_ATTR_ITALIC			0x0002
-#define FONT_ATTR_UNDERLINED		0x0004 // documented as 'reserved' in the Microsoft Excel 2003 documentation!
+#define FONT_ATTR_UNDERLINED		0x0004 
+// documented as 'reserved' in the Microsoft Excel 2003 documentation!
 #define FONT_ATTR_STRIKEOUT			0x0008
 #define FONT_ATTR_OUTLINEMACH		0x0010
 #define FONT_ATTR_SHADOWMACH		0x0020
-#define FONT_ATTR_CONDENSED			0x00c0 // documented as 'reserved' in the Microsoft Excel 2003 documentation!
-#define FONT_ATTR_EXTENDED			0x0080 // documented as 'reserved' in the Microsoft Excel 2003 documentation!
-#define FONT_ATTR_UNUSED			0xff00 // documented as 'reserved' in the Microsoft Excel 2003 documentation!
+#define FONT_ATTR_CONDENSED			0x00c0 
+// documented as 'reserved' in the Microsoft Excel 2003 documentation!
+#define FONT_ATTR_EXTENDED			0x0080 
+// documented as 'reserved' in the Microsoft Excel 2003 documentation!
+#define FONT_ATTR_UNUSED			0xff00 
+// documented as 'reserved' in the Microsoft Excel 2003 documentation!
 
   /* 
 ******************************
@@ -258,7 +267,8 @@ CFont class declaration
 	public:
 #endif
 	  /* FONT  attributes wrappers */
-#if defined(DEPRECATED) /* [i_a] can cause reserved/illegal attribute bit combo's to be set; use SetOutline(), etc. instead. */
+#if defined(DEPRECATED) 
+   /* [i_a] can cause reserved/illegal attribute bit combo's to be set; use SetOutline(), etc. instead. */
 		void SetAttributes(unsigned16_t attr);
 #endif
 		unsigned16_t GetAttributes(void) const;
@@ -316,7 +326,8 @@ CFont class declaration
 
 // #include "common/xls_poppack.h"
 
-#endif //FONT_H
+#endif 
+//FONT_H
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * $Log: font.h,v $

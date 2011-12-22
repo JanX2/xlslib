@@ -62,7 +62,8 @@ namespace xlslib_core
 {
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 
-#define FIXEDWIDTH_STORAGEUNIT_SIZE  18 // the most frequent BIFF fixed-width records are BLANK, RK and NUMBER, which top out at 18 bytes a head
+#define FIXEDWIDTH_STORAGEUNIT_SIZE  18 
+// the most frequent BIFF fixed-width records are BLANK, RK and NUMBER, which top out at 18 bytes a head
 
   /*
   This structure is constructed to give the least amount of storage overhead per [BIFF] data unit:
@@ -354,7 +355,8 @@ namespace xlslib_core
 
 // #include "common/xls_poppack.h"
 
-#endif //DATAST_H
+#endif 
+//DATAST_H
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * $Log: datast.h,v $

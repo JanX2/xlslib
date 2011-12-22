@@ -67,7 +67,8 @@ namespace xlslib_core
 
 // #include "common/xls_poppack.h"
 
-#endif //BIFFSECTION_H
+#endif 
+//BIFFSECTION_H
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * $Log: biffsection.h,v $

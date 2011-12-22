@@ -60,7 +60,8 @@
 // from the MSC project to the RadStudio project and included it. RLN 111208
 #endif
 
-#define XLSLIB_VERSION PACKAGE_VERSION // "2.0.0"
+#define XLSLIB_VERSION PACKAGE_VERSION 
+// "2.0.0"
 
 namespace xlslib_core
 {

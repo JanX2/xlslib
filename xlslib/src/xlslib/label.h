@@ -104,7 +104,8 @@ namespace xlslib_core
 
 // #include "common/xls_poppack.h"
 
-#endif //LABEL_H
+#endif 
+//LABEL_H
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * $Log: label.h,v $

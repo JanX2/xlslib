@@ -40,7 +40,8 @@
 /* #include "common/xlsys.h" */
 
 #include <time.h>
-#include <assert.h>	// YES
+#include <assert.h>	
+// YES
 
 class CCpuClockTimespan
 {

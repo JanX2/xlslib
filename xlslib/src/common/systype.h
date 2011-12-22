@@ -64,7 +64,8 @@
 #include <string>
 #endif
 #ifdef HAVE_STRING_H
-#include <string.h>	// DFH 10-2-08
+#include <string.h>	
+// DFH 10-2-08
 #endif
 #if defined(__cplusplus)					// ALL C++ users
 #include <iostream>
@@ -107,7 +108,8 @@
 
 
 
-#include "common/xlstypes.h"  /* [i_a]   better to get the definition from a single place */
+#include "common/xlstypes.h"  
+/* [i_a]   better to get the definition from a single place */
 
 
 

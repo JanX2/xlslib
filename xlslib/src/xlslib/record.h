@@ -92,7 +92,8 @@ CRecord class declaration
 
 // #include "common/xls_poppack.h"
 
-#endif //RECORD_H
+#endif 
+//RECORD_H
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * $Log: record.h,v $

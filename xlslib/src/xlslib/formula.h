@@ -153,7 +153,8 @@ namespace xlslib_core
 		OP_AREAERR3DA = 0x7D,                          // ptgAreaErr3dA   7Dh   operand, array class (NEW ptg)
 	};
 
-#if !defined(xlUDF) // XLCALL.H not loaded
+#if !defined(xlUDF) 
+// XLCALL.H not loaded
 
 	/*
 	* User defined function
@@ -697,7 +698,8 @@ namespace xlslib_core
 #define xlfCeiling_precise 546
 #define xlfFloor_precise 547
 
-#endif // XLCALL.H not loaded
+#endif 
+// XLCALL.H not loaded
 
 	enum expr_function_code_t
 	{
@@ -1736,5 +1738,6 @@ namespace xlslib_core
 
 // #include "common/xls_poppack.h"
 
-#endif //FORMULA_H
+#endif 
+//FORMULA_H
 

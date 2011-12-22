@@ -85,7 +85,8 @@ namespace xlslib_core
   class range;
   typedef std::vector<range* XLSLIB_DFLT_ALLOCATOR> RangeObj_Vect_t;
   typedef RangeObj_Vect_t::iterator RangeObj_Vect_Itor_t;
-#endif // RANGE_FEATURE
+#endif 
+// RANGE_FEATURE
 #else
   typedef std::vector<xlslib_core::range_t* XLSLIB_DFLT_ALLOCATOR> Range_Vect_t;
   typedef Range_Vect_t::iterator Range_Vect_Itor_t;
@@ -93,14 +94,16 @@ namespace xlslib_core
   class range;
   typedef std::vector<xlslib_core::range* XLSLIB_DFLT_ALLOCATOR> RangeObj_Vect_t;
   typedef RangeObj_Vect_t::iterator RangeObj_Vect_Itor_t;
-#endif // RANGE_FEATURE
-#endif // defined(_MSC_VER) && defined(WIN32)
+#endif 
+// RANGE_FEATURE
+#endif 
+// defined(_MSC_VER) && defined(WIN32)
 }
-
 
 // #include "common/xls_poppack.h"
 
-#endif //XLSLIB_COMMON_H
+#endif 
+//XLSLIB_COMMON_H
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * $Log: common.h,v $

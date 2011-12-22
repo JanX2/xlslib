@@ -166,7 +166,8 @@ inline const str_stream & operator<< ( const str_stream & streamOut, std::ostrea
 
 
 
-#endif //TOSTR_H
+#endif 
+//TOSTR_H
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * $Log: tostr.h,v $
  * Revision 1.3  2009/01/08 02:52:47  dhoerl

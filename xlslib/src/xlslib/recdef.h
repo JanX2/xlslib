@@ -55,7 +55,8 @@ namespace xlslib_core
 CBof class declaration
 ******************************
 */
-#define  VERSION_BIFF				0x0600	// BIFF8, the last one!
+#define  VERSION_BIFF				0x0600	
+// BIFF8, the last one!
 
 #define BOF_TYPE_WBGLOBALS           0x0005
 #define BOF_TYPE_VBMODULE            0x0006
@@ -64,8 +65,10 @@ CBof class declaration
 #define BOF_TYPE_EXCEL4_MACROSH      0x0040
 #define BOF_TYPE_WSFILE              0x0100
 
-#define BOF_BUILD_DFLT               0x1d5f	// from some old file???
-#define BOF_YEAR_DFLT                0x07cd	// 1997
+#define BOF_BUILD_DFLT               0x1d5f	
+// from some old file???
+#define BOF_YEAR_DFLT                0x07cd	
+// 1997
 
 #define TWIP						 20
 
@@ -77,7 +80,8 @@ CBof class declaration
 #endif
 
 
-#define BOF_RECORD_SIZE  12								// used when computing blocks during output stage
+#define BOF_RECORD_SIZE  12								
+// used when computing blocks during output stage
 
 	// forward ref
 	class CDataStorage;
@@ -406,7 +410,8 @@ CBSheet class declaration
 
 // #include "common/xls_poppack.h"
 
-#endif //RECDEF_H
+#endif 
+//RECDEF_H
 
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *

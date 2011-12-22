@@ -88,7 +88,8 @@ CIndex class declaration
 
 // #include "common/xls_poppack.h"
 
-#endif //INDEX_H
+#endif 
+//INDEX_H
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * $Log: index.h,v $
