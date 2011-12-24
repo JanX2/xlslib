@@ -40,7 +40,8 @@
 #include <time.h>
 #include "xlslib/summinfo.h"
 
-#ifndef _MSC_VER
+#if 0
+//ndef _MSC_VER
 #  include "ac-config.win32.h"
 // I am assuming this header file is created and include automatically by MSVC.
 // Other compilers (I.e. BC++ ) don't have this, so I simply copied the file
