@@ -224,6 +224,8 @@ int COleDoc::DumpData(void)
 		  for(StoreList_Itor_t j = (*i)->GetDataPointer()->begin(); 
              j != (*i)->GetDataPointer()->end(); j++)
          {
+			//unsigned short *val = (unsigned short *)(j->GetBuffer());
+			//printf("POS=%u wrote=%lu HEX=0x%4.4x\n", Position(), j->GetDataSize(), *val);
 			 XL_ASSERT(j->GetBuffer() != NULL);
 			 //XL_ASSERT(j->GetDataSize() > 0);
             errcode = WriteByteArray(j->GetBuffer(), j->GetDataSize());
