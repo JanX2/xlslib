@@ -415,11 +415,11 @@ CBSheet::CBSheet(CDataStorage &datastore, const boundsheet_t* bsheetdef):
 
 	// Set the flags in the attribute variables
 	unsigned16_t attrflags = 0;
-	attrflags |= (bsheetdef->IsWorkSheet()	? BSHEET_ATTR_WORKSHEET:0);
+	// attrflags |= (bsheetdef->IsWorkSheet()	? BSHEET_ATTR_WORKSHEET:0); // has no affect
 	attrflags |= (bsheetdef->IsEx4macro()	? BSHEET_ATTR_EX4MACRO:0);
 	attrflags |= (bsheetdef->IsChart()		? BSHEET_ATTR_CHART:0);
 	attrflags |= (bsheetdef->IsVBModule()	? BSHEET_ATTR_VBMODULE:0);
-	attrflags |= (bsheetdef->IsVisible()	? BSHEET_ATTR_VISIBLE:0);
+	attrflags |= (bsheetdef->IsVisible()	? BSHEET_ATTR_VISIBLE:BSHEET_ATTR_HIDDEN);
 	attrflags |= (bsheetdef->IsHidden()		? BSHEET_ATTR_HIDDEN:0);
 	attrflags |= (bsheetdef->IsVeryHidden()	? BSHEET_ATTR_VERYHIDDEN:0);
 
