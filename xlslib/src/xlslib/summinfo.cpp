@@ -40,15 +40,6 @@
 #include <time.h>
 #include "xlslib/summinfo.h"
 
-#if 0
-//ndef _MSC_VER
-#  include "ac-config.win32.h"
-// I am assuming this header file is created and include automatically by MSVC.
-// Other compilers (I.e. BC++ ) don't have this, so I simply copied the file
-// from the MSC project to the RadStudio project and included it. RLN 111208
-#endif
-
-
 using namespace std;
 using namespace xlslib_core;
 
