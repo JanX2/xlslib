@@ -419,7 +419,7 @@ blocks COleDoc::GetBATCount()
 	bat_num_blocks		= 1;	// seed to enter loop below
 	bat_block_capacity	= 0;
 	msat_blocks			= 0;
-	msat_bats			= 0;
+	//msat_bats			= 0;	// no affect
 	bat_num_entries		= 0;	// kch
 	bat_blocks_needed	= data_bat_entries/BAT_ENTRIES_PER_BLOCK;		// minimum
 	bat_blocks_needed	+= bat_blocks_needed/BAT_ENTRIES_PER_BLOCK;		// for the BAT itself
