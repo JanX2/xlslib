@@ -383,6 +383,7 @@ CUnit* workbook::DumpData(CDataStorage &datastore)
       switch(m_DumpState)
       {
          case WB_INIT:
+            XTRACE("\tWB_INIT");
 
 			writeLen = 0;
             current_sheet = 0;
@@ -395,7 +396,6 @@ CUnit* workbook::DumpData(CDataStorage &datastore)
             break;
 
          case WB_GLOBALRECORDS:
-
             XTRACE("\tGLOBALRECORDS");
  
             m_pCurrentData = m_GlobalRecords.DumpData(datastore);
@@ -417,6 +417,7 @@ CUnit* workbook::DumpData(CDataStorage &datastore)
          case WB_SHEETS:
          {
             XTRACE("\tSHEETS");
+
 			//printf("DUMP SHEETS WITH DATASIZE=%ld offset=%ld writeLen=%ld\n", datastore.GetDataSize(), offset, writeLen );
             m_pCurrentData = m_Sheets[current_sheet]->DumpData(datastore, offset, writeLen/*, Last_BOF_offset*/);	// writelen passed as its cumulatively increased
             if(m_pCurrentData == NULL)
@@ -455,7 +456,6 @@ CUnit* workbook::DumpData(CDataStorage &datastore)
 
          case WB_CONTINUE_REC:
 			XTRACE("\tCONTINUE-REC");
-			repeat = false;
 
 			if(m_ContinueIndex == 0)
 			{
@@ -526,6 +526,7 @@ CUnit* workbook::DumpData(CDataStorage &datastore)
 
          default:
             XTRACE("\tDEFAULT");
+
             break;
       }
 
