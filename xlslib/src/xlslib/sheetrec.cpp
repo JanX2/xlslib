@@ -58,6 +58,7 @@ using namespace xlslib_core;
    m_DumpState = state;                         \
 }
 
+#define DEFAULT_ROW_HEIGHT (300/TWIP)
 
 /*
 **********************************************************************
@@ -95,7 +96,14 @@ worksheet::worksheet(CGlobalRecords& gRecords, unsigned16_t idx) :
 	//m_CurrentRowBlock(0),
 	m_Starting_RBCell(),
 	cellIterHint(),
-	cellHint(NULL)
+	cellHint(NULL),
+	defRowsHidden(false),
+	defRowHeight(DEFAULT_ROW_HEIGHT),	// MS default
+	defColWidth(10),	// MS default
+	m_HyperLinks(),
+	m_CurrentHlink(),
+	m_ColInfoUnits(),
+	m_ColInfoUnit()
 {
 }
 
@@ -168,9 +176,16 @@ worksheet::~worksheet()
    }
 #endif 
 // RANGE_FEATURE
+
+   if(!m_HyperLinks.empty())
+   {
+      for(HyperLinkList_Itor_t rh = m_HyperLinks.begin(); rh != m_HyperLinks.end(); rh++)
+         delete *rh;
+      m_HyperLinks.clear();
+   }
+
+	m_ColInfoUnits.clear();
 }
-
-
 
 /*
 ***********************************
@@ -182,6 +197,7 @@ worksheet::~worksheet()
 CUnit* worksheet::DumpData(CDataStorage &datastore, size_t offset, size_t writeLen/*, size_t &Last_BOF_offset*/)
 {
    bool repeat = false;
+   bool changeDumpState;
 
    XTRACE("worksheet::DumpData");
    
@@ -190,18 +206,16 @@ CUnit* worksheet::DumpData(CDataStorage &datastore, size_t offset, size_t writeL
 	 //printf("OFFSET=%ld writeLen=%ld DATASIZE=%ld\n", offset, writeLen, datastore.GetDataSize());
 	 switch(m_DumpState) {
 	 case SHEET_INIT:
-		CHANGE_DUMPSTATE(SHEET_BOF);
 		m_Current_Colinfo = m_Colinfos.begin();
 		m_CurrentSizeCell = m_Cells.begin();
 		m_CurrentCell = m_Cells.begin();
+		m_CurrentHlink = m_HyperLinks.begin();
 		repeat  = true;
+		CHANGE_DUMPSTATE(SHEET_BOF);
 		break;
 
 	 case SHEET_BOF:
 		XTRACE("\tBOF");
-
-		repeat = false;
-
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 		m_pCurrentData = datastore.MakeCBof(BOF_TYPE_WORKSHEET);
 #else
@@ -209,6 +223,7 @@ CUnit* worksheet::DumpData(CDataStorage &datastore, size_t offset, size_t writeL
 		m_pCurrentData = (CUnit*)(new CBof(datastore, BOF_TYPE_WORKSHEET));
 #endif
 		//Last_BOF_offset = offset + writeLen;
+		repeat = false;
 		CHANGE_DUMPSTATE(SHEET_INDEX);
 		break;
 
@@ -225,7 +240,8 @@ CUnit* worksheet::DumpData(CDataStorage &datastore, size_t offset, size_t writeL
 			// Get first/last row from the list of row blocks
 			//unsigned32_t first_row, last_row;
 			//GetFirstLastRowsAndColumns(&first_row, &last_row, NULL, NULL);
-	   
+
+			unsigned32_t colInfoSize = ColInfoDump(datastore);
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 			m_pCurrentData = datastore.MakeCIndex(rbsize.first_row, rbsize.last_row);
 #else
@@ -234,11 +250,11 @@ CUnit* worksheet::DumpData(CDataStorage &datastore, size_t offset, size_t writeL
 
 			size_t rb_size_acc = 0;
 			size_t index_size = RB_INDEX_MINSIZE + 4*numrb;
-			size_t dbcelloffset = offset + writeLen + index_size;
-			((CIndex*)m_pCurrentData)->AddDBCellOffset(0);	// dbcelloffset or 0
+			size_t dbcelloffset = offset + writeLen + index_size + DEF_ROW_HEIGHT_SIZE + colInfoSize; 
+			((CIndex*)m_pCurrentData)->AddDBCellOffset(dbcelloffset);
 			// printf("GUESS DIMENSION IS AT %ld\n", (long)dbcelloffset);
 
-			dbcelloffset +=  DIMENSION_SIZE;
+			dbcelloffset += DEF_COL_WIDTH_SIZE + DIMENSION_SIZE;
 
 			for(size_t rb = 0; rb < numrb; rb++)
 			{
@@ -261,16 +277,70 @@ CUnit* worksheet::DumpData(CDataStorage &datastore, size_t offset, size_t writeL
 			   // Update the offset for the next DBCELL's offset
 			   rb_size_acc += rbsize2.dbcell_size;
 			}
+			repeat = false;
+		    CHANGE_DUMPSTATE(SHEET_DFLT_ROW_HEIGHT); // Change to the next state
 		}
-		CHANGE_DUMPSTATE(SHEET_DIMENSION); // Change to the next state
 		break;
 
+     case SHEET_DFLT_ROW_HEIGHT:
+		XTRACE("\tSHEET_DFLT_ROW_HEIGHT");
+		m_pCurrentData = datastore.MakeCRecord();
+		((CRecord  *)m_pCurrentData)->SetRecordType(RECTYPE_DEFAULTROWHEIGHT);
+		((CRecord  *)m_pCurrentData)->SetRecordLength(4);
+		((CRecord  *)m_pCurrentData)->AddValue16(defRowHeight == DEFAULT_ROW_HEIGHT ? 0 : 0x01);
+		((CRecord  *)m_pCurrentData)->AddValue16(defRowHeight * TWIP);
+		repeat = false;
+		CHANGE_DUMPSTATE(SHEET_COLINFO); // Change to the next state
+		break;
+
+	 case SHEET_COLINFO:
+		XTRACE("\tCOLINFO");
+		if(!m_ColInfoUnits.empty())
+		{
+		   // First check if the list of fonts is not empty... (old comment????)
+#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+		   m_pCurrentData = *m_ColInfoUnit;
+#else
+		   //Delete_Pointer(m_pCurrentData);
+		   m_pCurrentData = (CUnit*)(new CColInfo(datastore, *m_Current_Colinfo));
+#endif
+
+		   if(m_ColInfoUnit != (--m_ColInfoUnits.end()))
+		   {
+			  // if it wasn't the last font from the list, increment to get the next one
+			  m_ColInfoUnit++;
+			  changeDumpState = false;
+		   } else {
+			  // if it was the last from the list, change the DumpState
+			  m_ColInfoUnit = m_ColInfoUnits.begin(); // DFH : unneeded
+			  changeDumpState = true;
+		   }
+		   repeat = false;
+		} else {
+		   // if the list is empty, change the dump state.
+		   //font = m_Fonts.begin();
+		   changeDumpState = true;
+		   repeat = true;
+		}
+		if(changeDumpState) {
+		   CHANGE_DUMPSTATE(SHEET_DFLT_COL_WIDTH);
+		}
+		break;
+
+     case SHEET_DFLT_COL_WIDTH:
+		XTRACE("\tSHEET_DFLT_COL_WIDTH");
+		m_pCurrentData = datastore.MakeCRecord();
+		((CRecord  *)m_pCurrentData)->SetRecordType(RECTYPE_DEFCOLWIDTH);
+		((CRecord  *)m_pCurrentData)->SetRecordLength(2);
+		((CRecord  *)m_pCurrentData)->AddValue16(defColWidth);
+		repeat = false;
+		CHANGE_DUMPSTATE(SHEET_DIMENSION); // Change to the next state
+		break;
+	 
 	 case SHEET_DIMENSION:
 		XTRACE("\tDIMENSION");
 		//printf("DIMENSION IS AT %ld\n", datastore.GetDataSize());
 		//printf("    DIM %ld\n", (unsigned long)writeLen + offset);
-
-		repeat = false;
 
 		//Delete_Pointer(m_pCurrentData);
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
@@ -279,6 +349,7 @@ CUnit* worksheet::DumpData(CDataStorage &datastore, size_t offset, size_t writeL
 #else
 		m_pCurrentData = (CUnit*)(new CDimension(datastore, minRow, maxRow, minCol, maxCol));
 #endif
+		repeat = false;
 		CHANGE_DUMPSTATE(SHEET_ROWBLOCKS);
 		break;
 
@@ -293,19 +364,35 @@ CUnit* worksheet::DumpData(CDataStorage &datastore, size_t offset, size_t writeL
 		   if(m_pCurrentData == NULL)
 		   {
 			  repeat = true;
-			  CHANGE_DUMPSTATE(SHEET_MERGED);
-		   }  
+			  changeDumpState = true;
+		   } else {
+			  repeat = false;
+			  changeDumpState = false;
+		   }
 		} else {
 		   // if the list is empty, change the dump state.
 		   repeat = true;
-		   CHANGE_DUMPSTATE(SHEET_MERGED);
+		   changeDumpState = true;
+		}
+		if(changeDumpState) {
+		   CHANGE_DUMPSTATE(SHEET_WINDOW2);
 		}
 		break;
 
-	 case SHEET_MERGED:
+	 case SHEET_WINDOW2:
+		XTRACE("\tWINDOW2");
+#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
+		m_pCurrentData = datastore.MakeCWindow2(sheetIndex == m_GlobalRecords.GetWindow1().GetActiveSheet());
+#else
+		//Delete_Pointer(m_pCurrentData);
+		m_pCurrentData = (CUnit*)(new CWindow2(datastore, (sheetIndex == m_GlobalRecords.GetWindow1().GetActiveSheet())));
+#endif
 		repeat = false;
-		XTRACE("\tMERGED");
+		CHANGE_DUMPSTATE(SHEET_MERGED);
+		break;
 
+	 case SHEET_MERGED:
+		XTRACE("\tMERGED");
 		if(!m_MergedRanges.empty())
 		{
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
@@ -318,57 +405,41 @@ CUnit* worksheet::DumpData(CDataStorage &datastore, size_t offset, size_t writeL
 		   {
 			  ((CMergedCells*)m_pCurrentData)->AddRange(*mr);
 		   }
+		   repeat = false;
 		} else {
 		   repeat = true;
 		}
-
-		CHANGE_DUMPSTATE(SHEET_COLINFO);
+		CHANGE_DUMPSTATE(SHEET_H_LINKS);
 		break;
 
-	 case SHEET_COLINFO:
-		repeat = false;
-		XTRACE("\tCOLINFO");
-
-		if(!m_Colinfos.empty())
+	 case SHEET_H_LINKS:
+		XTRACE("\tSHEET_H_LINKS");
+		if(!m_HyperLinks.empty())
 		{
 		   // First check if the list of fonts is not empty...
-
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
-		   m_pCurrentData = datastore.MakeCColInfo(*m_Current_Colinfo);
-#else
-		   //Delete_Pointer(m_pCurrentData);
-		   m_pCurrentData = (CUnit*)(new CColInfo(datastore, *m_Current_Colinfo));
-#endif
-
-		   if(m_Current_Colinfo != (--m_Colinfos.end()))
+		   m_pCurrentData = MakeHyperLink(datastore, *m_CurrentHlink);
+		   if(m_CurrentHlink != (--m_HyperLinks.end()))
 		   {
 			  // if it wasn't the last font from the list, increment to get the next one
-			  m_Current_Colinfo++;
+			  m_CurrentHlink++;
+			  changeDumpState = false;
 		   } else {
 			  // if it was the last from the list, change the DumpState
-			  CHANGE_DUMPSTATE(SHEET_WINDOW2);
-			  m_Current_Colinfo = m_Colinfos.begin();
+			  changeDumpState = true;
+			  m_CurrentHlink = m_HyperLinks.begin();	// does nothing
 		   }
+		   repeat = false;
 		} else {
 		   // if the list is empty, change the dump state.
-		   CHANGE_DUMPSTATE(SHEET_WINDOW2);
+		   changeDumpState = true;
 		   //font = m_Fonts.begin();
 		   repeat = true;
 		}
+		if(changeDumpState) {
+		   CHANGE_DUMPSTATE(SHEET_EOF);
+		}
 		break;
-
-	 case SHEET_WINDOW2:
-		XTRACE("\tWINDOW2");
-		repeat = false;
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
-		m_pCurrentData = datastore.MakeCWindow2(sheetIndex == m_GlobalRecords.GetWindow1().GetActiveSheet());
-#else
-		//Delete_Pointer(m_pCurrentData);
-		m_pCurrentData = (CUnit*)(new CWindow2(datastore, (sheetIndex == m_GlobalRecords.GetWindow1().GetActiveSheet())));
-#endif
-		CHANGE_DUMPSTATE(SHEET_EOF);
-		break;
-
+	 
 	 case SHEET_EOF:
 		XTRACE("\tEOF");
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
@@ -377,6 +448,7 @@ CUnit* worksheet::DumpData(CDataStorage &datastore, size_t offset, size_t writeL
 		//Delete_Pointer(m_pCurrentData);
 		m_pCurrentData = (CUnit*)(new CEof(datastore));
 #endif
+	    repeat = false;
 		CHANGE_DUMPSTATE(SHEET_FINISH);
 		break;
 
@@ -387,12 +459,32 @@ CUnit* worksheet::DumpData(CDataStorage &datastore, size_t offset, size_t writeL
 		//Delete_Pointer(m_pCurrentData);
 #endif
 		m_pCurrentData = NULL;
+		repeat = false;
 		CHANGE_DUMPSTATE(SHEET_INIT);
 		break;
       }
    } while(repeat);
 
    return m_pCurrentData;
+}
+
+// create then save all Col Info records, dump them out later
+unsigned32_t worksheet::ColInfoDump(CDataStorage &datastore)
+{
+	unsigned32_t size = 0;
+	
+	Colinfo_Set_Itor_t cbegin = m_Colinfos.begin();
+	Colinfo_Set_Itor_t cend = m_Colinfos.end();
+	while(cbegin != cend)
+	{
+		CUnit *unit = datastore.MakeCColInfo(*cbegin);
+		size += unit->GetSize();
+		m_ColInfoUnits.push_back(unit);
+		++cbegin;
+	}
+	m_ColInfoUnit = m_ColInfoUnits.begin();
+
+	return size;
 }
 
 CUnit* worksheet::RowBlocksDump(CDataStorage &datastore, const size_t offset)
@@ -1223,6 +1315,74 @@ range* worksheet::rangegroup(unsigned32_t row1, unsigned32_t col1,
 #endif 
 // RANGE_FEATURE
 
+
+// define a cell (label, number, etc) - apply proper url (http://blah.blah), possible text mark too
+void worksheet::hyperLink(const cell_t *cell, const std::string& url , const std::string& mark)
+{
+	  struct HyperLink *link = new HyperLink;
+
+	  link->row = (unsigned16_t)cell->GetRow();
+	  link->col = (unsigned16_t)cell->GetCol();
+	  m_GlobalRecords.char2str16(url, link->url);
+	  m_GlobalRecords.char2str16(mark, link->mark);
+	  
+	  m_HyperLinks.push_back(link);
+}
+
+static unsigned char StdLinkGUID[16] = { 0xd0, 0xc9, 0xea, 0x79, 0xf9, 0xba, 0xce, 0x11, 0x8c, 0x82, 0x00, 0xaa, 0x00, 0x4b, 0xa9, 0x0b };
+static unsigned char URLMonikerGUID[16] = { 0xe0, 0xc9, 0xea, 0x79, 0xf9, 0xba, 0xce, 0x11, 0x8c, 0x82, 0x00, 0xaa, 0x00, 0x4b, 0xa9, 0x0b };
+
+CUnit* worksheet::MakeHyperLink(CDataStorage& datastore, HyperLink* link)
+{
+	bool hasMark = link->mark.length() ? true : false;
+	u16string::const_iterator cBegin, cEnd;
+
+	unsigned32_t urlLen = (link->url.length()+1) * 2;
+	unsigned32_t markLen = (link->mark.length()+1) * 2;
+
+	size_t newsize = 2 + 2 + 2 + 2 + 16 + 4 + 4 + 16 + 4 + urlLen;
+	if(hasMark) {
+		newsize += 4 + markLen;
+	}
+	
+	CRecord *hyperRecord = datastore.MakeCRecord();
+	hyperRecord->Inflate(newsize);
+
+	hyperRecord->SetRecordType(RECTYPE_HLINK);
+	
+	hyperRecord->AddValue16(link->row);
+	hyperRecord->AddValue16(link->row);
+	hyperRecord->AddValue16(link->col);
+	hyperRecord->AddValue16(link->col);
+	hyperRecord->AddDataArray(StdLinkGUID, 16);
+	hyperRecord->AddValue32(2);	// Magic number
+	hyperRecord->AddValue32(0x03 | (hasMark ? 0x08 : 0x00));
+	
+	hyperRecord->AddDataArray(URLMonikerGUID, 16);
+	
+	// URL byte length, then URL followed by NULL "character"
+	hyperRecord->AddValue32(urlLen);
+
+	cBegin	= link->url.begin();
+	cEnd	= link->url.end();
+
+	while(cBegin != cEnd) 
+		hyperRecord->AddValue16(*cBegin++);
+	hyperRecord->AddValue16(0);
+	
+	if(hasMark) {
+		hyperRecord->AddValue32(markLen/2);	// character count
+		cBegin	= link->mark.begin();
+		cEnd	= link->mark.end();
+
+		while(cBegin != cEnd) 
+			hyperRecord->AddValue16(*cBegin++);
+		hyperRecord->AddValue16(0);
+	}
+	hyperRecord->SetRecordLength(hyperRecord->GetDataSize() - 4);
+	
+	return (CUnit *)hyperRecord;
+}
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * $Log: sheetrec.cpp,v $

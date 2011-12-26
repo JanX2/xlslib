@@ -70,6 +70,8 @@ worksheet class declaration
 ***********************************
 */
 
+#if 0
+// old way
   typedef enum
     {
       SHEET_INIT,
@@ -80,6 +82,79 @@ worksheet class declaration
       SHEET_MERGED,
       SHEET_COLINFO,
       SHEET_WINDOW2,
+      SHEET_EOF,
+      SHEET_FINISH
+    } SheetRecordDumpState_t;
+
+
+// what worked
+  typedef enum
+    {
+      SHEET_INIT,
+      SHEET_BOF,
+      SHEET_INDEX,
+	  SHEET_DFLT_ROW_HEIGHT,
+	  SHEET_DFLT_COL_WIDTH,
+      SHEET_DIMENSION,
+      SHEET_ROWBLOCKS,
+      SHEET_MERGED,
+      SHEET_COLINFO,
+      SHEET_WINDOW2,
+      SHEET_H_LINKS,
+      SHEET_EOF,
+      SHEET_FINISH
+    } SheetRecordDumpState_t;
+
+// Mostly what I wanted that worked
+  typedef enum
+    {
+      SHEET_INIT,
+      SHEET_BOF,
+      SHEET_INDEX,
+	  SHEET_DFLT_ROW_HEIGHT,
+	  SHEET_DFLT_COL_WIDTH,
+      SHEET_DIMENSION,
+      SHEET_ROWBLOCKS,
+      SHEET_MERGED,
+      SHEET_COLINFO,
+      SHEET_WINDOW2,
+      SHEET_H_LINKS,
+      SHEET_EOF,
+      SHEET_FINISH
+    } SheetRecordDumpState_t;
+
+// What I wanted
+  typedef enum
+    {
+      SHEET_INIT,
+      SHEET_BOF,
+      SHEET_INDEX,
+	  SHEET_DFLT_ROW_HEIGHT,
+      SHEET_COLINFO,
+	  SHEET_DFLT_COL_WIDTH,
+      SHEET_DIMENSION,
+      SHEET_ROWBLOCKS,
+      SHEET_WINDOW2,
+      SHEET_MERGED,
+      SHEET_H_LINKS,
+      SHEET_EOF,
+      SHEET_FINISH
+    } SheetRecordDumpState_t;
+#endif
+
+  typedef enum
+    {
+      SHEET_INIT,
+      SHEET_BOF,
+      SHEET_INDEX,
+	  SHEET_DFLT_ROW_HEIGHT,
+      SHEET_COLINFO,
+	  SHEET_DFLT_COL_WIDTH,
+      SHEET_DIMENSION,
+      SHEET_ROWBLOCKS,
+      SHEET_MERGED,
+      SHEET_WINDOW2,
+      SHEET_H_LINKS,
       SHEET_EOF,
       SHEET_FINISH
     } SheetRecordDumpState_t;
@@ -142,6 +217,18 @@ worksheet class declaration
   typedef std::vector<size_t XLSLIB_DFLT_ALLOCATOR> CellOffsets_Vect_t;
   typedef CellOffsets_Vect_t::iterator CellOffsets_Vect_Itor_t;
 
+  struct HyperLink {
+	unsigned16_t		row;
+	unsigned16_t		col;
+	u16string			url;
+	u16string			mark;
+  };
+  typedef std::vector<xlslib_core::HyperLink * XLSLIB_DFLT_ALLOCATOR> HyperLinkList_t;
+  typedef HyperLinkList_t::iterator HyperLinkList_Itor_t;
+
+  typedef std::vector<xlslib_core::CUnit* XLSLIB_DFLT_ALLOCATOR> ColInfo_t;
+  typedef ColInfo_t::iterator ColInfo_Itor_t;
+
 //  class range;
   class worksheet : public CBiffSection
     {
@@ -164,8 +251,8 @@ worksheet class declaration
 		unsigned16_t			sheetIndex;
 
 		Cell_Set_t				m_Cells;
-		Cell_Set_Itor_t m_CurrentCell;		// Init this one in the RowBlocksDump INIT state
-		Cell_Set_Itor_t m_CurrentSizeCell; // Init this one in the INIT state
+		Cell_Set_Itor_t			m_CurrentCell;		// Init this one in the RowBlocksDump INIT state
+		Cell_Set_Itor_t			m_CurrentSizeCell;	// Init this one in the INIT state
 		//bool m_CellsSorted;
 
 #ifdef RANGE_FEATURE
@@ -189,19 +276,33 @@ worksheet class declaration
 		Cell_Set_Itor_t			cellIterHint;
 		cell_t*					cellHint;
 
+		bool					defRowsHidden;
+		unsigned16_t			defRowHeight;
+		unsigned16_t			defColWidth;
+
+		HyperLinkList_t			m_HyperLinks;
+		HyperLinkList_Itor_t	m_CurrentHlink;
+
+		ColInfo_t				m_ColInfoUnits;
+		ColInfo_Itor_t			m_ColInfoUnit;
+		
     private:
 		worksheet(CGlobalRecords& gRecords, unsigned16_t idx);
 		~worksheet();
 
+		unsigned32_t			ColInfoDump(CDataStorage &datastore);
+		
 		//void					GetFirstLastRows(unsigned32_t* first_row, unsigned32_t* last_row);
-		size_t GetNumRowBlocks(rowblocksize_t* rbsize_ref = NULL);
+		size_t					GetNumRowBlocks(rowblocksize_t* rbsize_ref = NULL);
 		bool					GetRowBlockSizes(rowblocksize_t& rbsize);
 		CUnit*					RowBlocksDump(CDataStorage &datastore, const size_t offset);
-		size_t EstimateNumBiffUnitsNeeded(void);
+		size_t					EstimateNumBiffUnitsNeeded(void);
 
 		void					AddCell(cell_t* pcell);
 		CUnit*					DumpData(CDataStorage &datastore, size_t offset, size_t writeLen/*, size_t &Last_BOF_offset*/);
 		
+		CUnit*					MakeHyperLink(CDataStorage& datastore, HyperLink* link);
+
     private:
 		worksheet(const worksheet& that);
 		worksheet& operator=(const worksheet& right);
@@ -219,7 +320,10 @@ worksheet class declaration
 		void merge(unsigned32_t first_row, unsigned32_t first_col, 
 				 unsigned32_t last_row, unsigned32_t last_col);
 		void colwidth(unsigned32_t col, unsigned16_t width, xf_t* pxformat = NULL);			// sets column widths to 1/256 x width of "0"
-		void rowheight(unsigned32_t row, unsigned16_t height, xf_t* pxformat = NULL);		// in points (Excel uses twips, 1/20th of a point, but we dont)
+		void rowheight(unsigned32_t row, unsigned16_t height, xf_t* pxformat = NULL);		// in points (Excel uses twips, 1/20th of a point, but xlslib didn't)
+
+		void defaultRowHeight(unsigned16_t width, bool hidden = false) { defRowHeight = width; defRowsHidden = hidden; } // sets column widths to 1/256 x width of "0"
+		void defaultColwidth(unsigned16_t width) { defColWidth = width; } // in points (Excel uses twips, 1/20th of a point, but xlslib didn't)
 
 #ifdef RANGE_FEATURE
 		// Ranges
@@ -259,6 +363,9 @@ worksheet class declaration
 		cell_t* formula(unsigned32_t row, unsigned32_t col, 
 			expression_node_t* expression_root, bool auto_destruct_expression_tree = false,
 			xf_t* pxformat = NULL);
+		
+		// define a cell (label, number, etc) - apply proper url (http://blah.blah), possible text mark too
+		void hyperLink(const cell_t *cell, const std::string& url , const std::string& mark = ""); 
 	};
 
   typedef std::vector<xlslib_core::worksheet*> Sheets_Vector_t;
