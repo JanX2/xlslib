@@ -52,6 +52,8 @@
 #define EOF_SIZE			   4
 #define WINDOW2_SIZE		  22
 #define DIMENSION_SIZE		  18
+#define DEF_ROW_HEIGHT_SIZE    8
+#define DEF_COL_WIDTH_SIZE     6
 // End SIZES
 
 #define RECTYPE_NULL                            \
