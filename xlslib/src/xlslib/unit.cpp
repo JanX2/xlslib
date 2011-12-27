@@ -62,7 +62,8 @@ CUnit::CUnit(CDataStorage &datastore) :
 #if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 	m_Store(datastore),
 	m_Index(INVALID_STORE_INDEX),
-	m_Backpatching_Level(0)
+	m_Backpatching_Level(0),
+	m_AlreadyContinued(false)
 #else
 	m_nSize(0),
 	m_nDataSize(0),

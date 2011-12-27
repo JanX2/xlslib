@@ -83,7 +83,7 @@ namespace xlslib_core
 	static const size_t DefaultInflateSize;
 	
 	// needed for SST labels (maybe others in the future)
-	void SetAlreadyContinued(bool val) { alreadyContinued = val; }
+	void SetAlreadyContinued(bool val) { m_AlreadyContinued = val; }
 #else
 
 	size_t	m_nSize;		// Size of data store (maybe larger than actual used data)
@@ -101,7 +101,7 @@ namespace xlslib_core
     CUnit(CDataStorage &datastore);
 
   private: // deny these operations to others...
-	bool alreadyContinued;
+	bool m_AlreadyContinued;
     CUnit(const CUnit& orig);
     CUnit& operator=(const CUnit& right);
 
@@ -123,7 +123,7 @@ namespace xlslib_core
     size_t GetSize(void) const;
     size_t GetDataSize(void) const;
     const unsigned8_t* GetBuffer(void) const;
-	bool AlreadyContinued() const { return alreadyContinued; };
+	bool AlreadyContinued() const { return m_AlreadyContinued; };
 //  protected:
 //    unsigned8_t* GetBuffer(void);
 
