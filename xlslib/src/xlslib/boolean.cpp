@@ -53,11 +53,7 @@ boolean_t::boolean_t(CGlobalRecords& gRecords, unsigned32_t rowval, unsigned32_t
 }
 
 CUnit* boolean_t::GetData(CDataStorage &datastore) const {
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
    return datastore.MakeCBoolean(*this);	// NOTE: this pointer HAS to be deleted elsewhere.
-#else
-   return (CUnit*)(new CBoolean(datastore, *this));	// NOTE: this pointer HAS to be deleted elsewhere.
-#endif
 }
 
 /*

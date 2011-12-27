@@ -312,9 +312,6 @@ CHPSFdoc::CHPSFdoc(CDataStorage &datastore, const hpsf_doc_t& docdef):
 			AddFixedDataArray(0, padding);	
 		}
 
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
-#endif
-
 		//printf("Actual size = %d\n", m_nDataSize - sectionListOffset);
 		XL_ASSERT(GetDataSize() <= GetSize());
 		XL_ASSERT(GetDataSize() <= SUMMARY_SIZE);

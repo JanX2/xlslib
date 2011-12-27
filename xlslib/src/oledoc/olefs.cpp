@@ -198,17 +198,9 @@ int COleFileSystem::AddFile(string const &dir_path, CDataStorage* pdata)
       }
 
       // create the trail data unit.
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 	  CUnit* ptraildata = pdata->MakeCUnit();
-#else
-	  CUnit* ptraildata = new CUnit(*pdata);
-#endif
       ptraildata->AddFixedDataArray(0x00, trail_size);
       (*pdata) += ptraildata;
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
-#else
-	  //Delete_Pointer(ptraildata);
-#endif
 
       (*newnode)->SetDataPointer(pdata);
       (*newnode)->SetColor(PROPERTY_COLOR_NODE_BLACK);

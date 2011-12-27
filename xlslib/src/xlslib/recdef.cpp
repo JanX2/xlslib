@@ -405,10 +405,7 @@ CBSheet class implementation
 CBSheet::CBSheet(CDataStorage &datastore, const boundsheet_t* bsheetdef):
 		CRecord(datastore)
 {
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 	m_Backpatching_Level = 3;
-#else
-#endif
 
 	SetRecordType(RECTYPE_BOUNDSHEET);
 	AddValue32(bsheetdef->GetStreamPos());

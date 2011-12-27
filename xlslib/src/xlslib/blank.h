@@ -69,9 +69,7 @@ namespace xlslib_core
 
   class CBlank: public CRecord
     {
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 	friend class CDataStorage;
-#endif
 
     protected:
       CBlank(CDataStorage &datastore, const blank_t& blankdef);

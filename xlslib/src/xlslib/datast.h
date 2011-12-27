@@ -60,7 +60,6 @@ COleFile class declaration
 
 namespace xlslib_core
 {
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 
 #define FIXEDWIDTH_STORAGEUNIT_SIZE  18 
 // the most frequent BIFF fixed-width records are BLANK, RK and NUMBER, which top out at 18 bytes a head
@@ -190,13 +189,6 @@ namespace xlslib_core
   typedef std::vector<xlslib_core::CUnit* XLSLIB_DFLT_ALLOCATOR> UnitList_t;
   typedef UnitList_t::iterator UnitList_Itor_t;
 
-#else
-
-  typedef std::vector<xlslib_core::CUnit* XLSLIB_DFLT_ALLOCATOR> DataList_t;
-  typedef DataList_t::iterator DataList_Itor_t;
-
-#endif
-
 	class CRecord;
 	class CRow;
 	class CBof;
@@ -245,11 +237,7 @@ namespace xlslib_core
     {
     private:
 
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 		StoreList_t store;
-#else
-		DataList_t data;
-#endif
 
 		size_t m_DataSize;
    
@@ -258,17 +246,8 @@ namespace xlslib_core
 		CDataStorage(size_t blobs);
 		virtual ~CDataStorage();
 
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
-
 		StoreList_Itor_t begin();
 		StoreList_Itor_t end();
-
-#else
-
-		DataList_Itor_t begin();
-		DataList_Itor_t end();
-
-#endif
 	
 	private:
 		CDataStorage(const CDataStorage& that);
@@ -277,8 +256,6 @@ namespace xlslib_core
     public:
 		void operator+=(CUnit* from);
 		size_t GetDataSize() const;
-
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 
 		signed32_t RequestIndex(size_t minimum_size);
 		CUnitStore& operator[](signed32_t index);
@@ -349,7 +326,6 @@ namespace xlslib_core
 		CDBCell* MakeCDBCell(size_t startblock = DBC_DFLT_STARTBLOCK);
 		CHPSFdoc* MakeCHPSFdoc(const hpsf_doc_t &docdef);
 		CUnit *MakeSST(const Label_Vect_t& labels);
-#endif
 	};
 }
 

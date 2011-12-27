@@ -43,21 +43,15 @@
 using namespace std;
 using namespace xlslib_core;
 
-
 /*
 ******************************
 CIndex class implementation
 ******************************
 */
-CIndex::CIndex(CDataStorage &datastore, 
-		   unsigned32_t firstrow, 
-               unsigned32_t lastrow):
-		CRecord(datastore)
+CIndex::CIndex(CDataStorage &datastore, unsigned32_t firstrow, unsigned32_t lastrow):
+	CRecord(datastore)
 {
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 	m_Backpatching_Level = 2;
-#else
-#endif
 
 	SetRecordType(RECTYPE_INDEX);
 
@@ -67,6 +61,7 @@ CIndex::CIndex(CDataStorage &datastore,
 	AddValue32(lastrow+1);
 
 //	AddValue32(INDEX_DFLT_RESERVED); (now written when outputting sheet)
+
 	// NOTE: This record is created with an empty array. It should work if the rest
 	// of the record is not completed later, since the record's size reflects the
 	// lack of such array
@@ -76,7 +71,6 @@ CIndex::CIndex(CDataStorage &datastore,
 CIndex::~CIndex()
 {
 }
-
 
 /* 
 **********************************
@@ -96,8 +90,7 @@ signed8_t CIndex::AddDBCellOffset(size_t dboffset)
 **********************************
 **********************************
 */
-void CIndex::SetRows(unsigned32_t firstrow,
-                     unsigned32_t lastrow)
+void CIndex::SetRows(unsigned32_t firstrow, unsigned32_t lastrow)
 {
 	XL_VERIFY(NO_ERRORS == SetValueAt32((unsigned32_t)firstrow, INDEX_OFFSET_B8FIRSTROW)); // [i_a]
 	XL_VERIFY(NO_ERRORS == SetValueAt32((unsigned32_t)(lastrow+1), INDEX_OFFSET_B8LASTROW)); // [i_a]

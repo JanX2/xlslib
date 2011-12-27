@@ -53,11 +53,7 @@ blank_t::blank_t(CGlobalRecords& gRecords, unsigned32_t rowval, unsigned32_t col
 {
 }
 CUnit* blank_t::GetData(CDataStorage &datastore) const {
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
    return datastore.MakeCBlank(*this);	// NOTE: this pointer HAS to be deleted elsewhere.
-#else
-   return (CUnit*)(new CBlank(datastore, *this));	// NOTE: this pointer HAS to be deleted elsewhere.
-#endif
 }
 blank_t::~blank_t()
 {

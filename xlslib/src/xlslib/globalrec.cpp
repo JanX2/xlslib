@@ -354,12 +354,7 @@ CUnit* CGlobalRecords::DumpData(CDataStorage &datastore)
 
             repeat = false;
 
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
             m_pCurrentData = datastore.MakeCBof(BOF_TYPE_WBGLOBALS);
-#else
-            // Delete_Pointer(m_pCurrentData);
-            m_pCurrentData = (CUnit*)(new CBof(datastore, BOF_TYPE_WBGLOBALS));
-#endif
 			m_DumpState = GLOBAL_CODEPAGE; // DFH GLOBAL_WINDOW1;
             break;
 
@@ -368,12 +363,7 @@ CUnit* CGlobalRecords::DumpData(CDataStorage &datastore)
  
 			repeat = false;
 
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
             m_pCurrentData = datastore.MakeCCodePage(1200);	// UTF-16
-#else
-            //Delete_Pointer(m_pCurrentData);
-            m_pCurrentData = (CUnit*)(new CCodePage(datastore, 1200));	// UTF-16
-#endif
 			m_DumpState = GLOBAL_WINDOW1;
             break;
 
@@ -382,12 +372,7 @@ CUnit* CGlobalRecords::DumpData(CDataStorage &datastore)
  
 			repeat = false;
 
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 			m_pCurrentData = datastore.MakeCWindow1(m_window1);
-#else
-            //Delete_Pointer(m_pCurrentData);
-			m_pCurrentData = (CUnit*)(new CWindow1(datastore, m_window1));
-#endif
 			m_DumpState = GLOBAL_DATEMODE; // GLOBAL_DEFAULTFONTS;
             break;
 
@@ -396,12 +381,7 @@ CUnit* CGlobalRecords::DumpData(CDataStorage &datastore)
  
 			repeat = false;
 
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
             m_pCurrentData = datastore.MakeCDateMode();
-#else
-            //Delete_Pointer(m_pCurrentData);
-            m_pCurrentData = (CUnit*)(new CDateMode(datastore));
-#endif
 			m_DumpState = GLOBAL_DEFAULTFONTS;
             break;
 
@@ -409,12 +389,7 @@ CUnit* CGlobalRecords::DumpData(CDataStorage &datastore)
 			XTRACE("\tDEFAULTFONTS");
 			
 			repeat = false;
-			
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 			m_pCurrentData = datastore.MakeCFont(*font_dflt);
-#else
-			m_pCurrentData = (CUnit*)(new CFont(datastore, *font_dflt));
-#endif
 
 			if(font_dflt != (--m_DefaultFonts.end()))
 			{
@@ -432,11 +407,7 @@ CUnit* CGlobalRecords::DumpData(CDataStorage &datastore)
 			// First check if the list of fonts is not empty...
 			if(!m_Fonts.empty())
 			{
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 				m_pCurrentData = datastore.MakeCFont(*font);
-#else
-				m_pCurrentData = (CUnit*)(new CFont(datastore, *font));
-#endif
 				if(font != (--m_Fonts.end()))
 				{
 				  // if it was'nt the last font from the list, increment to get the next one
@@ -460,11 +431,7 @@ CUnit* CGlobalRecords::DumpData(CDataStorage &datastore)
 
 			if(!m_Formats.empty())
 			{
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 				m_pCurrentData = datastore.MakeCFormat(*format);
-#else
-				m_pCurrentData = (CUnit*)(new CFormat(datastore, *format));
-#endif
 				if(format != (--m_Formats.end()))
 				{
 				  // if it wasn't the last font from the list, increment to get the next one
@@ -486,11 +453,7 @@ CUnit* CGlobalRecords::DumpData(CDataStorage &datastore)
          case GLOBAL_DEFAULTXFS: // ********** STATE 5a *************
 
             XTRACE("\tXDEFAULTFS");
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
             m_pCurrentData = datastore.MakeCExtFormat(*xf_dflt);
-#else
-            m_pCurrentData = (CUnit*)(new CExtFormat(datastore, *xf_dflt));
-#endif
 
             if(xf_dflt != (--m_DefaultXFs.end()))
             {
@@ -509,11 +472,7 @@ CUnit* CGlobalRecords::DumpData(CDataStorage &datastore)
 			XTRACE("\tXFS");
 			if(!m_XFs.empty())
 			{
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 				m_pCurrentData = datastore.MakeCExtFormat(*xf);
-#else
-				m_pCurrentData = (CUnit*)(new CExtFormat(datastore, *xf));
-#endif
 
 				if(xf != (--m_XFs.end()))
 				{
@@ -539,12 +498,7 @@ CUnit* CGlobalRecords::DumpData(CDataStorage &datastore)
             if(!m_Styles.empty())
             {
 				// First check if the list of fonts is not empty...
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 				m_pCurrentData = datastore.MakeCStyle(*style);
-#else
-				//Delete_Pointer(m_pCurrentData);
-				m_pCurrentData = (CUnit*)(new CStyle(datastore, *style));
-#endif
 
 				if(style != (--m_Styles.end()))
 				{
@@ -580,13 +534,7 @@ CUnit* CGlobalRecords::DumpData(CDataStorage &datastore)
 			if(!m_BoundSheets.empty())
 			{
 				// First check if the list of sheets is not empty...
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 				m_pCurrentData = (*bsheet)->SetSheetData(datastore.MakeCBSheet(*bsheet));
-#else
-				//Delete_Pointer(m_pCurrentData);
-				m_pCurrentData = (CUnit*)(new CBSheet(datastore, *bsheet));
-				(*bsheet)->SetSheetData((CBSheet *)m_pCurrentData);
-#endif
 
 				if(bsheet != (--m_BoundSheets.end()))
 				{
@@ -611,13 +559,7 @@ CUnit* CGlobalRecords::DumpData(CDataStorage &datastore)
 			if(!m_Labels.empty())
 			{
 				// First check if the list of sheets is not empty...
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 				m_pCurrentData = datastore.MakeSST(m_Labels);
-#else
-				//Delete_Pointer(m_pCurrentData);
-				XXX m_pCurrentData = (CUnit*)(new CBSheet(datastore, *bsheet));
-				XXX (*bsheet)->SetSheetData((CBSheet *)m_pCurrentData);
-#endif
 				  // if it was the last from the list, change the DumpState
 				m_DumpState = GLOBAL_EOF;
 				repeat = false;
@@ -634,11 +576,7 @@ CUnit* CGlobalRecords::DumpData(CDataStorage &datastore)
 
             repeat = false;
 
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
             m_pCurrentData = datastore.MakeCEof();
-#else
-            m_pCurrentData = (CUnit*)(new CEof(datastore));
-#endif
 			m_DumpState = GLOBAL_FINISH;
             break;
 

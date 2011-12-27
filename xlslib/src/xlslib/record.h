@@ -60,9 +60,7 @@ CRecord class declaration
 */
   class CRecord: public CUnit
     {
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 	friend class CDataStorage;
-#endif
 
     protected:
       //unsigned16_t m_Num;

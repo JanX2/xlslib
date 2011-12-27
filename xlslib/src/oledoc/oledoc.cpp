@@ -220,8 +220,7 @@ int COleDoc::DumpData(void)
    {
       if((*i)->GetType() == PTYPE_FILE)
       {
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
-		  for(StoreList_Itor_t j = (*i)->GetDataPointer()->begin(); 
+		 for(StoreList_Itor_t j = (*i)->GetDataPointer()->begin(); 
              j != (*i)->GetDataPointer()->end(); j++)
          {
 			//unsigned short *val = (unsigned short *)(j->GetBuffer());
@@ -232,13 +231,6 @@ int COleDoc::DumpData(void)
 			if (errcode != NO_ERRORS)
 				break;
          }
-#else
-		  for(DataList_Itor_t j = (*i)->GetDataPointer()->begin(); 
-             j != (*i)->GetDataPointer()->end(); j++)
-         {
-            WriteByteArray((*j)->GetBuffer(), (*j)->GetDataSize());
-         }
-#endif
 	  }
    } 
 

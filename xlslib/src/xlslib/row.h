@@ -125,9 +125,7 @@ namespace xlslib_core
 
   class CRow: public CRecord
     {
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 	friend class CDataStorage;
-#endif
 
     protected:
       CRow(CDataStorage &datastore, 
@@ -152,9 +150,7 @@ CDBCell class declaration
 
   class CDBCell: public CRecord
     {
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 	friend class CDataStorage;
-#endif
 
     protected:
       CDBCell(CDataStorage &datastore, size_t startblock = DBC_DFLT_STARTBLOCK);

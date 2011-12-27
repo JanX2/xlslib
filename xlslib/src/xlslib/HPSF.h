@@ -165,9 +165,7 @@ namespace xlslib_core
 	{
 		friend class CSummaryInfo;
 		friend class CDocSummaryInfo;
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 		friend class CDataStorage;
-#endif
 
     protected:
 		CHPSFdoc(CDataStorage &datastore, const hpsf_doc_t& docdef);

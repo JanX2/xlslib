@@ -81,9 +81,7 @@ namespace xlslib_core
 
   class CNote: public CRecord
     {
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 	friend class CDataStorage;
-#endif
 
     protected:
       CNote(CDataStorage &datastore, const note_t& notedef);

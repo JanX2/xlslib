@@ -74,9 +74,7 @@ namespace xlslib_core
 
   class CBoolean: public CRecord
     {
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 	friend class CDataStorage;
-#endif
 
     protected:
       CBoolean(CDataStorage &datastore, const boolean_t& booldef);

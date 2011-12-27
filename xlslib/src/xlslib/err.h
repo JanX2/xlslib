@@ -86,9 +86,7 @@ namespace xlslib_core
 
   class CErr: public CRecord
     {
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 	friend class CDataStorage;
-#endif
 
     protected:
       CErr(CDataStorage &datastore, const err_t& errdef);

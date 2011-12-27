@@ -47,7 +47,6 @@
 #include "xlslib/unit.h"
 
 
-
 // #include "common/xls_pshpack2.h"
 
 namespace xlslib_core
@@ -1446,16 +1445,9 @@ namespace xlslib_core
 	typedef enum cell_addr_mode_t
 	{
 		CELL_RELATIVE_A1   = 0xC000,
-#ifdef __BCPLUSPLUS__
-// C++ identifiers cannot have $ in several compilers. RLN 111208
 		CELL_ABSOLUTE_As1  = 0x8000,
 		CELL_ABSOLUTE_sA1  = 0x4000,
 		CELL_ABSOLUTE_sAs1 = 0,
-#else
-		CELL_ABSOLUTE_A$1  = 0x8000,
-		CELL_ABSOLUTE_$A1  = 0x4000,
-		CELL_ABSOLUTE_$A$1 = 0,
-#endif
 	} cell_addr_mode_t;
 
 	// 'operand class'
@@ -1689,12 +1681,6 @@ namespace xlslib_core
 	};
 
 
-
-
-
-
-
-	
 	
 	class formula_t: public cell_t
     {
@@ -1724,9 +1710,7 @@ namespace xlslib_core
 
   class CFormula: public CRecord
     {
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 	friend class CDataStorage;
-#endif
 
     protected:
       CFormula(CDataStorage &datastore, const formula_t& ast);

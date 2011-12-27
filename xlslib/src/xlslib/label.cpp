@@ -121,11 +121,7 @@ size_t xlslib_core::label_t::GetSize(void) const
 */
 CUnit* xlslib_core::label_t::GetData(CDataStorage &datastore) const
 {
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 	return datastore.MakeCLabel(*this);	// NOTE: this pointer HAS to be deleted elsewhere.
-#else
-	return (CUnit*)( new CLabel(datastore, *this));	// NOTE: this pointer HAS to be deleted elsewhere.
-#endif
 }
 
 /*

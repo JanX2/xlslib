@@ -43,8 +43,6 @@
 
 using namespace xlslib_core;
 
-
-
 /*
 *********************************
 note_t class implementation
@@ -67,8 +65,8 @@ cell_t(gRecords, rowval, colval, pxfval)
 #ifndef __FRAMEWORK__
 note_t::note_t(CGlobalRecords& gRecords, unsigned32_t rowval, unsigned32_t colval, const u16string& msg, const u16string& auth, xf_t* pxfval) :
 cell_t(gRecords, rowval, colval, pxfval),
-text(msg),
-author(auth)
+   text(msg),
+   author(auth)
 {
 }
 #endif
@@ -85,11 +83,7 @@ size_t note_t::GetSize(void) const
 
 CUnit* note_t::GetData(CDataStorage &datastore) const 
 {
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
    return datastore.MakeCNote(*this);	// NOTE: this pointer HAS to be deleted elsewhere.
-#else
-   return (CUnit*)(new CNote(datastore, *this));	// NOTE: this pointer HAS to be deleted elsewhere.
-#endif
 }
 
 /*

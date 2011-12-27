@@ -216,12 +216,7 @@ CUnit* worksheet::DumpData(CDataStorage &datastore, size_t offset, size_t writeL
 
 	 case SHEET_BOF:
 		XTRACE("\tBOF");
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 		m_pCurrentData = datastore.MakeCBof(BOF_TYPE_WORKSHEET);
-#else
-		//Delete_Pointer(m_pCurrentData);
-		m_pCurrentData = (CUnit*)(new CBof(datastore, BOF_TYPE_WORKSHEET));
-#endif
 		//Last_BOF_offset = offset + writeLen;
 		repeat = false;
 		CHANGE_DUMPSTATE(SHEET_INDEX);
@@ -242,11 +237,7 @@ CUnit* worksheet::DumpData(CDataStorage &datastore, size_t offset, size_t writeL
 			//GetFirstLastRowsAndColumns(&first_row, &last_row, NULL, NULL);
 
 			unsigned32_t colInfoSize = ColInfoDump(datastore);
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 			m_pCurrentData = datastore.MakeCIndex(rbsize.first_row, rbsize.last_row);
-#else
-			m_pCurrentData = (CUnit*)(new CIndex(datastore, rbsize.first_row, rbsize.last_row));
-#endif
 
 			size_t rb_size_acc = 0;
 			size_t index_size = RB_INDEX_MINSIZE + 4*numrb;
@@ -298,13 +289,7 @@ CUnit* worksheet::DumpData(CDataStorage &datastore, size_t offset, size_t writeL
 		if(!m_ColInfoUnits.empty())
 		{
 		   // First check if the list of fonts is not empty... (old comment????)
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 		   m_pCurrentData = *m_ColInfoUnit;
-#else
-		   //Delete_Pointer(m_pCurrentData);
-		   m_pCurrentData = (CUnit*)(new CColInfo(datastore, *m_Current_Colinfo));
-#endif
-
 		   if(m_ColInfoUnit != (--m_ColInfoUnits.end()))
 		   {
 			  // if it wasn't the last font from the list, increment to get the next one
@@ -343,12 +328,8 @@ CUnit* worksheet::DumpData(CDataStorage &datastore, size_t offset, size_t writeL
 		//printf("    DIM %ld\n", (unsigned long)writeLen + offset);
 
 		//Delete_Pointer(m_pCurrentData);
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 		m_pCurrentData = datastore.MakeCDimension(minRow, maxRow, minCol, maxCol);
 		//printf("DIMENSION %d %d %d %d\n", minRow, maxRow, minCol, maxCol);
-#else
-		m_pCurrentData = (CUnit*)(new CDimension(datastore, minRow, maxRow, minCol, maxCol));
-#endif
 		repeat = false;
 		CHANGE_DUMPSTATE(SHEET_ROWBLOCKS);
 		break;
@@ -381,12 +362,7 @@ CUnit* worksheet::DumpData(CDataStorage &datastore, size_t offset, size_t writeL
 
 	 case SHEET_WINDOW2:
 		XTRACE("\tWINDOW2");
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 		m_pCurrentData = datastore.MakeCWindow2(sheetIndex == m_GlobalRecords.GetWindow1().GetActiveSheet());
-#else
-		//Delete_Pointer(m_pCurrentData);
-		m_pCurrentData = (CUnit*)(new CWindow2(datastore, (sheetIndex == m_GlobalRecords.GetWindow1().GetActiveSheet())));
-#endif
 		repeat = false;
 		CHANGE_DUMPSTATE(SHEET_MERGED);
 		break;
@@ -395,12 +371,8 @@ CUnit* worksheet::DumpData(CDataStorage &datastore, size_t offset, size_t writeL
 		XTRACE("\tMERGED");
 		if(!m_MergedRanges.empty())
 		{
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 		   m_pCurrentData = datastore.MakeCMergedCells();
-#else
-		   m_pCurrentData = (CUnit*)(new CMergedCells(datastore));
-#endif
-			((CMergedCells*)m_pCurrentData)->SetNumRanges(m_MergedRanges.size());
+		   ((CMergedCells*)m_pCurrentData)->SetNumRanges(m_MergedRanges.size());
 		   for(Range_Vect_Itor_t mr = m_MergedRanges.begin(); mr != m_MergedRanges.end(); mr++)
 		   {
 			  ((CMergedCells*)m_pCurrentData)->AddRange(*mr);
@@ -442,22 +414,13 @@ CUnit* worksheet::DumpData(CDataStorage &datastore, size_t offset, size_t writeL
 	 
 	 case SHEET_EOF:
 		XTRACE("\tEOF");
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 		m_pCurrentData = datastore.MakeCEof();
-#else
-		//Delete_Pointer(m_pCurrentData);
-		m_pCurrentData = (CUnit*)(new CEof(datastore));
-#endif
 	    repeat = false;
 		CHANGE_DUMPSTATE(SHEET_FINISH);
 		break;
 
 	 case SHEET_FINISH:
 		XTRACE("\tFINISH");
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
-#else
-		//Delete_Pointer(m_pCurrentData);
-#endif
 		m_pCurrentData = NULL;
 		repeat = false;
 		CHANGE_DUMPSTATE(SHEET_INIT);
@@ -580,38 +543,23 @@ CUnit* worksheet::RowBlocksDump(CDataStorage &datastore, const size_t offset)
 		   XL_ASSERT((*m_Current_RowHeight)->GetRowNum() >= row_num);
 		   if((*m_Current_RowHeight)->GetRowNum() == row_num)
 		   {
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 			//printf("ROW OFFSET %ld\n", datastore.GetDataSize());
 
 			  rb_record = datastore.MakeCRow(row_num, first_col, 
 											 last_col, 
 											 (*m_Current_RowHeight)->GetRowHeight(),
 											 (*m_Current_RowHeight)->GetXF());
-#else
-			  rb_record = (CUnit*) (new CRow(datastore, 
-											 row_num, first_col, 
-											 last_col, 
-											 (*m_Current_RowHeight)->GetRowHeight()) );
-#endif
-			   m_Current_RowHeight++;          
+			  m_Current_RowHeight++;          
 		   } 
 		   else 
 		   {
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 			  rb_record = datastore.MakeCRow(row_num, first_col, last_col);
-#else
-			  rb_record = (CUnit*) (new CRow(datastore, row_num, first_col, last_col) );
-#endif
 		   }
 		} 
 		else 
 		{
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 			//printf("ROW OFFSET %ld\n", datastore.GetDataSize());
 		   rb_record = datastore.MakeCRow(row_num, first_col, last_col);
-#else
-		   rb_record = (CUnit*) (new CRow(datastore, row_num, first_col, last_col) );
-#endif
 		}
 
 		m_DBCellOffset += ROW_RECORD_SIZE;
@@ -679,13 +627,10 @@ CUnit* worksheet::RowBlocksDump(CDataStorage &datastore, const size_t offset)
 		XTRACE("\t\tDBCELL");
 	    {
 			repeat = false;
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 			//printf("DBCELL OFFSET %ld\n", datastore.GetDataSize());
 			CDBCell* rec = datastore.MakeCDBCell(m_DBCellOffset);
 			rb_record = rec;
 			//printf("  DBCELL[1st Entry]=%ld\n", m_DBCellOffset);
-#else
-#endif
 			CellOffsets_Vect_Itor_t celloffset;
 			for(celloffset = m_CellOffsets.begin(); celloffset != m_CellOffsets.end(); celloffset++) {
 			   rec->AddRowOffset(*celloffset);

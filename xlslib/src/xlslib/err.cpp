@@ -53,11 +53,7 @@ err_t::err_t(CGlobalRecords& gRecords, unsigned32_t rowval, unsigned32_t colval,
 }
 
 CUnit* err_t::GetData(CDataStorage &datastore) const {
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
    return datastore.MakeCErr(*this);	// NOTE: this pointer HAS to be deleted elsewhere.
-#else
-   return (CUnit*)(new CErr(datastore, *this));	// NOTE: this pointer HAS to be deleted elsewhere.
-#endif
 }
 
 /*

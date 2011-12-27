@@ -310,9 +310,7 @@ CFont class declaration
 
   class CFont: public CRecord
     {
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 	friend class CDataStorage;
-#endif
 
     protected:
 	  CFont(CDataStorage &datastore, 

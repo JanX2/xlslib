@@ -93,11 +93,7 @@ bool colors_t::setColor(unsigned8_t r, unsigned8_t g, unsigned8_t b, unsigned8_t
 }
 
 CUnit* colors_t::GetData(CDataStorage &datastore) const {
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 	return datastore.MakeCPalette(colors ? colors : default_palette);
-#else
-	return (CUnit*)(new CPalette(datastore, (colors ? colors : default_palette)));
-#endif
 }
 
 colors_t::~colors_t()

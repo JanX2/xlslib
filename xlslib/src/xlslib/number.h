@@ -101,9 +101,7 @@ __attribute__((unused))
 
   class CNumber: public CRecord
     {
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 	friend class CDataStorage;
-#endif
 
     protected:
       CNumber(CDataStorage &datastore, const number_t& numdef);

@@ -54,9 +54,7 @@ namespace xlslib_core
 
   class CContinue: public CRecord
     {
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 	friend class CDataStorage;
-#endif
 
     protected:
       CContinue(CUnit *unit, const unsigned8_t* data, size_t size);

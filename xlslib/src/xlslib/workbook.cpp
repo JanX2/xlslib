@@ -300,7 +300,6 @@ int workbook::Dump(const string& filename)
 	/*
 	Since it's VERY costly to redimension the cell unit store vector when 
 	we're using lightweight CUnitStore elements et al
- 	  (defined(LEIGHTWEIGHT_UNIT_FEATURE))
     we do our utmost best to estimate the total amount of storage units
 	required to 'dump' our spreadsheet. The estimate should be conservative,
 	but not too much. After all, we're attempting to reduce the memory 
@@ -335,12 +334,8 @@ int workbook::Dump(const string& filename)
 		  if(precorddata != NULL) 
 		  {
 			 biffdata += precorddata;
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
-			 //Delete_Pointer(precorddata);
-
- 			// and we can already discard any previous units at lower backpatch levels
-			biffdata.FlushLowerLevelUnits(precorddata);
-#endif
+ 			 // and we can already discard any previous units at lower backpatch levels
+			 biffdata.FlushLowerLevelUnits(precorddata);
 		  } 
 		  else 
 		  {
@@ -460,12 +455,8 @@ CUnit* workbook::DumpData(CDataStorage &datastore)
 			if(m_ContinueIndex == 0)
 			{
 			   //Create a new data unit containing the max data size
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 			   m_ContinuesRealRecordSize = datastore.Clip((CRecord*)m_pCurrentData);
-#else
-			   m_pContinueRecord = (CUnit*)(new CRecord(datastore));
-#endif
-				//m_pContinueRecord->SetValueAt(MAX_RECORD_SIZE-4,2);
+			   //m_pContinueRecord->SetValueAt(MAX_RECORD_SIZE-4,2);
 			   m_ContinueIndex++;
 
 			   return m_pCurrentData;
@@ -484,12 +475,8 @@ CUnit* workbook::DumpData(CDataStorage &datastore)
 				  m_ContinueIndex++;
 
 
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 				  m_pContinueRecord = datastore.MakeCContinue(m_pCurrentData, pdata, csize);
 				  if(m_PreviousDumpState == WB_SHEETS) writeLen += RECORD_HEADER_SIZE;
-#else
-				  m_pContinueRecord =(CUnit*) ( new CContinue(datastore, pdata, csize));
-#endif
 				  return m_pContinueRecord;
 			   } else {
 				  CUnit *unit = m_pCurrentData;
@@ -505,18 +492,10 @@ CUnit* workbook::DumpData(CDataStorage &datastore)
 				  
 				  if(csize)
 				  {
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 					 m_pContinueRecord = datastore.MakeCContinue(unit, pdata, csize);
 				     if(m_PreviousDumpState == WB_SHEETS) writeLen += RECORD_HEADER_SIZE;
-#else
-					 m_pContinueRecord = (CUnit*) new CContinue(datastore, pdata, csize);
-#endif
 					 return m_pContinueRecord;
 				  } else {
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
-#else
-					 Delete_Pointer(m_pCurrentData);
-#endif
 					 repeat = true;
 				  }
 			   }

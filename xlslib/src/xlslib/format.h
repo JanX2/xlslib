@@ -205,9 +205,7 @@ class format_t
 
   class CFormat: public CRecord
     {
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 	friend class CDataStorage;
-#endif
 
     protected:
       CFormat(CDataStorage &datastore, const format_t* formatdef);

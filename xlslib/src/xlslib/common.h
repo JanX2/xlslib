@@ -51,10 +51,6 @@
 #endif
 #endif /* HAVE_ICONV */
 
-/*
-#define when we want the leight weights factory code activated: it's a memory footprint reduction 
-*/
-#define LEIGHTWEIGHT_UNIT_FEATURE
 
 #define RANGE_FEATURE
 

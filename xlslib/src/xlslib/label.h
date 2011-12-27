@@ -87,9 +87,7 @@ namespace xlslib_core
 
   class CLabel: public CRecord
     {
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 	friend class CDataStorage;
-#endif
 
     protected:
 		CLabel(CDataStorage &datastore, const label_t& labeldef);

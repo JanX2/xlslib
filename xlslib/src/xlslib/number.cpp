@@ -96,11 +96,7 @@ number_t::number_t(CGlobalRecords& gRecords,
 
 CUnit* number_t::GetData(CDataStorage &datastore) const
 {
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 	return datastore.MakeCNumber(*this);
-#else
-	return (CUnit*)(new CNumber(datastore, *this));
-#endif
 }
 
 /*

@@ -100,7 +100,6 @@ CDataStorage::CDataStorage(size_t blobs) :
 CDataStorage::~CDataStorage()
 {
   // Delete all the data. (Only if it exists)
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
   // flush all lingering units BEFORE we discard the associated UnitStore entities or we'll get a nasty assertion failure.
   FlushEm(BACKPATCH_LEVEL_EVERYONE);
 
@@ -122,24 +121,7 @@ CDataStorage::~CDataStorage()
 #endif
 	store.resize(0);
   }
-
-#else
-  if(!data.empty())
-  {
-	DataList_Itor_t x0, x1;
-
-	x0 = data.begin();
-	x1 = data.end();
-	for(DataList_Itor_t di = x0; di != x1; ++di)
-	 {
-		delete (*di);
-	 }
-	 data.resize(0);
-  }
-#endif
 }
-
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 
 void CDataStorage::operator+=(CUnit* from)
 {
@@ -191,34 +173,6 @@ StoreList_Itor_t CDataStorage::end()
   return store.end();
 }
 
-#else
-
-void CDataStorage::operator+=(CUnit* from)
-{
-  data.push_back(from);
-  m_DataSize += from->GetDataSize();
-}
-
-size_t CDataStorage::GetDataSize() const
-{
-  return m_DataSize;
-}
-
-DataList_Itor_t CDataStorage::begin()
-{
-  return data.begin();
-}
-DataList_Itor_t CDataStorage::end()
-{
-  return data.end();
-}
-
-#endif 
-// defined(LEIGHTWEIGHT_UNIT_FEATURE)
-
-
-
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 
 signed32_t CDataStorage::RequestIndex(size_t minimum_size)
 {
@@ -746,9 +700,6 @@ signed8_t CUnitStore::InitWithValue(unsigned8_t value, size_t size)
 	}
 	return ret;
 }
-
-#endif 
-// defined(LEIGHTWEIGHT_UNIT_FEATURE)
 
 }
 

@@ -618,9 +618,7 @@ CExtFormat class declaration
 
   class CExtFormat: public CRecord
     {
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 	friend class CDataStorage;
-#endif
 
     private:
       void InitDummy(bool is_cell);

@@ -65,9 +65,7 @@ CIndex class declaration
 
   class CIndex: public CRecord
     {
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 	friend class CDataStorage;
-#endif
 
     protected:
       CIndex(CDataStorage &datastore, 

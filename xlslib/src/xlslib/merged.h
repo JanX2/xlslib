@@ -60,9 +60,7 @@ CMergedCells class declaration
 */
   class CMergedCells: public CRecord
     {
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 	friend class CDataStorage;
-#endif
 
     protected:
       CMergedCells(CDataStorage &datastore);
@@ -74,7 +72,6 @@ CMergedCells class declaration
       void SetNumRanges(size_t numranges);
     };
 }
-
 
 // #include "common/xls_poppack.h"
 

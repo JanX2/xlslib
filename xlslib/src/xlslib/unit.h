@@ -68,8 +68,6 @@ namespace xlslib_core
     // Attributes
   protected:
 
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
-
 #define INVALID_STORE_INDEX			((signed32_t)0x80000000) // marks a 'not yet set up' unit store
 	  
 	friend class CDataStorage;
@@ -84,17 +82,6 @@ namespace xlslib_core
 	
 	// needed for SST labels (maybe others in the future)
 	void SetAlreadyContinued(bool val) { m_AlreadyContinued = val; }
-#else
-
-	size_t	m_nSize;		// Size of data store (maybe larger than actual used data)
-	size_t	m_nDataSize;	// Actual use (next empty space)
-	unsigned8_t*	m_pData;		// Data storage
-	//  bool m_ShadowUnit;
-
-	// Static attributes
-	static const size_t DefaultInflateSize;
-
-#endif
 
     // Operations
   protected: // deny these operations to others...

@@ -178,9 +178,7 @@ CPalette class declaration
 */
   class CPalette: public CRecord
     {
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 	friend class CDataStorage;
-#endif
 
     protected:
       CPalette(CDataStorage &datastore, const color_entry_t *colors);

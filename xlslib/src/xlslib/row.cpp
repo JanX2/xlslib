@@ -122,10 +122,7 @@ CDBCell class implementation
 CDBCell::CDBCell(CDataStorage &datastore, size_t startblock):
 		CRecord(datastore)
 {
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
    m_Backpatching_Level = 1;
-#else
-#endif
 
    // The new initializated DBCell record points to nowhere and has no 
    // extra rows (the array of stream offsets is empty);

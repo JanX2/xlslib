@@ -88,9 +88,7 @@ CBof class declaration
 
   class CBof: public CRecord
     {
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 	friend class CDataStorage;
-#endif
 
     protected:
       CBof(CDataStorage &datastore, unsigned16_t boftype);
@@ -105,9 +103,7 @@ CEof class declaration
 */
   class CEof: public CRecord
     {
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 	friend class CDataStorage;
-#endif
 
     protected:
       CEof(CDataStorage &datastore);
@@ -122,9 +118,7 @@ CCodePage class declaration
 */
   class CCodePage: public CRecord
     {
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 	friend class CDataStorage;
-#endif
 
     protected:
       CCodePage(CDataStorage &datastore, unsigned16_t boftype);
@@ -167,9 +161,7 @@ CWindow1 class declaration
 
   class CWindow1 : public CRecord
     {
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 	friend class CDataStorage;
-#endif
 
     protected:
 		CWindow1(CDataStorage &datastore, const window1& wind1);
@@ -183,9 +175,7 @@ CDateMode class declaration
 */
   class CDateMode: public CRecord
     {
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 	friend class CDataStorage;
-#endif
 
     protected:
       CDateMode(CDataStorage &datastore);
@@ -244,9 +234,7 @@ CWindow2 class declaration
   */
   class CWindow2: public CRecord
     {
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 	friend class CDataStorage;
-#endif
 
     protected:
       // TODO: Create a constructor that gets user-defined arguments that specify the appearence
@@ -269,9 +257,7 @@ CDimension class declaration
 */
   class CDimension: public CRecord
     {
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 	friend class CDataStorage;
-#endif
 
     protected:
       CDimension(CDataStorage &datastore, 
@@ -301,9 +287,7 @@ CStyle class declaration
 
   class CStyle: public CRecord
     {
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 	friend class CDataStorage;
-#endif
 
     protected:
 		CStyle(CDataStorage &datastore, const style_t* styledef);
@@ -394,9 +378,7 @@ CBSheet class declaration
 
   class CBSheet: public CRecord
     {
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 	friend class CDataStorage;
-#endif
 
     protected:
       CBSheet(CDataStorage &datastore, const boundsheet_t* bsheetdef);

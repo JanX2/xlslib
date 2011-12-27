@@ -75,9 +75,7 @@ namespace xlslib_core
 
   class CColInfo: public CRecord
     {
-#if defined(LEIGHTWEIGHT_UNIT_FEATURE)
 	friend class CDataStorage;
-#endif
 
     protected:
       CColInfo(CDataStorage &datastore, const colinfo_t* newci);
