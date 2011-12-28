@@ -4,18 +4,18 @@
  * for dynamic generation of Excel(TM) files.
  *
  * Copyright 2004 Yeico S. A. de C. V. All Rights Reserved.
- * Copyright 2008 David Hoerl All Rights Reserved.
+ * Copyright 2008-2011 David Hoerl All Rights Reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
  * permitted provided that the following conditions are met:
- * 
+ *
  *    1. Redistributions of source code must retain the above copyright notice, this list of
  *       conditions and the following disclaimer.
- * 
+ *
  *    2. Redistributions in binary form must reproduce the above copyright notice, this list
  *       of conditions and the following disclaimer in the documentation and/or other materials
  *       provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY David Hoerl ''AS IS'' AND ANY EXPRESS OR IMPLIED
  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
  * FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL David Hoerl OR
@@ -26,14 +26,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- *
- * File description:
- *
- *
- *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
 
 #ifndef INDEX_H
 #define INDEX_H
@@ -41,20 +34,18 @@
 #include "common/xlsys.h"
 #include "common/systype.h"
 
-#include "xlslib/common.h"
-#include "xlslib/record.h"
+#include "xlslib/record.h"	// superclass
 
 
 // #include "common/xls_pshpack2.h"
 
 namespace xlslib_core
 {
-
-  /* 
-******************************
-CIndex class declaration
-******************************
-*/
+	/*
+	 ******************************
+	 * CIndex class declaration
+	 ******************************
+	 */
 #define INDEX_DFLT_RESERVED 0x00000000
 
 #define INDEX_OFFSET_B8FIRSTROW 8
@@ -63,28 +54,28 @@ CIndex class declaration
 	// forward ref
 	class CDataStorage;
 
-  class CIndex: public CRecord
-    {
-	friend class CDataStorage;
+	class CIndex : public CRecord
+	{
+		friend class CDataStorage;
 
-    protected:
-      CIndex(CDataStorage &datastore, 
-			 unsigned32_t firstrow, 
-             unsigned32_t lastrow);
+	protected:
+		CIndex(CDataStorage &datastore,
+			   unsigned32_t firstrow,
+			   unsigned32_t lastrow);
 	private:
-      virtual ~CIndex();
+		virtual ~CIndex();
 
 	public:
-      signed8_t AddDBCellOffset(size_t dbcoffset);
-      void SetRows(unsigned32_t firstrow, unsigned32_t lastrow);
-      unsigned32_t GetFirstRow(void);
-      unsigned32_t GetLastRow(void);
-    };
+		signed8_t AddDBCellOffset(size_t dbcoffset);
+		void SetRows(unsigned32_t firstrow, unsigned32_t lastrow);
+		unsigned32_t GetFirstRow(void);
+		unsigned32_t GetLastRow(void);
+	};
 }
 
 // #include "common/xls_poppack.h"
 
-#endif 
+#endif
 //INDEX_H
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -99,4 +90,3 @@ CIndex class declaration
  * Initial Import.
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-

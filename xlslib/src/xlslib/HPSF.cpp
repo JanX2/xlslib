@@ -7,14 +7,14 @@
  *
  * Redistribution and use in source and binary forms, with or without modification, are
  * permitted provided that the following conditions are met:
- * 
+ *
  *    1. Redistributions of source code must retain the above copyright notice, this list of
  *       conditions and the following disclaimer.
- * 
+ *
  *    2. Redistributions in binary form must reproduce the above copyright notice, this list
  *       of conditions and the following disclaimer in the documentation and/or other materials
  *       provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY David Hoerl ''AS IS'' AND ANY EXPRESS OR IMPLIED
  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
  * FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL David Hoerl OR
@@ -25,18 +25,13 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- *
- * File description:
- *
- *
- *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-#include "common/xlsys.h"
+#include "xlslib/record.h"
+#include "xlslib/HPSF.h"
 #include "xlslib/datast.h"
+#include "xlslib/unit.h"
 
-#include "HPSF.h"
 
 using namespace xlslib_core;
 
@@ -53,11 +48,11 @@ const unsigned32_t xlslib_core::docSummaryFormat[] = {
 	0xaef92c2b
 };
 const unsigned32_t xlslib_core::hpsfValues[] = {
-	30,		// HPSF_STRING,
-	11,		// HPSF_BOOL,
-	2,		// HPSF_INT16,
-	3,		// HPSF_INT32,
-	64,		// HPSF_INT64
+	30,     // HPSF_STRING,
+	11,     // HPSF_BOOL,
+	2,      // HPSF_INT16,
+	3,      // HPSF_INT32,
+	64,     // HPSF_INT64
 };
 
 HPSFitem::HPSFitem(unsigned16_t v, const std::string& str) :
@@ -68,6 +63,7 @@ HPSFitem::HPSFitem(unsigned16_t v, const std::string& str) :
 {
 	value.str = new std::string(str);
 }
+
 HPSFitem::HPSFitem(unsigned16_t v, bool val) :
 	propID(v),
 	variant(HPSF_BOOL),
@@ -76,6 +72,7 @@ HPSFitem::HPSFitem(unsigned16_t v, bool val) :
 {
 	value.isOn = val;
 }
+
 HPSFitem::HPSFitem(unsigned16_t v, unsigned16_t val) :
 	propID(v),
 	variant(HPSF_INT16),
@@ -84,6 +81,7 @@ HPSFitem::HPSFitem(unsigned16_t v, unsigned16_t val) :
 {
 	value.val16 = val;
 }
+
 HPSFitem::HPSFitem(unsigned16_t v, unsigned32_t val) :
 	propID(v),
 	variant(HPSF_INT32),
@@ -92,6 +90,7 @@ HPSFitem::HPSFitem(unsigned16_t v, unsigned32_t val) :
 {
 	value.val32 = val;
 }
+
 HPSFitem::HPSFitem(unsigned16_t v, unsigned64_t val) :
 	propID(v),
 	variant(HPSF_INT64),
@@ -103,16 +102,16 @@ HPSFitem::HPSFitem(unsigned16_t v, unsigned64_t val) :
 
 HPSFitem::~HPSFitem()
 {
-	if(variant == HPSF_STRING)
+	if(variant == HPSF_STRING) {
 		delete value.str;
+	}
 }
 
 size_t HPSFitem::GetSize()
 {
 	size_t size;
-	
-	switch(variant) 
-	{
+
+	switch(variant)	{
 	case HPSF_STRING:
 		size = value.str->length() + 1 + 4;         // 1 for null terminator, 4 for length field
 		// round up to the next 4-byte boundary:
@@ -136,8 +135,8 @@ size_t HPSFitem::GetSize()
 		size = 0; // 0 padding
 		break;
 	}
-	
-	return size + 4;	// variant at the start
+
+	return size + 4;    // variant at the start
 }
 
 hpsf_doc_t::hpsf_doc_t(docType_t dt) :
@@ -148,26 +147,25 @@ hpsf_doc_t::hpsf_doc_t(docType_t dt) :
 
 hpsf_doc_t::~hpsf_doc_t()
 {
-	HPSF_Set_Itor_t		hBegin, hEnd, hIter;
-	
+	HPSF_Set_Itor_t	hBegin, hEnd, hIter;
+
 	hBegin		= itemList.begin();
 	hEnd		= itemList.end();
-	for(hIter=hBegin; hIter != hEnd; ++hIter)
+	for(hIter=hBegin; hIter != hEnd; ++hIter) {
 		delete *hIter;
+	}
 }
 
 void hpsf_doc_t::insert(HPSFitem *item)
 {
 	HPSFitem*		existingItem;
-	bool			success;
+	bool success;
 
-	do 
-	{
+	do {
 		std::pair<HPSF_Set_Itor_t, bool> ret = itemList.insert(item);
 		success = ret.second;
-		
-		if(!success) 
-		{
+
+		if(!success) {
 			existingItem = *(ret.first);
 			delete existingItem;
 			itemList.erase(existingItem);
@@ -177,83 +175,79 @@ void hpsf_doc_t::insert(HPSFitem *item)
 
 unsigned64_t hpsf_doc_t::unix2mstime(time_t unixTime)
 {
-	unsigned64_t	msTime;
+	unsigned64_t msTime;
 
-	msTime	 = (unsigned64_t)unixTime * (unsigned64_t)1000000 + FILETIME2UNIX_NS;
+	msTime   = (unsigned64_t)unixTime * (unsigned64_t)1000000 + FILETIME2UNIX_NS;
 	msTime	*= (unsigned64_t)10;
-	
+
 	return msTime;
 }
 
-
 size_t hpsf_doc_t::GetSize(void) const
 {
-	return SUMMARY_SIZE;	// this file will only be this size, ever (zero padded)
+	return SUMMARY_SIZE;    // this file will only be this size, ever (zero padded)
 }
 
-CUnit* hpsf_doc_t::GetData(CDataStorage &datastore) const 
+CUnit* hpsf_doc_t::GetData(CDataStorage &datastore) const
 {
-   return datastore.MakeCHPSFdoc(*this);	// NOTE: this pointer HAS to be deleted elsewhere.
+	return datastore.MakeCHPSFdoc(*this);   // NOTE: this pointer HAS to be deleted elsewhere.
 }
-
 
 //
 // http://poi.apache.org/hpsf/internals.html
 // or google "DocumentSummaryInformation and UserDefined Property Sets" and look for MSDN hits
 //
-CHPSFdoc::CHPSFdoc(CDataStorage &datastore, const hpsf_doc_t& docdef):
-		CUnit(datastore)
+CHPSFdoc::CHPSFdoc(CDataStorage &datastore, const hpsf_doc_t& docdef) :
+	CUnit(datastore)
 {
 	HPSF_Set_ConstItor_t hBegin, hEnd, hIter;
 	const unsigned32_t *fmt;
 	size_t sectionListOffset;
 	size_t numProperties;
 	size_t itemOffset;
-	
-	numProperties = docdef.itemList.size();	
+
+	numProperties = docdef.itemList.size();
 	fmt = (docdef.docType == HPSF_SUMMARY ? summaryFormat : docSummaryFormat);
 
-	int ret = Inflate(SUMMARY_SIZE);	// this file will only be this size, ever (zero padded)
-	if (ret == NO_ERRORS)
-	{
+	int ret = Inflate(SUMMARY_SIZE);    // this file will only be this size, ever (zero padded)
+	if (ret == NO_ERRORS) {
 		// Header
-		AddValue16(0xfffe);	// signature
+		AddValue16(0xfffe); // signature
 		AddValue16(0);
 #ifdef __OSX__
-		AddValue32(1);		// Macintosh
+		AddValue32(1);      // Macintosh
 #else
-		AddValue32(2);		// WIN32
+		AddValue32(2);      // WIN32
 #endif
-		AddValue32(0); AddValue32(0); AddValue32(0); AddValue32(0);		// CLASS
-		AddValue32(1);		// One section
+		AddValue32(0); AddValue32(0); AddValue32(0); AddValue32(0);     // CLASS
+		AddValue32(1);      // One section
 
 		// The section (this is a list but in this case just 1 section so can shorten logic)
-		AddValue32(fmt[0]);	// Class ID
+		AddValue32(fmt[0]); // Class ID
 		AddValue32(fmt[1]);
 		AddValue32(fmt[2]);
 		AddValue32(fmt[3]);
 
 		// offset to the data (would vary if multiple sections, but since one only its easy
-		sectionListOffset = GetDataSize() + 4;		// offset from the start of this stream to first byte after this offset     [i_a]
-		AddValue32((unsigned32_t)sectionListOffset);				// where this section starts (right after this tag!)
-		
+		sectionListOffset = GetDataSize() + 4;      // offset from the start of this stream to first byte after this offset     [i_a]
+		AddValue32((unsigned32_t)sectionListOffset);                // where this section starts (right after this tag!)
+
 		// Start of Section 1: sectionListOffset starts here
-		AddValue32(0);								// length of the section - updated later
-		AddValue32((unsigned32_t)numProperties);					// 
+		AddValue32(0);                              // length of the section - updated later
+		AddValue32((unsigned32_t)numProperties);                    //
 
 		// now write the propertyLists - the values, and where to find the payloads
-		itemOffset	= 8 + numProperties * 8;	// where I am now, then allow for propertyLists
+		itemOffset	= 8 + numProperties * 8;    // where I am now, then allow for propertyLists
 		hBegin		= docdef.itemList.begin();
 		hEnd		= docdef.itemList.end();
-		for(hIter=hBegin; hIter != hEnd; ++hIter) 
-		{
+		for(hIter=hBegin; hIter != hEnd; ++hIter) {
 			HPSFitem	*item = *hIter;
-			
+
 			item->SetOffset(itemOffset);
 
-			AddValue32(item->GetPropID());			// Variant (ie type)
-			AddValue32((unsigned32_t)itemOffset);	// where the actual data will be found
-			
+			AddValue32(item->GetPropID());          // Variant (ie type)
+			AddValue32((unsigned32_t)itemOffset);   // where the actual data will be found
+
 			itemOffset += item->GetSize();
 		}
 		SetValueAt32((unsigned32_t)itemOffset, (unsigned32_t)sectionListOffset);
@@ -262,26 +256,24 @@ CHPSFdoc::CHPSFdoc(CDataStorage &datastore, const hpsf_doc_t& docdef):
 		// Now we can write out the actual data
 		hBegin		= docdef.itemList.begin();
 		hEnd		= docdef.itemList.end();
-		for(hIter=hBegin; hIter != hEnd; ++hIter) 
-		{
+		for(hIter=hBegin; hIter != hEnd; ++hIter) {
 			HPSFitem		*item = *hIter;
-			size_t	len;
+			size_t len;
 			size_t padding;
 			unsigned16_t variant;
-			hValue			value;
-			
+			hValue value;
+
 			value	= item->GetValue();
 			variant	= item->GetVariant();
-			//printf("PROPERTY[%d]: ActualOffset=%d savedOffset=%d variant=%d realVariant=%d val64=%llx\n", item->GetPropID(), 
+			//printf("PROPERTY[%d]: ActualOffset=%d savedOffset=%d variant=%d realVariant=%d val64=%llx\n", item->GetPropID(),
 			//  m_nDataSize - sectionListOffset, item->GetOffset(), variant,  hpsfValues[variant], value.val64);
 			AddValue32(hpsfValues[variant]);
-			
-			switch(variant) 
-			{
+
+			switch(variant)	{
 			case HPSF_STRING:
-				len = value.str->length() + 1;	// length of string plus null terminator
+				len = value.str->length() + 1;  // length of string plus null terminator
 				// padding = (len % 4) + 1;		// string terminator is the "1"
-				// round up to the next 4-byte boundary to determine the padding; 
+				// round up to the next 4-byte boundary to determine the padding;
 				// take the mandatory NUL sentinel into account as well:
 				padding = 1 + ((4 - len) & 3);
 				XL_ASSERT(padding + len - 1 >= 4);
@@ -291,7 +283,7 @@ CHPSFdoc::CHPSFdoc(CDataStorage &datastore, const hpsf_doc_t& docdef):
 				break;
 			case HPSF_BOOL:
 				padding = 2;
-				AddValue16(value.isOn ? 0xFFFF : 0x0000);	// per MSDN google of VT_BOOL
+				AddValue16(value.isOn ? 0xFFFF : 0x0000);   // per MSDN google of VT_BOOL
 				break;
 			case HPSF_INT16:
 				padding = 2;
@@ -309,7 +301,7 @@ CHPSFdoc::CHPSFdoc(CDataStorage &datastore, const hpsf_doc_t& docdef):
 				padding = 0;
 				break;
 			}
-			AddFixedDataArray(0, padding);	
+			AddFixedDataArray(0, padding);
 		}
 
 		//printf("Actual size = %d\n", m_nDataSize - sectionListOffset);
@@ -319,8 +311,6 @@ CHPSFdoc::CHPSFdoc(CDataStorage &datastore, const hpsf_doc_t& docdef):
 		XL_ASSERT(GetDataSize() <= GetSize());
 	}
 }
-
-
 
 CHPSFdoc::~CHPSFdoc()
 {

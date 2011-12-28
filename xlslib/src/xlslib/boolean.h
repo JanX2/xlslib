@@ -7,14 +7,14 @@
  *
  * Redistribution and use in source and binary forms, with or without modification, are
  * permitted provided that the following conditions are met:
- * 
+ *
  *    1. Redistributions of source code must retain the above copyright notice, this list of
  *       conditions and the following disclaimer.
- * 
+ *
  *    2. Redistributions in binary form must reproduce the above copyright notice, this list
  *       of conditions and the following disclaimer in the documentation and/or other materials
  *       provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY David Hoerl ''AS IS'' AND ANY EXPRESS OR IMPLIED
  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
  * FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL David Hoerl OR
@@ -25,68 +25,60 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- *
- * File description:
- *
- *
- *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
 #ifndef BOOLEAN_XL_H
 #define BOOLEAN_XL_H
 
 #include "common/xlsys.h"
 #include "common/systype.h"
 
-#include "xlslib/common.h"
-#include "xlslib/cell.h"
-#include "xlslib/record.h"
-#include "xlslib/unit.h"
-
+#include "xlslib/cell.h"	// superclass
 
 // #include "common/xls_pshpack2.h"
 
 namespace xlslib_core
 {
+	class boolean_t : public cell_t
+	{
+		friend class worksheet;
 
-  class boolean_t: public cell_t
-    {
-	  friend class worksheet;
+	private:
+		boolean_t(CGlobalRecords& gRecords, unsigned32_t rowval, unsigned32_t colval, bool value, xf_t* pxfval = NULL);
+		virtual ~boolean_t() {}
 
-    private:
-      boolean_t(CGlobalRecords& gRecords, unsigned32_t rowval, unsigned32_t colval, bool value, xf_t* pxfval = NULL);
-	  virtual ~boolean_t(){};
-	  
-    public:
-      virtual size_t GetSize(void) const {return 12;};
-      virtual CUnit* GetData(CDataStorage &datastore) const;
+	public:
+		virtual size_t GetSize(void) const
+		{
+			return 12;
+		}
+
+		virtual CUnit* GetData(CDataStorage &datastore) const;
 
 	private:
 		bool num;
 
 	public:
-		bool GetBoolean(void) const {return !!num;};
-    };
+		bool GetBoolean(void) const {return !!num; }
+	};
 
 
-  // forward ref
+	// forward ref
 	class CDataStorage;
 
-  class CBoolean: public CRecord
-    {
-	friend class CDataStorage;
+	class CBoolean : public CRecord
+	{
+		friend class CDataStorage;
 
-    protected:
-      CBoolean(CDataStorage &datastore, const boolean_t& booldef);
+	protected:
+		CBoolean(CDataStorage &datastore, const boolean_t& booldef);
 
 	private:
-      virtual ~CBoolean();
-    };
-
+		virtual ~CBoolean();
+	};
 }
 
 
 // #include "common/xls_poppack.h"
 
 #endif
-

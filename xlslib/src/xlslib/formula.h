@@ -3,18 +3,18 @@
  * This file is part of xlslib -- A multiplatform, C/C++ library
  * for dynamic generation of Excel(TM) files.
  *
- * Copyright 2010 Ger Hobbelt All Rights Reserved.
+ * Copyright 2010-2011 Ger Hobbelt All Rights Reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
  * permitted provided that the following conditions are met:
- * 
+ *
  *    1. Redistributions of source code must retain the above copyright notice, this list of
  *       conditions and the following disclaimer.
- * 
+ *
  *    2. Redistributions in binary form must reproduce the above copyright notice, this list
  *       of conditions and the following disclaimer in the documentation and/or other materials
  *       provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY David Hoerl ''AS IS'' AND ANY EXPRESS OR IMPLIED
  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
  * FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL David Hoerl OR
@@ -25,26 +25,15 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- *
- * File description:
- *
- *
- *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 #ifndef FORMULA_H
 #define FORMULA_H
 
-
 #include "common/xlsys.h"
 #include "common/systype.h"
 
-#include "xlslib/common.h"
-#include "xlslib/cell.h"
-#include "xlslib/err.h"
-#include "xlslib/record.h"
-#include "xlslib/unit.h"
+#include "xlslib/err.h"			// need enum values
 
 
 // #include "common/xls_pshpack2.h"
@@ -52,6 +41,7 @@
 namespace xlslib_core
 {
 	class worksheet;
+	class cell_t;
 
 	enum expr_operator_code_t
 	{
@@ -152,19 +142,19 @@ namespace xlslib_core
 		OP_AREAERR3DA = 0x7D,                          // ptgAreaErr3dA   7Dh   operand, array class (NEW ptg)
 	};
 
-#if !defined(xlUDF) 
+#if !defined(xlUDF)
 // XLCALL.H not loaded
 
 	/*
-	* User defined function
-	*
-	* First argument should be a function reference.
-	*/
+	 * User defined function
+	 *
+	 * First argument should be a function reference.
+	 */
 #define xlUDF      255
 
 	/*
-	* Built-in Excel functions and command equivalents
-	*/
+	 * Built-in Excel functions and command equivalents
+	 */
 #define xlfCount 0
 #define xlfIsna 2
 #define xlfIserror 3
@@ -697,562 +687,562 @@ namespace xlslib_core
 #define xlfCeiling_precise 546
 #define xlfFloor_precise 547
 
-#endif 
+#endif
 // XLCALL.H not loaded
 
 	enum expr_function_code_t
 	{
-		/* 
-		* User defined function
-		*
-		* First argument should be a function reference.
-		*/
+		/*
+		 * User defined function
+		 *
+		 * First argument should be a function reference.
+		 */
 		FUNC_UDF = xlUDF,
 
 		/*
-		* Built-in Excel functions and command equivalents
-		*/
-		FUNC_COUNT = xlfCount ,
-		FUNC_ISNA = xlfIsna ,
-		FUNC_ISERROR = xlfIserror ,
-		FUNC_SUM = xlfSum ,
-		FUNC_AVERAGE = xlfAverage ,
-		FUNC_MIN = xlfMin ,
-		FUNC_MAX = xlfMax ,
-		FUNC_ROW = xlfRow ,
-		FUNC_COLUMN = xlfColumn ,
-		FUNC_NA = xlfNa ,
-		FUNC_NPV = xlfNpv ,
-		FUNC_STDEV = xlfStdev ,
-		FUNC_DOLLAR = xlfDollar ,
-		FUNC_FIXED = xlfFixed ,
-		FUNC_SIN = xlfSin ,
-		FUNC_COS = xlfCos ,
-		FUNC_TAN = xlfTan ,
-		FUNC_ATAN = xlfAtan ,
-		FUNC_PI = xlfPi ,
-		FUNC_SQRT = xlfSqrt ,
-		FUNC_EXP = xlfExp ,
-		FUNC_LN = xlfLn ,
-		FUNC_LOG10 = xlfLog10 ,
-		FUNC_ABS = xlfAbs ,
-		FUNC_INT = xlfInt ,
-		FUNC_SIGN = xlfSign ,
-		FUNC_ROUND = xlfRound ,
-		FUNC_LOOKUP = xlfLookup ,
-		FUNC_INDEX = xlfIndex ,
-		FUNC_REPT = xlfRept ,
-		FUNC_MID = xlfMid ,
-		FUNC_LEN = xlfLen ,
-		FUNC_VALUE = xlfValue ,
-		FUNC_TRUE = xlfTrue ,
-		FUNC_FALSE = xlfFalse ,
-		FUNC_AND = xlfAnd ,
-		FUNC_OR = xlfOr ,
-		FUNC_NOT = xlfNot ,
-		FUNC_MOD = xlfMod ,
-		FUNC_DCOUNT = xlfDcount ,
-		FUNC_DSUM = xlfDsum ,
-		FUNC_DAVERAGE = xlfDaverage ,
-		FUNC_DMIN = xlfDmin ,
-		FUNC_DMAX = xlfDmax ,
-		FUNC_DSTDEV = xlfDstdev ,
-		FUNC_VAR = xlfVar ,
-		FUNC_DVAR = xlfDvar ,
-		FUNC_TEXT = xlfText ,
-		FUNC_LINEST = xlfLinest ,
-		FUNC_TREND = xlfTrend ,
-		FUNC_LOGEST = xlfLogest ,
-		FUNC_GROWTH = xlfGrowth ,
-		FUNC_GOTO = xlfGoto ,
-		FUNC_HALT = xlfHalt ,
-		FUNC_PV = xlfPv ,
-		FUNC_FV = xlfFv ,
-		FUNC_NPER = xlfNper ,
-		FUNC_PMT = xlfPmt ,
-		FUNC_RATE = xlfRate ,
-		FUNC_MIRR = xlfMirr ,
-		FUNC_IRR = xlfIrr ,
-		FUNC_RAND = xlfRand ,
-		FUNC_MATCH = xlfMatch ,
-		FUNC_DATE = xlfDate ,
-		FUNC_TIME = xlfTime ,
-		FUNC_DAY = xlfDay ,
-		FUNC_MONTH = xlfMonth ,
-		FUNC_YEAR = xlfYear ,
-		FUNC_WEEKDAY = xlfWeekday ,
-		FUNC_HOUR = xlfHour ,
-		FUNC_MINUTE = xlfMinute ,
-		FUNC_SECOND = xlfSecond ,
-		FUNC_NOW = xlfNow ,
-		FUNC_AREAS = xlfAreas ,
-		FUNC_ROWS = xlfRows ,
-		FUNC_COLUMNS = xlfColumns ,
-		FUNC_OFFSET = xlfOffset ,
-		FUNC_ABSREF = xlfAbsref ,
-		FUNC_RELREF = xlfRelref ,
-		FUNC_ARGUMENT = xlfArgument ,
-		FUNC_SEARCH = xlfSearch ,
-		FUNC_TRANSPOSE = xlfTranspose ,
-		FUNC_ERROR = xlfError ,
-		FUNC_STEP = xlfStep ,
-		FUNC_TYPE = xlfType ,
-		FUNC_ECHO = xlfEcho ,
-		FUNC_SETNAME = xlfSetName ,
-		FUNC_CALLER = xlfCaller ,
-		FUNC_DEREF = xlfDeref ,
-		FUNC_WINDOWS = xlfWindows ,
-		FUNC_SERIES = xlfSeries ,
-		FUNC_DOCUMENTS = xlfDocuments ,
-		FUNC_ACTIVECELL = xlfActiveCell ,
-		FUNC_SELECTION = xlfSelection ,
-		FUNC_RESULT = xlfResult ,
-		FUNC_ATAN2 = xlfAtan2 ,
-		FUNC_ASIN = xlfAsin ,
-		FUNC_ACOS = xlfAcos ,
-		FUNC_CHOOSE = xlfChoose ,
-		FUNC_HLOOKUP = xlfHlookup ,
-		FUNC_VLOOKUP = xlfVlookup ,
-		FUNC_LINKS = xlfLinks ,
-		FUNC_INPUT = xlfInput ,
-		FUNC_ISREF = xlfIsref ,
-		FUNC_GETFORMULA = xlfGetFormula ,
-		FUNC_GETNAME = xlfGetName ,
-		FUNC_SETVALUE = xlfSetValue ,
-		FUNC_LOG = xlfLog ,
-		FUNC_EXEC = xlfExec ,
-		FUNC_CHAR = xlfChar ,
-		FUNC_LOWER = xlfLower ,
-		FUNC_UPPER = xlfUpper ,
-		FUNC_PROPER = xlfProper ,
-		FUNC_LEFT = xlfLeft ,
-		FUNC_RIGHT = xlfRight ,
-		FUNC_EXACT = xlfExact ,
-		FUNC_TRIM = xlfTrim ,
-		FUNC_REPLACE = xlfReplace ,
-		FUNC_SUBSTITUTE = xlfSubstitute ,
-		FUNC_CODE = xlfCode ,
-		FUNC_NAMES = xlfNames ,
-		FUNC_DIRECTORY = xlfDirectory ,
-		FUNC_FIND = xlfFind ,
-		FUNC_CELL = xlfCell ,
-		FUNC_ISERR = xlfIserr ,
-		FUNC_ISTEXT = xlfIstext ,
-		FUNC_ISNUMBER = xlfIsnumber ,
-		FUNC_ISBLANK = xlfIsblank ,
-		FUNC_T = xlfT ,
-		FUNC_N = xlfN ,
-		FUNC_FOPEN = xlfFopen ,
-		FUNC_FCLOSE = xlfFclose ,
-		FUNC_FSIZE = xlfFsize ,
-		FUNC_FREADLN = xlfFreadln ,
-		FUNC_FREAD = xlfFread ,
-		FUNC_FWRITELN = xlfFwriteln ,
-		FUNC_FWRITE = xlfFwrite ,
-		FUNC_FPOS = xlfFpos ,
-		FUNC_DATEVALUE = xlfDatevalue ,
-		FUNC_TIMEVALUE = xlfTimevalue ,
-		FUNC_SLN = xlfSln ,
-		FUNC_SYD = xlfSyd ,
-		FUNC_DDB = xlfDdb ,
-		FUNC_GETDEF = xlfGetDef ,
-		FUNC_REFTEXT = xlfReftext ,
-		FUNC_TEXTREF = xlfTextref ,
-		FUNC_INDIRECT = xlfIndirect ,
-		FUNC_REGISTER = xlfRegister ,
-		FUNC_CALL = xlfCall ,
-		FUNC_ADDBAR = xlfAddBar ,
-		FUNC_ADDMENU = xlfAddMenu ,
-		FUNC_ADDCOMMAND = xlfAddCommand ,
-		FUNC_ENABLECOMMAND = xlfEnableCommand ,
-		FUNC_CHECKCOMMAND = xlfCheckCommand ,
-		FUNC_RENAMECOMMAND = xlfRenameCommand ,
-		FUNC_SHOWBAR = xlfShowBar ,
-		FUNC_DELETEMENU = xlfDeleteMenu ,
-		FUNC_DELETECOMMAND = xlfDeleteCommand ,
-		FUNC_GETCHARTITEM = xlfGetChartItem ,
-		FUNC_DIALOGBOX = xlfDialogBox ,
-		FUNC_CLEAN = xlfClean ,
-		FUNC_MDETERM = xlfMdeterm ,
-		FUNC_MINVERSE = xlfMinverse ,
-		FUNC_MMULT = xlfMmult ,
-		FUNC_FILES = xlfFiles ,
-		FUNC_IPMT = xlfIpmt ,
-		FUNC_PPMT = xlfPpmt ,
-		FUNC_COUNTA = xlfCounta ,
-		FUNC_CANCELKEY = xlfCancelKey ,
-		FUNC_INITIATE = xlfInitiate ,
-		FUNC_REQUEST = xlfRequest ,
-		FUNC_POKE = xlfPoke ,
-		FUNC_EXECUTE = xlfExecute ,
-		FUNC_TERMINATE = xlfTerminate ,
-		FUNC_RESTART = xlfRestart ,
-		FUNC_HELP = xlfHelp ,
-		FUNC_GETBAR = xlfGetBar ,
-		FUNC_PRODUCT = xlfProduct ,
-		FUNC_FACT = xlfFact ,
-		FUNC_GETCELL = xlfGetCell ,
-		FUNC_GETWORKSPACE = xlfGetWorkspace ,
-		FUNC_GETWINDOW = xlfGetWindow ,
-		FUNC_GETDOCUMENT = xlfGetDocument ,
-		FUNC_DPRODUCT = xlfDproduct ,
-		FUNC_ISNONTEXT = xlfIsnontext ,
-		FUNC_GETNOTE = xlfGetNote ,
-		FUNC_NOTE = xlfNote ,
-		FUNC_STDEVP = xlfStdevp ,
-		FUNC_VARP = xlfVarp ,
-		FUNC_DSTDEVP = xlfDstdevp ,
-		FUNC_DVARP = xlfDvarp ,
-		FUNC_TRUNC = xlfTrunc ,
-		FUNC_ISLOGICAL = xlfIslogical ,
-		FUNC_DCOUNTA = xlfDcounta ,
-		FUNC_DELETEBAR = xlfDeleteBar ,
-		FUNC_UNREGISTER = xlfUnregister ,
-		FUNC_USDOLLAR = xlfUsdollar ,
-		FUNC_FINDB = xlfFindb ,
-		FUNC_SEARCHB = xlfSearchb ,
-		FUNC_REPLACEB = xlfReplaceb ,
-		FUNC_LEFTB = xlfLeftb ,
-		FUNC_RIGHTB = xlfRightb ,
-		FUNC_MIDB = xlfMidb ,
-		FUNC_LENB = xlfLenb ,
-		FUNC_ROUNDUP = xlfRoundup ,
-		FUNC_ROUNDDOWN = xlfRounddown ,
-		FUNC_ASC = xlfAsc ,
-		FUNC_DBCS = xlfDbcs ,
-		FUNC_RANK = xlfRank ,
-		FUNC_ADDRESS = xlfAddress ,
-		FUNC_DAYS360 = xlfDays360 ,
-		FUNC_TODAY = xlfToday ,
-		FUNC_VDB = xlfVdb ,
-		FUNC_MEDIAN = xlfMedian ,
-		FUNC_SUMPRODUCT = xlfSumproduct ,
-		FUNC_SINH = xlfSinh ,
-		FUNC_COSH = xlfCosh ,
-		FUNC_TANH = xlfTanh ,
-		FUNC_ASINH = xlfAsinh ,
-		FUNC_ACOSH = xlfAcosh ,
-		FUNC_ATANH = xlfAtanh ,
-		FUNC_DGET = xlfDget ,
-		FUNC_CREATEOBJECT = xlfCreateObject ,
-		FUNC_VOLATILE = xlfVolatile ,
-		FUNC_LASTERROR = xlfLastError ,
-		FUNC_CUSTOMUNDO = xlfCustomUndo ,
-		FUNC_CUSTOMREPEAT = xlfCustomRepeat ,
-		FUNC_FORMULACONVERT = xlfFormulaConvert ,
-		FUNC_GETLINKINFO = xlfGetLinkInfo ,
-		FUNC_TEXTBOX = xlfTextBox ,
-		FUNC_INFO = xlfInfo ,
-		FUNC_GROUP = xlfGroup ,
-		FUNC_GETOBJECT = xlfGetObject ,
-		FUNC_DB = xlfDb ,
-		FUNC_PAUSE = xlfPause ,
-		FUNC_RESUME = xlfResume ,
-		FUNC_FREQUENCY = xlfFrequency ,
-		FUNC_ADDTOOLBAR = xlfAddToolbar ,
-		FUNC_DELETETOOLBAR = xlfDeleteToolbar ,
-		FUNC_RESETTOOLBAR = xlfResetToolbar ,
-		FUNC_EVALUATE = xlfEvaluate ,
-		FUNC_GETTOOLBAR = xlfGetToolbar ,
-		FUNC_GETTOOL = xlfGetTool ,
-		FUNC_SPELLINGCHECK = xlfSpellingCheck ,
-		FUNC_ERRORTYPE = xlfErrorType ,
-		FUNC_APPTITLE = xlfAppTitle ,
-		FUNC_WINDOWTITLE = xlfWindowTitle ,
-		FUNC_SAVETOOLBAR = xlfSaveToolbar ,
-		FUNC_ENABLETOOL = xlfEnableTool ,
-		FUNC_PRESSTOOL = xlfPressTool ,
-		FUNC_REGISTERID = xlfRegisterId ,
-		FUNC_GETWORKBOOK = xlfGetWorkbook ,
-		FUNC_AVEDEV = xlfAvedev ,
-		FUNC_BETADIST = xlfBetadist ,
-		FUNC_GAMMALN = xlfGammaln ,
-		FUNC_BETAINV = xlfBetainv ,
-		FUNC_BINOMDIST = xlfBinomdist ,
-		FUNC_CHIDIST = xlfChidist ,
-		FUNC_CHIINV = xlfChiinv ,
-		FUNC_COMBIN = xlfCombin ,
-		FUNC_CONFIDENCE = xlfConfidence ,
-		FUNC_CRITBINOM = xlfCritbinom ,
-		FUNC_EVEN = xlfEven ,
-		FUNC_EXPONDIST = xlfExpondist ,
-		FUNC_FDIST = xlfFdist ,
-		FUNC_FINV = xlfFinv ,
-		FUNC_FISHER = xlfFisher ,
-		FUNC_FISHERINV = xlfFisherinv ,
-		FUNC_FLOOR = xlfFloor ,
-		FUNC_GAMMADIST = xlfGammadist ,
-		FUNC_GAMMAINV = xlfGammainv ,
-		FUNC_CEILING = xlfCeiling ,
-		FUNC_HYPGEOMDIST = xlfHypgeomdist ,
-		FUNC_LOGNORMDIST = xlfLognormdist ,
-		FUNC_LOGINV = xlfLoginv ,
-		FUNC_NEGBINOMDIST = xlfNegbinomdist ,
-		FUNC_NORMDIST = xlfNormdist ,
-		FUNC_NORMSDIST = xlfNormsdist ,
-		FUNC_NORMINV = xlfNorminv ,
-		FUNC_NORMSINV = xlfNormsinv ,
-		FUNC_STANDARDIZE = xlfStandardize ,
-		FUNC_ODD = xlfOdd ,
-		FUNC_PERMUT = xlfPermut ,
-		FUNC_POISSON = xlfPoisson ,
-		FUNC_TDIST = xlfTdist ,
-		FUNC_WEIBULL = xlfWeibull ,
-		FUNC_SUMXMY2 = xlfSumxmy2 ,
-		FUNC_SUMX2MY2 = xlfSumx2my2 ,
-		FUNC_SUMX2PY2 = xlfSumx2py2 ,
-		FUNC_CHITEST = xlfChitest ,
-		FUNC_CORREL = xlfCorrel ,
-		FUNC_COVAR = xlfCovar ,
-		FUNC_FORECAST = xlfForecast ,
-		FUNC_FTEST = xlfFtest ,
-		FUNC_INTERCEPT = xlfIntercept ,
-		FUNC_PEARSON = xlfPearson ,
-		FUNC_RSQ = xlfRsq ,
-		FUNC_STEYX = xlfSteyx ,
-		FUNC_SLOPE = xlfSlope ,
-		FUNC_TTEST = xlfTtest ,
-		FUNC_PROB = xlfProb ,
-		FUNC_DEVSQ = xlfDevsq ,
-		FUNC_GEOMEAN = xlfGeomean ,
-		FUNC_HARMEAN = xlfHarmean ,
-		FUNC_SUMSQ = xlfSumsq ,
-		FUNC_KURT = xlfKurt ,
-		FUNC_SKEW = xlfSkew ,
-		FUNC_ZTEST = xlfZtest ,
-		FUNC_LARGE = xlfLarge ,
-		FUNC_SMALL = xlfSmall ,
-		FUNC_QUARTILE = xlfQuartile ,
-		FUNC_PERCENTILE = xlfPercentile ,
-		FUNC_PERCENTRANK = xlfPercentrank ,
-		FUNC_MODE = xlfMode ,
-		FUNC_TRIMMEAN = xlfTrimmean ,
-		FUNC_TINV = xlfTinv ,
-		FUNC_MOVIECOMMAND = xlfMovieCommand ,
-		FUNC_GETMOVIE = xlfGetMovie ,
-		FUNC_CONCATENATE = xlfConcatenate ,
-		FUNC_POWER = xlfPower ,
-		FUNC_PIVOTADDDATA = xlfPivotAddData ,
-		FUNC_GETPIVOTTABLE = xlfGetPivotTable ,
-		FUNC_GETPIVOTFIELD = xlfGetPivotField ,
-		FUNC_GETPIVOTITEM = xlfGetPivotItem ,
-		FUNC_RADIANS = xlfRadians ,
-		FUNC_DEGREES = xlfDegrees ,
-		FUNC_SUBTOTAL = xlfSubtotal ,
-		FUNC_SUMIF = xlfSumif ,
-		FUNC_COUNTIF = xlfCountif ,
-		FUNC_COUNTBLANK = xlfCountblank ,
-		FUNC_SCENARIOGET = xlfScenarioGet ,
-		FUNC_OPTIONSLISTSGET = xlfOptionsListsGet ,
-		FUNC_ISPMT = xlfIspmt ,
-		FUNC_DATEDIF = xlfDatedif ,
-		FUNC_DATESTRING = xlfDatestring ,
-		FUNC_NUMBERSTRING = xlfNumberstring ,
-		FUNC_ROMAN = xlfRoman ,
-		FUNC_OPENDIALOG = xlfOpenDialog ,
-		FUNC_SAVEDIALOG = xlfSaveDialog ,
-		FUNC_VIEWGET = xlfViewGet ,
-		FUNC_GETPIVOTDATA = xlfGetPivotData ,
-		FUNC_HYPERLINK = xlfHyperlink ,
-		FUNC_PHONETIC = xlfPhonetic ,
-		FUNC_AVERAGEA = xlfAverageA ,
-		FUNC_MAXA = xlfMaxA ,
-		FUNC_MINA = xlfMinA ,
-		FUNC_STDEVPA = xlfStDevPA ,
-		FUNC_VARPA = xlfVarPA ,
-		FUNC_STDEVA = xlfStDevA ,
-		FUNC_VARA = xlfVarA ,
-		FUNC_BAHTTEXT = xlfBahttext ,
-		FUNC_THAIDAYOFWEEK = xlfThaidayofweek ,
-		FUNC_THAIDIGIT = xlfThaidigit ,
-		FUNC_THAIMONTHOFYEAR = xlfThaimonthofyear ,
-		FUNC_THAINUMSOUND = xlfThainumsound ,
-		FUNC_THAINUMSTRING = xlfThainumstring ,
-		FUNC_THAISTRINGLENGTH = xlfThaistringlength ,
-		FUNC_ISTHAIDIGIT = xlfIsthaidigit ,
-		FUNC_ROUNDBAHTDOWN = xlfRoundbahtdown ,
-		FUNC_ROUNDBAHTUP = xlfRoundbahtup ,
-		FUNC_THAIYEAR = xlfThaiyear ,
-		FUNC_RTD = xlfRtd ,
-		FUNC_CUBEVALUE = xlfCubevalue ,
-		FUNC_CUBEMEMBER = xlfCubemember ,
-		FUNC_CUBEMEMBERPROPERTY = xlfCubememberproperty ,
-		FUNC_CUBERANKEDMEMBER = xlfCuberankedmember ,
-		FUNC_HEX2BIN = xlfHex2bin ,
-		FUNC_HEX2DEC = xlfHex2dec ,
-		FUNC_HEX2OCT = xlfHex2oct ,
-		FUNC_DEC2BIN = xlfDec2bin ,
-		FUNC_DEC2HEX = xlfDec2hex ,
-		FUNC_DEC2OCT = xlfDec2oct ,
-		FUNC_OCT2BIN = xlfOct2bin ,
-		FUNC_OCT2HEX = xlfOct2hex ,
-		FUNC_OCT2DEC = xlfOct2dec ,
-		FUNC_BIN2DEC = xlfBin2dec ,
-		FUNC_BIN2OCT = xlfBin2oct ,
-		FUNC_BIN2HEX = xlfBin2hex ,
-		FUNC_IMSUB = xlfImsub ,
-		FUNC_IMDIV = xlfImdiv ,
-		FUNC_IMPOWER = xlfImpower ,
-		FUNC_IMABS = xlfImabs ,
-		FUNC_IMSQRT = xlfImsqrt ,
-		FUNC_IMLN = xlfImln ,
-		FUNC_IMLOG2 = xlfImlog2 ,
-		FUNC_IMLOG10 = xlfImlog10 ,
-		FUNC_IMSIN = xlfImsin ,
-		FUNC_IMCOS = xlfImcos ,
-		FUNC_IMEXP = xlfImexp ,
-		FUNC_IMARGUMENT = xlfImargument ,
-		FUNC_IMCONJUGATE = xlfImconjugate ,
-		FUNC_IMAGINARY = xlfImaginary ,
-		FUNC_IMREAL = xlfImreal ,
-		FUNC_COMPLEX = xlfComplex ,
-		FUNC_IMSUM = xlfImsum ,
-		FUNC_IMPRODUCT = xlfImproduct ,
-		FUNC_SERIESSUM = xlfSeriessum ,
-		FUNC_FACTDOUBLE = xlfFactdouble ,
-		FUNC_SQRTPI = xlfSqrtpi ,
-		FUNC_QUOTIENT = xlfQuotient ,
-		FUNC_DELTA = xlfDelta ,
-		FUNC_GESTEP = xlfGestep ,
-		FUNC_ISEVEN = xlfIseven ,
-		FUNC_ISODD = xlfIsodd ,
-		FUNC_MROUND = xlfMround ,
-		FUNC_ERF = xlfErf ,
-		FUNC_ERFC = xlfErfc ,
-		FUNC_BESSELJ = xlfBesselj ,
-		FUNC_BESSELK = xlfBesselk ,
-		FUNC_BESSELY = xlfBessely ,
-		FUNC_BESSELI = xlfBesseli ,
-		FUNC_XIRR = xlfXirr ,
-		FUNC_XNPV = xlfXnpv ,
-		FUNC_PRICEMAT = xlfPricemat ,
-		FUNC_YIELDMAT = xlfYieldmat ,
-		FUNC_INTRATE = xlfIntrate ,
-		FUNC_RECEIVED = xlfReceived ,
-		FUNC_DISC = xlfDisc ,
-		FUNC_PRICEDISC = xlfPricedisc ,
-		FUNC_YIELDDISC = xlfYielddisc ,
-		FUNC_TBILLEQ = xlfTbilleq ,
-		FUNC_TBILLPRICE = xlfTbillprice ,
-		FUNC_TBILLYIELD = xlfTbillyield ,
-		FUNC_PRICE = xlfPrice ,
-		FUNC_YIELD = xlfYield ,
-		FUNC_DOLLARDE = xlfDollarde ,
-		FUNC_DOLLARFR = xlfDollarfr ,
-		FUNC_NOMINAL = xlfNominal ,
-		FUNC_EFFECT = xlfEffect ,
-		FUNC_CUMPRINC = xlfCumprinc ,
-		FUNC_CUMIPMT = xlfCumipmt ,
-		FUNC_EDATE = xlfEdate ,
-		FUNC_EOMONTH = xlfEomonth ,
-		FUNC_YEARFRAC = xlfYearfrac ,
-		FUNC_COUPDAYBS = xlfCoupdaybs ,
-		FUNC_COUPDAYS = xlfCoupdays ,
-		FUNC_COUPDAYSNC = xlfCoupdaysnc ,
-		FUNC_COUPNCD = xlfCoupncd ,
-		FUNC_COUPNUM = xlfCoupnum ,
-		FUNC_COUPPCD = xlfCouppcd ,
-		FUNC_DURATION = xlfDuration ,
-		FUNC_MDURATION = xlfMduration ,
-		FUNC_ODDLPRICE = xlfOddlprice ,
-		FUNC_ODDLYIELD = xlfOddlyield ,
-		FUNC_ODDFPRICE = xlfOddfprice ,
-		FUNC_ODDFYIELD = xlfOddfyield ,
-		FUNC_RANDBETWEEN = xlfRandbetween ,
-		FUNC_WEEKNUM = xlfWeeknum ,
-		FUNC_AMORDEGRC = xlfAmordegrc ,
-		FUNC_AMORLINC = xlfAmorlinc ,
-		FUNC_CONVERT = xlfConvert ,
-		FUNC_ACCRINT = xlfAccrint ,
-		FUNC_ACCRINTM = xlfAccrintm ,
-		FUNC_WORKDAY = xlfWorkday ,
-		FUNC_NETWORKDAYS = xlfNetworkdays ,
-		FUNC_GCD = xlfGcd ,
-		FUNC_MULTINOMIAL = xlfMultinomial ,
-		FUNC_LCM = xlfLcm ,
-		FUNC_FVSCHEDULE = xlfFvschedule ,
-		FUNC_CUBEKPIMEMBER = xlfCubekpimember ,
-		FUNC_CUBESET = xlfCubeset ,
-		FUNC_CUBESETCOUNT = xlfCubesetcount ,
-		FUNC_IFERROR = xlfIferror ,
-		FUNC_COUNTIFS = xlfCountifs ,
-		FUNC_SUMIFS = xlfSumifs ,
-		FUNC_AVERAGEIF = xlfAverageif ,
-		FUNC_AVERAGEIFS = xlfAverageifs ,
-		FUNC_AGGREGATE = xlfAggregate ,
-		FUNC_BINOM_DIST = xlfBinom_dist ,
-		FUNC_BINOM_INV = xlfBinom_inv ,
-		FUNC_CONFIDENCE_NORM = xlfConfidence_norm ,
-		FUNC_CONFIDENCE_T = xlfConfidence_t ,
-		FUNC_CHISQ_TEST = xlfChisq_test ,
-		FUNC_F_TEST = xlfF_test ,
-		FUNC_COVARIANCE_P = xlfCovariance_p ,
-		FUNC_COVARIANCE_S = xlfCovariance_s ,
-		FUNC_EXPON_DIST = xlfExpon_dist ,
-		FUNC_GAMMA_DIST = xlfGamma_dist ,
-		FUNC_GAMMA_INV = xlfGamma_inv ,
-		FUNC_MODE_MULT = xlfMode_mult ,
-		FUNC_MODE_SNGL = xlfMode_sngl ,
-		FUNC_NORM_DIST = xlfNorm_dist ,
-		FUNC_NORM_INV = xlfNorm_inv ,
-		FUNC_PERCENTILE_EXC = xlfPercentile_exc ,
-		FUNC_PERCENTILE_INC = xlfPercentile_inc ,
-		FUNC_PERCENTRANK_EXC = xlfPercentrank_exc ,
-		FUNC_PERCENTRANK_INC = xlfPercentrank_inc ,
-		FUNC_POISSON_DIST = xlfPoisson_dist ,
-		FUNC_QUARTILE_EXC = xlfQuartile_exc ,
-		FUNC_QUARTILE_INC = xlfQuartile_inc ,
-		FUNC_RANK_AVG = xlfRank_avg ,
-		FUNC_RANK_EQ = xlfRank_eq ,
-		FUNC_STDEV_S = xlfStdev_s ,
-		FUNC_STDEV_P = xlfStdev_p ,
-		FUNC_T_DIST = xlfT_dist ,
-		FUNC_T_DIST_2T = xlfT_dist_2t ,
-		FUNC_T_DIST_RT = xlfT_dist_rt ,
-		FUNC_T_INV = xlfT_inv ,
-		FUNC_T_INV_2T = xlfT_inv_2t ,
-		FUNC_VAR_S = xlfVar_s ,
-		FUNC_VAR_P = xlfVar_p ,
-		FUNC_WEIBULL_DIST = xlfWeibull_dist ,
-		FUNC_NETWORKDAYS_INTL = xlfNetworkdays_intl ,
-		FUNC_WORKDAY_INTL = xlfWorkday_intl ,
-		FUNC_ECMA_CEILING = xlfEcma_ceiling ,
-		FUNC_ISO_CEILING = xlfIso_ceiling ,
-		FUNC_BETA_DIST = xlfBeta_dist ,
-		FUNC_BETA_INV = xlfBeta_inv ,
-		FUNC_CHISQ_DIST = xlfChisq_dist ,
-		FUNC_CHISQ_DIST_RT = xlfChisq_dist_rt ,
-		FUNC_CHISQ_INV = xlfChisq_inv ,
-		FUNC_CHISQ_INV_RT = xlfChisq_inv_rt ,
-		FUNC_F_DIST = xlfF_dist ,
-		FUNC_F_DIST_RT = xlfF_dist_rt ,
-		FUNC_F_INV = xlfF_inv ,
-		FUNC_F_INV_RT = xlfF_inv_rt ,
-		FUNC_HYPGEOM_DIST = xlfHypgeom_dist ,
-		FUNC_LOGNORM_DIST = xlfLognorm_dist ,
-		FUNC_LOGNORM_INV = xlfLognorm_inv ,
-		FUNC_NEGBINOM_DIST = xlfNegbinom_dist ,
-		FUNC_NORM_S_DIST = xlfNorm_s_dist ,
-		FUNC_NORM_S_INV = xlfNorm_s_inv ,
-		FUNC_T_TEST = xlfT_test ,
-		FUNC_Z_TEST = xlfZ_test ,
-		FUNC_ERF_PRECISE = xlfErf_precise ,
-		FUNC_ERFC_PRECISE = xlfErfc_precise ,
-		FUNC_GAMMALN_PRECISE = xlfGammaln_precise ,
-		FUNC_CEILING_PRECISE = xlfCeiling_precise ,
-		FUNC_FLOOR_PRECISE = xlfFloor_precise ,
+		 * Built-in Excel functions and command equivalents
+		 */
+		FUNC_COUNT = xlfCount,
+		FUNC_ISNA = xlfIsna,
+		FUNC_ISERROR = xlfIserror,
+		FUNC_SUM = xlfSum,
+		FUNC_AVERAGE = xlfAverage,
+		FUNC_MIN = xlfMin,
+		FUNC_MAX = xlfMax,
+		FUNC_ROW = xlfRow,
+		FUNC_COLUMN = xlfColumn,
+		FUNC_NA = xlfNa,
+		FUNC_NPV = xlfNpv,
+		FUNC_STDEV = xlfStdev,
+		FUNC_DOLLAR = xlfDollar,
+		FUNC_FIXED = xlfFixed,
+		FUNC_SIN = xlfSin,
+		FUNC_COS = xlfCos,
+		FUNC_TAN = xlfTan,
+		FUNC_ATAN = xlfAtan,
+		FUNC_PI = xlfPi,
+		FUNC_SQRT = xlfSqrt,
+		FUNC_EXP = xlfExp,
+		FUNC_LN = xlfLn,
+		FUNC_LOG10 = xlfLog10,
+		FUNC_ABS = xlfAbs,
+		FUNC_INT = xlfInt,
+		FUNC_SIGN = xlfSign,
+		FUNC_ROUND = xlfRound,
+		FUNC_LOOKUP = xlfLookup,
+		FUNC_INDEX = xlfIndex,
+		FUNC_REPT = xlfRept,
+		FUNC_MID = xlfMid,
+		FUNC_LEN = xlfLen,
+		FUNC_VALUE = xlfValue,
+		FUNC_TRUE = xlfTrue,
+		FUNC_FALSE = xlfFalse,
+		FUNC_AND = xlfAnd,
+		FUNC_OR = xlfOr,
+		FUNC_NOT = xlfNot,
+		FUNC_MOD = xlfMod,
+		FUNC_DCOUNT = xlfDcount,
+		FUNC_DSUM = xlfDsum,
+		FUNC_DAVERAGE = xlfDaverage,
+		FUNC_DMIN = xlfDmin,
+		FUNC_DMAX = xlfDmax,
+		FUNC_DSTDEV = xlfDstdev,
+		FUNC_VAR = xlfVar,
+		FUNC_DVAR = xlfDvar,
+		FUNC_TEXT = xlfText,
+		FUNC_LINEST = xlfLinest,
+		FUNC_TREND = xlfTrend,
+		FUNC_LOGEST = xlfLogest,
+		FUNC_GROWTH = xlfGrowth,
+		FUNC_GOTO = xlfGoto,
+		FUNC_HALT = xlfHalt,
+		FUNC_PV = xlfPv,
+		FUNC_FV = xlfFv,
+		FUNC_NPER = xlfNper,
+		FUNC_PMT = xlfPmt,
+		FUNC_RATE = xlfRate,
+		FUNC_MIRR = xlfMirr,
+		FUNC_IRR = xlfIrr,
+		FUNC_RAND = xlfRand,
+		FUNC_MATCH = xlfMatch,
+		FUNC_DATE = xlfDate,
+		FUNC_TIME = xlfTime,
+		FUNC_DAY = xlfDay,
+		FUNC_MONTH = xlfMonth,
+		FUNC_YEAR = xlfYear,
+		FUNC_WEEKDAY = xlfWeekday,
+		FUNC_HOUR = xlfHour,
+		FUNC_MINUTE = xlfMinute,
+		FUNC_SECOND = xlfSecond,
+		FUNC_NOW = xlfNow,
+		FUNC_AREAS = xlfAreas,
+		FUNC_ROWS = xlfRows,
+		FUNC_COLUMNS = xlfColumns,
+		FUNC_OFFSET = xlfOffset,
+		FUNC_ABSREF = xlfAbsref,
+		FUNC_RELREF = xlfRelref,
+		FUNC_ARGUMENT = xlfArgument,
+		FUNC_SEARCH = xlfSearch,
+		FUNC_TRANSPOSE = xlfTranspose,
+		FUNC_ERROR = xlfError,
+		FUNC_STEP = xlfStep,
+		FUNC_TYPE = xlfType,
+		FUNC_ECHO = xlfEcho,
+		FUNC_SETNAME = xlfSetName,
+		FUNC_CALLER = xlfCaller,
+		FUNC_DEREF = xlfDeref,
+		FUNC_WINDOWS = xlfWindows,
+		FUNC_SERIES = xlfSeries,
+		FUNC_DOCUMENTS = xlfDocuments,
+		FUNC_ACTIVECELL = xlfActiveCell,
+		FUNC_SELECTION = xlfSelection,
+		FUNC_RESULT = xlfResult,
+		FUNC_ATAN2 = xlfAtan2,
+		FUNC_ASIN = xlfAsin,
+		FUNC_ACOS = xlfAcos,
+		FUNC_CHOOSE = xlfChoose,
+		FUNC_HLOOKUP = xlfHlookup,
+		FUNC_VLOOKUP = xlfVlookup,
+		FUNC_LINKS = xlfLinks,
+		FUNC_INPUT = xlfInput,
+		FUNC_ISREF = xlfIsref,
+		FUNC_GETFORMULA = xlfGetFormula,
+		FUNC_GETNAME = xlfGetName,
+		FUNC_SETVALUE = xlfSetValue,
+		FUNC_LOG = xlfLog,
+		FUNC_EXEC = xlfExec,
+		FUNC_CHAR = xlfChar,
+		FUNC_LOWER = xlfLower,
+		FUNC_UPPER = xlfUpper,
+		FUNC_PROPER = xlfProper,
+		FUNC_LEFT = xlfLeft,
+		FUNC_RIGHT = xlfRight,
+		FUNC_EXACT = xlfExact,
+		FUNC_TRIM = xlfTrim,
+		FUNC_REPLACE = xlfReplace,
+		FUNC_SUBSTITUTE = xlfSubstitute,
+		FUNC_CODE = xlfCode,
+		FUNC_NAMES = xlfNames,
+		FUNC_DIRECTORY = xlfDirectory,
+		FUNC_FIND = xlfFind,
+		FUNC_CELL = xlfCell,
+		FUNC_ISERR = xlfIserr,
+		FUNC_ISTEXT = xlfIstext,
+		FUNC_ISNUMBER = xlfIsnumber,
+		FUNC_ISBLANK = xlfIsblank,
+		FUNC_T = xlfT,
+		FUNC_N = xlfN,
+		FUNC_FOPEN = xlfFopen,
+		FUNC_FCLOSE = xlfFclose,
+		FUNC_FSIZE = xlfFsize,
+		FUNC_FREADLN = xlfFreadln,
+		FUNC_FREAD = xlfFread,
+		FUNC_FWRITELN = xlfFwriteln,
+		FUNC_FWRITE = xlfFwrite,
+		FUNC_FPOS = xlfFpos,
+		FUNC_DATEVALUE = xlfDatevalue,
+		FUNC_TIMEVALUE = xlfTimevalue,
+		FUNC_SLN = xlfSln,
+		FUNC_SYD = xlfSyd,
+		FUNC_DDB = xlfDdb,
+		FUNC_GETDEF = xlfGetDef,
+		FUNC_REFTEXT = xlfReftext,
+		FUNC_TEXTREF = xlfTextref,
+		FUNC_INDIRECT = xlfIndirect,
+		FUNC_REGISTER = xlfRegister,
+		FUNC_CALL = xlfCall,
+		FUNC_ADDBAR = xlfAddBar,
+		FUNC_ADDMENU = xlfAddMenu,
+		FUNC_ADDCOMMAND = xlfAddCommand,
+		FUNC_ENABLECOMMAND = xlfEnableCommand,
+		FUNC_CHECKCOMMAND = xlfCheckCommand,
+		FUNC_RENAMECOMMAND = xlfRenameCommand,
+		FUNC_SHOWBAR = xlfShowBar,
+		FUNC_DELETEMENU = xlfDeleteMenu,
+		FUNC_DELETECOMMAND = xlfDeleteCommand,
+		FUNC_GETCHARTITEM = xlfGetChartItem,
+		FUNC_DIALOGBOX = xlfDialogBox,
+		FUNC_CLEAN = xlfClean,
+		FUNC_MDETERM = xlfMdeterm,
+		FUNC_MINVERSE = xlfMinverse,
+		FUNC_MMULT = xlfMmult,
+		FUNC_FILES = xlfFiles,
+		FUNC_IPMT = xlfIpmt,
+		FUNC_PPMT = xlfPpmt,
+		FUNC_COUNTA = xlfCounta,
+		FUNC_CANCELKEY = xlfCancelKey,
+		FUNC_INITIATE = xlfInitiate,
+		FUNC_REQUEST = xlfRequest,
+		FUNC_POKE = xlfPoke,
+		FUNC_EXECUTE = xlfExecute,
+		FUNC_TERMINATE = xlfTerminate,
+		FUNC_RESTART = xlfRestart,
+		FUNC_HELP = xlfHelp,
+		FUNC_GETBAR = xlfGetBar,
+		FUNC_PRODUCT = xlfProduct,
+		FUNC_FACT = xlfFact,
+		FUNC_GETCELL = xlfGetCell,
+		FUNC_GETWORKSPACE = xlfGetWorkspace,
+		FUNC_GETWINDOW = xlfGetWindow,
+		FUNC_GETDOCUMENT = xlfGetDocument,
+		FUNC_DPRODUCT = xlfDproduct,
+		FUNC_ISNONTEXT = xlfIsnontext,
+		FUNC_GETNOTE = xlfGetNote,
+		FUNC_NOTE = xlfNote,
+		FUNC_STDEVP = xlfStdevp,
+		FUNC_VARP = xlfVarp,
+		FUNC_DSTDEVP = xlfDstdevp,
+		FUNC_DVARP = xlfDvarp,
+		FUNC_TRUNC = xlfTrunc,
+		FUNC_ISLOGICAL = xlfIslogical,
+		FUNC_DCOUNTA = xlfDcounta,
+		FUNC_DELETEBAR = xlfDeleteBar,
+		FUNC_UNREGISTER = xlfUnregister,
+		FUNC_USDOLLAR = xlfUsdollar,
+		FUNC_FINDB = xlfFindb,
+		FUNC_SEARCHB = xlfSearchb,
+		FUNC_REPLACEB = xlfReplaceb,
+		FUNC_LEFTB = xlfLeftb,
+		FUNC_RIGHTB = xlfRightb,
+		FUNC_MIDB = xlfMidb,
+		FUNC_LENB = xlfLenb,
+		FUNC_ROUNDUP = xlfRoundup,
+		FUNC_ROUNDDOWN = xlfRounddown,
+		FUNC_ASC = xlfAsc,
+		FUNC_DBCS = xlfDbcs,
+		FUNC_RANK = xlfRank,
+		FUNC_ADDRESS = xlfAddress,
+		FUNC_DAYS360 = xlfDays360,
+		FUNC_TODAY = xlfToday,
+		FUNC_VDB = xlfVdb,
+		FUNC_MEDIAN = xlfMedian,
+		FUNC_SUMPRODUCT = xlfSumproduct,
+		FUNC_SINH = xlfSinh,
+		FUNC_COSH = xlfCosh,
+		FUNC_TANH = xlfTanh,
+		FUNC_ASINH = xlfAsinh,
+		FUNC_ACOSH = xlfAcosh,
+		FUNC_ATANH = xlfAtanh,
+		FUNC_DGET = xlfDget,
+		FUNC_CREATEOBJECT = xlfCreateObject,
+		FUNC_VOLATILE = xlfVolatile,
+		FUNC_LASTERROR = xlfLastError,
+		FUNC_CUSTOMUNDO = xlfCustomUndo,
+		FUNC_CUSTOMREPEAT = xlfCustomRepeat,
+		FUNC_FORMULACONVERT = xlfFormulaConvert,
+		FUNC_GETLINKINFO = xlfGetLinkInfo,
+		FUNC_TEXTBOX = xlfTextBox,
+		FUNC_INFO = xlfInfo,
+		FUNC_GROUP = xlfGroup,
+		FUNC_GETOBJECT = xlfGetObject,
+		FUNC_DB = xlfDb,
+		FUNC_PAUSE = xlfPause,
+		FUNC_RESUME = xlfResume,
+		FUNC_FREQUENCY = xlfFrequency,
+		FUNC_ADDTOOLBAR = xlfAddToolbar,
+		FUNC_DELETETOOLBAR = xlfDeleteToolbar,
+		FUNC_RESETTOOLBAR = xlfResetToolbar,
+		FUNC_EVALUATE = xlfEvaluate,
+		FUNC_GETTOOLBAR = xlfGetToolbar,
+		FUNC_GETTOOL = xlfGetTool,
+		FUNC_SPELLINGCHECK = xlfSpellingCheck,
+		FUNC_ERRORTYPE = xlfErrorType,
+		FUNC_APPTITLE = xlfAppTitle,
+		FUNC_WINDOWTITLE = xlfWindowTitle,
+		FUNC_SAVETOOLBAR = xlfSaveToolbar,
+		FUNC_ENABLETOOL = xlfEnableTool,
+		FUNC_PRESSTOOL = xlfPressTool,
+		FUNC_REGISTERID = xlfRegisterId,
+		FUNC_GETWORKBOOK = xlfGetWorkbook,
+		FUNC_AVEDEV = xlfAvedev,
+		FUNC_BETADIST = xlfBetadist,
+		FUNC_GAMMALN = xlfGammaln,
+		FUNC_BETAINV = xlfBetainv,
+		FUNC_BINOMDIST = xlfBinomdist,
+		FUNC_CHIDIST = xlfChidist,
+		FUNC_CHIINV = xlfChiinv,
+		FUNC_COMBIN = xlfCombin,
+		FUNC_CONFIDENCE = xlfConfidence,
+		FUNC_CRITBINOM = xlfCritbinom,
+		FUNC_EVEN = xlfEven,
+		FUNC_EXPONDIST = xlfExpondist,
+		FUNC_FDIST = xlfFdist,
+		FUNC_FINV = xlfFinv,
+		FUNC_FISHER = xlfFisher,
+		FUNC_FISHERINV = xlfFisherinv,
+		FUNC_FLOOR = xlfFloor,
+		FUNC_GAMMADIST = xlfGammadist,
+		FUNC_GAMMAINV = xlfGammainv,
+		FUNC_CEILING = xlfCeiling,
+		FUNC_HYPGEOMDIST = xlfHypgeomdist,
+		FUNC_LOGNORMDIST = xlfLognormdist,
+		FUNC_LOGINV = xlfLoginv,
+		FUNC_NEGBINOMDIST = xlfNegbinomdist,
+		FUNC_NORMDIST = xlfNormdist,
+		FUNC_NORMSDIST = xlfNormsdist,
+		FUNC_NORMINV = xlfNorminv,
+		FUNC_NORMSINV = xlfNormsinv,
+		FUNC_STANDARDIZE = xlfStandardize,
+		FUNC_ODD = xlfOdd,
+		FUNC_PERMUT = xlfPermut,
+		FUNC_POISSON = xlfPoisson,
+		FUNC_TDIST = xlfTdist,
+		FUNC_WEIBULL = xlfWeibull,
+		FUNC_SUMXMY2 = xlfSumxmy2,
+		FUNC_SUMX2MY2 = xlfSumx2my2,
+		FUNC_SUMX2PY2 = xlfSumx2py2,
+		FUNC_CHITEST = xlfChitest,
+		FUNC_CORREL = xlfCorrel,
+		FUNC_COVAR = xlfCovar,
+		FUNC_FORECAST = xlfForecast,
+		FUNC_FTEST = xlfFtest,
+		FUNC_INTERCEPT = xlfIntercept,
+		FUNC_PEARSON = xlfPearson,
+		FUNC_RSQ = xlfRsq,
+		FUNC_STEYX = xlfSteyx,
+		FUNC_SLOPE = xlfSlope,
+		FUNC_TTEST = xlfTtest,
+		FUNC_PROB = xlfProb,
+		FUNC_DEVSQ = xlfDevsq,
+		FUNC_GEOMEAN = xlfGeomean,
+		FUNC_HARMEAN = xlfHarmean,
+		FUNC_SUMSQ = xlfSumsq,
+		FUNC_KURT = xlfKurt,
+		FUNC_SKEW = xlfSkew,
+		FUNC_ZTEST = xlfZtest,
+		FUNC_LARGE = xlfLarge,
+		FUNC_SMALL = xlfSmall,
+		FUNC_QUARTILE = xlfQuartile,
+		FUNC_PERCENTILE = xlfPercentile,
+		FUNC_PERCENTRANK = xlfPercentrank,
+		FUNC_MODE = xlfMode,
+		FUNC_TRIMMEAN = xlfTrimmean,
+		FUNC_TINV = xlfTinv,
+		FUNC_MOVIECOMMAND = xlfMovieCommand,
+		FUNC_GETMOVIE = xlfGetMovie,
+		FUNC_CONCATENATE = xlfConcatenate,
+		FUNC_POWER = xlfPower,
+		FUNC_PIVOTADDDATA = xlfPivotAddData,
+		FUNC_GETPIVOTTABLE = xlfGetPivotTable,
+		FUNC_GETPIVOTFIELD = xlfGetPivotField,
+		FUNC_GETPIVOTITEM = xlfGetPivotItem,
+		FUNC_RADIANS = xlfRadians,
+		FUNC_DEGREES = xlfDegrees,
+		FUNC_SUBTOTAL = xlfSubtotal,
+		FUNC_SUMIF = xlfSumif,
+		FUNC_COUNTIF = xlfCountif,
+		FUNC_COUNTBLANK = xlfCountblank,
+		FUNC_SCENARIOGET = xlfScenarioGet,
+		FUNC_OPTIONSLISTSGET = xlfOptionsListsGet,
+		FUNC_ISPMT = xlfIspmt,
+		FUNC_DATEDIF = xlfDatedif,
+		FUNC_DATESTRING = xlfDatestring,
+		FUNC_NUMBERSTRING = xlfNumberstring,
+		FUNC_ROMAN = xlfRoman,
+		FUNC_OPENDIALOG = xlfOpenDialog,
+		FUNC_SAVEDIALOG = xlfSaveDialog,
+		FUNC_VIEWGET = xlfViewGet,
+		FUNC_GETPIVOTDATA = xlfGetPivotData,
+		FUNC_HYPERLINK = xlfHyperlink,
+		FUNC_PHONETIC = xlfPhonetic,
+		FUNC_AVERAGEA = xlfAverageA,
+		FUNC_MAXA = xlfMaxA,
+		FUNC_MINA = xlfMinA,
+		FUNC_STDEVPA = xlfStDevPA,
+		FUNC_VARPA = xlfVarPA,
+		FUNC_STDEVA = xlfStDevA,
+		FUNC_VARA = xlfVarA,
+		FUNC_BAHTTEXT = xlfBahttext,
+		FUNC_THAIDAYOFWEEK = xlfThaidayofweek,
+		FUNC_THAIDIGIT = xlfThaidigit,
+		FUNC_THAIMONTHOFYEAR = xlfThaimonthofyear,
+		FUNC_THAINUMSOUND = xlfThainumsound,
+		FUNC_THAINUMSTRING = xlfThainumstring,
+		FUNC_THAISTRINGLENGTH = xlfThaistringlength,
+		FUNC_ISTHAIDIGIT = xlfIsthaidigit,
+		FUNC_ROUNDBAHTDOWN = xlfRoundbahtdown,
+		FUNC_ROUNDBAHTUP = xlfRoundbahtup,
+		FUNC_THAIYEAR = xlfThaiyear,
+		FUNC_RTD = xlfRtd,
+		FUNC_CUBEVALUE = xlfCubevalue,
+		FUNC_CUBEMEMBER = xlfCubemember,
+		FUNC_CUBEMEMBERPROPERTY = xlfCubememberproperty,
+		FUNC_CUBERANKEDMEMBER = xlfCuberankedmember,
+		FUNC_HEX2BIN = xlfHex2bin,
+		FUNC_HEX2DEC = xlfHex2dec,
+		FUNC_HEX2OCT = xlfHex2oct,
+		FUNC_DEC2BIN = xlfDec2bin,
+		FUNC_DEC2HEX = xlfDec2hex,
+		FUNC_DEC2OCT = xlfDec2oct,
+		FUNC_OCT2BIN = xlfOct2bin,
+		FUNC_OCT2HEX = xlfOct2hex,
+		FUNC_OCT2DEC = xlfOct2dec,
+		FUNC_BIN2DEC = xlfBin2dec,
+		FUNC_BIN2OCT = xlfBin2oct,
+		FUNC_BIN2HEX = xlfBin2hex,
+		FUNC_IMSUB = xlfImsub,
+		FUNC_IMDIV = xlfImdiv,
+		FUNC_IMPOWER = xlfImpower,
+		FUNC_IMABS = xlfImabs,
+		FUNC_IMSQRT = xlfImsqrt,
+		FUNC_IMLN = xlfImln,
+		FUNC_IMLOG2 = xlfImlog2,
+		FUNC_IMLOG10 = xlfImlog10,
+		FUNC_IMSIN = xlfImsin,
+		FUNC_IMCOS = xlfImcos,
+		FUNC_IMEXP = xlfImexp,
+		FUNC_IMARGUMENT = xlfImargument,
+		FUNC_IMCONJUGATE = xlfImconjugate,
+		FUNC_IMAGINARY = xlfImaginary,
+		FUNC_IMREAL = xlfImreal,
+		FUNC_COMPLEX = xlfComplex,
+		FUNC_IMSUM = xlfImsum,
+		FUNC_IMPRODUCT = xlfImproduct,
+		FUNC_SERIESSUM = xlfSeriessum,
+		FUNC_FACTDOUBLE = xlfFactdouble,
+		FUNC_SQRTPI = xlfSqrtpi,
+		FUNC_QUOTIENT = xlfQuotient,
+		FUNC_DELTA = xlfDelta,
+		FUNC_GESTEP = xlfGestep,
+		FUNC_ISEVEN = xlfIseven,
+		FUNC_ISODD = xlfIsodd,
+		FUNC_MROUND = xlfMround,
+		FUNC_ERF = xlfErf,
+		FUNC_ERFC = xlfErfc,
+		FUNC_BESSELJ = xlfBesselj,
+		FUNC_BESSELK = xlfBesselk,
+		FUNC_BESSELY = xlfBessely,
+		FUNC_BESSELI = xlfBesseli,
+		FUNC_XIRR = xlfXirr,
+		FUNC_XNPV = xlfXnpv,
+		FUNC_PRICEMAT = xlfPricemat,
+		FUNC_YIELDMAT = xlfYieldmat,
+		FUNC_INTRATE = xlfIntrate,
+		FUNC_RECEIVED = xlfReceived,
+		FUNC_DISC = xlfDisc,
+		FUNC_PRICEDISC = xlfPricedisc,
+		FUNC_YIELDDISC = xlfYielddisc,
+		FUNC_TBILLEQ = xlfTbilleq,
+		FUNC_TBILLPRICE = xlfTbillprice,
+		FUNC_TBILLYIELD = xlfTbillyield,
+		FUNC_PRICE = xlfPrice,
+		FUNC_YIELD = xlfYield,
+		FUNC_DOLLARDE = xlfDollarde,
+		FUNC_DOLLARFR = xlfDollarfr,
+		FUNC_NOMINAL = xlfNominal,
+		FUNC_EFFECT = xlfEffect,
+		FUNC_CUMPRINC = xlfCumprinc,
+		FUNC_CUMIPMT = xlfCumipmt,
+		FUNC_EDATE = xlfEdate,
+		FUNC_EOMONTH = xlfEomonth,
+		FUNC_YEARFRAC = xlfYearfrac,
+		FUNC_COUPDAYBS = xlfCoupdaybs,
+		FUNC_COUPDAYS = xlfCoupdays,
+		FUNC_COUPDAYSNC = xlfCoupdaysnc,
+		FUNC_COUPNCD = xlfCoupncd,
+		FUNC_COUPNUM = xlfCoupnum,
+		FUNC_COUPPCD = xlfCouppcd,
+		FUNC_DURATION = xlfDuration,
+		FUNC_MDURATION = xlfMduration,
+		FUNC_ODDLPRICE = xlfOddlprice,
+		FUNC_ODDLYIELD = xlfOddlyield,
+		FUNC_ODDFPRICE = xlfOddfprice,
+		FUNC_ODDFYIELD = xlfOddfyield,
+		FUNC_RANDBETWEEN = xlfRandbetween,
+		FUNC_WEEKNUM = xlfWeeknum,
+		FUNC_AMORDEGRC = xlfAmordegrc,
+		FUNC_AMORLINC = xlfAmorlinc,
+		FUNC_CONVERT = xlfConvert,
+		FUNC_ACCRINT = xlfAccrint,
+		FUNC_ACCRINTM = xlfAccrintm,
+		FUNC_WORKDAY = xlfWorkday,
+		FUNC_NETWORKDAYS = xlfNetworkdays,
+		FUNC_GCD = xlfGcd,
+		FUNC_MULTINOMIAL = xlfMultinomial,
+		FUNC_LCM = xlfLcm,
+		FUNC_FVSCHEDULE = xlfFvschedule,
+		FUNC_CUBEKPIMEMBER = xlfCubekpimember,
+		FUNC_CUBESET = xlfCubeset,
+		FUNC_CUBESETCOUNT = xlfCubesetcount,
+		FUNC_IFERROR = xlfIferror,
+		FUNC_COUNTIFS = xlfCountifs,
+		FUNC_SUMIFS = xlfSumifs,
+		FUNC_AVERAGEIF = xlfAverageif,
+		FUNC_AVERAGEIFS = xlfAverageifs,
+		FUNC_AGGREGATE = xlfAggregate,
+		FUNC_BINOM_DIST = xlfBinom_dist,
+		FUNC_BINOM_INV = xlfBinom_inv,
+		FUNC_CONFIDENCE_NORM = xlfConfidence_norm,
+		FUNC_CONFIDENCE_T = xlfConfidence_t,
+		FUNC_CHISQ_TEST = xlfChisq_test,
+		FUNC_F_TEST = xlfF_test,
+		FUNC_COVARIANCE_P = xlfCovariance_p,
+		FUNC_COVARIANCE_S = xlfCovariance_s,
+		FUNC_EXPON_DIST = xlfExpon_dist,
+		FUNC_GAMMA_DIST = xlfGamma_dist,
+		FUNC_GAMMA_INV = xlfGamma_inv,
+		FUNC_MODE_MULT = xlfMode_mult,
+		FUNC_MODE_SNGL = xlfMode_sngl,
+		FUNC_NORM_DIST = xlfNorm_dist,
+		FUNC_NORM_INV = xlfNorm_inv,
+		FUNC_PERCENTILE_EXC = xlfPercentile_exc,
+		FUNC_PERCENTILE_INC = xlfPercentile_inc,
+		FUNC_PERCENTRANK_EXC = xlfPercentrank_exc,
+		FUNC_PERCENTRANK_INC = xlfPercentrank_inc,
+		FUNC_POISSON_DIST = xlfPoisson_dist,
+		FUNC_QUARTILE_EXC = xlfQuartile_exc,
+		FUNC_QUARTILE_INC = xlfQuartile_inc,
+		FUNC_RANK_AVG = xlfRank_avg,
+		FUNC_RANK_EQ = xlfRank_eq,
+		FUNC_STDEV_S = xlfStdev_s,
+		FUNC_STDEV_P = xlfStdev_p,
+		FUNC_T_DIST = xlfT_dist,
+		FUNC_T_DIST_2T = xlfT_dist_2t,
+		FUNC_T_DIST_RT = xlfT_dist_rt,
+		FUNC_T_INV = xlfT_inv,
+		FUNC_T_INV_2T = xlfT_inv_2t,
+		FUNC_VAR_S = xlfVar_s,
+		FUNC_VAR_P = xlfVar_p,
+		FUNC_WEIBULL_DIST = xlfWeibull_dist,
+		FUNC_NETWORKDAYS_INTL = xlfNetworkdays_intl,
+		FUNC_WORKDAY_INTL = xlfWorkday_intl,
+		FUNC_ECMA_CEILING = xlfEcma_ceiling,
+		FUNC_ISO_CEILING = xlfIso_ceiling,
+		FUNC_BETA_DIST = xlfBeta_dist,
+		FUNC_BETA_INV = xlfBeta_inv,
+		FUNC_CHISQ_DIST = xlfChisq_dist,
+		FUNC_CHISQ_DIST_RT = xlfChisq_dist_rt,
+		FUNC_CHISQ_INV = xlfChisq_inv,
+		FUNC_CHISQ_INV_RT = xlfChisq_inv_rt,
+		FUNC_F_DIST = xlfF_dist,
+		FUNC_F_DIST_RT = xlfF_dist_rt,
+		FUNC_F_INV = xlfF_inv,
+		FUNC_F_INV_RT = xlfF_inv_rt,
+		FUNC_HYPGEOM_DIST = xlfHypgeom_dist,
+		FUNC_LOGNORM_DIST = xlfLognorm_dist,
+		FUNC_LOGNORM_INV = xlfLognorm_inv,
+		FUNC_NEGBINOM_DIST = xlfNegbinom_dist,
+		FUNC_NORM_S_DIST = xlfNorm_s_dist,
+		FUNC_NORM_S_INV = xlfNorm_s_inv,
+		FUNC_T_TEST = xlfT_test,
+		FUNC_Z_TEST = xlfZ_test,
+		FUNC_ERF_PRECISE = xlfErf_precise,
+		FUNC_ERFC_PRECISE = xlfErfc_precise,
+		FUNC_GAMMALN_PRECISE = xlfGammaln_precise,
+		FUNC_CEILING_PRECISE = xlfCeiling_precise,
+		FUNC_FLOOR_PRECISE = xlfFloor_precise,
 	};
 
-	/**
-	 @return a bit for each number of arguments supported by this function.
-	 
-	 @note
-	 Bit 0 (0x0001U) indicates whether the function accepts @e zero (0) arguments.
-
-	 Bit 1..14 indicate whether the function accepts 1..14 arguments.
-
-	 Bit 15 (0x8000U) indicates the function accepts more than 14 arguments.
-	*/
+	/*
+	 *  @return a bit for each number of arguments supported by this function.
+	 *
+	 *  @note
+	 *  Bit 0 (0x0001U) indicates whether the function accepts @e zero (0) arguments.
+	 *
+	 *  Bit 1..14 indicate whether the function accepts 1..14 arguments.
+	 *
+	 *  Bit 15 (0x8000U) indicates the function accepts more than 14 arguments.
+	 */
 	unsigned16_t NumberOfArgsForExcelFunction(expr_function_code_t func);
 
 
@@ -1301,7 +1291,7 @@ namespace xlslib_core
 		} value_type;
 
 		unsigned always_calc : 1;
-		unsigned calc_on_load: 1;
+		unsigned calc_on_load : 1;
 
 		CGlobalRecords& m_GlobalRecords;
 
@@ -1318,8 +1308,8 @@ namespace xlslib_core
 		virtual ~expression_node_t();
 
 	public:
-		virtual expression_node_t* GetChild(unsigned16_t index) const; 
-		virtual unsigned16_t GetNumberOfChilds(void) const; 
+		virtual expression_node_t* GetChild(unsigned16_t index) const;
+		virtual unsigned16_t GetNumberOfChilds(void) const;
 
 		virtual size_t GetSize(bool include_subtree = false) const;
 		virtual signed8_t DumpData(CUnit &dst, bool include_subtree = false) const;
@@ -1439,7 +1429,7 @@ namespace xlslib_core
 		CGlobalRecords& m_GlobalRecords;
 
 	public:
-		CGlobalRecords& GetGlobalRecords(void) const { return m_GlobalRecords; }; 
+		CGlobalRecords& GetGlobalRecords(void) const { return m_GlobalRecords; }
 	};
 
 	typedef enum cell_addr_mode_t
@@ -1454,7 +1444,7 @@ namespace xlslib_core
 	typedef enum cell_op_class_t
 	{
 		CELLOP_AS_VALUE     = 0x40, //  V  - value, i.e. the value stored in the cell
-		CELLOP_AS_REFERENCE = 0x20, // [R] - reference, i.e. the cell address itself 
+		CELLOP_AS_REFERENCE = 0x20, // [R] - reference, i.e. the cell address itself
 		CELLOP_AS_ARRAY     = 0x60, //  A  - array, i.e. the cell address in {...} array form
 	} cell_op_class_t;
 
@@ -1481,8 +1471,10 @@ namespace xlslib_core
 	class cellarea_deref_node_t : public cell_deref_node_t
 	{
 	public:
-		cellarea_deref_node_t(CGlobalRecords& gRecords, const cell_t& upper_left_corner, const cell_t& lower_right_corner, cell_addr_mode_t attr, cell_op_class_t opclass = CELLOP_AS_VALUE);
-		cellarea_deref_node_t(CGlobalRecords& gRecords, const cell_t& upper_left_corner, const cell_t& lower_right_corner, const worksheet* ws, cell_addr_mode_t attr, cell_op_class_t opclass = CELLOP_AS_VALUE);
+		cellarea_deref_node_t(CGlobalRecords& gRecords, const cell_t& upper_left_corner, const cell_t& lower_right_corner, cell_addr_mode_t attr,
+							  cell_op_class_t opclass = CELLOP_AS_VALUE);
+		cellarea_deref_node_t(CGlobalRecords& gRecords, const cell_t& upper_left_corner, const cell_t& lower_right_corner, const worksheet* ws,
+							  cell_addr_mode_t attr, cell_op_class_t opclass = CELLOP_AS_VALUE);
 		virtual ~cellarea_deref_node_t();
 
 	public:
@@ -1493,7 +1485,7 @@ namespace xlslib_core
 
 	protected:
 		// parent class' [const cell_t* value] ~ upper_left_corner;
-		inline const cell_t* upper_left_corner(void) const { return value; };
+		inline const cell_t* upper_left_corner(void) const { return value; }
 		const cell_t* lower_right_corner;
 	};
 
@@ -1519,8 +1511,8 @@ namespace xlslib_core
 		virtual ~unary_op_node_t();
 
 	public:
-		virtual expression_node_t* GetChild(unsigned16_t index) const; 
-		virtual unsigned16_t GetNumberOfChilds(void) const; 
+		virtual expression_node_t* GetChild(unsigned16_t index) const;
+		virtual unsigned16_t GetNumberOfChilds(void) const;
 
 		virtual size_t GetSize(bool include_subtree = false) const;
 		virtual signed8_t DumpData(CUnit &dst, bool include_subtree = false) const;
@@ -1536,8 +1528,8 @@ namespace xlslib_core
 		virtual ~binary_op_node_t();
 
 	public:
-		virtual expression_node_t* GetChild(unsigned16_t index) const; 
-		virtual unsigned16_t GetNumberOfChilds(void) const; 
+		virtual expression_node_t* GetChild(unsigned16_t index) const;
+		virtual unsigned16_t GetNumberOfChilds(void) const;
 
 		virtual size_t GetSize(bool include_subtree = false) const;
 		virtual signed8_t DumpData(CUnit &dst, bool include_subtree = false) const;
@@ -1581,8 +1573,8 @@ namespace xlslib_core
 		virtual ~unary_func_node_t();
 
 	public:
-		virtual expression_node_t* GetChild(unsigned16_t index) const; 
-		virtual unsigned16_t GetNumberOfChilds(void) const; 
+		virtual expression_node_t* GetChild(unsigned16_t index) const;
+		virtual unsigned16_t GetNumberOfChilds(void) const;
 
 		//virtual size_t GetSize(bool include_subtree = false) const;
 		//virtual signed8_t DumpData(CUnit &dst, bool include_subtree = false) const;
@@ -1598,8 +1590,8 @@ namespace xlslib_core
 		virtual ~binary_func_node_t();
 
 	public:
-		virtual expression_node_t* GetChild(unsigned16_t index) const; 
-		virtual unsigned16_t GetNumberOfChilds(void) const; 
+		virtual expression_node_t* GetChild(unsigned16_t index) const;
+		virtual unsigned16_t GetNumberOfChilds(void) const;
 
 		//virtual size_t GetSize(bool include_subtree = false) const;
 		//virtual signed8_t DumpData(CUnit &dst, bool include_subtree = false) const;
@@ -1615,8 +1607,8 @@ namespace xlslib_core
 		virtual ~n_ary_func_node_t();
 
 	public:
-		virtual expression_node_t* GetChild(unsigned16_t index) const; 
-		virtual unsigned16_t GetNumberOfChilds(void) const; 
+		virtual expression_node_t* GetChild(unsigned16_t index) const;
+		virtual unsigned16_t GetNumberOfChilds(void) const;
 
 		virtual function_basenode_t& PushArg(expression_node_t* arg);
 
@@ -1681,47 +1673,44 @@ namespace xlslib_core
 	};
 
 
-	
-	class formula_t: public cell_t
-    {
-	  friend class worksheet;
 
-    private:
-      formula_t(CGlobalRecords& gRecords, unsigned32_t rowval, unsigned32_t colval, 
-               expression_node_t* ast, bool auto_destruct_expression_tree = false,
-			   xf_t* pxfval = NULL);
-      virtual ~formula_t();
-	  
-      virtual size_t GetSize(void) const;
-      virtual CUnit* GetData(CDataStorage &datastore) const;
+	class formula_t : public cell_t
+	{
+		friend class worksheet;
 
-    private:
-      expression_node_t *ast;
-	  bool auto_destruct_expression_tree;
+	private:
+		formula_t(CGlobalRecords& gRecords, unsigned32_t rowval, unsigned32_t colval,
+				  expression_node_t* ast, bool auto_destruct_expression_tree = false,
+				  xf_t* pxfval = NULL);
+		virtual ~formula_t();
 
-    public:
-      const expression_node_t *GetAST() const {return ast;};
-	  void GetResultEstimate(estimated_formula_result_t &dst) const;
-    };
+		virtual size_t GetSize(void) const;
+		virtual CUnit* GetData(CDataStorage &datastore) const;
+
+	private:
+		expression_node_t *ast;
+		bool auto_destruct_expression_tree;
+
+	public:
+		const expression_node_t *GetAST() const {return ast; }
+		void GetResultEstimate(estimated_formula_result_t &dst) const;
+	};
 
 
 	// forward ref
 	class CDataStorage;
 
-  class CFormula: public CRecord
-    {
-	friend class CDataStorage;
+	class CFormula : public CRecord
+	{
+		friend class CDataStorage;
 
-    protected:
-      CFormula(CDataStorage &datastore, const formula_t& ast);
+	protected:
+		CFormula(CDataStorage &datastore, const formula_t& ast);
 	private:
-      virtual ~CFormula();
-    };
+		virtual ~CFormula();
+	};
 }
-
 
 // #include "common/xls_poppack.h"
 
-#endif 
-//FORMULA_H
-
+#endif

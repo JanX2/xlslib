@@ -3,7 +3,7 @@
  * This file is part of xlslib -- A multiplatform, C/C++ library
  * for dynamic generation of Excel(TM) files.
  *
- * Copyright 2008 David Hoerl All Rights Reserved.
+ * Copyright 2008-2011 David Hoerl All Rights Reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
  * permitted provided that the following conditions are met:
@@ -42,7 +42,7 @@
 #define CPP_BRIDGE_XLS
 
 #include "xlslib/common.h" 
-/* RANGE_FEATURE */
+#include "xlslib/record.h"
 
 #include <xlslib.h>
 

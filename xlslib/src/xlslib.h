@@ -3,7 +3,7 @@
  * This file is part of xlslib -- A multiplatform, C/C++ library
  * for dynamic generation of Excel(TM) files.
  *
- * Copyright 2008 David Hoerl All Rights Reserved.
+ * Copyright 2008-2011 David Hoerl All Rights Reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
  * permitted provided that the following conditions are met:
@@ -43,7 +43,14 @@
 #include "common/xlsys.h"
 #include "common/xlstypes.h"
 
+#include "xlslib/record.h"
 #include "xlslib/globalrec.h"
+#include "xlslib/range.h"
+#include "xlslib/colinfo.h"
+#include "xlslib/row.h"
+#include "xlslib/formula.h"
+
+#include "xlslib/sheetrec.h"
 #include "xlslib/workbook.h"
 
 #if defined(__FRAMEWORK__)

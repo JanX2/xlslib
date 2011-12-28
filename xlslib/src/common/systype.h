@@ -4,7 +4,7 @@
  * for dynamic generation of Excel(TM) files.
  *
  * Copyright 2004 Yeico S. A. de C. V. All Rights Reserved.
- * Copyright 2008 David Hoerl All Rights Reserved.
+ * Copyright 2008-2011 David Hoerl All Rights Reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
  * permitted provided that the following conditions are met:
@@ -26,12 +26,6 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- *
- * File description:
- *
- *
- *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 //#define __DEBUG__
@@ -46,7 +40,6 @@
 
 
 #include "common/xlsys.h"
-
 
 //#   define PHPEXT_TSRMLS_C  tsrm_ls
 //#   define PHPEXT_TSRMLS_D  void ***tsrm_ls
@@ -327,37 +320,4 @@ void xlslib_register_assert_reporter(xlslib_userdef_assertion_reporter *user_fun
 };
 #endif
 
-#endif //SYSTYPE_H
-
-
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * $Log: systype.h,v $
- * Revision 1.9  2009/01/23 16:09:55  dhoerl
- * General cleanup: headers and includes. Fixed issues building mainC and mainCPP
- *
- * Revision 1.8  2009/01/09 03:23:11  dhoerl
- * GlobalRec references tuning
- *
- * Revision 1.7  2009/01/08 02:53:45  dhoerl
- * December Rework
- *
- * Revision 1.6  2008/12/20 15:49:05  dhoerl
- * 1.2.5 fixes
- *
- * Revision 1.5  2008/12/10 03:33:40  dhoerl
- * m_usage was 16bit and wrapped
- *
- * Revision 1.4  2008/12/06 01:42:57  dhoerl
- * John Peterson changes along with lots of tweaks. Many bugs that causes Excel crashes fixed.
- *
- * Revision 1.3  2008/10/25 18:39:53  dhoerl
- * 2008
- *
- * Revision 1.2  2004/09/01 00:47:04  darioglz
- * + Modified to gain independence of target
- *
- * Revision 1.1.1.1  2004/08/27 16:32:05  darioglz
- * Initial Import.
- *
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
+#endif

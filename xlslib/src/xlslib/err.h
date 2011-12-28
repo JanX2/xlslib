@@ -7,14 +7,14 @@
  *
  * Redistribution and use in source and binary forms, with or without modification, are
  * permitted provided that the following conditions are met:
- * 
+ *
  *    1. Redistributions of source code must retain the above copyright notice, this list of
  *       conditions and the following disclaimer.
- * 
+ *
  *    2. Redistributions in binary form must reproduce the above copyright notice, this list
  *       of conditions and the following disclaimer in the documentation and/or other materials
  *       provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY David Hoerl ''AS IS'' AND ANY EXPRESS OR IMPLIED
  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
  * FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL David Hoerl OR
@@ -25,24 +25,15 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- *
- * File description:
- *
- *
- *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
 #ifndef XL_ERR_H
 #define XL_ERR_H
 
 #include "common/xlsys.h"
 #include "common/systype.h"
 
-#include "xlslib/common.h"
-#include "xlslib/cell.h"
-#include "xlslib/record.h"
-#include "xlslib/unit.h"
-
+#include "xlslib/cell.h"	// superclass
 
 // #include "common/xls_pshpack2.h"
 
@@ -61,44 +52,42 @@ namespace xlslib_core
 		XLERR_GETTINGDATA = 0x2B, // #DATA!
 	} errcode_t;
 
-  class err_t: public cell_t
-    {
-	  friend class worksheet;
+	class err_t : public cell_t
+	{
+		friend class worksheet;
 
-    private:
-      err_t(CGlobalRecords& gRecords, unsigned32_t rowval, unsigned32_t colval, errcode_t value, xf_t* pxfval = NULL);
-	  virtual ~err_t(){};
-	  
-    public:
-      virtual size_t GetSize(void) const {return 12;};
-      virtual CUnit* GetData(CDataStorage &datastore) const;
+	private:
+		err_t(CGlobalRecords& gRecords, unsigned32_t rowval, unsigned32_t colval, errcode_t value, xf_t* pxfval = NULL);
+		virtual ~err_t(){}
+
+	public:
+		virtual size_t GetSize(void) const {return 12; }
+		virtual CUnit* GetData(CDataStorage &datastore) const;
 
 	private:
 		errcode_t ecode;
 
 	public:
-		unsigned8_t GetErr(void) const {return ecode;};
-    };
+		unsigned8_t GetErr(void) const {return ecode; }
+	};
 
 
-  // forward ref
+	// forward ref
 	class CDataStorage;
 
-  class CErr: public CRecord
-    {
-	friend class CDataStorage;
+	class CErr : public CRecord
+	{
+		friend class CDataStorage;
 
-    protected:
-      CErr(CDataStorage &datastore, const err_t& errdef);
+	protected:
+		CErr(CDataStorage &datastore, const err_t& errdef);
 
 	private:
-      virtual ~CErr();
-    };
-
+		virtual ~CErr();
+	};
 }
 
 
 // #include "common/xls_poppack.h"
 
 #endif
-

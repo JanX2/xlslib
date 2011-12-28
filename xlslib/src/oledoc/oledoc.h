@@ -4,18 +4,18 @@
  * for dynamic generation of Excel(TM) files.
  *
  * Copyright 2004 Yeico S. A. de C. V. All Rights Reserved.
- * Copyright 2008 David Hoerl All Rights Reserved.
+ * Copyright 2008-2011 David Hoerl All Rights Reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
  * permitted provided that the following conditions are met:
- * 
+ *
  *    1. Redistributions of source code must retain the above copyright notice, this list of
  *       conditions and the following disclaimer.
- * 
+ *
  *    2. Redistributions in binary form must reproduce the above copyright notice, this list
  *       of conditions and the following disclaimer in the documentation and/or other materials
  *       provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY David Hoerl ''AS IS'' AND ANY EXPRESS OR IMPLIED
  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
  * FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL David Hoerl OR
@@ -25,12 +25,6 @@
  * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- *
- * File description:
- *
- *
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
@@ -42,12 +36,8 @@
 #include "oledoc/binfile.h"
 #include "oledoc/olefs.h"
 
-#include "xlslib/common.h"
-#include "xlslib/datast.h"
-
 namespace xlslib_core
 {
-
 #define HEADPOS_ID                  (0x00)
 #define HEADPOS_UK1                 (0x08)
 #define HEADPOS_UK2                 (0x0c)
@@ -96,7 +86,7 @@ namespace xlslib_core
 #define HEADVAL_DFLT_SBAT_COUNT         (0)
 #define HEADVAL_DFLT_XBAT_START        (-2)
 #define HEADVAL_DFLT_XBAT_COUNT         (0)
-// #define HEADVAL_DFLT_BAT_ARRAY    /* Cannot have a default value */ 
+// #define HEADVAL_DFLT_BAT_ARRAY    /* Cannot have a default value */
 
 #define HEAD_SIZE                BIG_BLOCK_SIZE
 #define HEAD_ID_SZ               (0x08)
@@ -114,68 +104,51 @@ namespace xlslib_core
 #define BAT_BLOCKS_PER_MSAT_BLOCK	(BAT_ENTRIES_PER_BLOCK - 1)
 #define HEADER_SAT_SIZE				109
 
-/* 
-******************************
-COleFile class declaration
-******************************
-*/
+/*
+ ******************************
+ ******************************COleFile class declaration
+ ******************************
+ */
 	// Block allocation strategy. Within the OLE header are 109 slots for BAT Sectors.
 	// But, when the file gets big, you run out (127 sectors in each BAT Sector). So,
 	// the 110th BAT has to go into a special block dedicated to hold these. One additional
 	// block gets you 127 more BAT entries, and so forth.
 	//
-	typedef struct {
-		size_t	bat_entries;		// total number of entries
-		size_t	_bat_entries;		// debug - count'm
-		size_t	bat_count;			// total number of sectors used for real data
-		size_t	_bat_count;			// debug - count'm
-		size_t	msat_count;			// total number of additional Master Sector Allocations Blocks (each hold 127)
-		size_t	header_bat_count;	// first 109 used
-		size_t	extra_bat_count;	// in addition to first 109
-		size_t	header_fill;		// padding in main header only!
-		size_t	extra_fill;			// padding in last MSAT!
+	typedef struct
+	{
+		size_t bat_entries;         // total number of entries
+		size_t _bat_entries;        // debug - count'm
+		size_t bat_count;           // total number of sectors used for real data
+		size_t _bat_count;          // debug - count'm
+		size_t msat_count;          // total number of additional Master Sector Allocations Blocks (each hold 127)
+		size_t header_bat_count;    // first 109 used
+		size_t extra_bat_count;     // in addition to first 109
+		size_t header_fill;         // padding in main header only!
+		size_t extra_fill;          // padding in last MSAT!
 	} blocks, *blocksP;
-	
-  class COleDoc: public CBinFile, public COleFileSystem 
-    {
-    private:
-      int  DumpHeader(blocks bks, size_t total_data_size);
-      int  DumpData(void);
-      int  DumpDepots(blocks bks);
-      int  DumpFileSystem(void);
 
-      size_t GetUnicodeName(const char* name, char** ppname_unicode);
-      int DumpNode(COleProp& node);
-  
-      blocks GetBATCount();
+	class COleDoc : public CBinFile, public COleFileSystem
+	{
+	private:
+		int  DumpHeader(blocks bks, size_t total_data_size);
+		int  DumpData(void);
+		int  DumpDepots(blocks bks);
+		int  DumpFileSystem(void);
 
-      static const unsigned8_t OLE_FILETYPE[]; 
- 
-    public:
-      COleDoc();
-      //COleDoc(const string& file_name);
-      virtual ~COleDoc();
+		size_t GetUnicodeName(const char* name, char** ppname_unicode);
+		int DumpNode(COleProp& node);
 
-      int DumpOleFile();
-    };
+		blocks GetBATCount();
 
+		static const unsigned8_t OLE_FILETYPE[];
+
+	public:
+		COleDoc();
+		//COleDoc(const string& file_name);
+		virtual ~COleDoc();
+
+		int DumpOleFile();
+	};
 }
 
-#endif //OLEDOC_H
-
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * $Log: oledoc.h,v $
- * Revision 1.4  2009/03/02 04:08:43  dhoerl
- * Code is now compliant to gcc  -Weffc++
- *
- * Revision 1.3  2009/01/23 16:09:55  dhoerl
- * General cleanup: headers and includes. Fixed issues building mainC and mainCPP
- *
- * Revision 1.2  2008/10/25 18:39:53  dhoerl
- * 2008
- *
- * Revision 1.1.1.1  2004/08/27 16:31:43  darioglz
- * Initial Import.
- *
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
+#endif

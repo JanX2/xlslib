@@ -8,14 +8,14 @@
  *
  * Redistribution and use in source and binary forms, with or without modification, are
  * permitted provided that the following conditions are met:
- * 
+ *
  *    1. Redistributions of source code must retain the above copyright notice, this list of
  *       conditions and the following disclaimer.
- * 
+ *
  *    2. Redistributions in binary form must reproduce the above copyright notice, this list
  *       of conditions and the following disclaimer in the documentation and/or other materials
  *       provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY David Hoerl ''AS IS'' AND ANY EXPRESS OR IMPLIED
  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
  * FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL David Hoerl OR
@@ -26,19 +26,13 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- *
- * File description:
- *
- *
- *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-
-#include "common/xlsys.h"
-
+#include "xlslib/record.h"
+#include "xlslib/recdef.h"
 #include "xlslib/globalrec.h"
 #include "xlslib/datast.h"
+#include "xlslib/common.h"
 
 
 using namespace std;
@@ -47,10 +41,10 @@ using namespace xlslib_core;
 static const unsigned16_t convFail[] = { 'i', 'c', 'o', 'n', 'v', ' ', 'f', 'a', 'i', 'l', 'e', 'd', '!', 0 };
 
 /*
-**********************************************************************
-CGlobalRecords class implementation
-**********************************************************************
-*/
+ **********************************************************************
+ *  CGlobalRecords class implementation
+ **********************************************************************
+ */
 
 CGlobalRecords::CGlobalRecords() :
 	m_Fonts(),
@@ -65,7 +59,7 @@ CGlobalRecords::CGlobalRecords() :
 	m_palette(),
 
 	defaultXF(NULL),
-	  
+
 #ifdef HAVE_ICONV
 	iconv_code(),
 #endif
@@ -91,52 +85,55 @@ CGlobalRecords::CGlobalRecords() :
 	font_t *font2;
 	font_t *font4;
 
-	newfont = new font_t(*this, 0, "Verdana", 200, BOLDNESS_NORMAL, UNDERLINE_NONE, SCRIPT_NONE, ORIG_COLOR_BLACK, FONT_DFLT_ATTRIBUTES, FONT_DFLT_FAMILY, FONT_DFLT_CHARSET);
+	newfont = new font_t(*this, 0, "Verdana", 200, BOLDNESS_NORMAL, UNDERLINE_NONE, SCRIPT_NONE, ORIG_COLOR_BLACK, FONT_DFLT_ATTRIBUTES, FONT_DFLT_FAMILY,
+			FONT_DFLT_CHARSET);
 	// mark as used TWICE to ensure these fonts are never discarded, even when 'unused'
 	newfont->MarkUsed();
 	newfont->MarkUsed();
 	m_DefaultFonts.push_back(newfont);
 	font0 = newfont;
 
-	newfont = new font_t(*this, 1, "Verdana", 200, BOLDNESS_BOLD, UNDERLINE_NONE, SCRIPT_NONE, ORIG_COLOR_BLACK, FONT_ATTR_BOLD, FONT_DFLT_FAMILY, FONT_DFLT_CHARSET);
+	newfont = new font_t(*this, 1, "Verdana", 200, BOLDNESS_BOLD, UNDERLINE_NONE, SCRIPT_NONE, ORIG_COLOR_BLACK, FONT_ATTR_BOLD, FONT_DFLT_FAMILY,
+			FONT_DFLT_CHARSET);
 	newfont->MarkUsed();
 	newfont->MarkUsed();
 	m_DefaultFonts.push_back(newfont);
 	font1 = newfont;
 
-	newfont = new font_t(*this, 2, "Verdana", 200, BOLDNESS_NORMAL, UNDERLINE_NONE, SCRIPT_NONE, ORIG_COLOR_BLACK, FONT_ATTR_ITALIC, FONT_DFLT_FAMILY, FONT_DFLT_CHARSET);
+	newfont = new font_t(*this, 2, "Verdana", 200, BOLDNESS_NORMAL, UNDERLINE_NONE, SCRIPT_NONE, ORIG_COLOR_BLACK, FONT_ATTR_ITALIC, FONT_DFLT_FAMILY,
+			FONT_DFLT_CHARSET);
 	newfont->MarkUsed();
 	newfont->MarkUsed();
 	m_DefaultFonts.push_back(newfont);
 	font2 = newfont;
 
-	newfont = new font_t(*this, 3, "Verdana", 200, BOLDNESS_BOLD, UNDERLINE_NONE, SCRIPT_NONE, ORIG_COLOR_BLACK, FONT_ATTR_BOLD|FONT_ATTR_ITALIC, FONT_DFLT_FAMILY, FONT_DFLT_CHARSET);
+	newfont = new font_t(*this, 3, "Verdana", 200, BOLDNESS_BOLD, UNDERLINE_NONE, SCRIPT_NONE, ORIG_COLOR_BLACK, FONT_ATTR_BOLD|FONT_ATTR_ITALIC,
+			FONT_DFLT_FAMILY, FONT_DFLT_CHARSET);
 	newfont->MarkUsed();
 	newfont->MarkUsed();
 	m_DefaultFonts.push_back(newfont);
 
 	// Excel spec for FONT says ignore 4
-	newfont = new font_t(*this, 5, "Verdana", 200, BOLDNESS_NORMAL, UNDERLINE_NONE, SCRIPT_NONE, ORIG_COLOR_BLACK, FONT_DFLT_ATTRIBUTES, FONT_DFLT_FAMILY, FONT_DFLT_CHARSET);
+	newfont = new font_t(*this, 5, "Verdana", 200, BOLDNESS_NORMAL, UNDERLINE_NONE, SCRIPT_NONE, ORIG_COLOR_BLACK, FONT_DFLT_ATTRIBUTES, FONT_DFLT_FAMILY,
+			FONT_DFLT_CHARSET);
 	newfont->MarkUsed();
 	newfont->MarkUsed();
 	m_DefaultFonts.push_back(newfont);
 	font4 = newfont;
 
-	fontIndex = 6;	// this will be 1 more than last standard font
+	fontIndex = 6;  // this will be 1 more than last standard font
 
-	for(xfIndex=0; xfIndex<21; ++xfIndex)
-	{
+	for(xfIndex=0; xfIndex<21; ++xfIndex) {
 		xf_t*			newxf;
 		font_t			*fnt;
 		format_number_t	fmt;
-		bool			is_cell;
-		
+		bool is_cell;
+
 		fnt		= font0;
 		fmt		= FMT_GENERAL;
 		is_cell	= XF_IS_STYLE;
 
-		switch(xfIndex) 
-		{
+		switch(xfIndex)	{
 		case 0:
 			fnt		= NULL;
 			break;
@@ -175,24 +172,25 @@ CGlobalRecords::CGlobalRecords() :
 		}
 
 //		newxf = is_cell == XF_IS_CELL ? new xf_t(false) : new xf_t(xfi, false/*userXF*/, is_cell, xfIndex?false:true);
-		newxf = new xf_t(*this, false/*userXF*/, is_cell, xfIndex?false:true);
-				
+		newxf = new xf_t(*this, false /*userXF*/, is_cell, xfIndex ? false : true);
+
 		// override defaults
-		if(fnt != NULL)			newxf->SetFont(fnt);
-		if(fnt == font4)		newxf->ClearFlag(XF_ALIGN_ATRFONT);	// Ask Mr Bill why...Done to make binary the same
-		if(fmt != FMT_GENERAL)	newxf->SetFormat(fmt);
-		
+		if(fnt != NULL) {newxf->SetFont(fnt); }
+		if(fnt == font4) {
+			newxf->ClearFlag(XF_ALIGN_ATRFONT);                     // Ask Mr Bill why...Done to make binary the same
+		}
+		if(fmt != FMT_GENERAL) {newxf->SetFormat(fmt); }
+
 		// mark as used TWICE to ensure these formats are never discarded, even when 'unused'
 		newxf->MarkUsed();
 		newxf->MarkUsed();
 		m_DefaultXFs.push_back(newxf);
-		
-		if(xfIndex == XF_PROP_XF_DEFAULT_CELL) 
-		{
+
+		if(xfIndex == XF_PROP_XF_DEFAULT_CELL) {
 			newxf->SetIndex(XF_PROP_XF_DEFAULT_CELL);
 			defaultXF = newxf;
 		}
-		newxf->SetIndex(xfIndex);	// for debugging - not really needed here
+		newxf->SetIndex(xfIndex);   // for debugging - not really needed here
 	}
 	XL_ASSERT(defaultXF);
 
@@ -206,7 +204,7 @@ CGlobalRecords::CGlobalRecords() :
 	m_Styles.push_back(newstyle);
 
 	newstyle = new style_t;
-	newstyle->xfindex = 0x0011; 
+	newstyle->xfindex = 0x0011;
 	newstyle->builtintype = 0x06;
 	newstyle->level = 0xFF;
 	m_Styles.push_back(newstyle);
@@ -236,186 +234,168 @@ CGlobalRecords::CGlobalRecords() :
 	m_Styles.push_back(newstyle);
 
 	// Initialize former static variables
-	font	= m_Fonts.begin();        
-	format	= m_Formats.begin();    
-	xf		= m_XFs.begin();            
-	style	= m_Styles.begin();      
+	font	= m_Fonts.begin();
+	format	= m_Formats.begin();
+	xf		= m_XFs.begin();
+	style	= m_Styles.begin();
 	bsheet	= m_BoundSheets.begin();
 	label   = m_Labels.begin();
 }
-/*
-****************************************
-****************************************
-*/
+
 CGlobalRecords::~CGlobalRecords()
 {
-   // Delete dynamically created lists elements
-   
-   if(!m_DefaultFonts.empty())
-   {
-      for(Font_Vect_Itor_t fnt = m_DefaultFonts.begin(); fnt != m_DefaultFonts.end(); fnt++)
-         delete *fnt;
-      m_DefaultFonts.clear();
-   }
-   if(!m_Fonts.empty())
-   {
-      for(Font_Vect_Itor_t fnt = m_Fonts.begin(); fnt != m_Fonts.end(); fnt++)
-         delete *fnt;
-      m_Fonts.clear();
-   }
-   if(!m_Formats.empty())
-   {
-      for(Format_Vect_Itor_t fnt = m_Formats.begin(); fnt != m_Formats.end(); fnt++)
-         delete *fnt;
-      m_Formats.clear();
-   }
-   if(!m_DefaultXFs.empty())   
-   {
-      for(XF_Vect_Itor_t xfi = m_DefaultXFs.begin(); xfi != m_DefaultXFs.end(); xfi++)
-         delete *xfi;
-      m_DefaultXFs.clear();
-   }
-   if(!m_XFs.empty())   
-   {
-      for(XF_Vect_Itor_t xfi = m_XFs.begin(); xfi != m_XFs.end(); xfi++)
-         delete *xfi;
-      m_XFs.clear();
-   }
-   if(!m_Styles.empty())   
-   {
-      for(Style_Vect_Itor_t xfi = m_Styles.begin(); xfi != m_Styles.end(); xfi++)
-         delete *xfi;
-      m_Styles.clear();
-   }
+	// Delete dynamically created lists elements
 
-   if(!m_BoundSheets.empty())
-   {
-      for(Boundsheet_Vect_Itor_t xfi = m_BoundSheets.begin(); xfi != m_BoundSheets.end(); xfi++)
-         delete *xfi;
-      m_BoundSheets.clear();
-   }
+	if(!m_DefaultFonts.empty()) {
+		for(Font_Vect_Itor_t fnt = m_DefaultFonts.begin(); fnt != m_DefaultFonts.end(); fnt++) {
+			delete *fnt;
+		}
+		m_DefaultFonts.clear();
+	}
+	if(!m_Fonts.empty()) {
+		for(Font_Vect_Itor_t fnt = m_Fonts.begin(); fnt != m_Fonts.end(); fnt++) {
+			delete *fnt;
+		}
+		m_Fonts.clear();
+	}
+	if(!m_Formats.empty()) {
+		for(Format_Vect_Itor_t fnt = m_Formats.begin(); fnt != m_Formats.end(); fnt++) {
+			delete *fnt;
+		}
+		m_Formats.clear();
+	}
+	if(!m_DefaultXFs.empty()) {
+		for(XF_Vect_Itor_t xfi = m_DefaultXFs.begin(); xfi != m_DefaultXFs.end(); xfi++) {
+			delete *xfi;
+		}
+		m_DefaultXFs.clear();
+	}
+	if(!m_XFs.empty()) {
+		for(XF_Vect_Itor_t xfi = m_XFs.begin(); xfi != m_XFs.end(); xfi++) {
+			delete *xfi;
+		}
+		m_XFs.clear();
+	}
+	if(!m_Styles.empty()) {
+		for(Style_Vect_Itor_t xfi = m_Styles.begin(); xfi != m_Styles.end(); xfi++) {
+			delete *xfi;
+		}
+		m_Styles.clear();
+	}
+
+	if(!m_BoundSheets.empty()) {
+		for(Boundsheet_Vect_Itor_t xfi = m_BoundSheets.begin(); xfi != m_BoundSheets.end(); xfi++) {
+			delete *xfi;
+		}
+		m_BoundSheets.clear();
+	}
 }
-
-/*
-****************************************
-****************************************
-*/
 
 size_t CGlobalRecords::EstimateNumBiffUnitsNeeded4Header(void)
 {
 	size_t ret = 5;
 
-	ret += m_Fonts.size();        
+	ret += m_Fonts.size();
 	ret += m_DefaultFonts.size();
-	ret += m_Formats.size();    
-	ret += m_XFs.size();            
-	ret += m_DefaultXFs.size();            
-	ret += m_Styles.size();      
+	ret += m_Formats.size();
+	ret += m_XFs.size();
+	ret += m_DefaultXFs.size();
+	ret += m_Styles.size();
 	ret += m_BoundSheets.size();
 	ret += m_Labels.size();
 
 	return ret;
 }
 
-/*
-****************************************
-****************************************
-*/
-
 CUnit* CGlobalRecords::DumpData(CDataStorage &datastore)
 {
 	CUnit*	m_pCurrentData	= NULL;
-	bool	repeat			= false;
+	bool repeat			 = false;
 
 	XTRACE("CGlobalRecords::DumpData");
 
-	do
-	{
-	  switch(m_DumpState)
-	  {
-         case GLOBAL_INIT:
-            XTRACE("\tINIT");
+	do {
+		switch(m_DumpState) {
+		case GLOBAL_INIT:
+			XTRACE("\tINIT");
 
-            repeat = true;
+			repeat = true;
 
-            font		= m_Fonts.begin();        
-            font_dflt	= m_DefaultFonts.begin();
-            format		= m_Formats.begin();    
-            xf			= m_XFs.begin();            
-            xf_dflt		= m_DefaultXFs.begin();            
-            style		= m_Styles.begin();      
-            bsheet		= m_BoundSheets.begin();
+			font		= m_Fonts.begin();
+			font_dflt	= m_DefaultFonts.begin();
+			format		= m_Formats.begin();
+			xf			= m_XFs.begin();
+			xf_dflt		= m_DefaultXFs.begin();
+			style		= m_Styles.begin();
+			bsheet		= m_BoundSheets.begin();
 
-            m_DumpState = GLOBAL_BOF;
-            break;
+			m_DumpState = GLOBAL_BOF;
+			break;
 
-         case GLOBAL_BOF:			// ********** STATE 1A *************
-            XTRACE("\tBOF");
+		case GLOBAL_BOF:            // ********** STATE 1A *************
+			XTRACE("\tBOF");
 
-            repeat = false;
-
-            m_pCurrentData = datastore.MakeCBof(BOF_TYPE_WBGLOBALS);
-			m_DumpState = GLOBAL_CODEPAGE; // DFH GLOBAL_WINDOW1;
-            break;
-
-         case GLOBAL_CODEPAGE:		// ********** STATE 1B *************
-           XTRACE("\tCODEPAGE");
- 
 			repeat = false;
 
-            m_pCurrentData = datastore.MakeCCodePage(1200);	// UTF-16
-			m_DumpState = GLOBAL_WINDOW1;
-            break;
+			m_pCurrentData = datastore.MakeCBof(BOF_TYPE_WBGLOBALS);
+			m_DumpState = GLOBAL_CODEPAGE; // DFH GLOBAL_WINDOW1;
+			break;
 
-         case GLOBAL_WINDOW1:		// ********** STATE 2A *************
-            XTRACE("\tWINDOW1");
- 
+		case GLOBAL_CODEPAGE:       // ********** STATE 1B *************
+			XTRACE("\tCODEPAGE");
+
+			repeat = false;
+
+			m_pCurrentData = datastore.MakeCCodePage(1200); // UTF-16
+			m_DumpState = GLOBAL_WINDOW1;
+			break;
+
+		case GLOBAL_WINDOW1:        // ********** STATE 2A *************
+			XTRACE("\tWINDOW1");
+
 			repeat = false;
 
 			m_pCurrentData = datastore.MakeCWindow1(m_window1);
 			m_DumpState = GLOBAL_DATEMODE; // GLOBAL_DEFAULTFONTS;
-            break;
+			break;
 
-         case GLOBAL_DATEMODE:		// ********** STATE 2B *************
-            XTRACE("\tDATEMODE");
- 
+		case GLOBAL_DATEMODE:       // ********** STATE 2B *************
+			XTRACE("\tDATEMODE");
+
 			repeat = false;
 
-            m_pCurrentData = datastore.MakeCDateMode();
+			m_pCurrentData = datastore.MakeCDateMode();
 			m_DumpState = GLOBAL_DEFAULTFONTS;
-            break;
+			break;
 
-         case GLOBAL_DEFAULTFONTS:	// ********** STATE 3A *************
+		case GLOBAL_DEFAULTFONTS:   // ********** STATE 3A *************
 			XTRACE("\tDEFAULTFONTS");
-			
+
 			repeat = false;
 			m_pCurrentData = datastore.MakeCFont(*font_dflt);
 
-			if(font_dflt != (--m_DefaultFonts.end()))
-			{
-			   // if it wasn't the last font from the list, increment to get the next one
-			   font_dflt++;
+			if(font_dflt != (--m_DefaultFonts.end())) {
+				// if it wasn't the last font from the list, increment to get the next one
+				font_dflt++;
 			} else {
-			   // if it was the last from the list, change the DumpState
-			   m_DumpState = GLOBAL_FONTS;
-			  // font_dflt = m_DefaultFonts.begin();
+				// if it was the last from the list, change the DumpState
+				m_DumpState = GLOBAL_FONTS;
+				// font_dflt = m_DefaultFonts.begin();
 			}
 			break;
 
-         case GLOBAL_FONTS:// ********** STATE 3B *************
+		case GLOBAL_FONTS: // ********** STATE 3B *************
 			XTRACE("\tFONTS");
 			// First check if the list of fonts is not empty...
-			if(!m_Fonts.empty())
-			{
+			if(!m_Fonts.empty()) {
 				m_pCurrentData = datastore.MakeCFont(*font);
-				if(font != (--m_Fonts.end()))
-				{
-				  // if it was'nt the last font from the list, increment to get the next one
-				  font++;
+				if(font != (--m_Fonts.end())) {
+					// if it was'nt the last font from the list, increment to get the next one
+					font++;
 				} else {
-				  // if it was the last from the list, change the DumpState
-				  m_DumpState = GLOBAL_FORMATS;
-				  font = m_Fonts.begin();
+					// if it was the last from the list, change the DumpState
+					m_DumpState = GLOBAL_FORMATS;
+					font = m_Fonts.begin();
 				}
 				repeat = false;
 			} else {
@@ -426,221 +406,201 @@ CUnit* CGlobalRecords::DumpData(CDataStorage &datastore)
 			}
 			break;
 
-         case GLOBAL_FORMATS: // ********** STATE 4 *************
+		case GLOBAL_FORMATS:  // ********** STATE 4 *************
 			XTRACE("\tFORMATS");
 
-			if(!m_Formats.empty())
-			{
+			if(!m_Formats.empty()) {
 				m_pCurrentData = datastore.MakeCFormat(*format);
-				if(format != (--m_Formats.end()))
-				{
-				  // if it wasn't the last font from the list, increment to get the next one
-				  format++;
+				if(format != (--m_Formats.end())) {
+					// if it wasn't the last font from the list, increment to get the next one
+					format++;
 				} else {
-				  // if it was the last from the list, change the DumpState
-				  m_DumpState = GLOBAL_DEFAULTXFS;
-				  format = m_Formats.begin();
+					// if it was the last from the list, change the DumpState
+					m_DumpState = GLOBAL_DEFAULTXFS;
+					format = m_Formats.begin();
 				}
 				repeat = false;
 			} else {
-			   // if the list is empty, change the dump state.
-			   m_DumpState = GLOBAL_DEFAULTXFS;
-			   // format = m_Formats.begin();
-			   repeat = true;
+				// if the list is empty, change the dump state.
+				m_DumpState = GLOBAL_DEFAULTXFS;
+				// format = m_Formats.begin();
+				repeat = true;
 			}
 			break;
 
-         case GLOBAL_DEFAULTXFS: // ********** STATE 5a *************
+		case GLOBAL_DEFAULTXFS:  // ********** STATE 5a *************
+			XTRACE("\tXDEFAULTFS");
+			m_pCurrentData = datastore.MakeCExtFormat(*xf_dflt);
 
-            XTRACE("\tXDEFAULTFS");
-            m_pCurrentData = datastore.MakeCExtFormat(*xf_dflt);
+			if(xf_dflt != (--m_DefaultXFs.end())) {
+				// if it wasn't the last font from the list, increment to get the next one
+				xf_dflt++;
+				repeat = false;
+			} else {
+				// if it was the last from the list, change the DumpState
+				m_DumpState = GLOBAL_XFS;
+				//xf_dflt = m_DefaultXFs.begin();
+				repeat = false;
+			}
+			break;
 
-            if(xf_dflt != (--m_DefaultXFs.end()))
-            {
-			   // if it wasn't the last font from the list, increment to get the next one
-               xf_dflt++;
-               repeat = false;
-            } else {
-			   // if it was the last from the list, change the DumpState
-               m_DumpState = GLOBAL_XFS;
-               //xf_dflt = m_DefaultXFs.begin();
-			   repeat = false;
-            } 
-            break;
-
-         case GLOBAL_XFS: // ********** STATE 5b *************
+		case GLOBAL_XFS:  // ********** STATE 5b *************
 			XTRACE("\tXFS");
-			if(!m_XFs.empty())
-			{
+			if(!m_XFs.empty()) {
 				m_pCurrentData = datastore.MakeCExtFormat(*xf);
 
-				if(xf != (--m_XFs.end()))
-				{
-				  // if it wasn't the last font from the list, increment to get the next one
-				  xf++;
-				} else {   
-				  // if it was the last from the list, change the DumpState
-				  m_DumpState = GLOBAL_STYLES;
-				  xf = m_XFs.begin();
+				if(xf != (--m_XFs.end())) {
+					// if it wasn't the last font from the list, increment to get the next one
+					xf++;
+				} else {
+					// if it was the last from the list, change the DumpState
+					m_DumpState = GLOBAL_STYLES;
+					xf = m_XFs.begin();
 				}
 				repeat = false;
 			} else {
-			   // if the list is empty, change the dump state.
-			   m_DumpState = GLOBAL_STYLES;
-			   //xf = m_XFs.begin();
-			   repeat = true;
+				// if the list is empty, change the dump state.
+				m_DumpState = GLOBAL_STYLES;
+				//xf = m_XFs.begin();
+				repeat = true;
 			}
 			break;
 
-         case GLOBAL_STYLES: // ********** STATE 6 *************
-            XTRACE("\tSTYLES");
+		case GLOBAL_STYLES:  // ********** STATE 6 *************
+			XTRACE("\tSTYLES");
 
-            if(!m_Styles.empty())
-            {
+			if(!m_Styles.empty()) {
 				// First check if the list of fonts is not empty...
 				m_pCurrentData = datastore.MakeCStyle(*style);
 
-				if(style != (--m_Styles.end()))
-				{
-				  // if it wasn't the last font from the list, increment to get the next one
-				  style++;
+				if(style != (--m_Styles.end()))	{
+					// if it wasn't the last font from the list, increment to get the next one
+					style++;
 				} else {
-				 // if it was the last from the list, change the DumpState
-				  m_DumpState = GLOBAL_PALETTE;
-				  //style = m_Styles.begin();
+					// if it was the last from the list, change the DumpState
+					m_DumpState = GLOBAL_PALETTE;
+					//style = m_Styles.begin();
 				}
 				repeat = false;
-            } else {
-               // if the list is empty, change the dump state.
-               m_DumpState = GLOBAL_PALETTE;
-               //style = m_Styles.begin();
-               repeat = true;
-            }
-            break;
+			} else {
+				// if the list is empty, change the dump state.
+				m_DumpState = GLOBAL_PALETTE;
+				//style = m_Styles.begin();
+				repeat = true;
+			}
+			break;
 
-         case GLOBAL_PALETTE: // ********** STATE 7 *************
-            XTRACE("\tPALETTE");
- 
+		case GLOBAL_PALETTE:  // ********** STATE 7 *************
+			XTRACE("\tPALETTE");
+
 			repeat = false;
 
-            m_pCurrentData = m_palette.GetData(datastore);
-            //Delete_Pointer(m_pCurrentData);
+			m_pCurrentData = m_palette.GetData(datastore);
+			//Delete_Pointer(m_pCurrentData);
 			//m_pCurrentData = (CUnit*)(new CPalette(datastore, (colors ? colors : default_palette)));
 			m_DumpState = GLOBAL_BOUNDSHEETS;
-            break;
+			break;
 
-         case GLOBAL_BOUNDSHEETS: // ********** STATE 8 *************
+		case GLOBAL_BOUNDSHEETS:  // ********** STATE 8 *************
 			XTRACE("\tBOUNDSHEETS");
-			if(!m_BoundSheets.empty())
-			{
+			if(!m_BoundSheets.empty()) {
 				// First check if the list of sheets is not empty...
 				m_pCurrentData = (*bsheet)->SetSheetData(datastore.MakeCBSheet(*bsheet));
 
-				if(bsheet != (--m_BoundSheets.end()))
-				{
-				  // if it wasn't the last sheet from the list, increment to get the next one
-				  bsheet++;
+				if(bsheet != (--m_BoundSheets.end())) {
+					// if it wasn't the last sheet from the list, increment to get the next one
+					bsheet++;
 				} else {
-				  // if it was the last from the list, change the DumpState
-				  m_DumpState = GLOBAL_SST;
-				  bsheet = m_BoundSheets.begin();
+					// if it was the last from the list, change the DumpState
+					m_DumpState = GLOBAL_SST;
+					bsheet = m_BoundSheets.begin();
 				}
 				repeat = false;
 			} else {
-			   // if the list is empty, change the dump state.
-			   m_DumpState = GLOBAL_SST;
-			   bsheet = m_BoundSheets.begin();
-			   repeat = true;
+				// if the list is empty, change the dump state.
+				m_DumpState = GLOBAL_SST;
+				bsheet = m_BoundSheets.begin();
+				repeat = true;
 			}
 			break;
 
-		 case GLOBAL_SST: // ********** STATE 9 *************
+		case GLOBAL_SST:  // ********** STATE 9 *************
 			XTRACE("\tBOUNDSHEETS");
-			if(!m_Labels.empty())
-			{
+
+			if(!m_Labels.empty()) {
 				// First check if the list of sheets is not empty...
 				m_pCurrentData = datastore.MakeSST(m_Labels);
-				  // if it was the last from the list, change the DumpState
+				// if it was the last from the list, change the DumpState
 				m_DumpState = GLOBAL_EOF;
 				repeat = false;
 			} else {
-			   // if the list is empty, change the dump state.
-			   m_DumpState = GLOBAL_EOF;
-			   label = m_Labels.begin();
-			   repeat = true;
+				// if the list is empty, change the dump state.
+				m_DumpState = GLOBAL_EOF;
+				label = m_Labels.begin();
+				repeat = true;
 			}
 			break;
 
-         case GLOBAL_EOF:// ********** STATE 10 *************
-            XTRACE("\tEOF");
+		case GLOBAL_EOF: // ********** STATE 10 *************
+			XTRACE("\tEOF");
 
-            repeat = false;
+			repeat = false;
 
-            m_pCurrentData = datastore.MakeCEof();
+			m_pCurrentData = datastore.MakeCEof();
 			m_DumpState = GLOBAL_FINISH;
-            break;
+			break;
 
-         case GLOBAL_FINISH: // ********** STATE 11 *************
-            XTRACE("\tFINISH");
+		case GLOBAL_FINISH:  // ********** STATE 11 *************
+			XTRACE("\tFINISH");
 
-            repeat = false;
+			repeat = false;
 
-            m_pCurrentData = NULL;
-            m_DumpState = GLOBAL_INIT;
-            break;
+			m_pCurrentData = NULL;
+			m_DumpState = GLOBAL_INIT;
+			break;
 
-         default:
-            /* It shouldn't get here */
-            XTRACE("\tDEFAULT");
-            break;
-      }
-   } while(repeat);
+		default:
+			/* It shouldn't get here */
+			XTRACE("\tDEFAULT");
+			break;
+		}
+	} while(repeat);
 
-   return m_pCurrentData;
+	return m_pCurrentData;
 }
 
-
-/*
-****************************************
-****************************************
-*/
 void CGlobalRecords::AddBoundingSheet(unsigned32_t streampos,
-                                      unsigned16_t attributes,
-                                      u16string& sheetname)
+									  unsigned16_t attributes,
+									  u16string& sheetname)
 {
-   boundsheet_t* bsheetdef = new boundsheet_t(*this, sheetname, attributes, streampos);
+	boundsheet_t* bsheetdef = new boundsheet_t(*this, sheetname, attributes, streampos);
 
-   m_BoundSheets.push_back(bsheetdef);
+	m_BoundSheets.push_back(bsheetdef);
 }
 
-/*
-****************************************
-****************************************
-*/
 void CGlobalRecords::AddBoundingSheet(boundsheet_t* bsheetdef)
 {
-   m_BoundSheets.push_back(bsheetdef);
+	m_BoundSheets.push_back(bsheetdef);
 }
-
 
 /*
-****************************************
-It returns pointers to BoundingSheets one by one until
-all are spanned, in which case the returned pointer is NULL
-****************************************
-*/
+ ****************************************
+ *  It returns pointers to BoundingSheets one by one until
+ *  all are spanned, in which case the returned pointer is NULL
+ ****************************************
+ */
 void CGlobalRecords::GetBoundingSheets(Boundsheet_Vect_Itor_t& bs)
 {
-   if(bs != m_BoundSheets.end())
-      bs++;
-   else
-      bs = m_BoundSheets.begin();
+	if(bs != m_BoundSheets.end()) {
+		bs++;
+	} else {
+		bs = m_BoundSheets.begin();
+	}
 }
-
 
 Boundsheet_Vect_Itor_t CGlobalRecords::GetFirstBoundSheet()
 {
-   return m_BoundSheets.begin();
+	return m_BoundSheets.begin();
 }
 
 Boundsheet_Vect_Itor_t CGlobalRecords::GetBoundSheetAt(unsigned32_t idx)
@@ -648,54 +608,41 @@ Boundsheet_Vect_Itor_t CGlobalRecords::GetBoundSheetAt(unsigned32_t idx)
 	Boundsheet_Vect_Itor_t bs;
 
 	bs = m_BoundSheets.begin();
-	while(idx--) bs++;
-	
+	while(idx--) {
+		bs++;
+	}
+
 	return bs;
 }
 
 Boundsheet_Vect_Itor_t CGlobalRecords::GetEndBoundSheet()
 {
-   return m_BoundSheets.end();
+	return m_BoundSheets.end();
 }
 
-/*
-****************************************
-****************************************
-*/
 void CGlobalRecords::AddFormat(format_t* newformat)
 {
 	newformat->SetIndex(formatIndex++);
 	m_Formats.push_back(newformat);
 }
 
-/*
-****************************************
-****************************************
-*/
 void CGlobalRecords::AddFont(font_t* newfont)
 {
 	newfont->SetIndex(fontIndex++);
 	m_Fonts.push_back(newfont);
 }
+
 font_t* CGlobalRecords::GetDefaultFont() const
 {
-   return *m_DefaultFonts.begin();
+	return *m_DefaultFonts.begin();
 }
 
-/*
-****************************************
-****************************************
-*/
 void CGlobalRecords::AddXFormat(xf_t* xfi)
 {
 	xfi->SetIndex(xfIndex++);
 	m_XFs.push_back(xfi);
 }
 
-/*
-****************************************
-****************************************
-*/
 void CGlobalRecords::AddLabelSST(const label_t& labeldef)
 {
 	if(labeldef.GetInSST()) {
@@ -728,35 +675,20 @@ void CGlobalRecords::DeleteLabelSST(const label_t& labeldef)
 	}
 }
 
-/*
-****************************************
-****************************************
-*/
 bool CGlobalRecords::SetColor(unsigned8_t r, unsigned8_t g, unsigned8_t b, unsigned8_t idx)
 {
 	return m_palette.setColor(r, g, b, idx);
 }
 
-/*
-****************************************
-****************************************
-*/
 xf_t* CGlobalRecords::GetDefaultXF() const
 {
 	return defaultXF;
 }
-/*
-***********************************
-***********************************
-*/
+
 font_t* CGlobalRecords::fontdup(unsigned8_t fontnum) const
 {
-   return font_t::fontDup(m_DefaultFonts[fontnum]);
+	return font_t::fontDup(m_DefaultFonts[fontnum]);
 }
-/*
-***********************************
-***********************************
-*/
 
 void CGlobalRecords::str16toascii(const u16string& str1, std::string& str2)
 {
@@ -771,31 +703,28 @@ void CGlobalRecords::str16toascii(const u16string& str1, std::string& str2)
 	cBegin	= str1.begin();
 	cEnd	= str1.end();
 
-	while(cBegin != cEnd) 
-	{
-		unsigned16_t c = *cBegin++;		
+	while(cBegin != cEnd) {
+		unsigned16_t c = *cBegin++;
 
-		if (c > 0x7F)
-		{
+		if (c > 0x7F) {
 			c = '?';
 		}
 		str2.push_back((char)c);
 	}
 }
 
-
 #ifdef HAVE_ICONV
 
-void  CGlobalRecords::wide2str16(const ustring& str1, u16string& str2)
+void CGlobalRecords::wide2str16(const ustring& str1, u16string& str2)
 {
-	size_t					resultSize, inbytesleft, outbytesleft;
+	size_t resultSize, inbytesleft, outbytesleft;
 	const wchar_t			*inbuf;
-	iconv_t					cd;
+	iconv_t	cd;
 	unsigned16_t			*outbuf, *origOutbuf;
-	
+
 	cd = iconv_open(UCS_2_INTERNAL, iconv_code.c_str());
 	// no need to test return code as we ALREADY did this when setting iconv_code in workbook
-	
+
 	inbytesleft		= str1.size() * sizeof(unichar_t);
 	outbytesleft	= inbytesleft * 4 * sizeof(unsigned16_t); // This is for sure a mistake and should be str1.size() * sizeof(unsigned16_t) (dfh)
 
@@ -816,27 +745,11 @@ void  CGlobalRecords::wide2str16(const ustring& str1, u16string& str2)
 
 #else
 
-void  CGlobalRecords::wide2str16(const ustring& str1, u16string& str2)
+void CGlobalRecords::wide2str16(const ustring& str1, u16string& str2)
 {
 	ustring::const_iterator	cBegin, cEnd;
-	size_t	len;
+	size_t len;
 
-#if !defined(_MSC_VER) && !defined(__MINGW32__) /*  MSVC2005 doesn't accept this for ANSI builds at least! */
-	// if character size of both strings is the same, well, we should be able to just assign them
-	if(sizeof(unichar_t) == sizeof(unsigned16_t)) {
-#    ifdef __BCPLUSPLUS__
-      // Not sure why the assignment didn't work in BC++. 
-      // It looks like mismatched types.  I think will do the same thing
-      // RLN 111208
-      for (int i = 0; i < str1.length();i++)
-         str2.append(1,(wchar_t)str1.c_str()[i]);
-#    else
-		str2 = str1;
-#    endif
-		return;
-	}
-#endif
-	
 	str2.clear();
 
 	len = str1.length();
@@ -844,10 +757,9 @@ void  CGlobalRecords::wide2str16(const ustring& str1, u16string& str2)
 
 	cBegin	= str1.begin();
 	cEnd	= str1.end();
-	
-	while(cBegin != cEnd) 
-	{
-		str2.push_back((unsigned16_t)*cBegin++);		
+
+	while(cBegin != cEnd) {
+		str2.push_back((unsigned16_t)*cBegin++);
 	}
 	XL_ASSERT(str2.length() == str1.length());
 }
@@ -856,29 +768,28 @@ void  CGlobalRecords::wide2str16(const ustring& str1, u16string& str2)
 
 #ifdef HAVE_ICONV
 
-void  CGlobalRecords::char2str16(const string& str1, u16string& str2)
+void CGlobalRecords::char2str16(const string& str1, u16string& str2)
 {
-	string::const_iterator	cBegin, cEnd;
-	size_t	len;
+	string::const_iterator cBegin, cEnd;
+	size_t len;
 
 	str2.clear();
 
 	// test for UTF
 	cBegin	= str1.begin();
 	cEnd	= str1.end();
-	
+
 	unsigned8_t c = 0;
-	while(cBegin != cEnd) 
-	{
-		c |= *cBegin++;		
+	while(cBegin != cEnd) {
+		c |= *cBegin++;
 	}
-	
+
 	if(c & 0x80) {
 		const char				*inbuf;
-		iconv_t					cd;
+		iconv_t	cd;
 		unsigned16_t			*outbuf, *origOutbuf;
-		size_t					resultSize, inbytesleft, outbytesleft;
-		
+		size_t resultSize, inbytesleft, outbytesleft;
+
 		cd = iconv_open(UCS_2_INTERNAL, "UTF-8");
 		XL_ASSERT(cd != (iconv_t)(-1));
 
@@ -898,17 +809,15 @@ void  CGlobalRecords::char2str16(const string& str1, u16string& str2)
 			str2.assign(origOutbuf, (size_t)(outbuf - origOutbuf));
 		}
 		free((void *)origOutbuf);
-
 	} else {
 		len = str1.length();
 		str2.reserve(len);
 
 		cBegin	= str1.begin();
 		cEnd	= str1.end();
-		
-		while(cBegin != cEnd) 
-		{
-			str2.push_back((unsigned16_t)*cBegin++);		
+
+		while(cBegin != cEnd) {
+			str2.push_back((unsigned16_t)*cBegin++);
 		}
 		XL_ASSERT(str2.length() == str1.length());
 	}
@@ -916,11 +825,11 @@ void  CGlobalRecords::char2str16(const string& str1, u16string& str2)
 
 #else
 
-void  CGlobalRecords::char2str16(const string& str1, u16string& str2)
+void CGlobalRecords::char2str16(const string& str1, u16string& str2)
 {
-	string::const_iterator	cBegin, cEnd;
-	size_t	len;
-	
+	string::const_iterator cBegin, cEnd;
+	size_t len;
+
 	str2.clear();
 
 	len = str1.length();
@@ -928,13 +837,13 @@ void  CGlobalRecords::char2str16(const string& str1, u16string& str2)
 
 	cBegin	= str1.begin();
 	cEnd	= str1.end();
-	
-	while(cBegin != cEnd) 
-	{
-		str2.push_back((unsigned16_t)*cBegin++);		
+
+	while(cBegin != cEnd) {
+		str2.push_back((unsigned16_t)*cBegin++);
 	}
 	XL_ASSERT(str2.length() == str1.length());
 }
+
 #endif
 
 bool CGlobalRecords::IsASCII(const std::string& str)
@@ -946,12 +855,11 @@ bool CGlobalRecords::IsASCII(const std::string& str)
 
 	unsigned16_t c = 0;
 
-	while(cBegin != cEnd) 
-	{
-		c |= *cBegin++;		
+	while(cBegin != cEnd) {
+		c |= *cBegin++;
 	}
 
-	return (c <= 0x7F);
+	return c <= 0x7F;
 }
 
 bool CGlobalRecords::IsASCII(const u16string& str)
@@ -963,58 +871,12 @@ bool CGlobalRecords::IsASCII(const u16string& str)
 
 	unsigned16_t c = 0;
 
-	while(cBegin != cEnd) 
-	{
-		c |= *cBegin++;		
+	while(cBegin != cEnd) {
+		c |= *cBegin++;
 	}
 
-	return (c <= 0x7F);
+	return c <= 0x7F;
 }
-
-
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * $Log: globalrec.cpp,v $
- * Revision 1.12  2009/03/02 04:08:43  dhoerl
- * Code is now compliant to gcc  -Weffc++
- *
- * Revision 1.11  2009/01/23 16:09:55  dhoerl
- * General cleanup: headers and includes. Fixed issues building mainC and mainCPP
- *
- * Revision 1.10  2009/01/09 15:04:26  dhoerl
- * GlobalRec now used only as a reference.
- *
- * Revision 1.9  2009/01/09 03:23:12  dhoerl
- * GlobalRec references tuning
- *
- * Revision 1.8  2009/01/08 22:16:06  dhoerl
- * January Rework
- *
- * Revision 1.7  2009/01/08 02:52:59  dhoerl
- * December Rework
- *
- * Revision 1.6  2008/12/20 15:49:05  dhoerl
- * 1.2.5 fixes
- *
- * Revision 1.5  2008/12/11 21:12:40  dhoerl
- * Cleanup
- *
- * Revision 1.4  2008/12/10 03:34:31  dhoerl
- * m_usage was 16bit and wrapped
- *
- * Revision 1.3  2008/12/06 01:42:57  dhoerl
- * John Peterson changes along with lots of tweaks. Many bugs that causes Excel crashes fixed.
- *
- * Revision 1.2  2008/10/25 18:39:54  dhoerl
- * 2008
- *
- * Revision 1.1.1.1  2004/08/27 16:31:56  darioglz
- * Initial Import.
- *
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
-
-
-
 
 #if defined(_MSC_VER)
 #undef new
@@ -1022,6 +884,5 @@ void *operator_new_dbg(size_t count, const char *f, int l)
 {
 	return operator new(count, _CLIENT_BLOCK, f, l);
 }
+
 #endif
-
-

@@ -7,14 +7,14 @@
  *
  * Redistribution and use in source and binary forms, with or without modification, are
  * permitted provided that the following conditions are met:
- * 
+ *
  *    1. Redistributions of source code must retain the above copyright notice, this list of
  *       conditions and the following disclaimer.
- * 
+ *
  *    2. Redistributions in binary form must reproduce the above copyright notice, this list
  *       of conditions and the following disclaimer in the documentation and/or other materials
  *       provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY David Hoerl ''AS IS'' AND ANY EXPRESS OR IMPLIED
  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
  * FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL David Hoerl OR
@@ -25,57 +25,50 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- *
- * File description:
- *
- *
- *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-#include "common/xlsys.h"
-
+#include "xlslib/record.h"
 #include "xlslib/boolean.h"
 #include "xlslib/datast.h"
+#include "xlslib/rectypes.h"
 
 
 using namespace xlslib_core;
 
 /*
-*********************************
-boolean_t class implementation
-*********************************
-*/
+ *********************************
+ * boolean_t class implementation
+ *********************************
+ */
 boolean_t::boolean_t(CGlobalRecords& gRecords, unsigned32_t rowval, unsigned32_t colval, bool value, xf_t* pxfval) :
 	cell_t(gRecords, rowval, colval, pxfval)
 {
-   num = value;
+	num = value;
 }
 
-CUnit* boolean_t::GetData(CDataStorage &datastore) const {
-   return datastore.MakeCBoolean(*this);	// NOTE: this pointer HAS to be deleted elsewhere.
+CUnit* boolean_t::GetData(CDataStorage &datastore) const
+{
+	return datastore.MakeCBoolean(*this);   // NOTE: this pointer HAS to be deleted elsewhere.
 }
 
 /*
-*********************************
-CBoolean class implementation
-*********************************
-*/
-
-CBoolean::CBoolean(CDataStorage &datastore, const boolean_t& booldef):
-		CRecord(datastore)
+ *********************************
+ * CBoolean class implementation
+ *********************************
+ */
+CBoolean::CBoolean(CDataStorage &datastore, const boolean_t& booldef) :
+	CRecord(datastore)
 {
-   SetRecordType(RECTYPE_BOOLERR);	
-   AddValue16((unsigned16_t)booldef.GetRow());
-   AddValue16((unsigned16_t)booldef.GetCol());
-   AddValue16((unsigned16_t)booldef.GetXFIndex());
-   AddValue8((unsigned8_t)booldef.GetBoolean());
-   AddValue8(0);
+	SetRecordType(RECTYPE_BOOLERR);
+	AddValue16((unsigned16_t)booldef.GetRow());
+	AddValue16((unsigned16_t)booldef.GetCol());
+	AddValue16((unsigned16_t)booldef.GetXFIndex());
+	AddValue8((unsigned8_t)booldef.GetBoolean());
+	AddValue8(0);
 
-   SetRecordLength(GetDataSize()-4);
+	SetRecordLength(GetDataSize()-RECORD_HEADER_SIZE);
 }
 
 CBoolean::~CBoolean()
 {
 }
-

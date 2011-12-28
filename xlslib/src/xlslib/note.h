@@ -4,18 +4,18 @@
  * for dynamic generation of Excel(TM) files.
  *
  * Copyright 2004 Yeico S. A. de C. V. All Rights Reserved.
- * Copyright 2008 David Hoerl All Rights Reserved.
+ * Copyright 2008-2011 David Hoerl All Rights Reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
  * permitted provided that the following conditions are met:
- * 
+ *
  *    1. Redistributions of source code must retain the above copyright notice, this list of
  *       conditions and the following disclaimer.
- * 
+ *
  *    2. Redistributions in binary form must reproduce the above copyright notice, this list
  *       of conditions and the following disclaimer in the documentation and/or other materials
  *       provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY David Hoerl ''AS IS'' AND ANY EXPRESS OR IMPLIED
  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
  * FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL David Hoerl OR
@@ -26,79 +26,67 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- *
- * File description:
- *
- *
- *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
 #ifndef NOTE_H
 #define NOTE_H
 
 #include "common/xlsys.h"
 #include "common/systype.h"
 
-#include "xlslib/common.h"
-#include "xlslib/cell.h"
-#include "xlslib/record.h"
-#include "xlslib/unit.h"
-
+#include "xlslib/cell.h"	// superclass
 
 // #include "common/xls_pshpack2.h"
 
 namespace xlslib_core
 {
+	class note_t : public cell_t
+	{
+		friend class worksheet;
 
-  class note_t: public cell_t
-    {
-	  friend class worksheet;
-
-    private:
+	private:
 		note_t(CGlobalRecords& gRecords, unsigned32_t rowval, unsigned32_t colval, const std::string& text, const std::string& author, xf_t* pxfval = NULL);
 		note_t(CGlobalRecords& gRecords, unsigned32_t rowval, unsigned32_t colval, const std::ustring& text, const std::ustring& author, xf_t* pxfval = NULL);
 #ifndef __FRAMEWORK__
 		note_t(CGlobalRecords& gRecords, unsigned32_t rowval, unsigned32_t colval, const u16string& text, const u16string& author, xf_t* pxfval = NULL);
 #endif
-	  virtual ~note_t();
-	  
-    public:
-      virtual size_t GetSize(void) const;
-      virtual CUnit* GetData(CDataStorage &datastore) const;
+		virtual ~note_t();
+
+	public:
+		virtual size_t GetSize(void) const;
+		virtual CUnit* GetData(CDataStorage &datastore) const;
 
 	private:
 		u16string text;
 		u16string author;
 
 	public:
-		const u16string& GetNote(void) const {return text;};
-		const u16string& GetAuthor(void) const {return author;};
-    };
+		const u16string& GetNote(void) const {return text; }
+		const u16string& GetAuthor(void) const {return author; }
+	};
 
 
-  // forward ref
+	// forward ref
 	class CDataStorage;
 
-  class CNote: public CRecord
-    {
-	friend class CDataStorage;
+	class CNote : public CRecord
+	{
+		friend class CDataStorage;
 
-    protected:
-      CNote(CDataStorage &datastore, const note_t& notedef);
+	protected:
+		CNote(CDataStorage &datastore, const note_t& notedef);
 
-	  void mk_obj_Record(const note_t* notedef);
-	  void mk_obj_CMO_SubRecord(const note_t* notedef);
-	  void mk_obj_END_SubRecord(const note_t* notedef);
-	  void mk_obj_NTS_SubRecord(const note_t* notedef);
+		void mk_obj_Record(const note_t* notedef);
+		void mk_obj_CMO_SubRecord(const note_t* notedef);
+		void mk_obj_END_SubRecord(const note_t* notedef);
+		void mk_obj_NTS_SubRecord(const note_t* notedef);
 
 	private:
-      virtual ~CNote();
-    };
-
+		virtual ~CNote();
+	};
 }
 
 
 // #include "common/xls_poppack.h"
 
 #endif
-

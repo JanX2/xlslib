@@ -4,18 +4,18 @@
  * for dynamic generation of Excel(TM) files.
  *
  * Copyright 2004 Yeico S. A. de C. V. All Rights Reserved.
- * Copyright 2008 David Hoerl All Rights Reserved.
+ * Copyright 2008-2011 David Hoerl All Rights Reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
  * permitted provided that the following conditions are met:
- * 
+ *
  *    1. Redistributions of source code must retain the above copyright notice, this list of
  *       conditions and the following disclaimer.
- * 
+ *
  *    2. Redistributions in binary form must reproduce the above copyright notice, this list
  *       of conditions and the following disclaimer in the documentation and/or other materials
  *       provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY David Hoerl ''AS IS'' AND ANY EXPRESS OR IMPLIED
  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
  * FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL David Hoerl OR
@@ -26,12 +26,6 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- *
- * File description:
- *
- *
- *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 #ifndef COLORS_H
@@ -40,20 +34,14 @@
 #include "common/xlsys.h"
 #include "common/systype.h"
 
-#include "xlslib/common.h"
-
-#include "xlslib/record.h"
-#include "xlslib/unit.h"
-
-
 // #include "common/xls_pshpack2.h"
 
 namespace xlslib_core
 {
 // Colors can be "base" (< 8) or palette (changes with BIFF)
-#define COLOR_CODE_BLACK				0x08	
+#define COLOR_CODE_BLACK				0x08
 // If you use 0x00, Excel won't open the Cell Format dialog box!
-#define COLOR_CODE_WHITE				0x09	
+#define COLOR_CODE_WHITE				0x09
 // If you use 0x01, Excel won't open the Cell Format dialog box!
 
 #define COLOR_CODE_RED					0x0a
@@ -72,7 +60,7 @@ namespace xlslib_core
 #define COLOR_CODE_GRAY25				0x16
 #define COLOR_CODE_GRAY50				0x17
 
-// In Excel2004 on Mac, these represent the lower 16 colors, ordered left to right, 
+// In Excel2004 on Mac, these represent the lower 16 colors, ordered left to right,
 // starting at the top row and moving down
 #define COLOR_CODE_PERIWINKLE			0x18
 #define COLOR_CODE_DARK_BLUE2			0x19
@@ -82,7 +70,7 @@ namespace xlslib_core
 #define COLOR_CODE_YELLOW2				0x1d
 #define COLOR_CODE_LIGHT_TURQUOISE2		0x1e
 #define COLOR_CODE_TURQUOISE2			0x1f
-// ---
+	// ---
 #define COLOR_CODE_DARK_PURPLE			0x20
 #define COLOR_CODE_VIOLET2				0x21
 #define COLOR_CODE_CORAL				0x22
@@ -121,27 +109,30 @@ namespace xlslib_core
 #define COLOR_CODE_SYS_WIND_FG			0x40
 #define COLOR_CODE_SYS_WIND_BG			0x41
 
-// Good reference: http://www.mvps.org/dmcritchie/excel/colors.htm
+	class CUnit;
+	class CDataStorage;
 
-typedef enum
-{
- ORIG_COLOR_BLACK = 0,	// Well, to get the default fonts etc to use same value as Excel outputs
+	// Good reference: http://www.mvps.org/dmcritchie/excel/colors.htm
 
- // Excel top 40 colors
- CLR_BLACK = 1,  CLR_BROWN,       CLR_OLIVE_GREEN, CLR_DARK_GREEN,      CLR_DARK_TEAL,      CLR_DARK_BLUE,  CLR_INDIGO,     CLR_GRAY80,
- CLR_DARK_RED,   CLR_ORANGE,      CLR_DARK_YELLOW, CLR_GREEN,           CLR_TEAL,           CLR_BLUE,       CLR_BLUE_GRAY,  CLR_GRAY50,
- CLR_RED,        CLR_LITE_ORANGE, CLR_LIME,        CLR_SEA_GREEN,       CLR_AQUA,           CLR_LITE_BLUE,  CLR_VIOLET,     CLR_GRAY40,
- CLR_PINK,       CLR_GOLD,        CLR_YELLOW,      CLR_BRITE_GREEN,     CLR_TURQUOISE,      CLR_SKY_BLUE,   CLR_PLUM,       CLR_GRAY25,
- CLR_ROSE,       CLR_TAN,         CLR_LITE_YELLOW, CLR_LITE_GREEN,      CLR_LITE_TURQUOISE, CLR_PALE_BLUE,  CLR_LAVENDER,   CLR_WHITE,
+	typedef enum
+	{
+		ORIG_COLOR_BLACK = 0,	// Well, to get the default fonts etc to use same value as Excel outputs
 
- // Bottom 16 colors
- CLR_PERIWINKLE, CLR_PLUM2,       CLR_IVORY,       CLR_LITE_TURQUOISE2, CLR_DARK_PURPLE,     CLR_CORAL,     CLR_OCEAN_BLUE, CLR_ICE_BLUE,  
- CLR_DARK_BLUE2, CLR_PINK2,       CLR_YELLOW2,     CLR_TURQUOISE2,      CLR_VIOLET2,         CLR_DARK_RED2, CLR_TEAL2,      CLR_BLUE2,
+		// Excel top 40 colors
+		CLR_BLACK = 1,  CLR_BROWN,       CLR_OLIVE_GREEN, CLR_DARK_GREEN,      CLR_DARK_TEAL,      CLR_DARK_BLUE,  CLR_INDIGO,     CLR_GRAY80,
+		CLR_DARK_RED,   CLR_ORANGE,      CLR_DARK_YELLOW, CLR_GREEN,           CLR_TEAL,           CLR_BLUE,       CLR_BLUE_GRAY,  CLR_GRAY50,
+		CLR_RED,        CLR_LITE_ORANGE, CLR_LIME,        CLR_SEA_GREEN,       CLR_AQUA,           CLR_LITE_BLUE,  CLR_VIOLET,     CLR_GRAY40,
+		CLR_PINK,       CLR_GOLD,        CLR_YELLOW,      CLR_BRITE_GREEN,     CLR_TURQUOISE,      CLR_SKY_BLUE,   CLR_PLUM,       CLR_GRAY25,
+		CLR_ROSE,       CLR_TAN,         CLR_LITE_YELLOW, CLR_LITE_GREEN,      CLR_LITE_TURQUOISE, CLR_PALE_BLUE,  CLR_LAVENDER,   CLR_WHITE,
 
- CLR_SYS_WIND_FG, CLR_SYS_WIND_BG,
+		// Bottom 16 colors
+		CLR_PERIWINKLE, CLR_PLUM2,       CLR_IVORY,       CLR_LITE_TURQUOISE2, CLR_DARK_PURPLE,     CLR_CORAL,     CLR_OCEAN_BLUE, CLR_ICE_BLUE,  
+		CLR_DARK_BLUE2, CLR_PINK2,       CLR_YELLOW2,     CLR_TURQUOISE2,      CLR_VIOLET2,         CLR_DARK_RED2, CLR_TEAL2,      CLR_BLUE2,
 
- _NUM_COLOR_NAMES
-} color_name_t;
+		CLR_SYS_WIND_FG, CLR_SYS_WIND_BG,
+
+		_NUM_COLOR_NAMES
+	} color_name_t;
 
 	struct color_entry_t
 	{
@@ -153,65 +144,40 @@ typedef enum
 
 	class colors_t // : public CRecord
 	{
-	  public:
+	public:
 		colors_t();
 		~colors_t();
 
 		bool setColor(unsigned8_t r, unsigned8_t g, unsigned8_t b, unsigned8_t idx); // 8 <= idx <= 64
 		CUnit* GetData(CDataStorage &datastore) const;
 
-	  private:
+	private:
 		colors_t(const colors_t &that);
 		colors_t& operator=(const colors_t& right);
 
-	  private:
+	private:
 		color_entry_t *colors;
 	};
 
 	// forward ref
 	class CDataStorage;
 
-/*
-******************************
-CPalette class declaration
-******************************
-*/
-  class CPalette: public CRecord
-    {
-	friend class CDataStorage;
+	/*
+	 ******************************
+	 * CPalette class declaration
+	 ******************************
+	 */
+	class CPalette : public CRecord
+	{
+		friend class CDataStorage;
 
-    protected:
-      CPalette(CDataStorage &datastore, const color_entry_t *colors);
+	protected:
+		CPalette(CDataStorage &datastore, const color_entry_t *colors);
 	private:
-      virtual ~CPalette();
-    };
-
+		virtual ~CPalette();
+	};
 }
 
 // #include "common/xls_poppack.h"
 
-#endif 
-//COLORS_H
-
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * $Log: colors.h,v $
- * Revision 1.6  2009/03/02 04:08:43  dhoerl
- * Code is now compliant to gcc  -Weffc++
- *
- * Revision 1.5  2009/01/23 16:09:55  dhoerl
- * General cleanup: headers and includes. Fixed issues building mainC and mainCPP
- *
- * Revision 1.4  2009/01/08 02:53:15  dhoerl
- * December Rework
- *
- * Revision 1.3  2008/12/20 15:49:05  dhoerl
- * 1.2.5 fixes
- *
- * Revision 1.2  2008/10/25 18:39:54  dhoerl
- * 2008
- *
- * Revision 1.1.1.1  2004/08/27 16:31:44  darioglz
- * Initial Import.
- *
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
+#endif

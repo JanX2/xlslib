@@ -4,18 +4,18 @@
  * for dynamic generation of Excel(TM) files.
  *
  * Copyright 2004 Yeico S. A. de C. V. All Rights Reserved.
- * Copyright 2008 David Hoerl All Rights Reserved.
+ * Copyright 2008-2011 David Hoerl All Rights Reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
  * permitted provided that the following conditions are met:
- * 
+ *
  *    1. Redistributions of source code must retain the above copyright notice, this list of
  *       conditions and the following disclaimer.
- * 
+ *
  *    2. Redistributions in binary form must reproduce the above copyright notice, this list
  *       of conditions and the following disclaimer in the documentation and/or other materials
  *       provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY David Hoerl ''AS IS'' AND ANY EXPRESS OR IMPLIED
  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
  * FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL David Hoerl OR
@@ -26,59 +26,49 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- *
- * File description:
- *
- *
- *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 #ifndef RANGE_H
 #define RANGE_H
 
-
 #include "common/xlsys.h"
 #include "common/systype.h"
 
-#include "xlslib/common.h"
-#include "xlslib/sheetrec.h"
-#include "xlslib/font.h"
-#include "xlslib/cell.h"
-#include "xlslib/extformat.h"
+#include "xlslib/extformat.h"	// superclass
+#include "xlslib/font.h"		// superclass
+#include "xlslib/common.h"		// superclass
 
 #ifdef RANGE_FEATURE
-
 
 // #include "common/xls_pshpack2.h"
 
 namespace xlslib_core
 {
-  class worksheet;
+	class worksheet;
 
-  class range :
-    public xf_i,
-    public font_i,
-    private range_t 
-  {
-    public:
-		range(unsigned32_t row1, unsigned32_t col1,	// inclusive
-			unsigned32_t row2, unsigned32_t col2,
-			worksheet* pws);
+	class range :
+		public xf_i,
+		public font_i,
+		private range_t
+	{
+	public:
+		range(unsigned32_t row1, unsigned32_t col1, // inclusive
+			  unsigned32_t row2, unsigned32_t col2,
+			  worksheet* pws);
 		virtual ~range();
 
-		void cellcolor(color_name_t color); 
-		void boxer(border_style_t border, fill_option_t fill, color_name_t borderColor, color_name_t fillFgColor, color_name_t fillBgColor);  
+		void cellcolor(color_name_t color);
+		void boxer(border_style_t border, fill_option_t fill, color_name_t borderColor, color_name_t fillFgColor, color_name_t fillBgColor);
 
-    private:
+	private:
 		worksheet* m_pWorkSheet;
 		bool m_Atomic;
 
-    public:
+	public:
 		range(const range& that);
 		range& operator=(const range& right);
 
-    public: // xf_i interface declaration
+	public: // xf_i interface declaration
 		void font(font_t* fontidx);
 		void format(format_number_t formatidx);
 		void format(format_t* format);
@@ -98,7 +88,7 @@ namespace xlslib_core
 		void bordercolor(border_side_t side, unsigned8_t color);
 		void bordercolor(border_side_t side, color_name_t color);
 
-    public: // font_i interface declaration
+	public: // font_i interface declaration
 		void fontname(const std::string& fntname);
 		void fontheight(unsigned16_t fntheight);
 		void fontbold(boldness_option_t fntboldness);
@@ -110,7 +100,7 @@ namespace xlslib_core
 		void fontstrikeout(bool so);
 		void fontoutline(bool ol);
 		void fontshadow(bool sh);
-    };
+	};
 
 	typedef enum {
 		BORDER_BOTTOM_BIT	= 0x01,
@@ -119,22 +109,24 @@ namespace xlslib_core
 		BORDER_RIGHT_BIT	= 0x08
 	} borderBits_t;
 
-	typedef struct {
-		unsigned32_t	flags;
+	typedef struct
+	{
+		unsigned32_t flags;
 		xf_t			*xft;
 	} borderedXft;
 
 	typedef std::pair<xlslib_core::xf_t *, borderedXft> xf_Pair_t;
-	class xfSorter {
-		public:
-			bool operator() (const xf_Pair_t& left, const xf_Pair_t& right) const
-			{
-				if((left.first)->index < (right.first)->index) return true;
-				if((left.first)->index > (right.first)->index) return false;
-				return ((left.second).flags < (right.second).flags);
-			}
+	class xfSorter
+	{
+	public:
+		bool operator() (const xf_Pair_t& left, const xf_Pair_t& right) const
+		{
+			if((left.first)->index < (right.first)->index) { return true; }
+			if((left.first)->index > (right.first)->index) { return false; }
+			return (left.second).flags < (right.second).flags;
+		}
 	};
-	
+
 	typedef std::set<xf_Pair_t, xlslib_core::xfSorter> xf_Pair_Set_t;
 	typedef xf_Pair_Set_t::iterator xf_Pair_Set_Itor_t;
 }
@@ -143,30 +135,5 @@ namespace xlslib_core
 // #include "common/xls_poppack.h"
 
 #endif
-//RANGE_H 
 
 #endif
-// RANGE_FEATURE
-
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * $Log: range.h,v $
- * Revision 1.6  2009/03/02 04:08:43  dhoerl
- * Code is now compliant to gcc  -Weffc++
- *
- * Revision 1.5  2009/01/23 16:09:55  dhoerl
- * General cleanup: headers and includes. Fixed issues building mainC and mainCPP
- *
- * Revision 1.4  2009/01/09 03:23:12  dhoerl
- * GlobalRec references tuning
- *
- * Revision 1.3  2009/01/08 02:52:47  dhoerl
- * December Rework
- *
- * Revision 1.2  2008/10/25 18:39:54  dhoerl
- * 2008
- *
- * Revision 1.1.1.1  2004/08/27 16:31:49  darioglz
- * Initial Import.
- *
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
- 

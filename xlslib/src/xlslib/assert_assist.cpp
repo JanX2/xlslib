@@ -3,18 +3,18 @@
  * This file is part of xlslib -- A multiplatform, C/C++ library
  * for dynamic generation of Excel(TM) files.
  *
- * Copyright 2010 Ger Hobbelt All Rights Reserved.
+ * Copyright 2010-2011 Ger Hobbelt All Rights Reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
  * permitted provided that the following conditions are met:
- * 
+ *
  *    1. Redistributions of source code must retain the above copyright notice, this list of
  *       conditions and the following disclaimer.
- * 
+ *
  *    2. Redistributions in binary form must reproduce the above copyright notice, this list
  *       of conditions and the following disclaimer in the documentation and/or other materials
  *       provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY David Hoerl ''AS IS'' AND ANY EXPRESS OR IMPLIED
  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
  * FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL David Hoerl OR
@@ -25,17 +25,12 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- *
- * File description:
- *
- *
- *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 #include "common/xlsys.h"
 #include "common/systype.h"
-#include <tostr.h>
+
+#include "xlslib/tostr.h"
 
 
 static void exception_throwing_assertion_reporter(const char *expr, const char *filename, int lineno, const char *funcname)
@@ -46,47 +41,36 @@ static void exception_throwing_assertion_reporter(const char *expr, const char *
 	s << (expr ? expr : "???");
 	s << " at line ";
 	s << lineno;
-	if (funcname)
-	{
+	if(funcname) {
 		s << " (" << funcname << ")";
 	}
-	if (filename)
-	{
+	if(filename) {
 		s << " in " << filename;
-	}
-	else
-	{
+	} else {
 		s << " in [unidentified source file]";
 	}
 	throw std::string(s);
 }
 
-
 extern "C"
 {
-
-static void xlslib_default_assertion_reporter(const char *expr, const char *fname, int lineno, const char *funcname)
-{
-	exception_throwing_assertion_reporter(expr, fname, lineno, funcname);
-}
-
-
-static xlslib_userdef_assertion_reporter *callback = &xlslib_default_assertion_reporter;
-
-
-void xlslib_report_failed_assertion(const char *expr, const char *fname, int lineno, const char *funcname)
-{
-	if (callback)
+	static void xlslib_default_assertion_reporter(const char *expr, const char *fname, int lineno, const char *funcname)
 	{
-		callback(expr, fname, lineno, funcname);
+		exception_throwing_assertion_reporter(expr, fname, lineno, funcname);
 	}
-}
 
-void xlslib_register_assert_reporter(xlslib_userdef_assertion_reporter *user_func)
-{
-	callback = user_func;
-}
+	static xlslib_userdef_assertion_reporter *callback = &xlslib_default_assertion_reporter;
 
+
+	void xlslib_report_failed_assertion(const char *expr, const char *fname, int lineno, const char *funcname)
+	{
+		if(callback) {
+			callback(expr, fname, lineno, funcname);
+		}
+	}
+
+	void xlslib_register_assert_reporter(xlslib_userdef_assertion_reporter *user_func)
+	{
+		callback = user_func;
+	}
 };
-
-

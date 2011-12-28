@@ -8,14 +8,14 @@
  *
  * Redistribution and use in source and binary forms, with or without modification, are
  * permitted provided that the following conditions are met:
- * 
+ *
  *    1. Redistributions of source code must retain the above copyright notice, this list of
  *       conditions and the following disclaimer.
- * 
+ *
  *    2. Redistributions in binary form must reproduce the above copyright notice, this list
  *       of conditions and the following disclaimer in the documentation and/or other materials
  *       provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY David Hoerl ''AS IS'' AND ANY EXPRESS OR IMPLIED
  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
  * FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL David Hoerl OR
@@ -36,20 +36,9 @@
 
 //#include "common/xlsys.h"
 /*
-  sed -e 's/^\([A-Za-z0-9]*\)$/#define FT_\1 \\/' biff_formula_tags_norm.txt  | sed -e 's/^ \([A-F0-9]*\)\h$/                                              0x\1/' | sed  -e "s/^ \([oc].*\)//"  > formtags.h
-*/
+ *  sed -e 's/^\([A-Za-z0-9]*\)$/#define FT_\1 \\/' biff_formula_tags_norm.txt  | sed -e 's/^ \([A-F0-9]*\)\h$/                                              0x\1/' | sed  -e "s/^ \([oc].*\)//"  > formtags.h
+ */
 
 /*
  * GHO: obsoleted; see the OP_ enum in formula.h
  */
-
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * $Log: formtags.h,v $
- * Revision 1.2  2008/10/25 18:39:54  dhoerl
- * 2008
- *
- * Revision 1.1.1.1  2004/08/27 16:31:46  darioglz
- * Initial Import.
- *
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-

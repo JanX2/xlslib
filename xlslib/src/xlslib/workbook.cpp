@@ -8,14 +8,14 @@
  *
  * Redistribution and use in source and binary forms, with or without modification, are
  * permitted provided that the following conditions are met:
- * 
+ *
  *    1. Redistributions of source code must retain the above copyright notice, this list of
  *       conditions and the following disclaimer.
- * 
+ *
  *    2. Redistributions in binary form must reproduce the above copyright notice, this list
  *       of conditions and the following disclaimer in the documentation and/or other materials
  *       provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY David Hoerl ''AS IS'' AND ANY EXPRESS OR IMPLIED
  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
  * FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL David Hoerl OR
@@ -26,18 +26,24 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- *
- * File description:
- *
- *
- *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+ 
 
-#include "common/xlsys.h"
-#include "xlslib/globalrec.h"
-#include "xlslib/workbook.h"
+#include "xlslib/record.h"
+#include "xlslib/biffsection.h"
+#include "xlslib/colinfo.h"
 #include "xlslib/continue.h"
+#include "xlslib/datast.h"
+#include "xlslib/err.h"
+#include "xlslib/formula.h"
+#include "xlslib/range.h"
+#include "xlslib/recdef.h"
+#include "xlslib/rectypes.h"
+#include "xlslib/row.h"
+#include "xlslib/sheetrec.h"
+#include "xlslib/workbook.h"
+
+#include "oledoc/oledoc.h"
 
 #ifdef HAVE_ICONV
 #include <errno.h>
@@ -47,16 +53,16 @@ using namespace std;
 using namespace xlslib_core;
 
 
-#define CHANGE_DUMPSTATE(state) {               \
-   m_PreviousDumpState = m_DumpState;           \
-   m_DumpState = state;                         \
+#define CHANGE_DUMPSTATE(state) {				\
+		m_PreviousDumpState = m_DumpState;			 \
+		m_DumpState = state;						 \
 }
 
 /*
-**********************************************************************
-workbook class implementation
-**********************************************************************
-*/
+ **********************************************************************
+ *  workbook class implementation
+ **********************************************************************
+ */
 workbook::workbook() :
 	m_GlobalRecords(),
 	m_ExprFactory(m_GlobalRecords),
@@ -65,14 +71,13 @@ workbook::workbook() :
 	m_Sheets(),
 	m_DumpState(WB_INIT),
 	m_PreviousDumpState(WB_FINISH),
-	sheetIndex(0),
+	m_sheetIndex(0),
 	m_pCurrentData(NULL),
 	m_pContinueRecord(NULL),
 	m_ContinueIndex(0),
-	writeLen(0),
-	offset(0),
-	current_sheet(0)
-	//Last_BOF_offset(0)
+	m_writeLen(0),
+	m_offset(0),
+	m_current_sheet(0)
 {
 #if HAVE_ICONV
 	m_GlobalRecords.SetIconvCode("wchar_t");
@@ -81,22 +86,20 @@ workbook::workbook() :
 
 workbook::~workbook()
 {
-   if(!m_Sheets.empty())
-   {
-      for(size_t i = 0; i<m_Sheets.size(); i++)
-      {
-		delete m_Sheets[i];
-      }
-   }
- //  CGlobalRecords::Clean();
+	if(!m_Sheets.empty()) {
+		for(size_t i = 0; i<m_Sheets.size(); i++) {
+			delete m_Sheets[i];
+		}
+	}
+	//  CGlobalRecords::Clean();
 }
 
 #ifdef HAVE_ICONV
 int workbook::iconvInType(const char *inType)
 {
-	int			ret;	
-	iconv_t		cd;
-	
+	int	ret;
+	iconv_t	cd;
+
 	cd = iconv_open(UCS_2_INTERNAL, inType);
 	if(cd != (iconv_t)(-1)) {
 		iconv_close(cd);
@@ -109,15 +112,11 @@ int workbook::iconvInType(const char *inType)
 }
 #endif
 
-/*
-***********************************
-***********************************
-*/
 worksheet* workbook::sheet(const string& sheetname)
 {
-	u16string	str16;
+	u16string str16;
 
-	worksheet* pnewsheet = new worksheet(m_GlobalRecords, sheetIndex++);
+	worksheet* pnewsheet = new worksheet(m_GlobalRecords, m_sheetIndex++);
 	m_GlobalRecords.char2str16(sheetname, str16);
 
 	m_Sheets.push_back(pnewsheet);
@@ -127,15 +126,16 @@ worksheet* workbook::sheet(const string& sheetname)
 	m_GlobalRecords.AddBoundingSheet(0, BSHEET_ATTR_WORKSHEET, str16);
 
 	// Return a pointer to the just added sheet
-	return (m_Sheets.back());
+	return m_Sheets.back();
 }
+
 worksheet* workbook::sheet(const ustring& sheetname)
 {
-	u16string	str16;
-   
-	worksheet* pnewsheet = new worksheet(m_GlobalRecords, sheetIndex++);
+	u16string str16;
+
+	worksheet* pnewsheet = new worksheet(m_GlobalRecords, m_sheetIndex++);
 	m_GlobalRecords.wide2str16(sheetname, str16);
-	
+
 	m_Sheets.push_back(pnewsheet);
 
 	// NOTE: Streampos defaults to 0
@@ -143,56 +143,40 @@ worksheet* workbook::sheet(const ustring& sheetname)
 	m_GlobalRecords.AddBoundingSheet(0, BSHEET_ATTR_WORKSHEET, str16);
 
 	// Return a pointer to the just added sheet
-	return (m_Sheets.back());
+	return m_Sheets.back();
 }
 
-/*
-***********************************
-***********************************
-*/
 worksheet* workbook::GetSheet(unsigned16_t sheetnum)
 {
-   if(sheetnum < m_Sheets.size())
-   {
-      return m_Sheets[sheetnum];
-   } else {
-      return NULL;
-   }
+	if(sheetnum < m_Sheets.size()) {
+		return m_Sheets[sheetnum];
+	} else {
+		return NULL;
+	}
 }
 
-/*
-***********************************
-***********************************
-*/
 expression_node_factory_t& workbook::GetFormulaFactory(void)
 {
 	return m_ExprFactory;
 }
 
-/*
-***********************************
-***********************************
-*/
 font_t* workbook::font(const string& name)
 {
-   font_t* newfont = new font_t(m_GlobalRecords);
-   newfont->SetName(name);
-   m_GlobalRecords.AddFont(newfont);
+	font_t* newfont = new font_t(m_GlobalRecords);
+	newfont->SetName(name);
+	m_GlobalRecords.AddFont(newfont);
 
-   return newfont;
+	return newfont;
 }
+
 font_t* workbook::font(unsigned8_t fontnum)
 {
 	return m_GlobalRecords.fontdup(fontnum);
 }
 
-/*
-***********************************
-***********************************
-*/
 format_t* workbook::format(const string& formatstr)
 {
-	u16string	str16;
+	u16string str16;
 	format_t* newformat;
 
 	m_GlobalRecords.char2str16(formatstr, str16);
@@ -202,13 +186,14 @@ format_t* workbook::format(const string& formatstr)
 
 	return newformat;
 }
+
 format_t* workbook::format(const ustring& formatstr)
 {
-	u16string	str16;
+	u16string str16;
 	format_t* newformat;
 
 	m_GlobalRecords.wide2str16(formatstr, str16);
-	
+
 	newformat = new format_t(m_GlobalRecords, str16);
 	m_GlobalRecords.AddFormat(newformat);
 
@@ -217,17 +202,17 @@ format_t* workbook::format(const ustring& formatstr)
 
 xf_t* workbook::xformat(void)
 {
-   xf_t* newxf = new xf_t(m_GlobalRecords, true);		// bool userXF=true, bool isCell=true, bool isMasterXF=false
-   
-   return newxf;
+	xf_t* newxf = new xf_t(m_GlobalRecords, true);      // bool userXF=true, bool isCell=true, bool isMasterXF=false
+
+	return newxf;
 }
 
 xf_t* workbook::xformat(font_t* fnt)
 {
-   xf_t* newxf = new xf_t(m_GlobalRecords, true);
-   newxf->SetFont(fnt);
+	xf_t* newxf = new xf_t(m_GlobalRecords, true);
+	newxf->SetFont(fnt);
 
-   return newxf;
+	return newxf;
 }
 
 xf_t* workbook::xformat(format_t* fmt)
@@ -252,15 +237,11 @@ bool workbook::setColor(unsigned8_t r, unsigned8_t g, unsigned8_t b, unsigned8_t
 	return m_GlobalRecords.SetColor(r, g, b, idx);
 }
 
-/*
-***********************************
-***********************************
-*/
 bool workbook::property(property_t prop, const string& content)
 {
 	// who gets it?
-	if(prop >= PROP_LAST) return false;
-	
+	if(prop >= PROP_LAST) {return false; }
+
 	if(property2summary[prop] > 0) {
 		return m_SummaryInfo.property(prop, content);
 	} else
@@ -271,42 +252,36 @@ bool workbook::property(property_t prop, const string& content)
 	}
 }
 
-void workbook::windPosition(unsigned16_t horz, unsigned16_t vert) { m_GlobalRecords.GetWindow1().SetPosition(horz, vert);}
-void workbook::windSize(unsigned16_t width, unsigned16_t height) { m_GlobalRecords.GetWindow1().SetSize(width, height);}
-void workbook::firstTab(unsigned16_t fTab) { m_GlobalRecords.GetWindow1().SetFirstTab(fTab);}
-void workbook::tabBarWidth(unsigned16_t width) { m_GlobalRecords.GetWindow1().SetTabBarWidth(width);}
+void workbook::windPosition(unsigned16_t horz, unsigned16_t vert) { m_GlobalRecords.GetWindow1().SetPosition(horz, vert); }
+void workbook::windSize(unsigned16_t width, unsigned16_t height) { m_GlobalRecords.GetWindow1().SetSize(width, height); }
+void workbook::firstTab(unsigned16_t fTab) { m_GlobalRecords.GetWindow1().SetFirstTab(fTab); }
+void workbook::tabBarWidth(unsigned16_t width) { m_GlobalRecords.GetWindow1().SetTabBarWidth(width); }
 
-/*
-***********************************
-***********************************
-*/
 int workbook::Dump(const string& filename)
 {
-	Sheets_Vector_Itor_t	sBegin, sEnd, sIter;
+	Sheets_Vector_Itor_t sBegin, sEnd, sIter;
 	size_t cells;
-	string					name;
-	int						errors;
+	string name;
+	int	errors;
 	COleDoc dst;
 
-	if(m_Sheets.empty()) 
-	{
+	if(m_Sheets.empty()) {
 		return GENERAL_ERROR;
 	}
-	
+
 	// pre-allocate an approximation of what will be needed to store the data objects
 	sBegin	= m_Sheets.begin();
 	sEnd	= m_Sheets.end();
 	cells	= 0;
 	/*
-	Since it's VERY costly to redimension the cell unit store vector when 
-	we're using lightweight CUnitStore elements et al
-    we do our utmost best to estimate the total amount of storage units
-	required to 'dump' our spreadsheet. The estimate should be conservative,
-	but not too much. After all, we're attempting to reduce the memory 
-	footprint for this baby when we process multi-million cell spreadsheets...
-	*/
-	for(sIter=sBegin; sIter<sEnd; ++sIter) 
-	{
+	 *  Since it's VERY costly to redimension the cell unit store vector when
+	 *  we're using lightweight CUnitStore elements et al
+	 *  we do our utmost best to estimate the total amount of storage units
+	 *  required to 'dump' our spreadsheet. The estimate should be conservative,
+	 *  but not too much. After all, we're attempting to reduce the memory
+	 *  footprint for this baby when we process multi-million cell spreadsheets...
+	 */
+	for(sIter=sBegin; sIter<sEnd; ++sIter) {
 		// add a number of units for each worksheet,
 		cells += (*sIter)->EstimateNumBiffUnitsNeeded();
 	}
@@ -321,26 +296,21 @@ int workbook::Dump(const string& filename)
 
 	errors = dst.Open(filename);
 
-	if(errors == NO_ERRORS) 
-	{
-		CDataStorage		biffdata(cells);
+	if(errors == NO_ERRORS)	{
+		CDataStorage biffdata(cells);
 		CUnit*				precorddata;
-		bool				keep = true;
+		bool keep = true;
 
-		do
-		{
-		  precorddata = DumpData(biffdata);
+		do {
+			precorddata = DumpData(biffdata);
 
-		  if(precorddata != NULL) 
-		  {
-			 biffdata += precorddata;
- 			 // and we can already discard any previous units at lower backpatch levels
-			 biffdata.FlushLowerLevelUnits(precorddata);
-		  } 
-		  else 
-		  {
-			 keep = false;
-		  }
+			if(precorddata != NULL) {
+				biffdata += precorddata;
+				// and we can already discard any previous units at lower backpatch levels
+				biffdata.FlushLowerLevelUnits(precorddata);
+			} else {
+				keep = false;
+			}
 		} while(keep);
 
 		dst.AddFile("/Workbook", &biffdata);
@@ -349,226 +319,167 @@ int workbook::Dump(const string& filename)
 		name = (char)0x05;
 		name += "SummaryInformation";
 		m_SummaryInfo.DumpData(summarydata);
-		dst.AddFile(name,  &summarydata);
-		
+		dst.AddFile(name, &summarydata);
+
 		CDataStorage docdata;
 		name = (char)0x05;
 		name += "DocumentSummaryInformation";
 		m_DocSummaryInfo.DumpData(docdata);
 		dst.AddFile(name, &docdata);
-		
+
 		errors = dst.DumpOleFile();
 		dst.Close();
 	}
 	return errors;
 }
 
-/*
-***********************************
-***********************************
-*/
 CUnit* workbook::DumpData(CDataStorage &datastore)
 {
-   bool repeat = false;
+	bool repeat = false;
 
-   XTRACE("\nworkbook::DumpData");
+	XTRACE("\nworkbook::DumpData");
 
-   do
-   {
-      switch(m_DumpState)
-      {
-         case WB_INIT:
-            XTRACE("\tWB_INIT");
+	do {
+		switch(m_DumpState) {
+		case WB_INIT:
+			XTRACE("\tWB_INIT");
 
-			writeLen = 0;
-            current_sheet = 0;
-			offset = 0;
-			//Last_BOF_offset = 0;
+			m_writeLen = 0;
+			m_current_sheet = 0;
+			m_offset = 0;
 
-            CHANGE_DUMPSTATE(WB_GLOBALRECORDS);
+			CHANGE_DUMPSTATE(WB_GLOBALRECORDS);
 
-            repeat = true;
-            break;
+			repeat = true;
+			break;
 
-         case WB_GLOBALRECORDS:
-            XTRACE("\tGLOBALRECORDS");
- 
-            m_pCurrentData = m_GlobalRecords.DumpData(datastore);
-            if(m_pCurrentData == NULL)
-            {
-				offset = writeLen;
-				writeLen = 0;
+		case WB_GLOBALRECORDS:
+			XTRACE("\tGLOBALRECORDS");
+
+			m_pCurrentData = m_GlobalRecords.DumpData(datastore);
+			if(m_pCurrentData == NULL) {
+				m_offset = m_writeLen;
+				m_writeLen = 0;
 				//Last_BOF_offset = 0;
-			   
+
 				repeat = true;
 				CHANGE_DUMPSTATE(WB_SHEETS);
-            } else {
-				writeLen += m_pCurrentData->GetDataSize();
-               // Do nothing. Continue in this state.
+			} else {
+				m_writeLen += m_pCurrentData->GetDataSize();
+				// Do nothing. Continue in this state.
 				repeat = false;
-            }
-            break;
+			}
+			break;
 
-         case WB_SHEETS:
-         {
-            XTRACE("\tSHEETS");
+		case WB_SHEETS:
+		{
+			XTRACE("\tSHEETS");
 
-			//printf("DUMP SHEETS WITH DATASIZE=%ld offset=%ld writeLen=%ld\n", datastore.GetDataSize(), offset, writeLen );
-            m_pCurrentData = m_Sheets[current_sheet]->DumpData(datastore, offset, writeLen/*, Last_BOF_offset*/);	// writelen passed as its cumulatively increased
-            if(m_pCurrentData == NULL)
-            {
-				Boundsheet_Vect_Itor_t bs = m_GlobalRecords.GetBoundSheetAt(current_sheet);
+			//printf("DUMP SHEETS WITH DATASIZE=%ld m_offset=%ld m_writeLen=%ld\n", datastore.GetDataSize(), m_offset, m_writeLen );
+			m_pCurrentData = m_Sheets[m_current_sheet]->DumpData(datastore, m_offset, m_writeLen /*, Last_BOF_offset*/);   // writelen passed as its cumulatively increased
+			if(m_pCurrentData == NULL) {
+				Boundsheet_Vect_Itor_t bs = m_GlobalRecords.GetBoundSheetAt(m_current_sheet);
 
-				(*bs)->SetSheetStreamPosition(offset);
+				(*bs)->SetSheetStreamPosition(m_offset);
 
-				if((current_sheet+1) < (unsigned16_t)m_Sheets.size()) // [i_a]
-				{
-					// Update the offset for the next sheet
-					offset += writeLen;
-					writeLen = 0;
-					current_sheet++;
+				if((m_current_sheet+1) < (unsigned16_t)m_Sheets.size()) { // [i_a]
+					// Update the m_offset for the next sheet
+					m_offset += m_writeLen;
+					m_writeLen = 0;
+					m_current_sheet++;
 				} else {
 					// I'm done with all the sheets
 					// Nothing else to do. Branch to the FINISH state
 					CHANGE_DUMPSTATE(WB_FINISH);
 				}
 				repeat = true;
-           } else {
-				writeLen += m_pCurrentData->GetDataSize();
+			} else {
+				m_writeLen += m_pCurrentData->GetDataSize();
 				repeat = false;
-		   }
-         }	break;
+			}
+		}  break;
 
-         case WB_FINISH:
-            XTRACE("\tFINISH");
+		case WB_FINISH:
+			XTRACE("\tFINISH");
 
-            repeat = false;
-            m_pCurrentData  = NULL;
+			repeat = false;
+			m_pCurrentData  = NULL;
 
-            CHANGE_DUMPSTATE(WB_INIT);
+			CHANGE_DUMPSTATE(WB_INIT);
 
-            break;
+			break;
 
-         case WB_CONTINUE_REC:
+		case WB_CONTINUE_REC:
 			XTRACE("\tCONTINUE-REC");
 
-			if(m_ContinueIndex == 0)
-			{
-			   //Create a new data unit containing the max data size
-			   m_ContinuesRealRecordSize = datastore.Clip((CRecord*)m_pCurrentData);
-			   //m_pContinueRecord->SetValueAt(MAX_RECORD_SIZE-4,2);
-			   m_ContinueIndex++;
+			if(m_ContinueIndex == 0) {
+				//Create a new data unit containing the max data size
+				m_ContinuesRealRecordSize = datastore.Clip((CRecord*)m_pCurrentData);
+				//m_pContinueRecord->SetValueAt(MAX_RECORD_SIZE-4,2);
+				m_ContinueIndex++;
 
-			   return m_pCurrentData;
+				return m_pCurrentData;
 			} else {
-			   //Delete_Pointer(m_pContinueRecord);
+				//Delete_Pointer(m_pContinueRecord);
 
-			   // Get a pointer to the next chunk of data
-			   const unsigned8_t* pdata = (((CRecord*)m_pCurrentData)->GetRecordDataBuffer()) + m_ContinueIndex*MAX_RECORD_SIZE;
+				// Get a pointer to the next chunk of data
+				const unsigned8_t* pdata = (((CRecord*)m_pCurrentData)->GetRecordDataBuffer()) + m_ContinueIndex*MAX_RECORD_SIZE;
 
-			   // Get the size of the chunk of data (that is the MAX_REC_SIZE except by the last one)
-			   size_t csize = 0;
+				// Get the size of the chunk of data (that is the MAX_REC_SIZE except by the last one)
+				size_t csize = 0;
 
-			   if((m_ContinuesRealRecordSize/MAX_RECORD_SIZE) > m_ContinueIndex)
-			   {
-				  csize = MAX_RECORD_SIZE;
-				  m_ContinueIndex++;
+				if((m_ContinuesRealRecordSize/MAX_RECORD_SIZE) > m_ContinueIndex) {
+					csize = MAX_RECORD_SIZE;
+					m_ContinueIndex++;
 
+					m_pContinueRecord = datastore.MakeCContinue(m_pCurrentData, pdata, csize);
+					if(m_PreviousDumpState == WB_SHEETS) { m_writeLen += RECORD_HEADER_SIZE; }
+					return m_pContinueRecord;
+				} else {
+					CUnit *unit = m_pCurrentData;
+					csize = m_ContinuesRealRecordSize - m_ContinueIndex * MAX_RECORD_SIZE;
 
-				  m_pContinueRecord = datastore.MakeCContinue(m_pCurrentData, pdata, csize);
-				  if(m_PreviousDumpState == WB_SHEETS) writeLen += RECORD_HEADER_SIZE;
-				  return m_pContinueRecord;
-			   } else {
-				  CUnit *unit = m_pCurrentData;
-				  csize = m_ContinuesRealRecordSize - m_ContinueIndex * MAX_RECORD_SIZE;
+					// Restore the previous state (*Don't use the macro*)
+					m_DumpState = m_PreviousDumpState;
+					m_PreviousDumpState = WB_CONTINUE_REC;
+					m_pCurrentData = NULL;
+					m_ContinueIndex = 0;
+					// done with it now, so can delete it
+					// Delete_Pointer(m_pCurrentData);
 
-				  // Restore the previous state (*Don't use the macro*)
-				  m_DumpState = m_PreviousDumpState;
-				  m_PreviousDumpState = WB_CONTINUE_REC;
-				  m_pCurrentData = NULL;
-				  m_ContinueIndex = 0;
-				  // done with it now, so can delete it
-				  //Delete_Pointer(m_pCurrentData);
-				  
-				  if(csize)
-				  {
-					 m_pContinueRecord = datastore.MakeCContinue(unit, pdata, csize);
-				     if(m_PreviousDumpState == WB_SHEETS) writeLen += RECORD_HEADER_SIZE;
-					 return m_pContinueRecord;
-				  } else {
-					 repeat = true;
-				  }
-			   }
+					if(csize) {
+						m_pContinueRecord = datastore.MakeCContinue(unit, pdata, csize);
+						if(m_PreviousDumpState == WB_SHEETS) { m_writeLen += RECORD_HEADER_SIZE; }
+						return m_pContinueRecord;
+					} else {
+						repeat = true;
+					}
+				}
 			}
 
-            break;
+			break;
 
-         default:
-            XTRACE("\tDEFAULT");
+		default:
+			XTRACE("\tDEFAULT");
 
-            break;
-      }
+			break;
+		}
 
-      if(m_pCurrentData != NULL) 
-	  {
-         // SST Table most likely record to exceed size, but its handled now in the record itself (breaks have to occur at defined places)
-		 // Should only happen with single cells having data > MAX_RECORD_SIZE. Have no idea if this works or not (DFH)
-         if(!((CRecord*)m_pCurrentData)->AlreadyContinued() && ((CRecord*)m_pCurrentData)->GetRecordDataSize() > MAX_RECORD_SIZE && m_DumpState != WB_CONTINUE_REC)
+		if(m_pCurrentData != NULL) {
+			// SST Table most likely record to exceed size, but its handled now in the record itself (breaks have to occur at defined places)
+			// Should only happen with single cells having data > MAX_RECORD_SIZE. Have no idea if this works or not (DFH)
+			if(!((CRecord*)m_pCurrentData)->AlreadyContinued() && ((CRecord*)m_pCurrentData)->GetRecordDataSize() > MAX_RECORD_SIZE && m_DumpState !=
+			   WB_CONTINUE_REC) {
+				// Save the current dump state and change to the CONTINUE Record state
+				CHANGE_DUMPSTATE(WB_CONTINUE_REC);
+				//printf("ALREADY=%d dataSize=%lu MAX=%d (dumpState == CONTINUE) = %d\n", ((CRecord*)m_pCurrentData)->AlreadyContinued(), ((CRecord*)m_pCurrentData)->GetRecordDataSize(), MAX_RECORD_SIZE ,m_DumpState == WB_CONTINUE_REC);
 
-         {
-            // Save the current dump state and change to the CONTINUE Record state
-            CHANGE_DUMPSTATE(WB_CONTINUE_REC);
-			//printf("ALREADY=%d dataSize=%lu MAX=%d (dumpState == CONTINUE) = %d\n", ((CRecord*)m_pCurrentData)->AlreadyContinued(), ((CRecord*)m_pCurrentData)->GetRecordDataSize(), MAX_RECORD_SIZE ,m_DumpState == WB_CONTINUE_REC);
+				m_ContinueIndex = 0;
 
-            m_ContinueIndex = 0;
+				repeat = true;
+			}
+		}
+	} while(repeat);
 
-            repeat = true;
-         }
-	   }
-   } while(repeat);
-
-   return m_pCurrentData;
+	return m_pCurrentData;
 }
-
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * $Log: workbook.cpp,v $
- * Revision 1.13  2009/03/02 04:08:43  dhoerl
- * Code is now compliant to gcc  -Weffc++
- *
- * Revision 1.12  2009/01/23 16:09:55  dhoerl
- * General cleanup: headers and includes. Fixed issues building mainC and mainCPP
- *
- * Revision 1.11  2009/01/10 21:10:51  dhoerl
- * More tweaks
- *
- * Revision 1.10  2009/01/09 15:04:26  dhoerl
- * GlobalRec now used only as a reference.
- *
- * Revision 1.9  2009/01/09 03:23:12  dhoerl
- * GlobalRec references tuning
- *
- * Revision 1.8  2009/01/08 22:16:06  dhoerl
- * January Rework
- *
- * Revision 1.7  2009/01/08 02:52:31  dhoerl
- * December Rework
- *
- * Revision 1.6  2008/12/20 15:47:41  dhoerl
- * 1.2.5 fixes
- *
- * Revision 1.5  2008/12/10 03:34:54  dhoerl
- * m_usage was 16bit and wrapped
- *
- * Revision 1.4  2008/10/27 01:12:20  dhoerl
- * Remove PHP
- *
- * Revision 1.3  2008/10/25 18:39:54  dhoerl
- * 2008
- *
- * Revision 1.2  2004/09/01 00:47:21  darioglz
- * + Modified to gain independence of target
- *
- * Revision 1.1.1.1  2004/08/27 16:31:49  darioglz
- * Initial Import.
- *
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */

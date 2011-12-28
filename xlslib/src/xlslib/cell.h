@@ -4,18 +4,18 @@
  * for dynamic generation of Excel(TM) files.
  *
  * Copyright 2004 Yeico S. A. de C. V. All Rights Reserved.
- * Copyright 2008 David Hoerl All Rights Reserved.
+ * Copyright 2008-2011 David Hoerl All Rights Reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
  * permitted provided that the following conditions are met:
- * 
+ *
  *    1. Redistributions of source code must retain the above copyright notice, this list of
  *       conditions and the following disclaimer.
- * 
+ *
  *    2. Redistributions in binary form must reproduce the above copyright notice, this list
  *       of conditions and the following disclaimer in the documentation and/or other materials
  *       provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY David Hoerl ''AS IS'' AND ANY EXPRESS OR IMPLIED
  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
  * FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL David Hoerl OR
@@ -26,53 +26,53 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- *
- * File description:
- *
- *
- *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
- 
+
 #ifndef CELL_H
 #define CELL_H
 
 #include "common/xlsys.h"
 #include "common/systype.h"
 
-#include "xlslib/common.h"
-#include "xlslib/unit.h"
-#include "xlslib/font.h"
-#include "xlslib/extformat.h"
+#include "xlslib/font.h"		// need enum values
+#include "xlslib/extformat.h"	// need enum values
 
 
 // #include "common/xls_pshpack2.h"
 
 namespace xlslib_core
 {
-  class insertsort;
-  class xf_t;
-  
-  class cell_t  // : public xf_i , public font_i // Bugs item #2840335 - appears not required (this was here when I got the project :-)
-  {
+	class insertsort;
+	class xf_t;
+	class font_t;
+
+	class cell_t  // : public xf_i , public font_i // Bugs item #2840335 - appears not required (this was here when I [i_a] got the project :-)
+	{
 		friend class insertsort;
 		friend class worksheet;
 
-    protected:
+	protected:
 		cell_t(CGlobalRecords& gRecord, unsigned32_t row, unsigned32_t col, xf_t* pxfval);
-		virtual ~cell_t();	// "C++ Coding Standards" rule 50 (protected and non-virtual)     [i_a] MUST be virtual or you'll get blown out of the sky by memleaks (label_t instances in cell_t lists)
+		virtual ~cell_t();    // "C++ Coding Standards" rule 50 (protected and non-virtual)     [i_a] MUST be virtual or you'll get blown out of the sky by memleaks (label_t instances in cell_t lists)
 
-    private:
+	private:
 		cell_t(const cell_t& that);
 		cell_t& operator=(const cell_t& right);
 
 		void set_xf_common(void);
 		void set_cell_font(void);
 
-    public:
+	public:
 		unsigned16_t GetXFIndex(void) const;
-		unsigned32_t GetRow(void) const { return row; };
-		unsigned32_t GetCol(void) const { return col; };
+		unsigned32_t GetRow(void) const
+		{
+			return row;
+		}
+
+		unsigned32_t GetCol(void) const
+		{
+			return col;
+		}
 
 		void SetXF(xf_t* pxfval);
 		xf_t* GetXF(void) const;
@@ -87,7 +87,7 @@ namespace xlslib_core
 		unsigned32_t row;
 		unsigned32_t col;
 
-    public: // xf_i interface
+	public: // xf_i interface
 		void font(font_t* font);
 		void format(format_number_t formatidx);
 		void format(format_t* format);
@@ -106,7 +106,7 @@ namespace xlslib_core
 		void borderstyle(border_side_t side, border_style_t style);
 		void bordercolor(border_side_t side, color_name_t color);
 		void bordercolor(border_side_t side, unsigned8_t color);
-    public: //font_i interface
+	public: //font_i interface
 		void fontname(const std::string& fntname);
 		void fontheight(unsigned16_t fntheight);
 		void fontbold(boldness_option_t fntboldness);
@@ -122,14 +122,17 @@ namespace xlslib_core
 		void fontattr(unsigned16_t attr);
 #endif
 
-  public:
-	  CGlobalRecords& GetGlobalRecords(void) const { return m_GlobalRecords; }; 
-  };
+	public:
+		CGlobalRecords& GetGlobalRecords(void) const
+		{
+			return m_GlobalRecords;
+		}
+	};
 
-  class insertsort
-  {
-    public:
-		bool operator() (cell_t* a, cell_t* b) const
+	class insertsort
+	{
+	public:
+		bool operator()(cell_t* a, cell_t* b) const
 		{
 			if(a->row != b->row) {
 				return a->row < b->row;
@@ -137,42 +140,13 @@ namespace xlslib_core
 				return a->col < b->col;
 			}
 		}
-  };
+	};
 
-  typedef std::set<xlslib_core::cell_t*,insertsort XLSLIB_DFLT_ALLOCATOR> Cell_Set_t;
-  typedef Cell_Set_t::iterator Cell_Set_Itor_t;
-  typedef Cell_Set_t::const_iterator Cell_Set_CItor_t;
+	typedef std::set<xlslib_core::cell_t*, insertsort XLSLIB_DFLT_ALLOCATOR> Cell_Set_t;
+	typedef Cell_Set_t::iterator Cell_Set_Itor_t;
+	typedef Cell_Set_t::const_iterator Cell_Set_CItor_t;
 }
-
 
 // #include "common/xls_poppack.h"
 
-#endif 
-// CELL_H
-
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * $Log: cell.h,v $
- * Revision 1.7  2009/03/02 04:08:43  dhoerl
- * Code is now compliant to gcc  -Weffc++
- *
- * Revision 1.6  2009/01/23 16:09:55  dhoerl
- * General cleanup: headers and includes. Fixed issues building mainC and mainCPP
- *
- * Revision 1.5  2009/01/10 21:10:50  dhoerl
- * More tweaks
- *
- * Revision 1.4  2009/01/09 03:23:12  dhoerl
- * GlobalRec references tuning
- *
- * Revision 1.3  2009/01/08 02:53:15  dhoerl
- * December Rework
- *
- * Revision 1.2  2008/10/25 18:39:53  dhoerl
- * 2008
- *
- * Revision 1.1.1.1  2004/08/27 16:31:47  darioglz
- * Initial Import.
- *
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
-
+#endif

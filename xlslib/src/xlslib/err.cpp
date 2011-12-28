@@ -7,14 +7,14 @@
  *
  * Redistribution and use in source and binary forms, with or without modification, are
  * permitted provided that the following conditions are met:
- * 
+ *
  *    1. Redistributions of source code must retain the above copyright notice, this list of
  *       conditions and the following disclaimer.
- * 
+ *
  *    2. Redistributions in binary form must reproduce the above copyright notice, this list
  *       of conditions and the following disclaimer in the documentation and/or other materials
  *       provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY David Hoerl ''AS IS'' AND ANY EXPRESS OR IMPLIED
  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
  * FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL David Hoerl OR
@@ -25,57 +25,51 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- *
- * File description:
- *
- *
- *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-#include "common/xlsys.h"
-
+#include "xlslib/record.h"
 #include "xlslib/err.h"
 #include "xlslib/datast.h"
+#include "xlslib/rectypes.h"
 
 
 using namespace xlslib_core;
 
 /*
-*********************************
-err_t class implementation
-*********************************
-*/
+ *********************************
+ *  err_t class implementation
+ *********************************
+ */
 err_t::err_t(CGlobalRecords& gRecords, unsigned32_t rowval, unsigned32_t colval, errcode_t value, xf_t* pxfval) :
 	cell_t(gRecords, rowval, colval, pxfval)
 {
-   ecode = value;
+	ecode = value;
 }
 
-CUnit* err_t::GetData(CDataStorage &datastore) const {
-   return datastore.MakeCErr(*this);	// NOTE: this pointer HAS to be deleted elsewhere.
+CUnit* err_t::GetData(CDataStorage &datastore) const
+{
+	return datastore.MakeCErr(*this);   // NOTE: this pointer HAS to be deleted elsewhere.
 }
 
 /*
-*********************************
-CErr class implementation
-*********************************
-*/
+ *********************************
+ *  CErr class implementation
+ *********************************
+ */
 
-CErr::CErr(CDataStorage &datastore, const err_t& errdef):
-		CRecord(datastore)
+CErr::CErr(CDataStorage &datastore, const err_t& errdef) :
+	CRecord(datastore)
 {
-   SetRecordType(RECTYPE_BOOLERR);	
-   AddValue16((unsigned16_t)errdef.GetRow());
-   AddValue16((unsigned16_t)errdef.GetCol());
-   AddValue16(errdef.GetXFIndex());
-   AddValue8(errdef.GetErr());
-   AddValue8(1);
+	SetRecordType(RECTYPE_BOOLERR);
+	AddValue16((unsigned16_t)errdef.GetRow());
+	AddValue16((unsigned16_t)errdef.GetCol());
+	AddValue16(errdef.GetXFIndex());
+	AddValue8(errdef.GetErr());
+	AddValue8(1);
 
-   SetRecordLength(GetDataSize()-4);
+	SetRecordLength(GetDataSize()-RECORD_HEADER_SIZE);
 }
 
 CErr::~CErr()
 {
 }
-
