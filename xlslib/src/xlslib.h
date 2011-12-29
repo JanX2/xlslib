@@ -57,8 +57,9 @@
 using namespace xlslib_core;
 #endif
 
-#else // defined(__cplusplus)
+#else
 
+#define RANGE_FEATURE
 #ifndef __OBJC__    // framework needs a more qualified path
 #include "common/xlstypes.h"
 #endif

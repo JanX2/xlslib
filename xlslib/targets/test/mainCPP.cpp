@@ -34,7 +34,7 @@
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-#include <xlslib.h>
+#include "xlslib.h"
 
 #include "common/timespan.h"
 

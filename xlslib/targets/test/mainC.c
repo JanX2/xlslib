@@ -75,7 +75,11 @@ typedef enum
 #endif
 
 //#define RANGE_FEATURE
-#include <xlslib.h>
+#include "xlslib.h"
+
+#ifndef RANGE_FEATURE
+	WTF!!!
+#endif
 
 #include "md5.h"
 
