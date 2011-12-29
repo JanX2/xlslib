@@ -77,10 +77,6 @@ typedef enum
 //#define RANGE_FEATURE
 #include "xlslib.h"
 
-#ifndef RANGE_FEATURE
-	WTF!!!
-#endif
-
 #include "md5.h"
 
 extern void writeUnicodeLabel(worksheet *ws, unsigned int row, unsigned int col);
