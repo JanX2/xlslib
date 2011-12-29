@@ -103,7 +103,6 @@ worksheet::worksheet(CGlobalRecords& gRecords, unsigned16_t idx) :
 	m_DBCellOffset(0),
 	m_FirstRowOffset(0),
 	m_CellOffsets(),
-	//m_CurrentRowBlock(0),
 	m_Starting_RBCell(),
 	cellIterHint(),
 	cellHint(NULL),
@@ -111,9 +110,7 @@ worksheet::worksheet(CGlobalRecords& gRecords, unsigned16_t idx) :
 	defRowHeight(DEFAULT_ROW_HEIGHT),   // MS default
 	defColWidth(10),    // MS default
 	m_HyperLinks(),
-	m_CurrentHlink(),
-	m_ColInfoUnits(),
-	m_ColInfoUnit()
+	m_CurrentHlink()
 {
 }
 
@@ -193,14 +190,7 @@ worksheet::~worksheet()
 		}
 		m_HyperLinks.clear();
 	}
-
-	m_ColInfoUnits.clear();
 }
-
-/*
- ***********************************
- ***********************************
- */
 
 #define RB_INDEX_MINSIZE 20
 
@@ -245,7 +235,7 @@ CUnit* worksheet::DumpData(CDataStorage &datastore, size_t offset, size_t writeL
 				//unsigned32_t first_row, last_row;
 				//GetFirstLastRowsAndColumns(&first_row, &last_row, NULL, NULL);
 
-				unsigned32_t colInfoSize = ColInfoDump(datastore);
+				unsigned32_t colInfoSize = m_Colinfos.size() * COL_INFO_SIZE;
 				m_pCurrentData = datastore.MakeCIndex(rbsize.first_row, rbsize.last_row);
 
 				size_t rb_size_acc = 0;
@@ -293,23 +283,13 @@ CUnit* worksheet::DumpData(CDataStorage &datastore, size_t offset, size_t writeL
 			break;
 
 		case SHEET_COLINFO:
-			XTRACE("\tCOLINFO");
-			if(!m_ColInfoUnits.empty())	{
+			XTRACE2("\tCOLINFO %d", (int)m_Colinfos.size());
+			if(!m_Colinfos.empty())	{
 				// First check if the list of fonts is not empty... (old comment????)
-				m_pCurrentData = *m_ColInfoUnit;
-				if(m_ColInfoUnit != (--m_ColInfoUnits.end())) {
-					// if it wasn't the last font from the list, increment to get the next one
-					m_ColInfoUnit++;
-					changeDumpState = false;
-				} else {
-					// if it was the last from the list, change the DumpState
-					m_ColInfoUnit = m_ColInfoUnits.begin(); // DFH : unneeded
-					changeDumpState = true;
-				}
+				m_pCurrentData = datastore.MakeCColInfo(*m_Current_Colinfo++);
+				changeDumpState = m_Current_Colinfo == m_Colinfos.end() ? true : false;
 				repeat = false;
 			} else {
-				// if the list is empty, change the dump state.
-				//font = m_Fonts.begin();
 				changeDumpState = true;
 				repeat = true;
 			}
@@ -360,15 +340,8 @@ CUnit* worksheet::DumpData(CDataStorage &datastore, size_t offset, size_t writeL
 				changeDumpState = true;
 			}
 			if(changeDumpState) {
-				CHANGE_DUMPSTATE(SHEET_WINDOW2);
+				CHANGE_DUMPSTATE(SHEET_MERGED);
 			}
-			break;
-
-		case SHEET_WINDOW2:
-			XTRACE("\tWINDOW2");
-			m_pCurrentData = datastore.MakeCWindow2(sheetIndex == m_GlobalRecords.GetWindow1().GetActiveSheet());
-			repeat = false;
-			CHANGE_DUMPSTATE(SHEET_MERGED);
 			break;
 
 		case SHEET_MERGED:
@@ -383,6 +356,13 @@ CUnit* worksheet::DumpData(CDataStorage &datastore, size_t offset, size_t writeL
 			} else {
 				repeat = true;
 			}
+			CHANGE_DUMPSTATE(SHEET_WINDOW2);
+			break;
+
+		case SHEET_WINDOW2:
+			XTRACE("\tWINDOW2");
+			m_pCurrentData = datastore.MakeCWindow2(sheetIndex == m_GlobalRecords.GetWindow1().GetActiveSheet());
+			repeat = false;
 			CHANGE_DUMPSTATE(SHEET_H_LINKS);
 			break;
 
@@ -390,21 +370,12 @@ CUnit* worksheet::DumpData(CDataStorage &datastore, size_t offset, size_t writeL
 			XTRACE("\tSHEET_H_LINKS");
 			if(!m_HyperLinks.empty()) {
 				// First check if the list of fonts is not empty...
-				m_pCurrentData = MakeHyperLink(datastore, *m_CurrentHlink);
-				if(m_CurrentHlink != (--m_HyperLinks.end())) {
-					// if it wasn't the last font from the list, increment to get the next one
-					m_CurrentHlink++;
-					changeDumpState = false;
-				} else {
-					// if it was the last from the list, change the DumpState
-					changeDumpState = true;
-					m_CurrentHlink = m_HyperLinks.begin(); // does nothing
-				}
+				m_pCurrentData = MakeHyperLink(datastore, *m_CurrentHlink++);
+				changeDumpState = m_CurrentHlink == m_HyperLinks.end() ? true : false;
 				repeat = false;
 			} else {
 				// if the list is empty, change the dump state.
 				changeDumpState = true;
-				//font = m_Fonts.begin();
 				repeat = true;
 			}
 			if(changeDumpState) {
@@ -429,24 +400,6 @@ CUnit* worksheet::DumpData(CDataStorage &datastore, size_t offset, size_t writeL
 	} while(repeat);
 
 	return m_pCurrentData;
-}
-
-// create then save all Col Info records, dump them out later
-unsigned32_t worksheet::ColInfoDump(CDataStorage &datastore)
-{
-	unsigned32_t size = 0;
-
-	Colinfo_Set_Itor_t cbegin = m_Colinfos.begin();
-	Colinfo_Set_Itor_t cend = m_Colinfos.end();
-	while(cbegin != cend) {
-		CUnit *unit = datastore.MakeCColInfo(*cbegin);
-		size += unit->GetSize();
-		m_ColInfoUnits.push_back(unit);
-		++cbegin;
-	}
-	m_ColInfoUnit = m_ColInfoUnits.begin();
-
-	return size;
 }
 
 CUnit* worksheet::RowBlocksDump(CDataStorage &datastore, const size_t offset)
@@ -553,7 +506,7 @@ CUnit* worksheet::RowBlocksDump(CDataStorage &datastore, const size_t offset)
 				//printf("m_DBCellOffset[rows]=%ld OFFSET=%ld\n", m_DBCellOffset, offset);
 				// If the current row-block is full OR there are no more cells
 				if(++m_RowCounter >= MAX_ROWBLOCK_SIZE || m_CurrentCell == m_Cells.end()) {
-					if (m_CurrentCell == (--m_Cells.end())) {
+					if(m_CurrentCell == (--m_Cells.end())) {
 						m_CellCounter++;
 					}
 					m_RowCounter = 0;

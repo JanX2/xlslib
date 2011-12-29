@@ -28,12 +28,12 @@
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-#include "common/xlsys.h"
 #include "common/overnew.h"
 
 /********************************************************************
   The new() operator is overloaded only for the PHP_EXTENSION version
 ********************************************************************/
+
 #if 0
 
 

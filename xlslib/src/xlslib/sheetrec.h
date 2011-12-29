@@ -189,7 +189,6 @@ namespace xlslib_core
 		size_t m_FirstRowOffset;
 		CellOffsets_Vect_t m_CellOffsets;
 
-		//unsigned32_t			m_CurrentRowBlock;
 		Cell_Set_Itor_t	m_Starting_RBCell;
 
 		// cache a bit for speedups
@@ -203,14 +202,9 @@ namespace xlslib_core
 		HyperLinkList_t	m_HyperLinks;
 		HyperLinkList_Itor_t m_CurrentHlink;
 
-		ColInfo_t m_ColInfoUnits;
-		ColInfo_Itor_t m_ColInfoUnit;
-
 	private:
 		worksheet(CGlobalRecords& gRecords, unsigned16_t idx);
 		~worksheet();
-
-		unsigned32_t			ColInfoDump(CDataStorage &datastore);
 
 		//void					GetFirstLastRows(unsigned32_t* first_row, unsigned32_t* last_row);
 		size_t					GetNumRowBlocks(rowblocksize_t* rbsize_ref = NULL);

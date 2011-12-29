@@ -55,6 +55,7 @@
 #define DEF_ROW_HEIGHT_SIZE    8
 #define DEF_COL_WIDTH_SIZE     6
 #define BOF_RECORD_SIZE		  12  // used when computing blocks during output stage
+#define COL_INFO_SIZE		  16
 
 // End SIZES
 

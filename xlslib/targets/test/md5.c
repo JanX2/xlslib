@@ -438,7 +438,7 @@ int load_file(unsigned8_t **buf_ref, size_t *buflen_ref, const char *filepath)
 		}
 	}
 	// Mac or PC bit
-	b[565] = 0;
+	if(b) b[565] = 0;
 
 	return 0;
 

@@ -38,9 +38,6 @@
 #pragma warning(disable: 4290) // C++ Exception Specification ignored
 #endif
 
-
-#include "common/xlsys.h"
-
 //#   define PHPEXT_TSRMLS_C  tsrm_ls
 //#   define PHPEXT_TSRMLS_D  void ***tsrm_ls
 

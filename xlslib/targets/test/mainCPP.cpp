@@ -1844,10 +1844,11 @@ char *FormulaFunctionsTest(const char *md5_checksum)
 		expr_function_code_t fn = function_arr[r].code;
 		if (FUNC_BAHTTEXT == fn)
 		{
-			cur_sh = sh[1];
 			row = 4;
 #if 01 /* set to 0 to create an XLS which includes Excel 2007/2010 functions in the sample formulas */
 			break;
+#else
+			cur_sh = sh[1];
 #endif
 		}
 		else if (FUNC_AGGREGATE == fn)

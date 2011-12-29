@@ -33,18 +33,19 @@
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-#include "common/xlsys.h"
-#include "common/systype.h"
 
 #include <sys/types.h>
 #include <string>
 
 #define CPP_BRIDGE_XLS
 
+// since xlslib.h does not include these for C files
+#include "common/xlsys.h"
+#include "common/systype.h"
 #include "xlslib/common.h" 
 #include "xlslib/record.h"
 
-#include <xlslib.h>
+#include "xlslib.h"
 
 using namespace std;
 using namespace xlslib_core;
