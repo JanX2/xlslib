@@ -35,6 +35,10 @@
 #include "common/systype.h"
 
 // #include "common/xls_pshpack2.h"
+#include "xlslib/colinfo.h"
+//Added by RLN needed for Colinfo_Set_t 111229
+#include "xlslib/row.h"
+//Added by RLN needed for RowHeight_Vect_t 111229
 
 namespace xlslib_core
 {

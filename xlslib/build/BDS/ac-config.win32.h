@@ -221,7 +221,9 @@
 #ifndef __cplusplus
 #define inline __inline
 #endif
+#ifdef __BCPLUSPLUS__
 
+#else
 typedef __int64 int64_t;
 typedef __int32 int32_t;
 typedef __int16 int16_t;
@@ -256,6 +258,7 @@ typedef unsigned __int8 uint8_t;
 /* #undef size_t */
 
 /* Define to `long' if <sys/types.h> does not define. */
+
 #if defined(_MSC_VER) /* [i_a] */
 #if defined(_WIN64)
 #  define ssize_t __int64
@@ -265,4 +268,4 @@ typedef unsigned __int8 uint8_t;
 #else
 #  define ssize_t long
 #endif
-
+#endif

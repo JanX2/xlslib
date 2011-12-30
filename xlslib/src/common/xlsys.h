@@ -36,7 +36,6 @@
 #ifdef HAVE_CONFIG_H
 #include "xlconfig.h"
 
-
 #define CFG_TRUE          1
 #define CFG_FALSE         0
 

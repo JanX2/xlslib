@@ -31,8 +31,12 @@
 #ifndef COLORS_H
 #define COLORS_H
 
+
 #include "common/xlsys.h"
 #include "common/systype.h"
+
+#include "xlslib/record.h"
+//Added by RLN 111229
 
 // #include "common/xls_pshpack2.h"
 

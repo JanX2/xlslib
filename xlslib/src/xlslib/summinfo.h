@@ -63,6 +63,10 @@
 
 namespace xlslib_core
 {
+   // Forward declarations (added by RLN 111229)
+   class CDataStorage;
+
+
 	typedef enum {
 		PROP_AUTHOR = 1,
 		PROP_CATEGORY,

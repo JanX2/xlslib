@@ -34,10 +34,12 @@
 #include "common/xlsys.h"
 #include "common/systype.h"
 
-#include "xlslib/summinfo.h"		// Object instantiated
-#include "xlslib/docsumminfo.h"		// Object instantiated
-#include "xlslib/formula.h"			// Object instantiated
-#include "xlslib/globalrec.h"		// Object instantiated
+// The following includes are for instanciated objects
+#include "xlslib/summinfo.h"
+#include "xlslib/docsumminfo.h"
+#include "xlslib/formula.h"
+#include "xlslib/globalrec.h"		
+#include "xlslib/sheetrec.h"
 
 // #include "common/xls_pshpack2.h"
 
