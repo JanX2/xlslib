@@ -482,12 +482,28 @@ char *StandardTest2(const char *md5_checksum)
 	return checkP;
 }
 
+// http://www.codeproject.com/KB/recipes/SimpleRNG.aspx Totally integer based generator
+static unsigned32_t m_z = 0;
+static unsigned32_t m_w = 0;
+static void SeedRndNumber(unsigned32_t sv)
+{
+	m_z = sv;
+	m_w = sv + 1;
+}
+static unsigned32_t GetRndNumber(unsigned32_t max)
+{
+    m_z = 36969 * (m_z & 65535) + (m_z >> 16);
+    m_w = 18000 * (m_w & 65535) + (m_w >> 16);
+    return ((m_z << 16) + m_w) % max;
+}
+
+#if 0 // these generate different results on different machines
 static unsigned32_t seed = 0;
 
 static void SeedRndNumber(unsigned32_t sv)
 {
 	seed = sv;
-}
+} 
 static unsigned32_t GetRndNumber(unsigned32_t max)
 {
 	// this is NOT a good random generator but suffices for our purposes!
@@ -498,6 +514,7 @@ static unsigned32_t GetRndNumber(unsigned32_t max)
 	rndnum = (unsigned32_t)(seed * ((max + 1.0) / (792241 - 1.0)));
 	return rndnum;
 }
+#endif
 
 static errcode_t PickErrorCode(unsigned32_t value)
 {
