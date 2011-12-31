@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="xlslib_static" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="libxlslib_static" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="obj/Debug/" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="libxlslib_static" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="obj/Release/" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add directory="../../../src" />
+			<Add directory=".." />
+		</Compiler>
+		<Unit filename="../ac-config.linux32.h" />
+		<Unit filename="../../../src/common/overnew.cpp" />
+		<Unit filename="../../../src/common/overnew.h" />
+		<Unit filename="../../../src/common/stringtok.h" />
+		<Unit filename="../../../src/common/systype.h" />
+		<Unit filename="../../../src/common/timespan.h" />
+		<Unit filename="../../../src/common/xls_poppack.h" />
+		<Unit filename="../../../src/common/xls_pshpack1.h" />
+		<Unit filename="../../../src/common/xls_pshpack2.h" />
+		<Unit filename="../../../src/common/xls_pshpack4.h" />
+		<Unit filename="../../../src/common/xlstypes.h" />
+		<Unit filename="../../../src/common/xlsys.h" />
+		<Unit filename="../../../src/oledoc/binfile.cpp" />
+		<Unit filename="../../../src/oledoc/binfile.h" />
+		<Unit filename="../../../src/oledoc/oledoc.cpp" />
+		<Unit filename="../../../src/oledoc/oledoc.h" />
+		<Unit filename="../../../src/oledoc/olefs.cpp" />
+		<Unit filename="../../../src/oledoc/olefs.h" />
+		<Unit filename="../../../src/oledoc/oleprop.cpp" />
+		<Unit filename="../../../src/oledoc/oleprop.h" />
+		<Unit filename="../../../src/xlslib.h" />
+		<Unit filename="../../../src/xlslib/HPSF.cpp" />
+		<Unit filename="../../../src/xlslib/HPSF.h" />
+		<Unit filename="../../../src/xlslib/assert_assist.cpp" />
+		<Unit filename="../../../src/xlslib/biffsection.h" />
+		<Unit filename="../../../src/xlslib/blank.cpp" />
+		<Unit filename="../../../src/xlslib/blank.h" />
+		<Unit filename="../../../src/xlslib/boolean.cpp" />
+		<Unit filename="../../../src/xlslib/boolean.h" />
+		<Unit filename="../../../src/xlslib/cbridge.cpp" />
+		<Unit filename="../../../src/xlslib/cbridge.h" />
+		<Unit filename="../../../src/xlslib/cell.cpp" />
+		<Unit filename="../../../src/xlslib/cell.h" />
+		<Unit filename="../../../src/xlslib/colinfo.cpp" />
+		<Unit filename="../../../src/xlslib/colinfo.h" />
+		<Unit filename="../../../src/xlslib/colors.cpp" />
+		<Unit filename="../../../src/xlslib/colors.h" />
+		<Unit filename="../../../src/xlslib/common.h" />
+		<Unit filename="../../../src/xlslib/continue.cpp" />
+		<Unit filename="../../../src/xlslib/continue.h" />
+		<Unit filename="../../../src/xlslib/datast.cpp" />
+		<Unit filename="../../../src/xlslib/datast.h" />
+		<Unit filename="../../../src/xlslib/docsumminfo.cpp" />
+		<Unit filename="../../../src/xlslib/docsumminfo.h" />
+		<Unit filename="../../../src/xlslib/err.cpp" />
+		<Unit filename="../../../src/xlslib/err.h" />
+		<Unit filename="../../../src/xlslib/extformat.cpp" />
+		<Unit filename="../../../src/xlslib/extformat.h" />
+		<Unit filename="../../../src/xlslib/font.cpp" />
+		<Unit filename="../../../src/xlslib/font.h" />
+		<Unit filename="../../../src/xlslib/format.cpp" />
+		<Unit filename="../../../src/xlslib/format.h" />
+		<Unit filename="../../../src/xlslib/formtags.h" />
+		<Unit filename="../../../src/xlslib/formula.cpp" />
+		<Unit filename="../../../src/xlslib/formula.h" />
+		<Unit filename="../../../src/xlslib/globalrec.cpp" />
+		<Unit filename="../../../src/xlslib/globalrec.h" />
+		<Unit filename="../../../src/xlslib/index.cpp" />
+		<Unit filename="../../../src/xlslib/index.h" />
+		<Unit filename="../../../src/xlslib/label.cpp" />
+		<Unit filename="../../../src/xlslib/label.h" />
+		<Unit filename="../../../src/xlslib/merged.cpp" />
+		<Unit filename="../../../src/xlslib/merged.h" />
+		<Unit filename="../../../src/xlslib/note.cpp" />
+		<Unit filename="../../../src/xlslib/note.h" />
+		<Unit filename="../../../src/xlslib/number.cpp" />
+		<Unit filename="../../../src/xlslib/number.h" />
+		<Unit filename="../../../src/xlslib/range.cpp" />
+		<Unit filename="../../../src/xlslib/range.h" />
+		<Unit filename="../../../src/xlslib/recdef.cpp" />
+		<Unit filename="../../../src/xlslib/recdef.h" />
+		<Unit filename="../../../src/xlslib/record.cpp" />
+		<Unit filename="../../../src/xlslib/record.h" />
+		<Unit filename="../../../src/xlslib/rectypes.h" />
+		<Unit filename="../../../src/xlslib/row.cpp" />
+		<Unit filename="../../../src/xlslib/row.h" />
+		<Unit filename="../../../src/xlslib/sheetrec.cpp" />
+		<Unit filename="../../../src/xlslib/sheetrec.h" />
+		<Unit filename="../../../src/xlslib/summinfo.cpp" />
+		<Unit filename="../../../src/xlslib/summinfo.h" />
+		<Unit filename="../../../src/xlslib/tostr.h" />
+		<Unit filename="../../../src/xlslib/unit.cpp" />
+		<Unit filename="../../../src/xlslib/unit.h" />
+		<Unit filename="../../../src/xlslib/workbook.cpp" />
+		<Unit filename="../../../src/xlslib/workbook.h" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<lib_finder disable_auto="1" />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
