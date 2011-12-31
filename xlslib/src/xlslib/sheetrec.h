@@ -35,9 +35,10 @@
 #include "common/systype.h"
 
 // #include "common/xls_pshpack2.h"
-#include "xlslib/colinfo.h"
+
+//#include "xlslib/colinfo.h"
 //Added by RLN needed for Colinfo_Set_t 111229
-#include "xlslib/row.h"
+//#include "xlslib/row.h"
 //Added by RLN needed for RowHeight_Vect_t 111229
 
 namespace xlslib_core
@@ -153,7 +154,6 @@ namespace xlslib_core
 	typedef std::vector<xlslib_core::CUnit* XLSLIB_DFLT_ALLOCATOR> ColInfo_t;
 	typedef ColInfo_t::iterator ColInfo_Itor_t;
 
-//  class range;
 	class worksheet : public CBiffSection
 	{
 		friend class workbook;
