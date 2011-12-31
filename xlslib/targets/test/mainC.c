@@ -184,7 +184,7 @@ int main(int argc, char *argv[])
 	writeUnicodeLabel(ws, 5, 1);
 	ret = xlsWorkbookDump(w, "testC.xls");
 
-	printf("    # saved it ret=%d errno=%s\n", ret, strerror(errno));
+	// printf("    # saved it ret=%d errno=%s\n", ret, strerror(errno));
 
 	xlsDeleteWorkbook(w);
 

@@ -33,11 +33,11 @@ Code adapted from citadel (www.citadel.org ???)
 /*
  * Note: this code is harmless on little-endian machines.
  */
-static void byteReverse(unsigned char *buf, size_t longs)
+ static void byteReverse(unsigned char *buf, size_t longs)
 {
     unsigned32_t t;
     do {
-		t = (unsigned32_t) ((unsigned32_t) buf[3] << 8 | buf[2]) << 16 | ((unsigned32_t) buf[1] << 8 | buf[0]);
+		t = (unsigned32_t) ((unsigned32_t) buf[3] << 8 | (unsigned32_t) buf[2]) << 16 | ((unsigned32_t) buf[1] << 8 | (unsigned32_t) buf[0]);
 		*(unsigned32_t *) buf = t;
 		buf += 4;
     } while (--longs);
@@ -429,7 +429,9 @@ int load_file(unsigned8_t **buf_ref, size_t *buflen_ref, const char *filepath)
 		}
 	}
 	// Mac or PC bit
-	if(b) b[565] = 0;
+	if(b) {
+		b[564] = 0;
+	}
 
 	return 0;
 

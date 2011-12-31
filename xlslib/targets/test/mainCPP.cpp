@@ -80,6 +80,13 @@ static const bool PRINT_CELL_FORMAT	= 0;
 #define OPT_FONTMAX         (unsigned32_t)8
 
 // Macros
+#if 1
+
+#define TIMESPAN_START(id)
+#define TIMESPAN_END(id,str)
+
+#else
+
 #define TIMESPAN_START(id)                      \
    CCpuClockTimespan span_##id;                 \
    span_##id.StartClock()
@@ -87,6 +94,8 @@ static const bool PRINT_CELL_FORMAT	= 0;
 #define TIMESPAN_END(id,str)                                      \
    span_##id.StopClock();                                         \
    std::cerr<<"    # "<<str<<" "<<span_##id.GetUsedMilliseconds()<<" ms"<<std::endl
+   
+#endif
 
 static char file_err[] = "00000000000000000000000000000000";
 
@@ -323,14 +332,14 @@ char *StandardTest(const char *md5_checksum)
    sh->number(5,1,3.0);
 
 #if 0
-   printf("    # limit: "); 
+   printf("    # limit: "); // what the heck is this???
    char buf[100];
    gets(buf);
    unsigned32_t lim = atoi(buf);
 #else
    unsigned32_t lim = 42;
 #endif
-   printf("\n    # limit: %d\n", lim); // >= 14 --> error to load sheet #2; <= 13 = ok
+   //printf("\n    # limit: %d\n", lim); // >= 14 --> error to load sheet #2; <= 13 = ok
 
    unsigned32_t j, k;
 	for (j = 0 ; j <= 127; j++)
