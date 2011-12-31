@@ -1,4 +1,4 @@
-﻿/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *
  * This file is part of xlslib -- A multiplatform, C/C++ library
  * for dynamic generation of Excel(TM) files.
@@ -3305,3 +3305,4 @@ CFormula::~CFormula()
  *  C0 00 00 FC 0F 00
  *  1E 01 00 1E 02 00 1E 03 00 1E 04 00 41 2E 01  012e  256+32+14  302
  */
+

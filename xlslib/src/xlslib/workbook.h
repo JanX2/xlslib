@@ -38,7 +38,7 @@
 #include "xlslib/summinfo.h"
 #include "xlslib/docsumminfo.h"
 #include "xlslib/formula.h"
-#include "xlslib/globalrec.h"		
+#include "xlslib/globalrec.h"
 #include "xlslib/sheetrec.h"
 
 // #include "common/xls_pshpack2.h"

@@ -8,14 +8,14 @@
  *
  * Redistribution and use in source and binary forms, with or without modification, are
  * permitted provided that the following conditions are met:
- * 
+ *
  *    1. Redistributions of source code must retain the above copyright notice, this list of
  *       conditions and the following disclaimer.
- * 
+ *
  *    2. Redistributions in binary form must reproduce the above copyright notice, this list
  *       of conditions and the following disclaimer in the documentation and/or other materials
  *       provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY David Hoerl ''AS IS'' AND ANY EXPRESS OR IMPLIED
  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
  * FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL David Hoerl OR
@@ -94,12 +94,13 @@
 
 #endif // defined(_MSC_VER) && defined(WIN32)
 
+
+
 #define CFG_TRUE          1
 #define CFG_FALSE         0
 
 #define ALLOCATOR_STL     0
 #define ALLOCATOR_BTI     1
-
 
 #if defined(ALLOC_STL)
 #   define ALLOCATOR_DFLT ALLOCATOR_STL
@@ -117,6 +118,15 @@
 // I am assuming this header file is created and include automatically by MSVC.
 // Other compilers (I.e. BC++ ) don't have this, so I simply copied the file
 // from the MSC project to the RadStudio project and included it. RLN 111208
+#endif
+
+#ifdef __linux__
+#  include "ac-config.linux32.h"
+// I have been copying these ac-config files
+// for each target compiler under the respective build subdirectory
+// (i.e. xlslib/build/CodeBlocks and modified as needed.
+// The build subdirectory is then added to the include path list.
+// RLN 111231
 #endif
 
 #endif
