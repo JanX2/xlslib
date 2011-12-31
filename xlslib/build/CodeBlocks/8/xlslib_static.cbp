@@ -36,7 +36,9 @@
 		</Build>
 		<Compiler>
 			<Add directory="../../../src" />
+			<Add directory=".." />
 		</Compiler>
+		<Unit filename="../ac-config.linux32.h" />
 		<Unit filename="../../../src/common/overnew.cpp" />
 		<Unit filename="../../../src/common/overnew.h" />
 		<Unit filename="../../../src/common/stringtok.h" />
