@@ -715,25 +715,32 @@ void CGlobalRecords::str16toascii(const u16string& str1, std::string& str2)
 
 #ifdef HAVE_ICONV
 
+#include <errno.h>
+
 void CGlobalRecords::wide2str16(const ustring& str1, u16string& str2)
 {
-	size_t resultSize, inbytesleft, outbytesleft;
-	const wchar_t			*inbuf;
-	iconv_t	cd;
+	size_t					resultSize, inbytesleft, outbytesleft;
+	const uint8_t			*inbuf;
+	iconv_t					cd;
 	unsigned16_t			*outbuf, *origOutbuf;
 
 	cd = iconv_open(UCS_2_INTERNAL, iconv_code.c_str());
-	// no need to test return code as we ALREADY did this when setting iconv_code in workbook
+	// user may have changed the conversion since the workbook was opened
+	XL_ASSERT(!(cd == (iconv_t)(-1)));
 
-	inbytesleft		= str1.size() * sizeof(unichar_t);
-	outbytesleft	= inbytesleft * 4 * sizeof(unsigned16_t); // This is for sure a mistake and should be str1.size() * sizeof(unsigned16_t) (dfh)
+	if(cd != (iconv_t)(-1)) {
+		inbytesleft		= str1.size() * sizeof(unichar_t);
+		outbytesleft	= str1.size() * sizeof(unsigned16_t);
 
-	inbuf		= str1.c_str();
-	origOutbuf	= (unsigned16_t *)calloc(outbytesleft, 1);
-	outbuf		= origOutbuf;
+		inbuf		= (uint8_t *)str1.data();
+		origOutbuf	= (unsigned16_t *)calloc(outbytesleft, 1);
+		outbuf		= origOutbuf;
 
-	resultSize = iconv(cd, (char **)&inbuf, &inbytesleft, (char **)&outbuf, &outbytesleft);
-	iconv_close(cd);
+		resultSize = iconv(cd, (char **)&inbuf, &inbytesleft, (char **)&outbuf, &outbytesleft);
+		iconv_close(cd);
+	} else {
+		resultSize = (size_t)-1;
+	}
 
 	if(resultSize == (size_t)-1) {
 		str2 = convFail;
