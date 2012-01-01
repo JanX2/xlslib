@@ -140,7 +140,6 @@ void writeUnicodeLabel(worksheet *ws, unsigned int row, unsigned int col)
 	xlsWorksheetLabelW(ws, row++, col, latin1wstr, NULL);
 }
 
-
 int main(int argc, char *argv[]) 
 {
 	workbook *w;
@@ -176,7 +175,9 @@ int main(int argc, char *argv[])
 
 	w = xlsNewWorkbook();
 	ws = xlsWorkbookSheet(w, "xlslib C");
-
+#ifdef __APPLE__
+	xlsWorkbookIconvInType(w, "UCS-4-INTERNAL");
+#endif
 	xlsWorksheetNumberDbl(ws, (unsigned16_t)1, (unsigned16_t)1, 1.0, NULL);  
 	xlsWorksheetNumberDbl(ws, (unsigned16_t)2, (unsigned16_t)1, 2.0, NULL);
 	xlsWorksheetNumberDbl(ws, (unsigned16_t)3, (unsigned16_t)1, 3.0, NULL);

@@ -25,20 +25,38 @@ Code adapted from citadel (www.citadel.org ???)
 #include <stdio.h>
 #include <stdlib.h>
 
+#if defined(HAVE_STRINGS_H)
+#include <strings.h>
+#elif defined(HAVE_STRING_H)
+#include <string.h>
+#endif
 
-#if !defined(HAVE_STRCASECMP)
+#if defined(HAVE_STRCASECMP)
+// we're OK
+#elif define(HAVE_STRICMP)
+#warning Would someone please tell me what header file to include in this case? dhoerl at mac dot com
 #define strcasecmp(a, b)   stricmp(a, b)
+#else
+#define strcasecmp(a, b)   strcmp(a, b)
 #endif
 
 /*
  * Note: this code is harmless on little-endian machines.
  */
- static void byteReverse(unsigned char *buf, size_t longs)
+ static void byteReverse(void *vbuf, size_t longs)
 {
-    unsigned32_t t;
+	unsigned8_t *buf = (unsigned char *)vbuf;
+	union {
+		unsigned8_t		c[4];
+		unsigned32_t	t;
+	} tmp;
+
     do {
-		t = (unsigned32_t) ((unsigned32_t) buf[3] << 8 | (unsigned32_t) buf[2]) << 16 | ((unsigned32_t) buf[1] << 8 | (unsigned32_t) buf[0]);
-		*(unsigned32_t *) buf = t;
+		tmp.t = (unsigned32_t) ((unsigned32_t) buf[3] << 8 | (unsigned32_t) buf[2]) << 16 | ((unsigned32_t) buf[1] << 8 | (unsigned32_t) buf[0]);
+		buf[0] = tmp.c[0];
+		buf[1] = tmp.c[1];
+		buf[2] = tmp.c[2];
+		buf[3] = tmp.c[3];
 		buf += 4;
     } while (--longs);
 }
