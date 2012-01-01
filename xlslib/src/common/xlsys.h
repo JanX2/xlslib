@@ -31,8 +31,6 @@
 #ifndef XLSLIB_CONFIG_H
 #define XLSLIB_CONFIG_H
 
-#define RANGE_FEATURE
-
 #ifdef HAVE_CONFIG_H
 #include "xlconfig.h"
 

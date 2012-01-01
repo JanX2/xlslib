@@ -38,8 +38,6 @@
 #include "xlslib/font.h"		// superclass
 #include "xlslib/common.h"		// superclass
 
-#ifdef RANGE_FEATURE
-
 // #include "common/xls_pshpack2.h"
 
 namespace xlslib_core
@@ -131,9 +129,6 @@ namespace xlslib_core
 	typedef xf_Pair_Set_t::iterator xf_Pair_Set_Itor_t;
 }
 
-
 // #include "common/xls_poppack.h"
-
-#endif
 
 #endif

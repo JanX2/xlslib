@@ -40,7 +40,6 @@ It's a question what cell_t::format() is needed for, or how to create format wit
 So either I do not know something, it's a specific design decision or a bug in workbook::format(). Or a mix of all of that.
 */
 
-//#define RANGE_FEATURE
 #include <xlslib.h>
 
 #include <iostream>

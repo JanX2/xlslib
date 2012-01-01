@@ -179,9 +179,7 @@ namespace xlslib_core
 		Cell_Set_Itor_t	m_CurrentSizeCell;          // Init this one in the INIT state
 		//bool m_CellsSorted;
 
-#ifdef RANGE_FEATURE
 		RangeObj_Vect_t	m_Ranges;
-#endif
 		RBSize_Vect_t m_RBSizes;
 		RBSize_Vect_Itor_t m_Current_RBSize;
 		bool m_SizesCalculated;
@@ -243,11 +241,9 @@ namespace xlslib_core
 		void defaultRowHeight(unsigned16_t width, bool hidden = false) { defRowHeight = width; defRowsHidden = hidden; } // sets column widths to 1/256 x width of "0"
 		void defaultColwidth(unsigned16_t width) { defColWidth = width; } // in points (Excel uses twips, 1/20th of a point, but xlslib didn't)
 
-#ifdef RANGE_FEATURE
 		// Ranges
 		range* rangegroup(unsigned32_t row1, unsigned32_t col1,
 						  unsigned32_t row2, unsigned32_t col2);
-#endif
 		// Cells
 		cell_t* blank(unsigned32_t row, unsigned32_t col,
 					  xf_t* pxformat = NULL);

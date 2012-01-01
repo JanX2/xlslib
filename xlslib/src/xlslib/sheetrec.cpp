@@ -91,9 +91,7 @@ worksheet::worksheet(CGlobalRecords& gRecords, unsigned16_t idx) :
 	m_Cells(),
 	m_CurrentCell(),
 	m_CurrentSizeCell(),
-#ifdef RANGE_FEATURE
 	m_Ranges(),
-#endif
 	m_RBSizes(),
 	m_Current_RBSize(),
 	m_SizesCalculated(false),
@@ -173,7 +171,6 @@ worksheet::~worksheet()
  *
  *  }
  */
-#ifdef RANGE_FEATURE
 	// Delete dynamically allocated range definitions
 	if(!m_Ranges.empty()) {
 		for(RangeObj_Vect_Itor_t rh = m_Ranges.begin(); rh != m_Ranges.end(); rh++) {
@@ -181,8 +178,6 @@ worksheet::~worksheet()
 		}
 		m_Ranges.clear();
 	}
-#endif
-// RANGE_FEATURE
 
 	if(!m_HyperLinks.empty()) {
 		for(HyperLinkList_Itor_t rh = m_HyperLinks.begin(); rh != m_HyperLinks.end(); rh++) {
@@ -1124,7 +1119,6 @@ void worksheet::rowheight(unsigned32_t row, unsigned16_t height, xf_t* pxformat)
 	}
 }
 
-#ifdef RANGE_FEATURE
 range* worksheet::rangegroup(unsigned32_t row1, unsigned32_t col1,
 							 unsigned32_t row2, unsigned32_t col2)
 {
@@ -1133,10 +1127,6 @@ range* worksheet::rangegroup(unsigned32_t row1, unsigned32_t col1,
 
 	return newrange;
 }
-
-#endif
-// RANGE_FEATURE
-
 
 // define a cell (label, number, etc) - apply proper url (http://blah.blah), possible text mark too
 void worksheet::hyperLink(const cell_t *cell, const std::string& url, const std::string& mark)

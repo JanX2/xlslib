@@ -2,7 +2,6 @@
  * SF issue #3083003 (! NOT 3076678 !)
 */
 
-//#define RANGE_FEATURE
 #include <xlslib.h>
 
 #include <iostream>

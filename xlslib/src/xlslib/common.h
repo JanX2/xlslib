@@ -43,10 +43,8 @@
 #endif
 #define UCS_2_INTERNAL "UCS-2"
 #endif
-#endif /* HAVE_ICONV */
-
-
-//#define RANGE_FEATURE  // moved to xlssys.h
+#endif
+/* HAVE_ICONV */
 
 // #include "common/xls_pshpack2.h"
 
@@ -68,11 +66,10 @@ namespace xlslib_core
 
 	typedef std::vector<xlslib_core::range_t* XLSLIB_DFLT_ALLOCATOR> Range_Vect_t;
 	typedef Range_Vect_t::iterator Range_Vect_Itor_t;
-#ifdef RANGE_FEATURE
+
 	class range;
 	typedef std::vector<xlslib_core::range* XLSLIB_DFLT_ALLOCATOR> RangeObj_Vect_t;
 	typedef RangeObj_Vect_t::iterator RangeObj_Vect_Itor_t;
-#endif
 }
 
 // #include "common/xls_poppack.h"

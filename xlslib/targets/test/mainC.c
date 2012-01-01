@@ -74,7 +74,6 @@ typedef enum
 #include <sys/types.h>
 #endif
 
-//#define RANGE_FEATURE
 #include "xlslib.h"
 
 #include "md5.h"
@@ -236,9 +235,7 @@ property_t prop = PROP_SUBJECT;
 unsigned16_t i16 = 0;
 unsigned32_t row = 0;
 unsigned32_t col = 0;
-#ifdef RANGE_FEATURE
 range *r;
-#endif
 cell_t *c = 0;
 double numval = 0.0;
 format_number_t fmtnum = FMT_CURRENCY8;
@@ -286,9 +283,7 @@ c =  xlsWorksheetFindCell(s, row, col);
 xlsWorksheetMerge(s, row, col, row, col);
 xlsWorksheetColwidth(s, col, i16, xf);
 xlsWorksheetRowheight(s, row, i16, xf);
-#ifdef RANGE_FEATURE
 r = xlsWorksheetRangegroup(s, row, col, row, col);
-#endif
 c =  xlsWorksheetLabel(s, row, col, name, xf);
 c =  xlsWorksheetLabelW(s, row, col, uname, xf);
 c =  xlsWorksheetBlank(s, row, col, xf);

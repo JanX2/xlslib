@@ -40,8 +40,6 @@
 
 #include "xlslib/range.h"
 
-#ifdef RANGE_FEATURE
-
 using namespace xlslib_core;
 
 range::range(unsigned32_t row1,
@@ -358,5 +356,3 @@ void range::fontshadow(bool sh)
 {
 	SET_RANGE_FUNCTION(fontshadow, sh);
 }
-
-#endif

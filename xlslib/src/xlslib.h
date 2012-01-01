@@ -59,7 +59,6 @@ using namespace xlslib_core;
 
 #else
 
-#define RANGE_FEATURE
 #ifndef __OBJC__    // framework needs a more qualified path
 #include "common/xlstypes.h"
 #endif
@@ -368,9 +367,7 @@ EXTERN_TYPE cell_t *xlsWorksheetFindCell(worksheet *w, unsigned32_t row, unsigne
 EXTERN_TYPE void xlsWorksheetMerge(worksheet *w, unsigned32_t first_row, unsigned32_t first_col, unsigned32_t last_row, unsigned32_t last_col);
 EXTERN_TYPE void xlsWorksheetColwidth(worksheet *w, unsigned32_t col, unsigned16_t width, xf_t* pxformat);
 EXTERN_TYPE void xlsWorksheetRowheight(worksheet *w, unsigned32_t row, unsigned16_t height, xf_t* pxformat);
-#ifdef RANGE_FEATURE
 EXTERN_TYPE range *xlsWorksheetRangegroup(worksheet *w, unsigned32_t row1, unsigned32_t col1, unsigned32_t row2, unsigned32_t col2);
-#endif
 EXTERN_TYPE cell_t *xlsWorksheetLabel(worksheet *w, unsigned32_t row, unsigned32_t col, const char *strlabel, xf_t *pxformat);
 EXTERN_TYPE cell_t *xlsWorksheetLabelW(worksheet *w, unsigned32_t row, unsigned32_t col, const unichar_t *strlabel, xf_t *pxformat);
 EXTERN_TYPE cell_t *xlsWorksheetBlank(worksheet *w, unsigned32_t row, unsigned32_t col, xf_t *pxformat);
@@ -419,9 +416,7 @@ EXTERN_TYPE void xlsCellFontoutline(cell_t *c, bool ol);
 EXTERN_TYPE void xlsCellFontshadow(cell_t *c, bool sh);
 EXTERN_TYPE unsigned32_t xlsCellGetRow(cell_t *c);
 EXTERN_TYPE unsigned32_t xlsCellGetCol(cell_t *c);
-#ifdef RANGE_FEATURE
 EXTERN_TYPE void xlsRangeCellcolor(range *r, color_name_t color);
-#endif
 EXTERN_TYPE unsigned16_t xlsCellGetXFIndex(cell_t *c);
 EXTERN_TYPE void xlsCellSetXF(cell_t *c, xf_t *pxfval);
 // xformat

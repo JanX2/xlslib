@@ -114,13 +114,9 @@ extern "C" {
 																{ return w->colwidth(col, width, pxformat); }
 	void xlsWorksheetRowheight(worksheet *w, unsigned32_t row, unsigned16_t height, xf_t* pxformat)
 																{ return w->rowheight(row, height, pxformat); } 
-																
-#ifdef RANGE_FEATURE
-																	// Ranges
+	// Ranges
 	range *xlsWorksheetRangegroup(worksheet *w, unsigned32_t row1, unsigned32_t col1, unsigned32_t row2, unsigned32_t col2)
 																{ return w->rangegroup(row1, col1, row2, col2); }
-#endif 
-// RANGE_FEATURE
 
 	// Cells
 	cell_t *xlsWorksheetLabel(worksheet *w, unsigned32_t row, unsigned32_t col, const char *strlabel, xf_t *pxformat)
@@ -203,12 +199,8 @@ extern "C" {
 
 	unsigned32_t xlsCellGetRow(cell_t *c)						{ return c->GetRow(); }
 	unsigned32_t xlsCellGetCol(cell_t *c)						{ return c->GetCol(); }
-#ifdef RANGE_FEATURE
 	// range
-	void xlsRangeCellcolor(range *r, color_name_t color)		{ return r->cellcolor(color); }
-#endif 
-// RANGE_FEATURE
-	
+	void xlsRangeCellcolor(range *r, color_name_t color)		{ return r->cellcolor(color); }	
 	// xformat
 	void xlsXformatSetFont(xf_t *x, font_t* fontidx)			{ return x->SetFont(fontidx); }
 	unsigned16_t xlsXformatGetFontIndex(xf_t *x)				{ return x->GetFontIndex(); }
