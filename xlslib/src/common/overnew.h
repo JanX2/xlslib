@@ -31,13 +31,14 @@
 #ifndef OVERNEW_H
 #define OVERNEW_H
 
-#include "common/xlsys.h"
-#include "common/systype.h"
+#if 0
+
+#include "xlsys.h"
+#include "systype.h"
 
 /********************************************************************
   The new() operator is overloaded only for the PHP_EXTENSION version
 ********************************************************************/
-#if 0
 
 #include <new>
 #include <cstdio>

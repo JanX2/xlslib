@@ -27,14 +27,15 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+ 
+#if 0
 
-#include "common/overnew.h"
+#include "overnew.h"
 
 /********************************************************************
   The new() operator is overloaded only for the PHP_EXTENSION version
 ********************************************************************/
 
-#if 0
 
 
 #include <math.h>
