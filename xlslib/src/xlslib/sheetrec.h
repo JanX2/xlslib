@@ -33,13 +33,10 @@
 
 #include "common/xlsys.h"
 #include "common/systype.h"
+#include "xlslib/colinfo.h"
+#include "xlslib/row.h"
 
 // #include "common/xls_pshpack2.h"
-
-//#include "xlslib/colinfo.h"
-//Added by RLN needed for Colinfo_Set_t 111229
-//#include "xlslib/row.h"
-//Added by RLN needed for RowHeight_Vect_t 111229
 
 namespace xlslib_core
 {
@@ -54,16 +51,6 @@ namespace xlslib_core
 	typedef RangeObj_Vect_t::iterator RangeObj_Vect_Itor_t;
 	class range_t;
 	typedef std::vector<xlslib_core::range_t* XLSLIB_DFLT_ALLOCATOR> Range_Vect_t;
-
-	class colinfo_t;
-	class colinfosort;
-	typedef std::set<xlslib_core::colinfo_t*, colinfosort XLSLIB_DFLT_ALLOCATOR> Colinfo_Set_t;
-	typedef Colinfo_Set_t::iterator Colinfo_Set_Itor_t;
-
-	class rowheight_t;
-	class rowheightsort;
-	typedef std::set<xlslib_core::rowheight_t*, rowheightsort XLSLIB_DFLT_ALLOCATOR> RowHeight_Vect_t;
-	typedef RowHeight_Vect_t::iterator RowHeight_Vect_Itor_t;
 
 	class expression_node_t;
 

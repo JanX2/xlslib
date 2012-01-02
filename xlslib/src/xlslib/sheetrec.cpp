@@ -33,7 +33,6 @@
 #include "xlslib/record.h"
 #include "xlslib/blank.h"
 #include "xlslib/boolean.h"
-#include "xlslib/colinfo.h"
 #include "xlslib/common.h"
 #include "xlslib/datast.h"
 #include "xlslib/err.h"
@@ -47,7 +46,6 @@
 #include "xlslib/number.h"
 #include "xlslib/range.h"
 #include "xlslib/rectypes.h"
-#include "xlslib/row.h"
 #include "xlslib/sheetrec.h"
 
 
