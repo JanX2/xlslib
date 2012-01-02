@@ -57,7 +57,6 @@ xlslib.h
 nobase_pkginclude_HEADERS =   \
 common/xlconfig.h             \
 common/xlsys.h			      \
-common/overnew.h		      \
 common/stringtok.h		      \
 common/systype.h		      \
 common/timespan.h		      \
