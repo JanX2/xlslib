@@ -7,3 +7,4 @@ libtool
 src/Makefile.am
 src/Makefile.in
 configure
+configure.ac
