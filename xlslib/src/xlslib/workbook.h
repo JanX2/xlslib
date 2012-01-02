@@ -80,30 +80,30 @@ namespace xlslib_core
 
 		bool		setColor(unsigned8_t r, unsigned8_t g, unsigned8_t b, unsigned8_t idx);
 
-		xf_t* xformat(void);
-		xf_t* xformat(font_t* font);
-		xf_t* xformat(format_t *format);
-		xf_t* xformat(font_t* font, format_t *format);
+		xf_t*		xformat(void);
+		xf_t*		xformat(font_t* font);
+		xf_t*		xformat(format_t *format);
+		xf_t*		xformat(font_t* font, format_t *format);
 
 #ifdef HAVE_ICONV
-		int iconvInType(const char *inType);
+		int			iconvInType(const char *inType);
 #endif
 
-		bool property(property_t prop, const std::string& content);
+		bool		property(property_t prop, const std::string& content);
 
-		void windPosition(unsigned16_t horz, unsigned16_t vert);
-		void windSize(unsigned16_t width, unsigned16_t height);
-		void firstTab(unsigned16_t firstTab);
-		void tabBarWidth(unsigned16_t width);
+		void		windPosition(unsigned16_t horz, unsigned16_t vert);
+		void		windSize(unsigned16_t width, unsigned16_t height);
+		void		firstTab(unsigned16_t firstTab);
+		void		tabBarWidth(unsigned16_t width);
 
-		int Dump(const std::string& filename);
+		int			Dump(const std::string& filename);
 
 	private:
 		workbook(const workbook& that);
 		workbook& operator=(const workbook& right);
 
 	private:
-		CUnit* DumpData(CDataStorage &datastore);   // oledoc use
+		CUnit*		DumpData(CDataStorage &datastore);   // oledoc use
 
 	private:
 		CGlobalRecords				m_GlobalRecords;
