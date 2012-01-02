@@ -158,7 +158,21 @@ extern "C" {
 
 																	return w->note(row, col, cmt, auth, pxformat); 
 																}
-																
+	void xlsWorksheetHyperLink(worksheet *w, cell_t *cell, const char *url, const char *mark)
+																{ 
+																	std::string sUrl = url;
+																	std::string sMark = mark ? mark : "";
+
+																	w->hyperLink(cell, sUrl, sMark); 
+																}
+	void xlsWorksheetHyperLinkW(worksheet *w, cell_t *cell, const unichar_t *url, const unichar_t *mark)
+																{ 
+																	std::ustring sUrl = url;
+																	std::ustring sMark = mark ? mark : L"";
+
+																	w->hyperLink(cell, sUrl, sMark); 
+																}
+	
 	// Cells
 	// xf_i interface
 	void xlsCellFont(cell_t *c, font_t *fontidx)				{ return c->font(fontidx); }
