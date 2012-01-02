@@ -33,11 +33,15 @@ Code adapted from citadel (www.citadel.org ???)
 
 #if defined(HAVE_STRCASECMP)
 // we're OK
-#elif define(HAVE_STRICMP)
+#else
+
+#if defined(HAVE_STRICMP)
 #warning Would someone please tell me what header file to include in this case? dhoerl at mac dot com
 #define strcasecmp(a, b)   stricmp(a, b)
 #else
 #define strcasecmp(a, b)   strcmp(a, b)
+#endif
+
 #endif
 
 /*
