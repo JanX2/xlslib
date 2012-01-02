@@ -429,13 +429,13 @@ int load_file(unsigned8_t **buf_ref, size_t *buflen_ref, const char *filepath)
 		/*
 		the hex search data says: HPSF_STRING:len=6+1:data="xlsLib\0"
 		*/
-		unsigned8_t searchstring[] = "\x1e\0\0\0\x07\0\0\0\0\0\0\0\0\0\0\0";
+		unsigned8_t searchstring[16] = { 0x1e, 0, 0, 0, 0x07, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 		static const int searchlen = 16;
 		size_t idlen = strlen(PACKAGE_NAME) + 1;
 		size_t l;
 
 		searchstring[4] = (unsigned8_t)idlen;
-		if (idlen > searchlen - 8)
+		if (idlen > (searchlen - 8))
 			idlen = searchlen - 8;
 		memcpy(searchstring + 8, PACKAGE_NAME, idlen);
 
@@ -444,6 +444,13 @@ int load_file(unsigned8_t **buf_ref, size_t *buflen_ref, const char *filepath)
 		{
 			if (!memcmp(b + l, searchstring, searchlen))
 			{
+#if 0
+				printf("\n");
+				int x=0;
+				unsigned8_t *p = b + l - 2*(8+4) - x;
+				for(int i=0; i<2*(8+4) + 2*x; ++i) printf("%2.2x ", p[i]);
+				printf("\n");
+#endif
 				// blow away those ever varying timestamps:
 				memset(b + l - 2*(8+4), 0, 2*(8+4));
 				break;
