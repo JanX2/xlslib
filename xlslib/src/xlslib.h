@@ -385,6 +385,9 @@ from a C++ object hierarchy (abstract syntax tree).
 */
 EXTERN_TYPE cell_t *xlsWorksheetFormula(worksheet *w, unsigned32_t row, unsigned32_t col, expression_node_t *formula, bool auto_destruct_expression_tree, xf_t *pxformat);
 #endif
+// define a cell (label, number, etc) - apply proper url (http://blah.blah), possible text mark too minus the '#' (mark can be NULL)
+EXTERN_TYPE void xlsWorksheetHyperLink(worksheet *w, cell_t *cell, const char *url, const char *mark);
+EXTERN_TYPE void xlsWorksheetHyperLinkW(worksheet *w, cell_t *cell, const unichar_t *url, const unichar_t *mark);
 
 // cell: xfi
 EXTERN_TYPE void xlsCellFont(cell_t *c, font_t *fontidx);

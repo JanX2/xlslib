@@ -13,10 +13,9 @@ AM_CPPFLAGS		=  \
 lib_LTLIBRARIES 		= libxls.la
 
 # DFH addition
-libxls_la_LDFLAGS = $(XLSLIB_LIBS) -version-info 2:0:0
+libxls_la_LDFLAGS = $(XLSLIB_LIBS) -version-info 2:3:0
 
 libxls_la_SOURCES 	=             \
-common/overnew.cpp                    \
 xlslib/assert_assist.cpp              \
 xlslib/blank.cpp		      \
 xlslib/boolean.cpp		      \
