@@ -1126,7 +1126,7 @@ range* worksheet::rangegroup(unsigned32_t row1, unsigned32_t col1,
 	return newrange;
 }
 
-// define a cell (label, number, etc) - apply proper url (http://blah.blah), possible text mark too
+// define a cell (label, number, etc) - apply proper url (http://blah.blah), possible text mark too (minus the '#')
 void worksheet::hyperLink(const cell_t *cell, const std::string& url, const std::string& mark)
 {
 	struct HyperLink *link = new HyperLink;
@@ -1138,6 +1138,18 @@ void worksheet::hyperLink(const cell_t *cell, const std::string& url, const std:
 
 	m_HyperLinks.push_back(link);
 }
+void worksheet::hyperLink(const cell_t *cell, const std::ustring& url, const std::ustring& mark)
+{
+	struct HyperLink *link = new HyperLink;
+
+	link->row = (unsigned16_t)cell->GetRow();
+	link->col = (unsigned16_t)cell->GetCol();
+	m_GlobalRecords.wide2str16(url, link->url);
+	m_GlobalRecords.wide2str16(mark, link->mark);
+
+	m_HyperLinks.push_back(link);
+}
+
 
 static unsigned char StdLinkGUID[16] = { 0xd0, 0xc9, 0xea, 0x79, 0xf9, 0xba, 0xce, 0x11, 0x8c, 0x82, 0x00, 0xaa, 0x00, 0x4b, 0xa9, 0x0b };
 static unsigned char URLMonikerGUID[16] = { 0xe0, 0xc9, 0xea, 0x79, 0xf9, 0xba, 0xce, 0x11, 0x8c, 0x82, 0x00, 0xaa, 0x00, 0x4b, 0xa9, 0x0b };
