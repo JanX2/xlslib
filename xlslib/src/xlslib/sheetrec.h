@@ -266,8 +266,8 @@ namespace xlslib_core
 						xf_t* pxformat = NULL);
 
 		// define a cell (label, number, etc) - apply proper url (http://blah.blah), possible text mark too (minus the '#')
-		void hyperLink(const cell_t *cell, const std::string& url, const std::string& mark = "");
-		void hyperLink(const cell_t *cell, const std::ustring& url, const std::ustring& mark = L"");
+		void hyperLink(const cell_t *cell, const std::string& url, const std::string& mark = std::string());
+		void hyperLink(const cell_t *cell, const std::ustring& url, const std::ustring& mark = std::ustring());
 	};
 
 	typedef std::vector<xlslib_core::worksheet*> Sheets_Vector_t;
