@@ -2950,6 +2950,18 @@ cell_deref_node_t *expression_node_factory_t::cell(const cell_t& cellref, const 
 	return new cell_deref_node_t(m_GlobalRecords, cellref, ws, attr, opclass);
 }
 
+cellarea_deref_node_t *expression_node_factory_t::area(const cell_t& upper_left_corner, const cell_t& lower_right_corner, cell_addr_mode_t attr,
+							  cell_op_class_t opclass)
+{
+	return new cellarea_deref_node_t(m_GlobalRecords, upper_left_corner, lower_right_corner, attr, opclass);
+}
+
+cellarea_deref_node_t *expression_node_factory_t::area(const cell_t& upper_left_corner, const cell_t& lower_right_corner, const worksheet* ws,
+							  cell_addr_mode_t attr, cell_op_class_t opclass)
+{
+	return new cellarea_deref_node_t(m_GlobalRecords, upper_left_corner, lower_right_corner, ws, attr, opclass);
+}
+
 unary_op_node_t *expression_node_factory_t::op(expr_operator_code_t op, expression_node_t* arg)
 {
 	return new unary_op_node_t(m_GlobalRecords, op, arg);

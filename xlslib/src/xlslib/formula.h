@@ -1658,8 +1658,11 @@ namespace xlslib_core
 		missing_arg_node_t *missing_arg(void);
 		text_value_node_t *text(const std::string& value);
 		text_value_node_t *text(const u16string& value);
+		
 		cell_deref_node_t *cell(const cell_t& value, cell_addr_mode_t attr, cell_op_class_t opclass = CELLOP_AS_VALUE);
 		cell_deref_node_t *cell(const cell_t& value, const worksheet* ws, cell_addr_mode_t attr, cell_op_class_t opclass = CELLOP_AS_VALUE);
+		cellarea_deref_node_t *area(const cell_t& upper_left_corner, const cell_t& lower_right_corner, cell_addr_mode_t attr, cell_op_class_t opclass = CELLOP_AS_VALUE);
+		cellarea_deref_node_t *area(const cell_t& upper_left_corner, const cell_t& lower_right_corner, const worksheet* ws, cell_addr_mode_t attr, cell_op_class_t opclass = CELLOP_AS_VALUE);
 		unary_op_node_t *op(expr_operator_code_t op, expression_node_t* arg);
 		binary_op_node_t *op(expr_operator_code_t op, expression_node_t* arg1, expression_node_t* arg2);
 		z_ary_func_node_t *f(expr_function_code_t func);
