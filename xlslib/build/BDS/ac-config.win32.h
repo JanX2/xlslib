@@ -152,7 +152,7 @@
 #define PACKAGE_NAME "xlslib"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "xlslib 2.3.0"
+#define PACKAGE_STRING "xlslib 2.3.4"
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "xlslib"
@@ -161,7 +161,7 @@
 #define PACKAGE_URL ""
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "2.3.0"
+#define PACKAGE_VERSION "2.3.4"
 
 /* The size of `int', as computed by sizeof. */
 #define SIZEOF_INT sizeof(int)  /* 4 */
@@ -176,7 +176,7 @@
 #define STDC_HEADERS 1
 
 /* Version number of package */
-#define VERSION "2.3.0"
+#define VERSION "2.3.4"
 
 /* DISable ASSERT/VERIFY checks */
 #if !defined(DEBUG)

@@ -3,7 +3,6 @@ build/CodeBlocks/ac-config.linux32.h
 build/msvc2005/ac-config.win32.h
 build/msvc2008/ac-config.win32.h
 build/RadStudio/ac-config.win32.h
-libtool
 src/Makefile.am
 src/Makefile.in
 configure

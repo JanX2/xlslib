@@ -12,8 +12,8 @@ AM_CPPFLAGS		=  \
 
 lib_LTLIBRARIES 		= libxls.la
 
-# DFH addition
-libxls_la_LDFLAGS = $(XLSLIB_LIBS) -version-info 2:3:0
+# DFH addition 2.3.4
+libxls_la_LDFLAGS = $(XLSLIB_LIBS) -version-info 2:3:4
 
 libxls_la_SOURCES 	=             \
 xlslib/assert_assist.cpp              \
