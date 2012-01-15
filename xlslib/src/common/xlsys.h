@@ -118,7 +118,8 @@
 // from the MSC project to the RadStudio project and included it. RLN 111208
 #endif
 
-#ifdef __linux__
+// This was __linux__ but added the define to the codeblocks config files
+#ifdef __CODEBLOCKS__
 #  include "ac-config.linux32.h"
 // I have been copying these ac-config files
 // for each target compiler under the respective build subdirectory
