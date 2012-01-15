@@ -12,8 +12,8 @@ AM_CPPFLAGS		=  \
 
 lib_LTLIBRARIES 		= libxls.la
 
-# DFH addition 2.3.4
-libxls_la_LDFLAGS = $(XLSLIB_LIBS) -version-info 2:3:4
+# DFH addition second spin, 3rd revision, back compat to 0 (http://sourceware.org/autobook/autobook/autobook_91.html)
+libxls_la_LDFLAGS = $(XLSLIB_LIBS) -version-info 2:3:0
 
 libxls_la_SOURCES 	=             \
 xlslib/assert_assist.cpp              \
