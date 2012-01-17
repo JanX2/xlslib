@@ -222,8 +222,8 @@ namespace xlslib_core
 		// Cell operations
 		void merge(unsigned32_t first_row, unsigned32_t first_col,
 				   unsigned32_t last_row, unsigned32_t last_col);
-		void colwidth(unsigned32_t col, unsigned16_t width, xf_t* pxformat = NULL);         // sets column widths to 1/256 x width of "0"
-		void rowheight(unsigned32_t row, unsigned16_t height, xf_t* pxformat = NULL);       // in points (Excel uses twips, 1/20th of a point, but xlslib didn't)
+		void colwidth(unsigned32_t col, unsigned16_t width, xf_t* pxformat = NULL);				// sets column widths to 1/256 x width of "0"
+		void rowheight(unsigned32_t row, unsigned16_t heightInTwips, xf_t* pxformat = NULL);	// twips
 
 		void defaultRowHeight(unsigned16_t width, bool hidden = false) { defRowHeight = width; defRowsHidden = hidden; } // sets column widths to 1/256 x width of "0"
 		void defaultColwidth(unsigned16_t width) { defColWidth = width; } // in points (Excel uses twips, 1/20th of a point, but xlslib didn't)

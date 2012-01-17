@@ -1091,9 +1091,9 @@ void worksheet::colwidth(unsigned32_t col, unsigned16_t width, xf_t* pxformat)
 	}
 }
 
-void worksheet::rowheight(unsigned32_t row, unsigned16_t height, xf_t* pxformat)
+void worksheet::rowheight(unsigned32_t row, unsigned16_t heightInTwips, xf_t* pxformat)
 {
-	rowheight_t* newrh = new rowheight_t(row, height*TWIP, pxformat);
+	rowheight_t* newrh = new rowheight_t(row, heightInTwips, pxformat);
 	RowHeight_Vect_Itor_t existing_rh;
 
 	// should be in rowheight_t but too much trouble
