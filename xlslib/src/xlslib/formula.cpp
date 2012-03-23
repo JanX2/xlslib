@@ -1734,6 +1734,7 @@ unary_op_node_t::unary_op_node_t(CGlobalRecords& gRecords, expr_operator_code_t 
 	case OP_UPLUS: // Unary Plus
 	case OP_UMINUS: // Unary Minus
 	case OP_PERCENT: // Percent Sign
+	case OP_PAREN:  // Enclose into parentheses
 		// okay
 		break;
 	}
@@ -1786,6 +1787,7 @@ signed8_t unary_op_node_t::DumpData(CUnit &dst, bool include_subtree) const
 	case OP_UPLUS: // Unary Plus
 	case OP_UMINUS: // Unary Minus
 	case OP_PERCENT: // Percent Sign
+	case OP_PAREN: // Enclose into parentheses
 		// okay
 		break;
 	}
