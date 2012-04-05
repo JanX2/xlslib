@@ -1580,7 +1580,8 @@ signed8_t text_value_node_t::DumpData(CUnit &dst, bool include_subtree) const
 
 cell_deref_node_t::cell_deref_node_t(CGlobalRecords& gRecords, const cell_t& v, cell_addr_mode_t opt, cell_op_class_t opclass) :
 	terminal_node_t(gRecords),
-	value(&v),
+	row_(v.GetRow()),
+	col_(v.GetCol()),
 	worksheet_ref(NULL),
 	attr(opt),
 	operand_class(opclass)
@@ -1589,7 +1590,8 @@ cell_deref_node_t::cell_deref_node_t(CGlobalRecords& gRecords, const cell_t& v, 
 
 cell_deref_node_t::cell_deref_node_t(CGlobalRecords& gRecords, const cell_t& v, const worksheet* ws, cell_addr_mode_t opt, cell_op_class_t opclass) :
 	terminal_node_t(gRecords),
-	value(&v),
+	row_(v.GetRow()),
+	col_(v.GetCol()),
 	worksheet_ref(ws),
 	attr(opt),
 	operand_class(opclass)
@@ -1625,9 +1627,9 @@ signed8_t cell_deref_node_t::DumpData(CUnit &dst, bool include_subtree) const
 	errcode = dst.AddValue8(OP_REF | operand_class); // OP_REF, OP_REFV, OP_REFA
 
 	// BIFF8 format!
-	errcode |= dst.AddValue16((unsigned16_t)value->GetRow());
+	errcode |= dst.AddValue16((unsigned16_t)row_);
 
-	unsigned16_t col = (unsigned16_t)value->GetCol() & 0x3FFF;
+	unsigned16_t col = (unsigned16_t)col_ & 0x3FFF;
 
 	XL_ASSERT((attr & ~0xC000) == 0);
 	col |= ((unsigned16_t)attr) & 0xC000;
@@ -1639,14 +1641,16 @@ signed8_t cell_deref_node_t::DumpData(CUnit &dst, bool include_subtree) const
 cellarea_deref_node_t::cellarea_deref_node_t(CGlobalRecords& gRecords, const cell_t& u_l_c, const cell_t& l_r_c, cell_addr_mode_t attr,
 											 cell_op_class_t opclass) :
 	cell_deref_node_t(gRecords, u_l_c, attr, opclass),
-	lower_right_corner(&l_r_c)
+	lrrow_(l_r_c.GetRow()),
+	lrcol_(l_r_c.GetCol())
 {
 }
 
 cellarea_deref_node_t::cellarea_deref_node_t(CGlobalRecords& gRecords, const cell_t& u_l_c, const cell_t& l_r_c, const worksheet* ws, cell_addr_mode_t attr,
 											 cell_op_class_t opclass) :
 	cell_deref_node_t(gRecords, u_l_c, ws, attr, opclass),
-	lower_right_corner(&l_r_c)
+	lrrow_(l_r_c.GetRow()),
+	lrcol_(l_r_c.GetCol())
 {
 }
 
@@ -1669,16 +1673,16 @@ signed8_t cellarea_deref_node_t::DumpData(CUnit &dst, bool include_subtree) cons
 	errcode = dst.AddValue8(OP_AREA | operand_class); // OP_AREA. OP_AREAV, OP_AREAA
 
 	// BIFF8 format!
-	errcode |= dst.AddValue16((unsigned16_t)upper_left_corner()->GetRow());
-	errcode |= dst.AddValue16((unsigned16_t)lower_right_corner->GetRow());
+	errcode |= dst.AddValue16((unsigned16_t)row_);
+	errcode |= dst.AddValue16((unsigned16_t)lrrow_);
 
-	unsigned16_t col = (unsigned16_t)upper_left_corner()->GetCol() & 0x3FFF;
+	unsigned16_t col = (unsigned16_t)col_ & 0x3FFF;
 
 	XL_ASSERT((attr & ~0xC000) == 0);
 	col |= ((unsigned16_t)attr) & 0xC000;
 	errcode |= dst.AddValue16(col);
 
-	col = (unsigned16_t)lower_right_corner->GetCol() & 0x3FFF;
+	col = (unsigned16_t)lrcol_ & 0x3FFF;
 
 	XL_ASSERT((attr & ~0xC000) == 0);
 	col |= ((unsigned16_t)attr) & 0xC000;

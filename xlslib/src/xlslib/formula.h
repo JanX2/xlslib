@@ -1462,7 +1462,7 @@ namespace xlslib_core
 		virtual void GetResultEstimate(estimated_formula_result_t &dst) const;
 
 	protected:
-		const cell_t* value;
+		unsigned32_t row_, col_;
 		const worksheet* worksheet_ref;
 		cell_addr_mode_t attr;
 		cell_op_class_t operand_class;
@@ -1485,8 +1485,7 @@ namespace xlslib_core
 
 	protected:
 		// parent class' [const cell_t* value] ~ upper_left_corner;
-		inline const cell_t* upper_left_corner(void) const { return value; }
-		const cell_t* lower_right_corner;
+		unsigned32_t lrrow_, lrcol_;
 	};
 
 
