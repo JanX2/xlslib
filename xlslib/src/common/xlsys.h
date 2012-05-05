@@ -31,8 +31,9 @@
 #ifndef XLSLIB_CONFIG_H
 #define XLSLIB_CONFIG_H
 
-#ifdef HAVE_CONFIG_H
 #include "xlconfig.h"
+
+#ifdef HAVE_CONFIG_H
 
 #define CFG_TRUE          1
 #define CFG_FALSE         0
