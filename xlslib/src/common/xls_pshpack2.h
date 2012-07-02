@@ -46,7 +46,7 @@
 
 #else
 
-#error "must have some sort of packing #pragma for this tool to build"
+#warning "No packing #pragma exists on this system - formulas will not work"
 
 #endif
 #endif

@@ -3187,6 +3187,10 @@ formula_t::formula_t(CGlobalRecords& gRecords, unsigned32_t rowval, unsigned32_t
 	auto_destruct_expression_tree(autodes)
 {
 	XL_ASSERT(ast_val);
+
+#if !defined (HAVE_PRAGMA_PACK) && !defined (HAVE_PRAGMA_PACK_PUSH_POP)
+	XL_ASSERT(!"Must Have Pragma Pack to use formulas");
+#endif
 }
 
 formula_t::~formula_t()
