@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="xlslib-testCPP"
 	ProjectGUID="{6C87B8F9-8A2A-46A7-AEEF-AD2D952086ED}"
 	RootNamespace="xlslib-testCPP"
@@ -51,7 +51,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="..\..\..\xlslib\src\xlslib;..\..\..\xlslib\src\oledoc;..\..\..\xlslib\src\common;..\..\..\xlslib\build\msvc2008"
+				AdditionalIncludeDirectories="..\..\src\;."
 				PreprocessorDefinitions="XP_WIN;WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE"
 				StringPooling="true"
 				MinimalRebuild="false"
@@ -86,6 +86,97 @@
 				LinkTimeCodeGeneration="1"
 				TargetMachine="1"
 				Profile="true"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release|Win32"
+			OutputDirectory="$(ProjectName)_$(PlatformName)_MSVC2008.$(ConfigurationName)"
+			IntermediateDirectory="$(ProjectName)_$(PlatformName)_MSVC2008.$(ConfigurationName)"
+			ConfigurationType="1"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+				Description="copy $(TargetFileName) to bin\$(PlatformName)_MSVC2008.$(ConfigurationName) directory"
+				CommandLine="if not exist &quot;$(SolutionDir)bin\$(PlatformName)_MSVC2008.$(ConfigurationName)&quot; mkdir &quot;$(SolutionDir)bin\$(PlatformName)_MSVC2008.$(ConfigurationName)&quot;&#x0D;&#x0A;copy &quot;$(TargetPath)&quot; &quot;$(SolutionDir)bin\$(PlatformName)_MSVC2008.$(ConfigurationName)\$(TargetFileName)&quot;&#x0D;&#x0A;"
+				Outputs="$(SolutionDir)bin\$(PlatformName)_MSVC2008.$(ConfigurationName)\$(TargetFileName)"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="3"
+				InlineFunctionExpansion="2"
+				EnableIntrinsicFunctions="true"
+				FavorSizeOrSpeed="1"
+				OmitFramePointers="false"
+				EnableFiberSafeOptimizations="true"
+				WholeProgramOptimization="true"
+				AdditionalIncludeDirectories="..\..\..\xlslib\src\xlslib;..\..\..\xlslib\src\oledoc;..\..\..\xlslib\src\common;..\..\..\xlslib\build\msvc2008"
+				PreprocessorDefinitions="STATIC_JS_API;XP_WIN;WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE"
+				StringPooling="true"
+				RuntimeLibrary="2"
+				EnableFunctionLevelLinking="true"
+				EnableEnhancedInstructionSet="1"
+				FloatingPointExceptions="false"
+				UsePrecompiledHeader="0"
+				BrowseInformation="1"
+				WarningLevel="4"
+				Detect64BitPortabilityProblems="true"
+				DebugInformationFormat="3"
+				DisableSpecificWarnings="4267,4244,4127,4100,4706,4018,4389,4103"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies=""
+				OutputFile="$(OutDir)\$(ProjectName).exe"
+				LinkIncremental="1"
+				GenerateDebugInformation="false"
+				SubSystem="1"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				LinkTimeCodeGeneration="1"
+				TargetMachine="1"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -262,97 +353,6 @@
 				LinkTimeCodeGeneration="1"
 				TargetMachine="5"
 				Profile="true"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="Release|Win32"
-			OutputDirectory="$(ProjectName)_$(PlatformName)_MSVC2008.$(ConfigurationName)"
-			IntermediateDirectory="$(ProjectName)_$(PlatformName)_MSVC2008.$(ConfigurationName)"
-			ConfigurationType="1"
-			CharacterSet="2"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-				Description="copy $(TargetFileName) to bin\$(PlatformName)_MSVC2008.$(ConfigurationName) directory"
-				CommandLine="if not exist &quot;$(SolutionDir)bin\$(PlatformName)_MSVC2008.$(ConfigurationName)&quot; mkdir &quot;$(SolutionDir)bin\$(PlatformName)_MSVC2008.$(ConfigurationName)&quot;&#x0D;&#x0A;copy &quot;$(TargetPath)&quot; &quot;$(SolutionDir)bin\$(PlatformName)_MSVC2008.$(ConfigurationName)\$(TargetFileName)&quot;&#x0D;&#x0A;"
-				Outputs="$(SolutionDir)bin\$(PlatformName)_MSVC2008.$(ConfigurationName)\$(TargetFileName)"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="3"
-				InlineFunctionExpansion="2"
-				EnableIntrinsicFunctions="true"
-				FavorSizeOrSpeed="1"
-				OmitFramePointers="false"
-				EnableFiberSafeOptimizations="true"
-				WholeProgramOptimization="true"
-				AdditionalIncludeDirectories="..\..\..\xlslib\src\xlslib;..\..\..\xlslib\src\oledoc;..\..\..\xlslib\src\common;..\..\..\xlslib\build\msvc2008"
-				PreprocessorDefinitions="STATIC_JS_API;XP_WIN;WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE"
-				StringPooling="true"
-				RuntimeLibrary="2"
-				EnableFunctionLevelLinking="true"
-				EnableEnhancedInstructionSet="1"
-				FloatingPointExceptions="false"
-				UsePrecompiledHeader="0"
-				BrowseInformation="1"
-				WarningLevel="4"
-				Detect64BitPortabilityProblems="true"
-				DebugInformationFormat="3"
-				DisableSpecificWarnings="4267,4244,4127,4100,4706,4018,4389,4103"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-				AdditionalDependencies=""
-				OutputFile="$(OutDir)\$(ProjectName).exe"
-				LinkIncremental="1"
-				GenerateDebugInformation="false"
-				SubSystem="1"
-				OptimizeReferences="2"
-				EnableCOMDATFolding="2"
-				LinkTimeCodeGeneration="1"
-				TargetMachine="1"
 			/>
 			<Tool
 				Name="VCALinkTool"
