@@ -80,6 +80,8 @@ namespace xlslib_core
 
 	class CGlobalRecords : public CBiffSection
 	{
+		friend class cell_t;
+
 	public:
 		CGlobalRecords();
 		~CGlobalRecords();
@@ -131,6 +133,9 @@ namespace xlslib_core
 	private:
 		CGlobalRecords(const CGlobalRecords& that);
 		CGlobalRecords& operator=(const CGlobalRecords& right);
+
+	protected:
+		xf_t* findXF(xf_t *);
 
 	private:
 		Font_Vect_t	m_Fonts;

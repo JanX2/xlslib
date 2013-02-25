@@ -75,110 +75,200 @@ void cell_t::set_xf_common(void)
 
 void cell_t::borderstyle(border_side_t side, border_style_t style)
 {
-	set_xf_common();
-	pxf->SetBorderStyle(side, style);
+	xf_t * tempXF = xf_t::xfDup(pxf);
+
+	tempXF->SetBorderStyle(side, style);
+
+   	pxf->UnMarkUsed();
+	pxf = m_GlobalRecords.findXF(tempXF);
+	pxf->MarkUsed();
 }
 
 void cell_t::bordercolor(border_side_t side, color_name_t color)
 {
-	set_xf_common();
-	pxf->SetBorderColor(side, color);
+	xf_t * tempXF = xf_t::xfDup(pxf);
+
+	tempXF->SetBorderColor(side, color);
+
+   	pxf->UnMarkUsed();
+	pxf = m_GlobalRecords.findXF(tempXF);
+	pxf->MarkUsed();
 }
 
 void cell_t::bordercolor(border_side_t side, unsigned8_t color)
 {
-	set_xf_common();
-	pxf->SetBorderColor(side, color);
+	xf_t * tempXF = xf_t::xfDup(pxf);
+
+	tempXF->SetBorderColor(side, color);
+
+   	pxf->UnMarkUsed();
+	pxf = m_GlobalRecords.findXF(tempXF);
+	pxf->MarkUsed();
 }
 
 void cell_t::font(font_t* fnt)
 {
-	set_xf_common();
-	pxf->SetFont(fnt);
+	xf_t * tempXF = xf_t::xfDup(pxf);
+
+	tempXF->SetFont(fnt);
+
+   	pxf->UnMarkUsed();
+	pxf = m_GlobalRecords.findXF(tempXF);
+	pxf->MarkUsed();
 }
 
 void cell_t::format(format_number_t formatidx)
 {
-	set_xf_common();
-	pxf->SetFormat(formatidx);
+	xf_t * tempXF = xf_t::xfDup(pxf);
+
+	tempXF->SetFormat(formatidx);
+
+   	pxf->UnMarkUsed();
+	pxf = m_GlobalRecords.findXF(tempXF);
+	pxf->MarkUsed();
 }
 
 void cell_t::format(format_t* fmt)
 {
-	set_xf_common();
-	pxf->SetFormat(fmt);
+	xf_t * tempXF = xf_t::xfDup(pxf);
+
+	tempXF->SetFormat(fmt);
+
+   	pxf->UnMarkUsed();
+	pxf = m_GlobalRecords.findXF(tempXF);
+	pxf->MarkUsed();
 }
 
 void cell_t::halign(halign_option_t ha_option)
 {
-	set_xf_common();
-	pxf->SetHAlign(ha_option);
+	xf_t * tempXF = xf_t::xfDup(pxf);
+
+	tempXF->SetHAlign(ha_option);
+
+   	pxf->UnMarkUsed();
+	pxf = m_GlobalRecords.findXF(tempXF);
+	pxf->MarkUsed();
 }
 
 void cell_t::valign(valign_option_t va_option)
 {
-	set_xf_common();
-	pxf->SetVAlign(va_option);
+	xf_t * tempXF = xf_t::xfDup(pxf);
+
+	tempXF->SetVAlign(va_option);
+
+   	pxf->UnMarkUsed();
+	pxf = m_GlobalRecords.findXF(tempXF);
+	pxf->MarkUsed();
 }
 
 void cell_t::indent(indent_option_t indent_option)
 {
-	set_xf_common();
-	pxf->SetIndent(indent_option);
+	xf_t * tempXF = xf_t::xfDup(pxf);
+
+	tempXF->SetIndent(indent_option);
+
+   	pxf->UnMarkUsed();
+	pxf = m_GlobalRecords.findXF(tempXF);
+	pxf->MarkUsed();
 }
 
 void cell_t::orientation(txtori_option_t ori_option)
 {
-	set_xf_common();
-	pxf->SetTxtOrientation(ori_option);
+	xf_t * tempXF = xf_t::xfDup(pxf);
+
+	tempXF->SetTxtOrientation(ori_option);
+
+   	pxf->UnMarkUsed();
+	pxf = m_GlobalRecords.findXF(tempXF);
+	pxf->MarkUsed();
 }
 
 void cell_t::fillfgcolor(color_name_t color)
 {
-	set_xf_common();
-	pxf->SetFillFGColor(color);
+	xf_t * tempXF = xf_t::xfDup(pxf);
+
+	tempXF->SetFillFGColor(color);
+
+   	pxf->UnMarkUsed();
+	pxf = m_GlobalRecords.findXF(tempXF);
+	pxf->MarkUsed();
 }
 
 void cell_t::fillfgcolor(unsigned8_t color)
 {
-	set_xf_common();
-	pxf->SetFillFGColor(color);
+	xf_t * tempXF = xf_t::xfDup(pxf);
+
+	tempXF->SetFillFGColor(color);
+
+   	pxf->UnMarkUsed();
+	pxf = m_GlobalRecords.findXF(tempXF);
+	pxf->MarkUsed();
 }
 
 void cell_t::fillbgcolor(color_name_t color)
 {
-	set_xf_common();
-	pxf->SetFillBGColor(color);
+	xf_t * tempXF = xf_t::xfDup(pxf);
+
+	tempXF->SetFillBGColor(color);
+
+   	pxf->UnMarkUsed();
+	pxf = m_GlobalRecords.findXF(tempXF);
+	pxf->MarkUsed();
 }
 
 void cell_t::fillbgcolor(unsigned8_t color)
 {
-	set_xf_common();
-	pxf->SetFillBGColor(color);
+	xf_t * tempXF = xf_t::xfDup(pxf);
+
+	tempXF->SetFillBGColor(color);
+
+   	pxf->UnMarkUsed();
+	pxf = m_GlobalRecords.findXF(tempXF);
+	pxf->MarkUsed();
 }
 
 void cell_t::fillstyle(fill_option_t fill)
 {
-	set_xf_common();
-	pxf->SetFillStyle(fill);
+	xf_t * tempXF = xf_t::xfDup(pxf);
+
+	tempXF->SetFillStyle(fill);
+
+   	pxf->UnMarkUsed();
+	pxf = m_GlobalRecords.findXF(tempXF);
+	pxf->MarkUsed();
 }
 
 void cell_t::locked(bool locked_opt)
 {
-	set_xf_common();
-	pxf->SetLocked(locked_opt);
+	xf_t * tempXF = xf_t::xfDup(pxf);
+
+	tempXF->SetLocked(locked_opt);
+
+   	pxf->UnMarkUsed();
+	pxf = m_GlobalRecords.findXF(tempXF);
+	pxf->MarkUsed();
 }
 
 void cell_t::hidden(bool hidden_opt)
 {
-	set_xf_common();
-	pxf->SetHidden(hidden_opt);
+	xf_t * tempXF = xf_t::xfDup(pxf);
+
+	tempXF->SetHidden(hidden_opt);
+
+   	pxf->UnMarkUsed();
+	pxf = m_GlobalRecords.findXF(tempXF);
+	pxf->MarkUsed();
 }
 
 void cell_t::wrap(bool wrap_opt)
 {
-	set_xf_common();
-	pxf->SetWrap(wrap_opt);
+	xf_t * tempXF = xf_t::xfDup(pxf);
+
+	tempXF->SetWrap(wrap_opt);
+
+   	pxf->UnMarkUsed();
+	pxf = m_GlobalRecords.findXF(tempXF);
+	pxf->MarkUsed();
 }
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -186,19 +276,23 @@ void cell_t::wrap(bool wrap_opt)
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 void cell_t::set_cell_font(void)
 {
-	set_xf_common();
+	xf_t * tempXF = xf_t::xfDup(pxf);
 
-	font_t* currentfont = pxf->GetFont();
+	font_t* currentfont = tempXF->GetFont();
 
 	if(currentfont == NULL)	{
 		currentfont = m_GlobalRecords.GetDefaultFont();
 		font_t* fntnew = font_t::fontDup(currentfont);
-		pxf->SetFont(fntnew);
+		tempXF->SetFont(fntnew);
 	} else
 	if(currentfont->Usage() > 1) {
 		font_t* fntnew = font_t::fontDup(currentfont);
-		pxf->SetFont(fntnew);
+		tempXF->SetFont(fntnew);
 	}
+
+   	pxf->UnMarkUsed();
+	pxf = m_GlobalRecords.findXF(tempXF);
+	pxf->MarkUsed();
 }
 
 void cell_t::fontname(const std::string& fntname)

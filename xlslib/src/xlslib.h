@@ -434,6 +434,8 @@ EXTERN_TYPE void xlsXformatSetHAlign(xf_t *x, halign_option_t ha_option);
 EXTERN_TYPE unsigned8_t xlsXformatGetHAlign(xf_t *x);
 EXTERN_TYPE void xlsXformatSetVAlign(xf_t *x, valign_option_t va_option);
 EXTERN_TYPE unsigned8_t xlsXformatGetVAlign(xf_t *x);
+EXTERN_TYPE void xlsXformatSetIndent(xf_t *x, indent_option_t in_option);
+EXTERN_TYPE unsigned8_t xlsXformatGetIndent(xf_t *x);
 EXTERN_TYPE void xlsXformatSetTxtOrientation(xf_t *x, txtori_option_t ori_option);
 EXTERN_TYPE unsigned8_t xlsXformatGetTxtOrientation(xf_t *x);
 EXTERN_TYPE void xlsXformatSetFillFGColor(xf_t *x, color_name_t color);

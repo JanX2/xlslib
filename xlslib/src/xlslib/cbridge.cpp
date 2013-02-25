@@ -180,6 +180,7 @@ extern "C" {
 	void xlsCellFormatP(cell_t *c, format_t *format)			{ return c->format(format); }
 	void xlsCellHalign(cell_t *c, halign_option_t ha_option)	{ return c->halign(ha_option); }
 	void xlsCellValign(cell_t *c, valign_option_t va_option)	{ return c->valign(va_option); }	
+	void xlsCellIndent(cell_t *c, indent_option_t in_option)	{ return c->indent(in_option); }	
 	void xlsCellOrientation(cell_t *c, txtori_option_t ori_option)
 																{ return c->orientation(ori_option); }
 	void xlsCellFillfgcolor(cell_t *c, color_name_t color)		{ return c->fillfgcolor(color); }
@@ -228,6 +229,9 @@ extern "C" {
 	/* Vertical Align option wrappers*/
 	void xlsXformatSetVAlign(xf_t *x, valign_option_t va_option){ return x->SetVAlign(va_option); }
 	unsigned8_t xlsXformatGetVAlign(xf_t *x)					{ return x->GetVAlign(); }
+	/* Indent option wrappers*/
+	void xlsXformatSetIndent(xf_t *x, indent_option_t in_option){ return x->SetIndent(in_option); }
+	unsigned8_t xlsXformatGetIndent(xf_t *x)					{ return x->GetIndent(); }
 	/* Text orientation option wrappers*/
 	void xlsXformatSetTxtOrientation(xf_t *x, txtori_option_t ori_option)
 																{ return x->SetTxtOrientation(ori_option); }

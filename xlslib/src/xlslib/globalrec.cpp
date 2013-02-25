@@ -722,7 +722,8 @@ void CGlobalRecords::wide2str16(const ustring& str1, u16string& str2)
 	size_t					resultSize, inbytesleft, outbytesleft;
 	const uint8_t			*inbuf;
 	iconv_t					cd;
-	unsigned16_t			*outbuf, *origOutbuf;
+	unsigned16_t			*outbuf;
+	unsigned16_t			*origOutbuf = NULL;
 
 	cd = iconv_open(UCS_2_INTERNAL, iconv_code.c_str());
 	// user may have changed the conversion since the workbook was opened
@@ -883,6 +884,34 @@ bool CGlobalRecords::IsASCII(const u16string& str)
 	}
 
 	return c <= 0x7F;
+}
+
+xf_t* CGlobalRecords::findXF(xf_t* xff)
+{
+  XF_Vect_Itor_t xfIt;
+  xf_t* xf2;
+
+  for (xfIt = m_XFs.begin(); xfIt != m_XFs.end(); xfIt++) {
+    xf2 = *xfIt;
+    if (*xf2 == *xff)
+      break;
+  }
+
+  if (xfIt != m_XFs.end()) {
+    if (*xfIt != xff) {
+      XF_Vect_Itor_t xfIt2;
+
+      xfIt2 = m_XFs.end();
+      xfIt2--;
+      delete *xfIt2;
+
+      m_XFs.pop_back();
+      xfIndex--;
+    }
+    return *xfIt;
+  }
+
+  return xff;
 }
 
 #if defined(_MSC_VER)

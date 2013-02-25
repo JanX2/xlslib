@@ -858,8 +858,51 @@ xf_t& xf_t::operator=(const xf_t& right)
 
 bool xf_t::operator==(const xf_t& right)
 {
-	// TBD! don't compare shadows; compare the real xf!
-	return this->xfi == right.xfi;
+	if (formatIndex != right.formatIndex)
+		return false;
+	if (font != right.font)
+		return false;
+	if (format != right.format)
+		return false;
+
+	if (halign != right.halign)
+		return false;
+	if (valign != right.valign)
+		return false;
+	if (indent != right.indent)
+		return false;
+	if (txt_orient != right.txt_orient)
+		return false;
+
+	if (fillstyle != right.fillstyle)
+		return false;
+	if (fill_fgcolor != right.fill_fgcolor)
+		return false;
+	if (fill_bgcolor != right.fill_bgcolor)
+		return false;
+
+	if (locked != right.locked)
+		return false;
+	if (hidden != right.hidden)
+		return false;
+	if (wrap != right.wrap)
+		return false;
+	if (is_cell != right.is_cell)
+		return false;
+	if (is_userXF != right.is_userXF)
+		return false;
+
+	for (int i=0; i<_NUM_BORDERS; i++) {
+		if (border_style[i] != right.border_style[i])
+			return false;
+		if (border_color[i] != right.border_color[i])
+	  		return false;
+	}
+
+	if (flags != right.flags)
+		return false;
+
+	return true;
 }
 
 /* Horizontal Align option wrappers*/
