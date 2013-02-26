@@ -452,11 +452,11 @@ namespace xlslib_core
         externsheet->Inflate(4+2+sheets.size()*6);
         externsheet->SetRecordType(RECTYPE_EXTERNSHEET);
         externsheet->SetRecordLength(2+sheets.size()*6);
-        externsheet->AddValue16((unsigned16_t)sheets.size());
+        externsheet->AddValue16(static_cast<unsigned16_t>(sheets.size()));
         for (size_t i=0; i<sheets.size(); i++) {
             externsheet->AddValue16(0);
-            externsheet->AddValue16(i);
-            externsheet->AddValue16(i);
+            externsheet->AddValue16(static_cast<unsigned16_t>(i));
+            externsheet->AddValue16(static_cast<unsigned16_t>(i));
         }
         return externsheet;
     }
@@ -485,7 +485,7 @@ namespace xlslib_core
 			size_t strSize = record->UnicodeStringLength(str16, strLen, isAscii, CUnit::LEN2_FLAGS_UNICODE /* = LEN2_FLAGS_UNICODE */ );
 			if(strSize > MAX_RECORD_SIZE) {
 				static const unsigned16_t tooLong[] = { 'L', 'e', 'n', 'g', 't', 'h', ' ', 't', 'o', 'o', ' ', 'l', 'o', 'n', 'g', '!' , 0};
-				str16 = (xchar16_t *)(tooLong);
+				str16 = (xchar16_t *)(tooLong);	// cannot static_cast or const_cast this expression
 				strSize = record->UnicodeStringLength(str16, strLen, isAscii, CUnit::LEN2_FLAGS_UNICODE /* = LEN2_FLAGS_UNICODE */ );
 			}
 
