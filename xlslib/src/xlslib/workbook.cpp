@@ -389,7 +389,6 @@ CUnit* workbook::DumpData(CDataStorage &datastore)
 					m_current_sheet++;
 				} else {
 					// I'm done with all the sheets
-					// Nothing else to do. Branch to the FINISH state
 					CHANGE_DUMPSTATE(WB_FINISH);
 				}
 				repeat = true;

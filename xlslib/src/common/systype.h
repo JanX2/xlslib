@@ -265,6 +265,12 @@ that code like this will compile as expected in all conditions:
     do_something();
 
 */
+#define XL_ASSERTS(str)																	\
+	do																					\
+	{																					\
+		xlslib_report_failed_assertion(#str, __FILE__, __LINE__, XL_FUNCNAME());		\
+	}  while (0)
+
 #define XL_ASSERT(expr)																	\
 	do																					\
 	{																					\

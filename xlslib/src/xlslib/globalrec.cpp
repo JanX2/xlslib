@@ -512,17 +512,31 @@ CUnit* CGlobalRecords::DumpData(CDataStorage &datastore)
 					bsheet++;
 				} else {
 					// if it was the last from the list, change the DumpState
-					m_DumpState = GLOBAL_SST;
+					m_DumpState = GLOBAL_LINK1;
 					bsheet = m_BoundSheets.begin();
 				}
 				repeat = false;
 			} else {
 				// if the list is empty, change the dump state.
-				m_DumpState = GLOBAL_SST;
+				m_DumpState = GLOBAL_LINK1;
 				bsheet = m_BoundSheets.begin();
 				repeat = true;
 			}
 			break;
+
+        case GLOBAL_LINK1:
+			XTRACE("\tSUPBOOK");
+            m_pCurrentData = datastore.MakeCExternBook(static_cast<unsigned16_t>(m_BoundSheets.size()));
+            repeat = false;
+			m_DumpState = GLOBAL_LINK2;
+            break;
+
+        case GLOBAL_LINK2:
+			XTRACE("\tEXTERNSHEET");
+            m_pCurrentData = datastore.MakeCExternSheet(m_BoundSheets);
+            repeat = false;
+			m_DumpState = GLOBAL_SST;
+            break;
 
 		case GLOBAL_SST:  // ********** STATE 9 *************
 			XTRACE("\tBOUNDSHEETS");
@@ -660,7 +674,7 @@ size_t CGlobalRecords::GetLabelSSTIndex(const label_t& labeldef)
 		}
 		++idx;
 	}
-	XL_ASSERT(!"Did not find a label");
+	XL_ASSERTS("Did not find a label");
 	return (size_t)GLOBAL_INVALID_STORE_INDEX;
 }
 
@@ -744,9 +758,9 @@ void CGlobalRecords::wide2str16(const ustring& str1, u16string& str2)
 	}
 
 	if(resultSize == (size_t)-1) {
-		str2 = convFail;
+		str2 = (xchar16_t *)convFail;
 	} else {
-		str2.assign(origOutbuf, (size_t)(outbuf - origOutbuf));
+		str2.assign((xchar16_t *)origOutbuf, (size_t)(outbuf - origOutbuf));
 	}
 	free((void *)origOutbuf);
 }
@@ -812,9 +826,9 @@ void CGlobalRecords::char2str16(const string& str1, u16string& str2)
 		iconv_close(cd);
 
 		if(resultSize == (size_t)-1) {
-			str2 = convFail;
+			str2 = (xchar16_t *)convFail;
 		} else {
-			str2.assign(origOutbuf, (size_t)(outbuf - origOutbuf));
+			str2.assign((xchar16_t *)origOutbuf, (size_t)(outbuf - origOutbuf));
 		}
 		free((void *)origOutbuf);
 	} else {

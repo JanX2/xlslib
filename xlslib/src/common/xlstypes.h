@@ -85,6 +85,7 @@ typedef unsigned long long unsigned64_t;
 
 #if defined(_MSC_VER) && defined(WIN32)		// Windows
 
+typedef unsigned16_t xchar16_t;
 typedef wchar_t unichar_t;
 #define ustring wstring
 //typedef wstring ustring;
@@ -110,8 +111,15 @@ typedef std::basic_string<unsigned16_t> u16string;
 
 typedef wchar_t unichar_t;
 #define ustring wstring
-typedef std::basic_string<unsigned16_t> u16string;
 
+#if __cplusplus  >= 201103L	// Clang on the Mac needs this
+typedef char16_t xchar16_t;
+using std::u16string;
+#else
+typedef unsigned16_t xchar16_t;
+typedef std::basic_string<unsigned16_t> u16string;
+froggy
+#endif
 #endif	// defined(_MSC_VER) && defined(WIN32)
 
 #endif	// C++

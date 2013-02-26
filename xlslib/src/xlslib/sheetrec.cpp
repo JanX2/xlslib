@@ -37,6 +37,7 @@
 #include "xlslib/datast.h"
 #include "xlslib/err.h"
 #include "xlslib/extformat.h"
+#include "xlslib/formula_cell.h"
 #include "xlslib/formula.h"
 #include "xlslib/globalrec.h"
 #include "xlslib/index.h"
@@ -105,6 +106,9 @@ worksheet::worksheet(CGlobalRecords& gRecords, unsigned16_t idx) :
 	defRowsHidden(false),
 	defRowHeight(DEFAULT_ROW_HEIGHT),   // MS default
 	defColWidth(10),    // MS default
+    m_FormulaStacks(),
+    m_DataValidations(),
+    m_CurrentDval(),
 	m_HyperLinks(),
 	m_CurrentHlink()
 {
@@ -177,6 +181,20 @@ worksheet::~worksheet()
 		m_Ranges.clear();
 	}
 
+    if (!m_FormulaStacks.empty()) {
+		for(FormulaStackList_Itor_t rh = m_FormulaStacks.begin(); rh != m_FormulaStacks.end(); rh++) {
+			delete *rh;
+		}
+		m_FormulaStacks.clear();
+    }
+
+	if(!m_DataValidations.empty()) {
+		for(DataValidationList_Itor_t rh = m_DataValidations.begin(); rh != m_DataValidations.end(); rh++) {
+			delete *rh;
+		}
+		m_DataValidations.clear();
+	}
+
 	if(!m_HyperLinks.empty()) {
 		for(HyperLinkList_Itor_t rh = m_HyperLinks.begin(); rh != m_HyperLinks.end(); rh++) {
 			delete *rh;
@@ -202,6 +220,7 @@ CUnit* worksheet::DumpData(CDataStorage &datastore, size_t offset, size_t writeL
 			m_CurrentSizeCell = m_Cells.begin();
 			m_CurrentCell = m_Cells.begin();
 			m_CurrentHlink = m_HyperLinks.begin();
+			m_CurrentDval = m_DataValidations.begin();
 			repeat  = true;
 			CHANGE_DUMPSTATE(SHEET_BOF);
 			break;
@@ -368,6 +387,36 @@ CUnit* worksheet::DumpData(CDataStorage &datastore, size_t offset, size_t writeL
 				repeat = false;
 			} else {
 				// if the list is empty, change the dump state.
+				changeDumpState = true;
+				repeat = true;
+			}
+			if(changeDumpState) {
+				CHANGE_DUMPSTATE(SHEET_VALIDITY_HEADER);
+			}
+			break;
+
+		case SHEET_VALIDITY_HEADER:
+			XTRACE("\tSHEET_VALIDITY_HEADER");
+			if(!m_DataValidations.empty()) {
+				m_pCurrentData = MakeDataValidationHeader(datastore, m_DataValidations.size());
+				changeDumpState = true;
+				repeat = false;
+			} else {
+				changeDumpState = true;
+				repeat = true;
+			}
+			if(changeDumpState) {
+				CHANGE_DUMPSTATE(SHEET_VALIDITY_BODY);
+			}
+			break;
+
+		case SHEET_VALIDITY_BODY:
+			XTRACE("\tSHEET_VALIDITY_BODY");
+			if(!m_DataValidations.empty()) {
+				m_pCurrentData = MakeDataValidationEntry(datastore, *m_CurrentDval++);
+				changeDumpState = m_CurrentDval == m_DataValidations.end() ? true : false;
+				repeat = false;
+			} else {
 				changeDumpState = true;
 				repeat = true;
 			}
@@ -623,6 +672,14 @@ void worksheet::MakeActive()
 	m_GlobalRecords.GetWindow1().SetActiveSheet(sheetIndex);
 }
 
+formula_t* worksheet::formula_data() {
+    formula_t *fs;
+    
+    fs = new formula_t(m_GlobalRecords, this);
+    m_FormulaStacks.push_back(fs);
+    return fs;
+}
+
 cell_t* worksheet::label(unsigned32_t row, unsigned32_t col,
 						 const std::string& strlabel, xf_t* pxformat)
 {
@@ -728,7 +785,16 @@ cell_t* worksheet::formula(unsigned32_t row, unsigned32_t col,
 						   bool auto_destruct_expression_tree,
 						   xf_t* pxformat)
 {
-	formula_t* expr = new formula_t(m_GlobalRecords, row, col, expression_root, auto_destruct_expression_tree, pxformat);
+	formula_cell_t* expr = new formula_cell_t(m_GlobalRecords, row, col, 
+            expression_root, auto_destruct_expression_tree, pxformat);
+	AddCell(expr);
+	return expr;
+}
+
+cell_t* worksheet::formula(unsigned32_t row, unsigned32_t col,
+						   formula_t *formula, xf_t* pxformat)
+{
+	formula_cell_t* expr = new formula_cell_t(m_GlobalRecords, row, col, formula, pxformat);
 	AddCell(expr);
 	return expr;
 }
@@ -783,6 +849,8 @@ void worksheet::AddCell(cell_t* pcell)
 			cellHint = pcell;
 		}
 	} while(!success);
+
+    pcell->ws = this;
 
 	/*m_CellsSorted = false; */
 	m_SizesCalculated = false;
@@ -1126,6 +1194,25 @@ range* worksheet::rangegroup(unsigned32_t row1, unsigned32_t col1,
 	return newrange;
 }
 
+void worksheet::validate(const range_t *crange, unsigned32_t options,
+        const formula_t *cond1, const formula_t *cond2,
+        const std::string& promptTitle, const std::string& promptText,
+        const std::string& errorTitle, const std::string& errorText) {
+    struct DataValidation *dv = new DataValidation;
+    dv->first_row = crange->first_row;
+    dv->last_row = crange->last_row;
+    dv->first_col = crange->first_col;
+    dv->last_col = crange->last_col;
+    dv->cond1 = cond1;
+    dv->cond2 = cond2;
+    dv->options = options;
+    m_GlobalRecords.char2str16(promptTitle, dv->prompt_title);
+    m_GlobalRecords.char2str16(promptText, dv->prompt_text);
+    m_GlobalRecords.char2str16(errorTitle, dv->error_title);
+    m_GlobalRecords.char2str16(errorText, dv->error_text);
+    m_DataValidations.push_back(dv);
+}
+
 // define a cell (label, number, etc) - apply proper url (http://blah.blah), possible text mark too (minus the '#')
 void worksheet::hyperLink(const cell_t *cell, const std::string& url, const std::string& mark)
 {
@@ -1150,6 +1237,58 @@ void worksheet::hyperLink(const cell_t *cell, const std::ustring& url, const std
 	m_HyperLinks.push_back(link);
 }
 
+CUnit* worksheet::MakeDataValidationHeader(CDataStorage& datastore, unsigned32_t dval_count)
+{
+	CRecord *dvRecord = datastore.MakeCRecord();
+    dvRecord->Inflate(4+18);
+    dvRecord->SetRecordType(RECTYPE_DVAL);
+    dvRecord->AddValue16(0); /* options */
+    dvRecord->AddValue32(0); /* hpos */
+    dvRecord->AddValue32(0); /* vpos */
+    dvRecord->AddValue32(0xFFFFFFFF); /* arrow */
+    dvRecord->AddValue32(dval_count); /* count */
+	dvRecord->SetRecordLength(18);
+    return (CUnit *)dvRecord;
+}
+
+CUnit* worksheet::MakeDataValidationEntry(CDataStorage& datastore, DataValidation* dval)
+{
+	CRecord *dvRecord = datastore.MakeCRecord();
+    dvRecord->Inflate(32);
+    dvRecord->SetRecordType(RECTYPE_DV);
+    dvRecord->AddValue32(dval->options);
+    dvRecord->AddUnicodeString(dval->prompt_title, CUnit::LEN2_FLAGS_UNICODE);
+    dvRecord->AddUnicodeString(dval->error_title, CUnit::LEN2_FLAGS_UNICODE);
+    dvRecord->AddUnicodeString(dval->prompt_text, CUnit::LEN2_FLAGS_UNICODE);
+    dvRecord->AddUnicodeString(dval->error_text, CUnit::LEN2_FLAGS_UNICODE);
+    if (dval->cond1 == NULL) {
+        dvRecord->AddValue16(3);
+        dvRecord->AddValue16(0);
+        dvRecord->AddValue8(OP_INT);
+        dvRecord->AddValue16(0);
+    } else {
+        dvRecord->AddValue16((unsigned16_t)dval->cond1->GetSize());
+        dvRecord->AddValue16(0);
+        dval->cond1->DumpData(*dvRecord);
+    }
+    if (dval->cond2 == NULL) {
+        dvRecord->AddValue16(3);
+        dvRecord->AddValue16(0);
+        dvRecord->AddValue8(OP_INT);
+        dvRecord->AddValue16(0);
+    } else {
+        dvRecord->AddValue16((unsigned16_t)dval->cond2->GetSize());
+        dvRecord->AddValue16(0);
+        dval->cond2->DumpData(*dvRecord);
+    }
+    dvRecord->AddValue16(1);
+    dvRecord->AddValue16(static_cast<unsigned16_t>(dval->first_row));
+    dvRecord->AddValue16(static_cast<unsigned16_t>(dval->last_row));
+    dvRecord->AddValue16(static_cast<unsigned16_t>(dval->first_col));
+    dvRecord->AddValue16(static_cast<unsigned16_t>(dval->last_col));
+	dvRecord->SetRecordLength(dvRecord->GetDataSize() - 4);
+    return (CUnit *)dvRecord;
+}
 
 static unsigned char StdLinkGUID[16] = { 0xd0, 0xc9, 0xea, 0x79, 0xf9, 0xba, 0xce, 0x11, 0x8c, 0x82, 0x00, 0xaa, 0x00, 0x4b, 0xa9, 0x0b };
 static unsigned char URLMonikerGUID[16] = { 0xe0, 0xc9, 0xea, 0x79, 0xf9, 0xba, 0xce, 0x11, 0x8c, 0x82, 0x00, 0xaa, 0x00, 0x4b, 0xa9, 0x0b };

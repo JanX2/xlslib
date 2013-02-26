@@ -49,6 +49,7 @@ namespace xlslib_core
 		public font_i,
 		private range_t
 	{
+
 	public:
 		range(unsigned32_t row1, unsigned32_t col1, // inclusive
 			  unsigned32_t row2, unsigned32_t col2,

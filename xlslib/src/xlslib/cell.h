@@ -45,11 +45,12 @@ namespace xlslib_core
 	class insertsort;
 	class xf_t;
 	class font_t;
+    class worksheet;
 
 	class cell_t  // : public xf_i , public font_i // Bugs item #2840335 - appears not required (this was here when I [i_a] got the project :-)
 	{
 		friend class insertsort;
-		friend class worksheet;
+        friend class worksheet;
 
 	protected:
 		cell_t(CGlobalRecords& gRecord, unsigned32_t row, unsigned32_t col, xf_t* pxfval);
@@ -77,6 +78,8 @@ namespace xlslib_core
 		void SetXF(xf_t* pxfval);
 		xf_t* GetXF(void) const;
 
+        worksheet* GetWorksheet(void) const { return ws; };
+
 		virtual size_t GetSize(void) const = 0;
 		virtual CUnit* GetData(CDataStorage &datastore) const = 0;
 
@@ -86,6 +89,7 @@ namespace xlslib_core
 		xf_t* pxf;
 		unsigned32_t row;
 		unsigned32_t col;
+        worksheet *ws;
 
 	public: // xf_i interface
 		void font(font_t* font);

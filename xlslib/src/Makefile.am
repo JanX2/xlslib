@@ -31,6 +31,9 @@ xlslib/extformat.cpp		      \
 xlslib/font.cpp			      \
 xlslib/format.cpp		      \
 xlslib/formula.cpp		      \
+xlslib/formula_cell.cpp		      \
+xlslib/formula_estimate.cpp		      \
+xlslib/formula_expr.cpp		      \
 xlslib/globalrec.cpp		      \
 xlslib/HPSF.cpp			      \
 xlslib/index.cpp		      \
@@ -84,6 +87,10 @@ xlslib/extformat.h		      \
 xlslib/font.h			      \
 xlslib/format.h			      \
 xlslib/formula.h		      \
+xlslib/formula_cell.h		      \
+xlslib/formula_const.h		      \
+xlslib/formula_expr.h		      \
+xlslib/formula_estimate.h		      \
 xlslib/globalrec.h		      \
 xlslib/HPSF.h			      \
 xlslib/index.h			      \

@@ -39,7 +39,7 @@
 #include "xlslib/boolean.h"
 #include "xlslib/err.h"
 #include "xlslib/note.h"
-#include "xlslib/formula.h"
+#include "xlslib/formula_cell.h"
 #include "xlslib/merged.h"
 #include "xlslib/label.h"
 #include "xlslib/index.h"
@@ -375,7 +375,7 @@ namespace xlslib_core
 		return new CNote(*this, notedef);
 	}
 
-	CFormula* CDataStorage::MakeCFormula(const formula_t& fdef)
+	CFormula* CDataStorage::MakeCFormula(const formula_cell_t& fdef)
 	{
 		return new CFormula(*this, fdef);
 	}
@@ -435,6 +435,32 @@ namespace xlslib_core
 		return new CHPSFdoc(*this, docdef);
 	}
 
+    CUnit* CDataStorage::MakeCExternBook(unsigned16_t sheet_count) {
+        CRecord *supbook= new CRecord(*this);
+        supbook->Inflate(8);
+        supbook->SetRecordType(RECTYPE_SUPBOOK);
+        supbook->SetRecordLength(4);
+        supbook->AddValue16(sheet_count);
+        supbook->AddValue8(0x01);
+        supbook->AddValue8(0x04);
+
+        return supbook;
+    }
+
+    CUnit* CDataStorage::MakeCExternSheet(const Boundsheet_Vect_t& sheets) {
+        CRecord *externsheet= new CRecord(*this);
+        externsheet->Inflate(4+2+sheets.size()*6);
+        externsheet->SetRecordType(RECTYPE_EXTERNSHEET);
+        externsheet->SetRecordLength(2+sheets.size()*6);
+        externsheet->AddValue16((unsigned16_t)sheets.size());
+        for (size_t i=0; i<sheets.size(); i++) {
+            externsheet->AddValue16(0);
+            externsheet->AddValue16(i);
+            externsheet->AddValue16(i);
+        }
+        return externsheet;
+    }
+
 	CUnit* CDataStorage::MakeSST(const Label_Vect_t& labels)
 	{
 		CRecord *record = new CRecord(*this);
@@ -458,8 +484,8 @@ namespace xlslib_core
 			bool isAscii;
 			size_t strSize = record->UnicodeStringLength(str16, strLen, isAscii, CUnit::LEN2_FLAGS_UNICODE /* = LEN2_FLAGS_UNICODE */ );
 			if(strSize > MAX_RECORD_SIZE) {
-				static const unsigned16_t tooLong[] = { 'L', 'e', 'n', 'g', 't', 'h', ' ', 't', 'o', 'o', ' ', 'l', 'o', 'n', 'g', '!' };
-				str16 = tooLong;
+				static const unsigned16_t tooLong[] = { 'L', 'e', 'n', 'g', 't', 'h', ' ', 't', 'o', 'o', ' ', 'l', 'o', 'n', 'g', '!' , 0};
+				str16 = (xchar16_t *)(tooLong);
 				strSize = record->UnicodeStringLength(str16, strLen, isAscii, CUnit::LEN2_FLAGS_UNICODE /* = LEN2_FLAGS_UNICODE */ );
 			}
 

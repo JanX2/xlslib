@@ -67,6 +67,8 @@ namespace xlslib_core
 		SHEET_MERGED,
 		SHEET_WINDOW2,
 		SHEET_H_LINKS,
+		SHEET_VALIDITY_HEADER,
+		SHEET_VALIDITY_BODY,
 		SHEET_EOF,
 		SHEET_FINISH
 	} SheetRecordDumpState_t;
@@ -128,6 +130,60 @@ namespace xlslib_core
 	typedef std::vector<size_t XLSLIB_DFLT_ALLOCATOR> CellOffsets_Vect_t;
 	typedef CellOffsets_Vect_t::iterator CellOffsets_Vect_Itor_t;
 
+    enum {
+        DVAL_TYPE_ANY = 0x00,
+        DVAL_TYPE_INTEGER = 0x01,
+        DVAL_TYPE_DECIMAL = 0x02,
+        DVAL_TYPE_LIST = 0x03,
+        DVAL_TYPE_DATE = 0x04,
+        DVAL_TYPE_TIME = 0x05,
+        DVAL_TYPE_LENGTH = 0x06,
+        DVAL_TYPE_FORMULA = 0x07
+    };
+
+    enum {
+        DVAL_ERROR_STOP = 0x00,
+        DVAL_ERROR_WARNING = 0x10,
+        DVAL_ERROR_INFO = 0x20,
+    };
+
+    enum {
+        DVAL_STRING_LIST_IN_FORMULA = 0x0080,
+        DVAL_EMPTY_OK = 0x0100,
+        DVAL_STRING_LIST_SUPPRESS_DROPDOWN = 0x0200,
+        DVAL_SHOW_PROMPT_IF_SELECTED = 0x040000,
+        DVAL_SHOW_ERROR_IF_INVALID   = 0x080000
+    };
+
+    enum {
+        DVAL_OP_BETWEEN          = 0x000000,
+        DVAL_OP_NOT_BETWEEN      = 0x100000,
+        DVAL_OP_EQUAL            = 0x200000,
+        DVAL_OP_NOT_EQUAL        = 0x300000,
+        DVAL_OP_GREATER_THAN     = 0x400000,
+        DVAL_OP_LESS_THAN        = 0x500000,
+        DVAL_OP_GREATER_OR_EQUAL = 0x600000,
+        DVAL_OP_LESS_OR_EQUAL    = 0x700000,
+    };
+
+	struct DataValidation
+	{
+        unsigned32_t     first_row;
+        unsigned32_t     last_row;
+        unsigned32_t     first_col;
+        unsigned32_t     last_col;
+		unsigned32_t     options;
+		u16string        prompt_title;
+		u16string        prompt_text;
+		u16string        error_title;
+		u16string        error_text;
+        const formula_t *cond1;
+        const formula_t *cond2;
+	};
+
+	typedef std::vector<xlslib_core::DataValidation * XLSLIB_DFLT_ALLOCATOR> DataValidationList_t;
+	typedef DataValidationList_t::iterator DataValidationList_Itor_t;
+
 	struct HyperLink
 	{
 		unsigned16_t row;
@@ -140,6 +196,9 @@ namespace xlslib_core
 
 	typedef std::vector<xlslib_core::CUnit* XLSLIB_DFLT_ALLOCATOR> ColInfo_t;
 	typedef ColInfo_t::iterator ColInfo_Itor_t;
+
+	typedef std::vector<xlslib_core::formula_t * XLSLIB_DFLT_ALLOCATOR> FormulaStackList_t;
+	typedef FormulaStackList_t::iterator FormulaStackList_Itor_t;
 
 	class worksheet : public CBiffSection
 	{
@@ -188,6 +247,11 @@ namespace xlslib_core
 		unsigned16_t defRowHeight;
 		unsigned16_t defColWidth;
 
+        FormulaStackList_t m_FormulaStacks;
+
+        DataValidationList_t m_DataValidations;
+        DataValidationList_Itor_t m_CurrentDval;
+
 		HyperLinkList_t	m_HyperLinks;
 		HyperLinkList_Itor_t m_CurrentHlink;
 
@@ -204,6 +268,8 @@ namespace xlslib_core
 		void					AddCell(cell_t* pcell);
 		CUnit*					DumpData(CDataStorage &datastore, size_t offset, size_t writeLen /*, size_t &Last_BOF_offset*/);
 
+		CUnit*					MakeDataValidationHeader(CDataStorage& datastore, unsigned32_t dval_count);
+		CUnit*					MakeDataValidationEntry(CDataStorage& datastore, DataValidation* dval);
 		CUnit*					MakeHyperLink(CDataStorage& datastore, HyperLink* link);
 
 	private:
@@ -213,6 +279,7 @@ namespace xlslib_core
 	public:
 		void					MakeActive();   // makes this sheet come up first
 		size_t					NumCells() const { return m_Cells.size(); }
+		unsigned16_t            GetIndex() const { return sheetIndex; }
 
 		cell_t*					FindCell(unsigned32_t row, unsigned32_t col) const;
 		cell_t*					FindCellOrMakeBlank(unsigned32_t row, unsigned32_t col);
@@ -227,6 +294,8 @@ namespace xlslib_core
 
 		void defaultRowHeight(unsigned16_t width, bool hidden = false) { defRowHeight = width; defRowsHidden = hidden; } // sets column widths to 1/256 x width of "0"
 		void defaultColwidth(unsigned16_t width) { defColWidth = width; } // in points (Excel uses twips, 1/20th of a point, but xlslib didn't)
+
+        formula_t* formula_data();
 
 		// Ranges
 		range* rangegroup(unsigned32_t row1, unsigned32_t col1,
@@ -264,6 +333,13 @@ namespace xlslib_core
 		cell_t* formula(unsigned32_t row, unsigned32_t col,
 						expression_node_t* expression_root, bool auto_destruct_expression_tree = false,
 						xf_t* pxformat = NULL);
+		cell_t* formula(unsigned32_t row, unsigned32_t col,
+						formula_t *formula, xf_t* pxformat = NULL);
+
+        void validate(const range_t *crange, unsigned32_t options,
+                const formula_t *cond1 = NULL, const formula_t *cond2 = NULL,
+                const std::string& promptTitle = std::string(), const std::string& promptText = std::string(),
+                const std::string& errorTitle = std::string(), const std::string& errorText = std::string());
 
 		// define a cell (label, number, etc) - apply proper url (http://blah.blah), possible text mark too (minus the '#')
 		void hyperLink(const cell_t *cell, const std::string& url, const std::string& mark = std::string());

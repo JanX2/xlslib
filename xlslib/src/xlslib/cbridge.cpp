@@ -44,6 +44,7 @@
 #include "common/systype.h"
 #include "xlslib/common.h" 
 #include "xlslib/record.h"
+#include "xlslib/formula.h"
 
 #include "xlslib.h"
 
@@ -158,6 +159,89 @@ extern "C" {
 
 																	return w->note(row, col, cmt, auth, pxformat); 
 																}
+    formula_t *xlsWorksheetFormula(worksheet *w) { return w->formula_data(); }
+    void xlsFormulaPushBoolean(formula_t *formula, bool value) { formula->PushBoolean(value); }
+    void xlsFormulaPushMissingArgument(formula_t *formula) { formula->PushMissingArgument(); }
+    void xlsFormulaPushError(formula_t *formula, unsigned8_t value) { formula->PushError(value); }
+    void xlsFormulaPushNumberInt(formula_t *formula, signed32_t value) { formula->PushInteger(value); }
+    void xlsFormulaPushNumberDbl(formula_t *formula, double value) { formula->PushFloatingPoint(value); }
+    void xlsFormulaPushNumberArray(formula_t *formula, double *values, size_t count) 
+                                                                {
+                                                                    std::vector<double> vec;
+                                                                    for (size_t i=0; i<count; i++)
+                                                                        vec.push_back(values[i]);
+                                                                    formula->PushFloatingPointArray(vec);
+                                                                }
+    void xlsFormulaPushOperator(formula_t *formula, expr_operator_code_t op) { formula->PushOperator(op); }
+    void xlsFormulaPushCellReference(formula_t *formula, cell_t *cell, cell_addr_mode_t opt) { formula->PushCellReference(*cell, opt); }
+    void xlsFormulaPushCellAreaReference(formula_t *formula, cell_t *upper_left_cell, 
+            cell_t *lower_right_cell, cell_addr_mode_t opt) { formula->PushCellAreaReference(*upper_left_cell, *lower_right_cell, opt); }
+    void xlsFormulaPushFunction(formula_t *formula, expr_function_code_t func) { formula->PushFunction(func); }
+    void xlsFormulaPushFunctionV(formula_t *formula, expr_function_code_t func, size_t arg_count) { formula->PushFunction(func, arg_count); }
+    void xlsFormulaPushCharacterArray(formula_t *formula, const char *text, size_t count) 
+                                                                { 
+                                                                    std::string str = "";
+                                                                    for (size_t i=0; i<count; i++) {
+                                                                        str += text[i];
+                                                                    }
+                                                                    formula->PushText(str); 
+                                                                }
+    void xlsFormulaPushText(formula_t *formula, const char *text) 
+                                                                { 
+                                                                    std::string str = text;
+                                                                    formula->PushText(str); 
+                                                                }
+    void xlsFormulaPushTextArray(formula_t *formula, const char **text, size_t count) 
+                                                                { 
+                                                                    std::vector<std::string> vec;
+                                                                    for (size_t i=0; i<count; i++) {
+                                                                        std::string str = text[i];
+                                                                        vec.push_back(str);
+                                                                    }
+                                                                    formula->PushTextArray(vec); 
+                                                                }
+
+	cell_t *xlsWorksheetFormulaCell(worksheet *w, unsigned32_t row, unsigned32_t col, formula_t *formula, xf_t *pxformat)
+																{
+																	return w->formula(row, col, formula, pxformat);
+																}
+    void xlsWorksheetValidateCell(worksheet *w, cell_t *cell, unsigned32_t options, 
+            const formula_t *cond1, const formula_t *cond2,
+            const char *prompt_title, const char *prompt_text,
+            const char *error_title, const char *error_text)   
+                                                               {
+                                                                   range_t *rg = new range_t;
+                                                                   rg->first_row = cell->GetRow();
+                                                                   rg->last_row = cell->GetRow();
+                                                                   rg->first_col = cell->GetCol();
+                                                                   rg->last_col = cell->GetCol();
+                                                                   std::string sPromptTitle = prompt_title ? prompt_title : "";
+                                                                   std::string sPromptText = prompt_text ? prompt_text : "";
+                                                                   std::string sErrorTitle = error_title ? error_title : "";
+                                                                   std::string sErrorText = error_text ? error_text : "";
+                                                                   w->validate(rg, options, cond1, cond2,
+                                                                           sPromptTitle, sPromptText, sErrorTitle, sErrorText);
+                                                                   delete rg;
+                                                               }
+    void xlsWorksheetValidateCellArea(worksheet *w, cell_t *upper_left_cell, 
+            cell_t *lower_right_cell, unsigned32_t options, 
+            const formula_t *cond1, const formula_t *cond2,
+            const char *prompt_title, const char *prompt_text,
+            const char *error_title, const char *error_text)   
+                                                               {
+                                                                   range_t *rg = new range_t;
+                                                                   rg->first_row = upper_left_cell->GetRow();
+                                                                   rg->last_row = lower_right_cell->GetRow();
+                                                                   rg->first_col = upper_left_cell->GetCol();
+                                                                   rg->last_col = lower_right_cell->GetCol();
+                                                                   std::string sPromptTitle = prompt_title ? prompt_title : "";
+                                                                   std::string sPromptText = prompt_text ? prompt_text : "";
+                                                                   std::string sErrorTitle = error_title ? error_title : "";
+                                                                   std::string sErrorText = error_text ? error_text : "";
+                                                                   w->validate(rg, options, cond1, cond2,
+                                                                           sPromptTitle, sPromptText, sErrorTitle, sErrorText);
+                                                                   delete rg;
+                                                               }
 	void xlsWorksheetHyperLink(worksheet *w, cell_t *cell, const char *url, const char *mark)
 																{ 
 																	std::string sUrl = url;

@@ -423,7 +423,7 @@ signed8_t CUnit::AddUnicodeString(CGlobalRecords& gRecords, const std::string& s
 	if (!isASCII) {
 		u16string s16;
 
-		XL_ASSERT(!"Should never happen!");
+		XL_ASSERTS("Should never happen!");
 
 		gRecords.char2str16(str, s16);
 		return AddUnicodeString(s16, fmt);
@@ -453,7 +453,7 @@ signed8_t CUnit::AddUnicodeString(CGlobalRecords& gRecords, const std::string& s
 		break;
 
 	default:
-		XL_ASSERT(!"should never go here!");
+		XL_ASSERTS("should never go here!");
 		break;
 	}
 	strSize += strLen;
@@ -508,7 +508,7 @@ signed8_t CUnit::AddUnicodeString(CGlobalRecords& gRecords, const std::string& s
 		break;
 
 	default:
-		XL_ASSERT(!"should never go here!");
+		XL_ASSERTS("should never go here!");
 		break;
 	}
 
@@ -584,7 +584,7 @@ signed8_t CUnit::AddUnicodeString(const u16string& str16, XlsUnicodeStringFormat
 		break;
 
 	default:
-		XL_ASSERT(!"should never go here!");
+		XL_ASSERTS("should never go here!");
 		break;
 	}
 
@@ -654,7 +654,7 @@ size_t CUnit::UnicodeStringLength(const u16string& str16, size_t& strLen, bool& 
 		break;
 
 	default:
-		XL_ASSERT(!"should never go here!");
+		XL_ASSERTS("should never go here!");
 		break;
 	}
 
