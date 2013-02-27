@@ -164,12 +164,7 @@ echo "libtoolize may issue a warning on the need to run aclocal - rest assured t
 sys=`uname`
 echo "Running [g]libtoolize ${FORCE} ${ACLOCAL_FLAGS:+$ACLOCAL_FLAGS }..."
 # -c : copy instead of symlink lt* files!
-if [ $sys = "Darwin" ]
-then 
-	glibtoolize ${FORCE} -c ${ACLOCAL_FLAGS:+$ACLOCAL_FLAGS }
-else
-	libtoolize ${FORCE} -c ${ACLOCAL_FLAGS:+$ACLOCAL_FLAGS }
-fi
+libtoolize ${FORCE} -c ${ACLOCAL_FLAGS:+$ACLOCAL_FLAGS }
 echo "Running ${ACLOCAL}${FORCE} -I m4 ${ACLOCAL_FLAGS:+$ACLOCAL_FLAGS }..."
 ${ACLOCAL}${FORCE} -I m4 ${ACLOCAL_FLAGS:+$ACLOCAL_FLAGS }
 echo "Running ${AUTOCONF}${FORCE} -I m4 ${ACLOCAL_FLAGS:+$ACLOCAL_FLAGS }..."
