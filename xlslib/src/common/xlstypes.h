@@ -30,7 +30,8 @@
 #ifndef XLSTYPES_H
 #define XLSTYPES_H
 
-#if defined(__cplusplus)					// ALL C++ users
+// ALL C++ users
+#if defined(__cplusplus)
 
 #include <list>
 #include <vector>
@@ -40,7 +41,8 @@
 #endif
 
 // Setup our typedefs now - would like to get them from systype.h
-#ifdef uint8_t				// if we have this one we will have all the others too
+// if we have this one we will have all the others too
+#ifdef uint8_t				
 
 typedef uint8_t				unsigned8_t;
 typedef uint16_t			unsigned16_t;
@@ -50,7 +52,8 @@ typedef int8_t				signed8_t;
 typedef int16_t				signed16_t;
 typedef int32_t				signed32_t;
 
-#else						// no systype.h
+// no systype.h
+#else
 
 typedef unsigned char      unsigned8_t;
 typedef unsigned short int unsigned16_t;
@@ -60,14 +63,16 @@ typedef char               signed8_t;
 typedef short int          signed16_t;
 typedef int                signed32_t;
 
-#endif // uint8_t
+ // uint8_t
+#endif
 
-
-#if defined(_MSC_VER) && defined(WIN32)		// Windows
+// Windows
+#if defined(_MSC_VER) && defined(WIN32)
 
 typedef unsigned __int64 unsigned64_t;
 
-#else										// not windows
+// not windows
+#else
 
 #ifdef _UINT64_T
 
@@ -77,13 +82,16 @@ typedef uint64_t unsigned64_t;
 
 typedef unsigned long long unsigned64_t;
 
-#endif // _UINT64_T
+// _UINT64_T
+#endif
 
-#endif // defined(_MSC_VER) && defined(WIN32)
+// defined(_MSC_VER) && defined(WIN32)
+#endif 
 
-#if defined(__cplusplus)					// ALL C++ users
+#if defined(__cplusplus)
 
-#if defined(_MSC_VER) && defined(WIN32)		// Windows
+// Windows
+#if defined(_MSC_VER) && defined(WIN32)		
 
 typedef unsigned16_t xchar16_t;
 typedef wchar_t unichar_t;
@@ -97,7 +105,8 @@ typedef std::basic_string<unsigned16_t> u16string;
 using std::u16string; 
 #endif
 
-#elif defined(__FRAMEWORK__)				// MAC Framework
+// MAC Framework
+#elif defined(__FRAMEWORK__)
 
 #include "xlconfig.h"
 #undef HAVE_ICONV
@@ -107,21 +116,25 @@ using std::u16string;
 #define ustring basic_string<unsigned16_t>
 typedef std::basic_string<unsigned16_t> u16string;
 
-#else										// All other C++
+// All other C++
+#else
 
 typedef wchar_t unichar_t;
 #define ustring wstring
-
-#if __cplusplus  >= 201103L	// Clang on the Mac needs this
+	// Clang on the Mac needs this
+#if __cplusplus  && ( __cplusplus >= 201103L )
 typedef char16_t xchar16_t;
 using std::u16string;
 #else
 typedef unsigned16_t xchar16_t;
 typedef std::basic_string<unsigned16_t> u16string;
-froggy
 #endif
-#endif	// defined(_MSC_VER) && defined(WIN32)
 
-#endif	// C++
+// defined(_MSC_VER) && defined(WIN32)
+#endif	
 
-#endif   //XLSTYPES_H
+// C++
+#endif	
+
+ // XLSTYPES_H
+#endif  
