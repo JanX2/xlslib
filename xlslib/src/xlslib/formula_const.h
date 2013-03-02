@@ -32,6 +32,8 @@
 
 namespace xlslib_core
 {
+	static const unsigned32_t invalidIndex = 0xFFFFFFFF;
+
 	typedef enum cell_addr_mode_t
 	{
 		CELL_RELATIVE_A1   = 0xC000,

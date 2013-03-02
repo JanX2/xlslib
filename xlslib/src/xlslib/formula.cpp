@@ -639,57 +639,74 @@ signed8_t formula_t::PushOperator(expr_operator_code_t op)
 
 signed8_t formula_t::PushCellReference(const cell_t& cell, cell_addr_mode_t opt)
 {
-    signed8_t errcode = NO_ERRORS;
-    unsigned16_t col = (unsigned16_t)cell.GetCol();
+	signed8_t ret;
+	unsigned32_t idx;
 
-    if (m_Worksheet == NULL || cell.GetWorksheet() == NULL ||
-            cell.GetWorksheet()->GetIndex() == m_Worksheet->GetIndex()) {
+	idx = cell.GetWorksheet() ? cell.GetWorksheet()->GetIndex() : invalidIndex;
+	ret = PushReference(cell.GetRow(), cell.GetCol(), idx, opt);
+	return ret;
+}
+
+signed8_t formula_t::PushReference(unsigned32_t row, unsigned32_t col, unsigned32_t idx, cell_addr_mode_t opt)
+{
+    signed8_t errcode = NO_ERRORS;
+
+    if (m_Worksheet == NULL || idx == invalidIndex || idx == m_Worksheet->GetIndex()) {
         errcode |= main_data->AddValue8(OP_REFV);
         col &= 0x3FFF;
     } else {
         errcode |= main_data->AddValue8(OP_REF3DV);
-        errcode |= main_data->AddValue16((unsigned16_t)cell.GetWorksheet()->GetIndex());
+        errcode |= main_data->AddValue16(static_cast<unsigned16_t>(idx));
         col &= 0x00FF;
     }
-    errcode |= main_data->AddValue16(static_cast<unsigned16_t>(cell.GetRow()));
+    errcode |= main_data->AddValue16(static_cast<unsigned16_t>(row));
 
     XL_ASSERT((opt & ~0xC000) == 0);
-    col |= ((unsigned16_t)opt) & 0xC000;
-    errcode |= main_data->AddValue16(col);
+    col |= opt & 0xC000;
+    errcode |= main_data->AddValue16(static_cast<unsigned16_t>(col));
 
 	return errcode;
 }
 
 signed8_t formula_t::PushCellAreaReference(const cell_t& upper_left_cell, const cell_t& lower_right_cell, cell_addr_mode_t opt)
 {
+	signed8_t ret;
+	unsigned32_t ul_idx, lr_idx;
+
+	ul_idx = upper_left_cell.GetWorksheet() ? upper_left_cell.GetWorksheet()->GetIndex() : invalidIndex;
+	lr_idx = lower_right_cell.GetWorksheet() ? lower_right_cell.GetWorksheet()->GetIndex() : invalidIndex;
+
+	ret = PushAreaReference(upper_left_cell.GetRow(), upper_left_cell.GetCol(), ul_idx, lower_right_cell.GetRow(), lower_right_cell.GetCol(), lr_idx, opt);
+	return ret;
+}
+
+signed8_t formula_t::PushAreaReference(unsigned32_t ul_row, unsigned32_t ul_col, unsigned32_t ul_idx, unsigned32_t lr_row, unsigned32_t lr_col, unsigned32_t lr_idx, cell_addr_mode_t opt)
+{
     signed8_t errcode = NO_ERRORS;
+	(void)lr_idx;	// prevent warning
 
-	unsigned16_t col1 = (unsigned16_t)upper_left_cell.GetCol();
-	unsigned16_t col2 = (unsigned16_t)lower_right_cell.GetCol();
-
-    if (m_Worksheet == NULL || upper_left_cell.GetWorksheet() == NULL ||
-            upper_left_cell.GetWorksheet()->GetIndex() == m_Worksheet->GetIndex()) {
+    if (m_Worksheet == NULL || ul_idx == invalidIndex || ul_idx == m_Worksheet->GetIndex()) {
         errcode |= main_data->AddValue8(OP_AREAA); // OP_AREA. OP_AREAV, OP_AREAA
-        col1 &= 0x3FFF;
-        col2 &= 0x3FFF;
+        ul_col &= 0x3FFF;
+        lr_col &= 0x3FFF;
     } else {
         errcode |= main_data->AddValue8(OP_AREA3DA); // OP_AREA. OP_AREAV, OP_AREAA
-        errcode |= main_data->AddValue16((unsigned16_t)upper_left_cell.GetWorksheet()->GetIndex());
-        col1 &= 0x00FF;
-        col2 &= 0x00FF;
+        errcode |= main_data->AddValue16(static_cast<unsigned16_t>(ul_idx));
+        ul_col &= 0x00FF;
+        lr_col &= 0x00FF;
     }
 
 	// BIFF8 format!
-	errcode |= main_data->AddValue16((unsigned16_t)upper_left_cell.GetRow());
-	errcode |= main_data->AddValue16((unsigned16_t)lower_right_cell.GetRow());
+	errcode |= main_data->AddValue16(static_cast<unsigned16_t>(ul_row));
+	errcode |= main_data->AddValue16(static_cast<unsigned16_t>(lr_row));
 
 	XL_ASSERT((opt & ~0xC000) == 0);
-	col1 |= ((unsigned16_t)opt) & 0xC000;
-	errcode |= main_data->AddValue16(col1);
+	ul_col |= opt & 0xC000;
+	errcode |= main_data->AddValue16(static_cast<unsigned16_t>(ul_col));
 
 	XL_ASSERT((opt & ~0xC000) == 0);
-	col2 |= ((unsigned16_t)opt) & 0xC000;
-	errcode |= main_data->AddValue16(col2);
+	lr_col |= opt & 0xC000;
+	errcode |= main_data->AddValue16(static_cast<unsigned16_t>(lr_col));
 
 	return errcode;
 }

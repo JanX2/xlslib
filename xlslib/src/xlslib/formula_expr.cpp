@@ -33,6 +33,7 @@
 #include "xlslib/formula_estimate.h"
 #include "xlslib/formula_cell.h"
 #include "xlslib/formula.h"
+#include "xlslib/sheetrec.h"
 
 #ifdef __BCPLUSPLUS__
 #include <malloc.h>
@@ -303,7 +304,9 @@ signed8_t text_value_node_t::DumpData(formula_t &stack, bool include_subtree) co
 
 cell_deref_node_t::cell_deref_node_t(CGlobalRecords& gRecords, const cell_t& v, cell_addr_mode_t opt, cell_op_class_t opclass) :
 	terminal_node_t(gRecords),
-    cell1(v),
+	row_(v.GetRow()),
+	col_(v.GetCol()),
+	idx_(v.GetWorksheet() ? v.GetWorksheet()->GetIndex() : invalidIndex),
 	worksheet_ref(NULL),
 	attr(opt),
 	operand_class(opclass)
@@ -312,7 +315,9 @@ cell_deref_node_t::cell_deref_node_t(CGlobalRecords& gRecords, const cell_t& v, 
 
 cell_deref_node_t::cell_deref_node_t(CGlobalRecords& gRecords, const cell_t& v, const worksheet* ws, cell_addr_mode_t opt, cell_op_class_t opclass) :
 	terminal_node_t(gRecords),
-    cell1(v),
+	row_(v.GetRow()),
+	col_(v.GetCol()),
+	idx_(v.GetWorksheet() ? v.GetWorksheet()->GetIndex() : invalidIndex),
 	worksheet_ref(ws),
 	attr(opt),
 	operand_class(opclass)
@@ -343,20 +348,24 @@ size_t cell_deref_node_t::GetSize(bool include_subtree) const
 signed8_t cell_deref_node_t::DumpData(formula_t &stack, bool include_subtree) const
 {
 	(void)include_subtree;
-    return stack.PushCellReference(cell1, attr);
+    return stack.PushReference(row_, col_, idx_, attr);
 }
 
 cellarea_deref_node_t::cellarea_deref_node_t(CGlobalRecords& gRecords, const cell_t& u_l_c, const cell_t& l_r_c, cell_addr_mode_t attr,
 											 cell_op_class_t opclass) :
 	cell_deref_node_t(gRecords, u_l_c, attr, opclass),
-    cell2(l_r_c)
+	lrrow_(l_r_c.GetRow()),
+	lrcol_(l_r_c.GetCol()),
+	lridx_(l_r_c.GetWorksheet() ? l_r_c.GetWorksheet()->GetIndex() : invalidIndex)
 {
 }
 
 cellarea_deref_node_t::cellarea_deref_node_t(CGlobalRecords& gRecords, const cell_t& u_l_c, const cell_t& l_r_c, const worksheet* ws, cell_addr_mode_t attr,
 											 cell_op_class_t opclass) :
 	cell_deref_node_t(gRecords, u_l_c, ws, attr, opclass),
-    cell2(l_r_c)
+	lrrow_(l_r_c.GetRow()),
+	lrcol_(l_r_c.GetCol()),
+	lridx_(l_r_c.GetWorksheet() ? l_r_c.GetWorksheet()->GetIndex() : invalidIndex)
 {
 }
 
@@ -374,7 +383,7 @@ size_t cellarea_deref_node_t::GetSize(bool include_subtree) const
 signed8_t cellarea_deref_node_t::DumpData(formula_t &stack, bool include_subtree) const
 {
 	(void)include_subtree; // stop warning
-    return stack.PushCellAreaReference(cell1, cell2, attr);
+    return stack.PushAreaReference(row_, col_, idx_, lrrow_, lrcol_, lridx_, attr);
 }
 
 void cellarea_deref_node_t::GetResultEstimate(estimated_formula_result_t &dst) const
