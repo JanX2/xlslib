@@ -43,8 +43,13 @@
 #include <string>
 #include <sstream>
 #include <iostream>
+
 #include <stdio.h>
 #include <limits.h>
+#ifdef _X_DEBUG_
+#include <unistd.h>
+#endif
+
 
 using namespace std;
 using namespace xlslib_core;

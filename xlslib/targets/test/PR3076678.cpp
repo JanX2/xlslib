@@ -9,6 +9,10 @@
 
 #include "md5.h"
 
+#ifdef _X_DEBUG_
+#include <unistd.h>
+#endif
+
 using namespace std;
 using namespace xlslib_core;
 

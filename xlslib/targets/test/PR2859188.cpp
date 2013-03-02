@@ -47,6 +47,10 @@ So either I do not know something, it's a specific design decision or a bug in w
 
 #include "md5.h"
 
+#ifdef _X_DEBUG_
+#include <unistd.h>
+#endif
+
 using namespace std;
 using namespace xlslib_core;
 
