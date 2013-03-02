@@ -213,7 +213,7 @@ version 1.2
 Ger Hobbelt
 
 - Added 64-bit build support: -M commandline option now enables CreateDLL to
-  create suitable reponse files for X64 (AMD64) and IA64 (Itanium) 64-bit
+  create suitable response files for X64 (AMD64) and IA64 (Itanium) 64-bit
   builds of target DDLs.
 
 - Added --manifest commandline option, so you can specify a manifest filename.
@@ -325,9 +325,17 @@ Ger Hobbelt
 
 - Nothing much, just removed the hacky IlmBaseConfig.h dependency from the source
   code again. Functionality is identical to v1.2.5.
+
+-------------------------------------------------------------------------------
+version 1.2.7
+-------------------------------------------------------------------------------
+Ger Hobbelt
+
+- Unify all paths to use DIRSEP ('\\') as path separator everywhere.
+- Add -Wpath argument to assign a work directory other than the system's tempdir.
   
 ===============================================================================
- */
+*/
 
 
 
@@ -343,6 +351,7 @@ Ger Hobbelt
 #include <process.h>                // for _spawnvp()
 #include <windows.h>                // needed to create processes
 #include <sys/stat.h>
+#include <time.h>					// required by MSVC2008
 
 using std::cerr;
 using std::cout;
@@ -357,6 +366,8 @@ using namespace std;
 
 //#define DEBUGGING
 #define MAX_ARGS 1000
+
+#define DIRSEP '\\'
 
 struct extra_symbol_info
 {
@@ -423,6 +434,75 @@ static inline int max(int a, int b)
 #endif
 
 
+/*
+Replace any '*' with a random number to create a unique filename which doesn't exist yet.
+*/
+static string mk_tempname(const char *template_str)
+{
+	time_t t = time(NULL);
+	struct stat st;
+	unsigned long int cb = (unsigned long int)t;
+
+	for (;;)
+	{
+		unsigned long int c = cb++;
+		string rv;
+		for (const char *s = template_str; *s; s++)
+		{
+			if (*s == '*')
+			{
+				char buf[40];
+				sprintf(buf, "%lu", c);
+				c = rand();
+				rv.append(buf);
+			}
+			else
+			{
+				rv.push_back(*s);
+			}
+		}
+		if (stat(rv.c_str(), &st))
+		{
+			return rv;
+		}
+	}
+}
+
+static string unify_path(const char *src)
+{
+	string rv;
+
+	for (const char *s = src; *s; s++)
+	{
+		if (*s == '/' || *s == '\\')
+			rv.push_back(DIRSEP);
+		else
+			rv.push_back(*s);
+	}
+	return rv;
+}
+
+static string terminate_dir(const char *path)
+{
+	string rv = unify_path(path);
+
+	if (!rv.empty() && DIRSEP != *--rv.end())
+		rv.push_back(DIRSEP);
+	return rv;
+}
+
+static string unify_path(string &src)
+{
+	return unify_path(src.c_str());
+}
+static string terminate_dir(string &path)
+{
+	return terminate_dir(path.c_str());
+}
+static string mk_tempname(string &template_str)
+{
+	return mk_tempname(template_str.c_str());
+}
 
 void createDef(string moduleName, symbol_store &strings, bool verbose, FILE* defFile)
 {
@@ -512,6 +592,7 @@ static void addLibsFromVector(set<string>& libs, vector<string>& morelibs)
         {
             temp += ".lib";
         }
+		temp = unify_path(temp);
 
         if (libs.find(temp) == libs.end())
         {
@@ -579,7 +660,7 @@ static void addLibsFromVector(set<string>& libs, vector<string>& morelibs)
 
    Some C functions have a __stdcall (pascal) calling convention, which is recognizable
    by those functions having a @n tail, where n is the number of bytes pushed on the stack for
-   the args. This may seen like a real bugger as this is not easily discernable from 
+   the args. This may seen like a real bugger as this is not easily discernible from 
    C++ encoded labels, which can also contain one or more '@', but it turns out that the 
    linker is fine with this in a map file.
    
@@ -643,7 +724,7 @@ static void getSymbolsObjsAndLibsFromMap(char* buf, const int length,
                 break;
         }
 
-        // if preceeding character is not ' ', skip to end of line
+        // if preceding character is not ' ', skip to end of line
 		// UNLESS we've hit a HEX digit (a-fA-F) which can also
 		// start a valid symbol: in that case we skip a WORD
         if (*(buf-1) != ' ') {
@@ -709,7 +790,7 @@ static void getSymbolsObjsAndLibsFromMap(char* buf, const int length,
                         ++lineend;
 
                         // if the object isn't in the set, add it
-                        string object(lineend);
+                        string object = unify_path(lineend);
                         if (objs.find(object) == objs.end())
                         {
                             objs.insert(object);
@@ -761,14 +842,14 @@ static void getSymbolsObjsAndLibsFromMap(char* buf, const int length,
                         // if the object isn't in the set, add it
                         string object(lineend);
                         string::size_type pos = object.find(':');
-                        object = object.substr(0, pos) + ".lib";
+                        object = unify_path(object.substr(0, pos) + ".lib");
                         if (libs.find(object) == libs.end())
                         {
                             libs.insert(object);
 
 							if (verbose)
 							{
-								cerr << "collected library '" << object.c_str() << endl;
+								cerr << "collected library '" << object << "'" << endl;
 							}
                         }
 						else if (verbose)
@@ -790,7 +871,7 @@ static void getSymbolsObjsAndLibsFromMap(char* buf, const int length,
                         // if the object isn't in the set, add it
                         string object(lineend);
                         string::size_type pos = object.find(':');
-                        object = object.substr(0, pos) + ".lib";
+                        object = unify_path(object.substr(0, pos) + ".lib");
                         if (static_libs.find(object) != static_libs.end())
                         {
 							bool accept = true;
@@ -962,24 +1043,26 @@ static void getSymbolsObjsAndLibsFromMap(char* buf, const int length,
 }
 
 
-static void createResponseFile(string& repFile, string& path, string& moduleName, vector<string>& libpath, string& implib, set<string>& libs, set<string>& objs, bool noDefaultLibs, bool verbose, string machineType, string manifestFileName)
+static void createResponseFile(string& repFile, string& path, string& moduleName, vector<string>& libpaths, string& implib, set<string>& libs, set<string>& objs, bool noDefaultLibs, bool verbose, string machineType, string manifestFileName)
 {
     FILE* r = fopen(repFile.c_str(), "wb");
     if (r != 0)
     {
-        fprintf(r, "/OUT:\"%s\\%s.dll\" /NOLOGO ", path.c_str(), moduleName.c_str());
+		fprintf(r, "/OUT:\"%s%s.dll\" /NOLOGO ", terminate_dir(path).c_str(), moduleName.c_str());
 
-        // add boost if the user has it. todo, is stage/lib always the right place?
+        // add boost if the user has it. 
+		// TODO: is stage/lib always the right place?
         char* root = getenv("BOOST_ROOT");
         if (root != 0)
-            fprintf(r, "/LIBPATH:\"%s\\stage\\lib\" ", root);
+            fprintf(r, "/LIBPATH:\"%sstage%clib\" ", terminate_dir(root).c_str(), DIRSEP);
 
 		bool path_seen = false;
-        for (size_t i = 0; i < libpath.size(); ++i)
+        for (size_t i = 0; i < libpaths.size(); ++i)
         {
             // add user lib path
-            fprintf(r, "/LIBPATH:\"%s\" ", libpath[i].c_str());
-			if (libpath[i] == path)
+			libpaths[i] = unify_path(libpaths[i]);
+            fprintf(r, "/LIBPATH:\"%s\" ", libpaths[i].c_str());
+			if (libpaths[i] == path)
 				path_seen = true;
         }
 
@@ -997,16 +1080,27 @@ static void createResponseFile(string& repFile, string& path, string& moduleName
             fprintf(r, "/NODEFAULTLIB ");
 
         // misc stuff
-        fprintf(r, "/DLL /DEBUG /PDB:\"%s\\%s.pdb\" /DEF:\"%s\\%s.map.DEF\" /MACHINE:%s ",
-            path.c_str(), moduleName.c_str(),       // PDB
-            path.c_str(), moduleName.c_str(),      // DEF
+        fprintf(r, "/DLL /DEBUG /PROFILE /PDB:\"%s%s.pdb\" /DEF:\"%s%s.map.DEF\" /MACHINE:%s ",
+            terminate_dir(path).c_str(), moduleName.c_str(),      // PDB
+            terminate_dir(path).c_str(), moduleName.c_str(),      // DEF
             machineType.c_str());
 
-        if (manifestFileName.length() > 0)
+        if (!manifestFileName.empty())
         {
-            fprintf(r, "/MANIFEST /MANIFESTFILE:\"%s\" ",
+            fprintf(r, "/MANIFEST /ALLOWISOLATION /MANIFESTUAC:\"level='asInvoker' uiAccess='false'\" /MANIFESTFILE:\"%s\" ",
                 manifestFileName.c_str());
         }
+
+		fprintf(r, "/INCREMENTAL:NO /DYNAMICBASE /ERRORREPORT:QUEUE /NXCOMPAT /LTCG ");
+		/*
+/MAP 
+/MAPINFO:EXPORTS 
+/SUBSYSTEM:CONSOLE 
+/OPT:NOREF 
+/OPT:ICF 
+/PGD:"D:\h\prj\1original\ib_tws_if2\build\msvc2010\bin\Win32_MSVC2010.Debug\xlslib_dll.pgd" 
+/TLBID:1 
+		*/
 
         for (set<string>::iterator lib = libs.begin(); lib != libs.end(); ++lib)
         {
@@ -1023,7 +1117,7 @@ static void createResponseFile(string& repFile, string& path, string& moduleName
 
         if (verbose)
         {
-            std::cerr << "Response file '" << repFile.c_str() << "' content:" << endl;
+            std::cerr << "Response file '" << repFile << "' content:" << endl;
 
             r = fopen(repFile.c_str(), "rb");
             if (r != 0)
@@ -1052,7 +1146,7 @@ static void createResponseFile(string& repFile, string& path, string& moduleName
     }
     else
     {
-        std::cerr << "Unable to open response file C:\\response.txt" << endl;
+        std::cerr << "Unable to open response file " << repFile << endl;
     }
 }
 
@@ -1177,7 +1271,7 @@ static void ProcessExtraDefFile(string includeDefFileName, std::ofstream &logfil
 int main(int argC, char* argV[])
 {
     int status = -1;
-    const char *version_string = "CreateDLL v1.2.6";
+    const char *version_string = "CreateDLL v1.2.7";
 
     OptionParser options(argV[0]);
 
@@ -1205,6 +1299,8 @@ int main(int argC, char* argV[])
     options.AddStringVectorOption("-I", "--include-def-file", includeDefFileNames, "names of DEF format files to include and assign ordinals to symbols");
     bool skip_link_task = false;
     options.AddTrueOption("-s", "--skip", skip_link_task, "skip link invocation (can be used to test behaviour a if CreateDLL was disabled)");
+    string workDir;
+    options.AddStringOption("-W", "--workdir", workDir, "path of the work directory where response files, etc. can be stored.");
 
     // make a command line less argV[0] which is the executable path
     std::string commandLine = Join(argC-1, &argV[1], " ");
@@ -1232,21 +1328,28 @@ int main(int argC, char* argV[])
 
     string::size_type pos;
 
-    char tempDir[MAX_PATH];
-    int rt = GetTempPath(MAX_PATH, tempDir);
+	if (workDir.empty())
+	{
+		char tempDir[MAX_PATH];
+		int rt = GetTempPathA(MAX_PATH, tempDir);
 
-    // 20 less because we have to have room for the filename
-    if (rt == 0 || rt > MAX_PATH - 20)
-    {
-        std::cerr << "Failed to get temp dir\n";
-        return 1;
-    }
+		// 20 less because we have to have room for the filename
+		if (rt == 0 || rt > MAX_PATH - 20)
+		{
+			std::cerr << "Failed to get temp dir\n";
+			return 1;
+		}
+		workDir.assign(tempDir);
+	}
+	workDir = terminate_dir(workDir);
 
-    std::string repFile(tempDir);
-    repFile += "response.txt";
+    std::string repFile(workDir);
+    repFile += "*.response.txt";
+	repFile = mk_tempname(repFile);
 
-    std::string logName(tempDir);
-    logName += "createDLL_out.txt";
+    std::string logName(workDir);
+    logName += "*.createDLL_out.txt";
+	logName = mk_tempname(logName);
 
     std::cout << "Linker response file is " << repFile << endl;
     std::cout << "Log file is " << logName << endl;
@@ -1256,12 +1359,13 @@ int main(int argC, char* argV[])
     logfile << version_string << endl;
     logfile << "createDLL was built " << __DATE__ << " " << __TIME__ << endl;
 
-    if (mapFileName == "" || importlib == "")
+    if (mapFileName.empty() || importlib.empty())
     {
         options.Usage();
     }
     else
     {
+		mapFileName = unify_path(mapFileName);
         string mapName = mapFileName; //GetArg("-n", args);
         const char* ext = strrchr(mapName.c_str(), '.');
         if (ext == 0)
@@ -1305,7 +1409,7 @@ int main(int argC, char* argV[])
 			for (size_t i = 0; i < includeDefFileNames.size(); ++i)
 			{
 				// one DEF file for processing
-	            ProcessExtraDefFile(includeDefFileNames[i], logfile, verbose, symbols);
+	            ProcessExtraDefFile(unify_path(includeDefFileNames[i]), logfile, verbose, symbols);
 			}
 
             // helpful info in log
@@ -1328,14 +1432,13 @@ int main(int argC, char* argV[])
             FILE* defFile = fopen(defName.c_str(), "wb");
 
             // get the module name from the map name
-            char const* sub = strrchr(mapName.c_str(), '/');
-            if (sub == 0) sub = strrchr(mapName.c_str(), '\\');
+            char const* sub = strrchr(mapName.c_str(), DIRSEP);
             if (sub == 0) sub = mapName.c_str();
-            if (*sub == '/' || *sub == '\\') ++sub;
+            if (*sub == DIRSEP) ++sub;
             string moduleName(sub);
             if (strrchr(sub, '.'))
             {
-                moduleName = moduleName.substr(0, moduleName.length() - 4);
+                moduleName = moduleName.substr(0, moduleName.find_last_of('.'));
             }
 
             // write out the def file
@@ -1346,10 +1449,7 @@ int main(int argC, char* argV[])
 
             // strip module name off map path
             string path(mapName);
-            pos = path.rfind('/');
-            if (pos != string::npos)
-                path = path.substr(0, pos);
-            pos = path.rfind('\\');
+            pos = path.rfind(DIRSEP);
             if (pos != string::npos)
                 path = path.substr(0, pos);
 
@@ -1367,6 +1467,7 @@ int main(int argC, char* argV[])
             {
                 importlib = importlib.substr(0, pos);
             }
+			importlib = unify_path(importlib);
 
             // silly placeholder code, given the comment above :
             string impliblib = importlib + ".lib";
@@ -1375,10 +1476,14 @@ int main(int argC, char* argV[])
             {
                 manifestFileName = "";
             }
-            else if (manifestFileName.length() == 0)
+            else if (manifestFileName.empty())
             {
                 manifestFileName = importlib + ".dll.createDLL.manifest";
             }
+			else
+			{
+				manifestFileName = unify_path(manifestFileName);
+			}
             createResponseFile(repFile, path, moduleName, libpaths, impliblib, libs, objs, noDefaultLib, verbose, machineType, manifestFileName);
 
             // invoke linker

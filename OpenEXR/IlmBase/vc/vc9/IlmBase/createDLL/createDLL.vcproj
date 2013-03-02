@@ -18,8 +18,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(ProjectName)_$(PlatformName)_MSVC2008.$(ConfigurationName)"
-			IntermediateDirectory="$(ProjectName)_$(PlatformName)_MSVC2008.$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)bin/$(PlatformName)_MSVC2008.$(ConfigurationName)\"
+			IntermediateDirectory="$(SolutionDir)obj/$(ProjectName)_$(PlatformName)_MSVC2008.$(ConfigurationName)\"
 			ConfigurationType="1"
 			CharacterSet="2"
 			>
@@ -98,14 +98,13 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				Description="Install the CreateDLL tool"
-				CommandLine="..\..\..\installCreateDLL.cmd $(IntDir) $(PlatformName)_MSVC2008.$(ConfigurationName) $(SolutionDir)bin\$(PlatformName)_MSVC2008.$(ConfigurationName)"
+				CommandLine=""
 			/>
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="$(ProjectName)_$(PlatformName)_MSVC2008.$(ConfigurationName)"
-			IntermediateDirectory="$(ProjectName)_$(PlatformName)_MSVC2008.$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)bin/$(PlatformName)_MSVC2008.$(ConfigurationName)\"
+			IntermediateDirectory="$(SolutionDir)obj/$(ProjectName)_$(PlatformName)_MSVC2008.$(ConfigurationName)\"
 			ConfigurationType="1"
 			CharacterSet="2"
 			>
@@ -185,8 +184,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				Description="Install the CreateDLL tool"
-				CommandLine="..\..\..\installCreateDLL.cmd $(IntDir) $(PlatformName)_MSVC2008.$(ConfigurationName) $(SolutionDir)bin\$(PlatformName)_MSVC2008.$(ConfigurationName)"
+				CommandLine=""
 			/>
 		</Configuration>
 	</Configurations>
@@ -223,10 +221,6 @@
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
 		</Filter>
-		<File
-			RelativePath="..\..\..\installCreateDLL.cmd"
-			>
-		</File>
 	</Files>
 	<Globals>
 	</Globals>
