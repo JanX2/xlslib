@@ -340,6 +340,10 @@ namespace xlslib_core
                 const formula_t *cond1 = NULL, const formula_t *cond2 = NULL,
                 const std::string& promptTitle = std::string(), const std::string& promptText = std::string(),
                 const std::string& errorTitle = std::string(), const std::string& errorText = std::string());
+        void validate(const range_t *crange, unsigned32_t options,
+                const formula_t *cond1 = NULL, const formula_t *cond2 = NULL,
+                const std::ustring& promptTitle = std::ustring(), const std::ustring& promptText = std::ustring(),
+                const std::ustring& errorTitle = std::ustring(), const std::ustring& errorText = std::ustring());
 
 		// define a cell (label, number, etc) - apply proper url (http://blah.blah), possible text mark too (minus the '#')
 		void hyperLink(const cell_t *cell, const std::string& url, const std::string& mark = std::string());

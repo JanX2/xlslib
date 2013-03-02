@@ -1213,6 +1213,25 @@ void worksheet::validate(const range_t *crange, unsigned32_t options,
     m_DataValidations.push_back(dv);
 }
 
+void worksheet::validate(const range_t *crange, unsigned32_t options,
+        const formula_t *cond1, const formula_t *cond2,
+        const std::ustring& promptTitle, const std::ustring& promptText,
+        const std::ustring& errorTitle, const std::ustring& errorText) {
+    struct DataValidation *dv = new DataValidation;
+    dv->first_row = crange->first_row;
+    dv->last_row = crange->last_row;
+    dv->first_col = crange->first_col;
+    dv->last_col = crange->last_col;
+    dv->cond1 = cond1;
+    dv->cond2 = cond2;
+    dv->options = options;
+    m_GlobalRecords.wide2str16(promptTitle, dv->prompt_title);
+    m_GlobalRecords.wide2str16(promptText, dv->prompt_text);
+    m_GlobalRecords.wide2str16(errorTitle, dv->error_title);
+    m_GlobalRecords.wide2str16(errorText, dv->error_text);
+    m_DataValidations.push_back(dv);
+}
+
 // define a cell (label, number, etc) - apply proper url (http://blah.blah), possible text mark too (minus the '#')
 void worksheet::hyperLink(const cell_t *cell, const std::string& url, const std::string& mark)
 {

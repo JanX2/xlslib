@@ -1077,17 +1077,29 @@ EXTERN_TYPE void xlsFormulaPushCellAreaReference(formula_t *formula, cell_t *upp
 EXTERN_TYPE void xlsFormulaPushFunction(formula_t *formula, expr_function_code_t func);
 EXTERN_TYPE void xlsFormulaPushFunctionV(formula_t *formula, expr_function_code_t func, size_t arg_count);
 EXTERN_TYPE void xlsFormulaPushText(formula_t *formula, const char *text);
+EXTERN_TYPE void xlsFormulaPushTextW(formula_t *formula, const unichar_t *text);
 EXTERN_TYPE void xlsFormulaPushCharacterArray(formula_t *formula, const char *text, size_t count);
+EXTERN_TYPE void xlsFormulaPushCharacterArrayW(formula_t *formula, const unichar_t *text, size_t count);
 EXTERN_TYPE void xlsFormulaPushTextArray(formula_t *formula, const char **text, size_t count);
+EXTERN_TYPE void xlsFormulaPushTextArrayW(formula_t *formula, const unichar_t **text, size_t count);
 
 EXTERN_TYPE cell_t *xlsWorksheetFormulaCell(worksheet *w, unsigned32_t row, unsigned32_t col, formula_t *stack, xf_t *pxformat);
 EXTERN_TYPE void xlsWorksheetValidateCell(worksheet *w, cell_t *cell, unsigned32_t options, 
         const formula_t *cond1, const formula_t *cond2, 
         const char *prompt_title, const char *prompt_text, 
         const char *error_title, const char *error_text);
+EXTERN_TYPE void xlsWorksheetValidateCellW(worksheet *w, cell_t *cell, unsigned32_t options, 
+        const formula_t *cond1, const formula_t *cond2, 
+        const unichar_t *prompt_title, const unichar_t *prompt_text, 
+        const unichar_t *error_title, const unichar_t *error_text);
 EXTERN_TYPE void xlsWorksheetValidateCellArea(worksheet *w, cell_t *upper_left_cell, cell_t *lower_right_cell, 
         unsigned32_t options, const formula_t *cond1, const formula_t *cond2, 
-        const char *prompt_title, const char *prompt_text, const char *error_title, const char *error_text);
+        const char *prompt_title, const char *prompt_text, 
+        const char *error_title, const char *error_text);
+EXTERN_TYPE void xlsWorksheetValidateCellAreaW(worksheet *w, cell_t *upper_left_cell, cell_t *lower_right_cell, 
+        unsigned32_t options, const formula_t *cond1, const formula_t *cond2, 
+        const unichar_t *prompt_title, const unichar_t *prompt_text, 
+        const unichar_t *error_title, const unichar_t *error_text);
 
 // define a cell (label, number, etc) - apply proper url (http://blah.blah), possible text mark too minus the '#' (mark can be NULL)
 EXTERN_TYPE void xlsWorksheetHyperLink(worksheet *w, cell_t *cell, const char *url, const char *mark);

@@ -51,8 +51,10 @@ namespace xlslib_core
         signed8_t PushFunction(expr_function_code_t func);
         signed8_t PushFunction(expr_function_code_t func, size_t argcount);
         signed8_t PushText(const std::string& v);
+        signed8_t PushText(const std::ustring& v);
         signed8_t PushText(const u16string& value);
         signed8_t PushTextArray(const std::vector<std::string>& vec);
+        signed8_t PushTextArray(const std::vector<std::ustring>& vec);
         signed8_t PushFloatingPointArray(const std::vector<double>& vec);
 
     protected:

@@ -315,11 +315,16 @@ xlsFormulaPushCellAreaReference(formula, c, c, CELL_RELATIVE_A1);
 xlsFormulaPushFunction(formula, FUNC_FLOOR_PRECISE);
 xlsFormulaPushFunctionV(formula, FUNC_FLOOR_PRECISE, 2);
 xlsFormulaPushText(formula, "foo");
+xlsFormulaPushTextW(formula, NULL);
 xlsFormulaPushCharacterArray(formula, "foo", sizeof("foo")-1);
+xlsFormulaPushCharacterArrayW(formula, L"foo", sizeof(L"foo")-2);
 xlsFormulaPushTextArray(formula, NULL, 0);
+xlsFormulaPushTextArrayW(formula, NULL, 0);
 
 xlsWorksheetValidateCell(s, c, 0, formula, NULL, "Title", "Text", "Error", "Text");
+xlsWorksheetValidateCellW(s, c, 0, formula, NULL, L"Title", L"Text", L"Error", L"Text");
 xlsWorksheetValidateCellArea(s, c, c, 0, formula, NULL, "Title", "Text", "Error", "Text");
+xlsWorksheetValidateCellAreaW(s, c, c, 0, formula, NULL, L"Title", L"Text", L"Error", L"Text");
 
 c = xlsWorksheetFormulaCell(s, row, col, formula, xf);
 

@@ -186,9 +186,22 @@ extern "C" {
                                                                     }
                                                                     formula->PushText(str); 
                                                                 }
+    void xlsFormulaPushCharacterArrayW(formula_t *formula, const unichar_t *text, size_t count) 
+                                                                { 
+                                                                    std::ustring str = L"";
+                                                                    for (size_t i=0; i<count; i++) {
+                                                                        str += text[i];
+                                                                    }
+                                                                    formula->PushText(str); 
+                                                                }
     void xlsFormulaPushText(formula_t *formula, const char *text) 
                                                                 { 
                                                                     std::string str = text;
+                                                                    formula->PushText(str); 
+                                                                }
+    void xlsFormulaPushTextW(formula_t *formula, const unichar_t *text) 
+                                                                { 
+                                                                    std::ustring str = text;
                                                                     formula->PushText(str); 
                                                                 }
     void xlsFormulaPushTextArray(formula_t *formula, const char **text, size_t count) 
@@ -196,6 +209,15 @@ extern "C" {
                                                                     std::vector<std::string> vec;
                                                                     for (size_t i=0; i<count; i++) {
                                                                         std::string str = text[i];
+                                                                        vec.push_back(str);
+                                                                    }
+                                                                    formula->PushTextArray(vec); 
+                                                                }
+    void xlsFormulaPushTextArrayW(formula_t *formula, const unichar_t **text, size_t count) 
+                                                                { 
+                                                                    std::vector<std::ustring> vec;
+                                                                    for (size_t i=0; i<count; i++) {
+                                                                        std::ustring str = text[i];
                                                                         vec.push_back(str);
                                                                     }
                                                                     formula->PushTextArray(vec); 
@@ -223,6 +245,24 @@ extern "C" {
                                                                            sPromptTitle, sPromptText, sErrorTitle, sErrorText);
                                                                    delete rg;
                                                                }
+    void xlsWorksheetValidateCellW(worksheet *w, cell_t *cell, unsigned32_t options, 
+            const formula_t *cond1, const formula_t *cond2,
+            const unichar_t *prompt_title, const unichar_t *prompt_text,
+            const unichar_t *error_title, const unichar_t *error_text)   
+                                                               {
+                                                                   range_t *rg = new range_t;
+                                                                   rg->first_row = cell->GetRow();
+                                                                   rg->last_row = cell->GetRow();
+                                                                   rg->first_col = cell->GetCol();
+                                                                   rg->last_col = cell->GetCol();
+                                                                   std::ustring sPromptTitle = prompt_title ? prompt_title : L"";
+                                                                   std::ustring sPromptText = prompt_text ? prompt_text : L"";
+                                                                   std::ustring sErrorTitle = error_title ? error_title : L"";
+                                                                   std::ustring sErrorText = error_text ? error_text : L"";
+                                                                   w->validate(rg, options, cond1, cond2,
+                                                                           sPromptTitle, sPromptText, sErrorTitle, sErrorText);
+                                                                   delete rg;
+                                                               }
     void xlsWorksheetValidateCellArea(worksheet *w, cell_t *upper_left_cell, 
             cell_t *lower_right_cell, unsigned32_t options, 
             const formula_t *cond1, const formula_t *cond2,
@@ -238,6 +278,25 @@ extern "C" {
                                                                    std::string sPromptText = prompt_text ? prompt_text : "";
                                                                    std::string sErrorTitle = error_title ? error_title : "";
                                                                    std::string sErrorText = error_text ? error_text : "";
+                                                                   w->validate(rg, options, cond1, cond2,
+                                                                           sPromptTitle, sPromptText, sErrorTitle, sErrorText);
+                                                                   delete rg;
+                                                               }
+    void xlsWorksheetValidateCellAreaW(worksheet *w, cell_t *upper_left_cell, 
+            cell_t *lower_right_cell, unsigned32_t options, 
+            const formula_t *cond1, const formula_t *cond2,
+            const unichar_t *prompt_title, const unichar_t *prompt_text,
+            const unichar_t *error_title, const unichar_t *error_text)   
+                                                               {
+                                                                   range_t *rg = new range_t;
+                                                                   rg->first_row = upper_left_cell->GetRow();
+                                                                   rg->last_row = lower_right_cell->GetRow();
+                                                                   rg->first_col = upper_left_cell->GetCol();
+                                                                   rg->last_col = lower_right_cell->GetCol();
+                                                                   std::ustring sPromptTitle = prompt_title ? prompt_title : L"";
+                                                                   std::ustring sPromptText = prompt_text ? prompt_text : L"";
+                                                                   std::ustring sErrorTitle = error_title ? error_title : L"";
+                                                                   std::ustring sErrorText = error_text ? error_text : L"";
                                                                    w->validate(rg, options, cond1, cond2,
                                                                            sPromptTitle, sPromptText, sErrorTitle, sErrorText);
                                                                    delete rg;

@@ -745,6 +745,13 @@ signed8_t formula_t::PushText(const std::string& v) {
     return PushText(value);
 }
 
+signed8_t formula_t::PushText(const std::ustring& v) {
+    u16string value;
+	m_GlobalRecords.wide2str16(v, value);
+
+    return PushText(value);
+}
+
 signed8_t formula_t::PushText(const u16string& value) {
 	signed8_t errcode = NO_ERRORS;
 
@@ -766,6 +773,23 @@ signed8_t formula_t::PushTextArray(const std::vector<std::string>& vec) {
         std::string str = vec[i];
         u16string value;
         m_GlobalRecords.char2str16(str, value);
+
+        errcode |= aux_data->AddUnicodeString(value, CUnit::LEN1_FLAGS_UNICODE);
+    }
+    return errcode;
+}
+
+signed8_t formula_t::PushTextArray(const std::vector<std::ustring>& vec) {
+	signed8_t errcode = NO_ERRORS;
+    errcode |= main_data->AddValue8(OP_ARRAYA);
+    errcode |= main_data->AddFixedDataArray(0, 7);
+    errcode |= aux_data->AddValue8(1);
+    errcode |= aux_data->AddValue16((unsigned16_t)vec.size());
+    for(unsigned int i=0; i<vec.size(); i++) {
+        errcode |= aux_data->AddValue8(0x01);
+        std::ustring str = vec[i];
+        u16string value;
+        m_GlobalRecords.wide2str16(str, value);
 
         errcode |= aux_data->AddUnicodeString(value, CUnit::LEN1_FLAGS_UNICODE);
     }
