@@ -13,8 +13,6 @@ namespace xlslib_core
 	class CDataStorage;
     class CUnit;
     class estimated_formula_result_t;
-	class cell_deref_node_t;
-	class cellarea_deref_node_t;
 
 	/*
 	 *  @return a bit for each number of arguments supported by this function.
@@ -31,8 +29,8 @@ namespace xlslib_core
 
     class formula_t
     {
-		friend cell_deref_node_t;
-		friend cellarea_deref_node_t;
+		friend class cell_deref_node_t;
+		friend class cellarea_deref_node_t;
 
     public:
         formula_t(CGlobalRecords& glbl, worksheet* ws);
