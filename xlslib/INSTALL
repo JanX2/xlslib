@@ -10,7 +10,7 @@ General directions
 ==================
 
 After installation, both static and shared xlsLib libraries will be 
-placed in your sistem (named libxls) at /usr/local/lib (LIBDIR). You can 
+placed in your system (named libxls) at /usr/local/lib (LIBDIR). You can 
 link any C++ program to them by including headers found in 
 /usr/local/include/xlslib and linking against the library  
 by doing at least one of the following:
