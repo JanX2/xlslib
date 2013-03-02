@@ -18473,7 +18473,7 @@ $as_echo "#define HAVE_COMMON_XLCONFIG_H 1" >>confdefs.h
 
 ###########################################################
 
-ac_config_files="$ac_config_files Makefile src/Makefile targets/Makefile targets/test/Makefile build/msvc2005/ac-config.win32.h build/msvc2008/ac-config.win32.h build/msvc2010/ac-config.win32.h build/msvc2012/ac-config.win32.h build/RadStudio/ac-config.win32.h build/BDS/ac-config.win32.h build/CodeBlocks/ac-config.win32.h"
+ac_config_files="$ac_config_files Makefile src/Makefile targets/Makefile targets/test/Makefile build/msvc2005/ac-config.win32.h build/msvc2008/ac-config.win32.h build/msvc2010/ac-config.win32.h build/msvc2012/ac-config.win32.h build/RadStudio/ac-config.win32.h build/BDS/ac-config.win32.h build/CodeBlocks/ac-config.linux32.h"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -19585,7 +19585,7 @@ do
     "build/msvc2012/ac-config.win32.h") CONFIG_FILES="$CONFIG_FILES build/msvc2012/ac-config.win32.h" ;;
     "build/RadStudio/ac-config.win32.h") CONFIG_FILES="$CONFIG_FILES build/RadStudio/ac-config.win32.h" ;;
     "build/BDS/ac-config.win32.h") CONFIG_FILES="$CONFIG_FILES build/BDS/ac-config.win32.h" ;;
-    "build/CodeBlocks/ac-config.win32.h") CONFIG_FILES="$CONFIG_FILES build/CodeBlocks/ac-config.win32.h" ;;
+    "build/CodeBlocks/ac-config.linux32.h") CONFIG_FILES="$CONFIG_FILES build/CodeBlocks/ac-config.linux32.h" ;;
 
   *) as_fn_error $? "invalid argument: \`$ac_config_target'" "$LINENO" 5;;
   esac
