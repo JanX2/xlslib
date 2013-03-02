@@ -252,6 +252,8 @@ unsigned8_t i8 = 0;
 boldness_option_t fntboldness = BOLDNESS_HALF;
 underline_option_t fntunderline = UNDERLINE_SINGLE;
 script_option_t fntscript = SCRIPT_SUPER;
+formula_t *formula = NULL;
+double num_array[2] = { 0.0, 1.0 };
 
 
 
@@ -298,7 +300,28 @@ c = xlsWorksheetBoolean(s, row, col, FALSE, xf);
 c = xlsWorksheetError(s, row, col, XLERR_VALUE, xf);
 c = xlsWorksheetNote(s, row, col, name, name, xf);
 c = xlsWorksheetNoteW(s, row, col, uname, uname, xf);
-//c = xlsWorksheetFormula(s, row, col, expr, xf);
+
+formula = xlsWorksheetFormula(s);
+
+xlsFormulaPushBoolean(formula, true);
+xlsFormulaPushMissingArgument(formula);
+xlsFormulaPushError(formula, 0);
+xlsFormulaPushNumberInt(formula, 42);
+xlsFormulaPushNumberDbl(formula, 42.0);
+xlsFormulaPushNumberArray(formula, num_array, sizeof(num_array)/sizeof(num_array[0]));
+xlsFormulaPushOperator(formula, OP_ADD);
+xlsFormulaPushCellReference(formula, c, CELL_RELATIVE_A1);
+xlsFormulaPushCellAreaReference(formula, c, c, CELL_RELATIVE_A1);
+xlsFormulaPushFunction(formula, FUNC_FLOOR_PRECISE);
+xlsFormulaPushFunctionV(formula, FUNC_FLOOR_PRECISE, 2);
+xlsFormulaPushText(formula, "foo");
+xlsFormulaPushCharacterArray(formula, "foo", sizeof("foo")-1);
+xlsFormulaPushTextArray(formula, NULL, 0);
+
+xlsWorksheetValidateCell(s, c, 0, formula, NULL, "Title", "Text", "Error", "Text");
+xlsWorksheetValidateCellArea(s, c, c, 0, formula, NULL, "Title", "Text", "Error", "Text");
+
+c = xlsWorksheetFormulaCell(s, row, col, formula, xf);
 
 // cell: xfi
 xlsCellFont(c, f);

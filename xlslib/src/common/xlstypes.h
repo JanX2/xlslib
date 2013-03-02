@@ -42,8 +42,7 @@
 
 // Setup our typedefs now - would like to get them from systype.h
 // if we have this one we will have all the others too
-#ifdef uint8_t				
-
+#if defined(uint8_t) || defined(HAVE_STDINT_H)
 typedef uint8_t				unsigned8_t;
 typedef uint16_t			unsigned16_t;
 typedef uint32_t			unsigned32_t;
@@ -90,6 +89,9 @@ typedef unsigned long long unsigned64_t;
 
 #if defined(__cplusplus)
 
+//namespace xlslib_strings - see GH xlslib - nice idea, lots of work
+//{
+
 // Windows
 #if defined(_MSC_VER) && defined(WIN32)		
 
@@ -130,6 +132,7 @@ typedef unsigned16_t xchar16_t;
 typedef std::basic_string<unsigned16_t> u16string;
 #endif
 
+//}
 // defined(_MSC_VER) && defined(WIN32)
 #endif	
 

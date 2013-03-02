@@ -43,7 +43,7 @@
 
 // Global includes
 #include <stdio.h>
-#ifdef HAVE_STDINT_H	// DONT_HAVE_STDINT_H
+#ifdef HAVE_STDINT_H
 #include <stdint.h>
 #endif
 #ifdef HAVE_INTTYPES_H
@@ -55,7 +55,12 @@
 #endif
 #ifdef HAVE_STRING_H
 #include <string.h>	
-// DFH 10-2-08
+#endif
+#ifdef HAVE_MALLOC_H
+#include <malloc.h>	
+#endif
+#ifdef HAVE_MEMORY_H
+#include <memory.h>	
 #endif
 #if defined(__cplusplus)					// ALL C++ users
 #include <iostream>

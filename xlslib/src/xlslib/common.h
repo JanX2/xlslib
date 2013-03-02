@@ -31,7 +31,7 @@
 #ifndef XLSLIB_COMMON_H
 #define XLSLIB_COMMON_H
 
-#ifdef HAVE_ICONV
+#ifdef HAVE_WORKING_ICONV
 #include <iconv.h>
 
 /* part of fix for PR #3039001 */
@@ -44,7 +44,7 @@
 #define UCS_2_INTERNAL "UCS-2"
 #endif
 #endif
-/* HAVE_ICONV */
+/* HAVE_WORKING_ICONV */
 
 // #include "common/xls_pshpack2.h"
 

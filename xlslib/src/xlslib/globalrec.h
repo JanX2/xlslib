@@ -89,7 +89,7 @@ namespace xlslib_core
 		~CGlobalRecords();
 //      static		CGlobalRecords& Instance();
 //      static void	Clean();
-#if HAVE_ICONV
+#if HAVE_WORKING_ICONV
 		void		  SetIconvCode(const std::string& code){iconv_code=code; }
 #endif
 		void		  AddBoundingSheet(unsigned32_t streampos,
@@ -153,7 +153,7 @@ namespace xlslib_core
 
 		xf_t *defaultXF;         // 15th xfFormat is the default cell format
 
-#ifdef HAVE_ICONV
+#ifdef HAVE_WORKING_ICONV
 		std::string	iconv_code;
 #endif
 		// State Machine variable

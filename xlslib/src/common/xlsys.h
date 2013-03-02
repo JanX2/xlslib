@@ -31,29 +31,7 @@
 #ifndef XLSLIB_CONFIG_H
 #define XLSLIB_CONFIG_H
 
-#include "xlconfig.h"
-
-#ifdef HAVE_CONFIG_H
-
-#define CFG_TRUE          1
-#define CFG_FALSE         0
-
-#define ALLOCATOR_STL     0
-#define ALLOCATOR_BTI     1
-
-
-#if defined(USE_BTI_ALLOC)
-#   define ALLOCATOR_DFLT ALLOCATOR_BTI
-#elif defined(ALLOC_BTI)
-#   define ALLOCATOR_DFLT ALLOCATOR_STL
-#else
-#   define ALLOCATOR_DFLT ALLOCATOR_STL
-#endif
-
-
-#else // HAVE_CONFIG_H
-
-#if defined(_MSC_VER) && defined(WIN32)
+#if defined(_MSC_VER)
 
 #if (_MSC_VER >= 1400)
 
@@ -78,7 +56,7 @@
 
 #endif
 
-#endif
+#endif // WANT_MICROSOFT_MEMDBG
 
 #else
 
@@ -91,15 +69,58 @@
 
 #include "ac-config.win32.h"
 
-#endif // defined(_MSC_VER) && defined(WIN32)
+#elif defined(__BCPLUSPLUS__)
 
+#  include "ac-config.win32.h"
+// I am assuming this header file is created and include automatically by MSVC.
+// Other compilers (I.e. BC++ ) don't have this, so I simply copied the file
+// from the MSC project to the RadStudio project and included it. RLN 111208
 
+#elif defined(__CODEBLOCKS__)  // This was __linux__ but added the define to the codeblocks config files
 
-#define CFG_TRUE          1
-#define CFG_FALSE         0
+#  include "ac-config.linux32.h"
+// I have been copying these ac-config files
+// for each target compiler under the respective build subdirectory
+// (i.e. xlslib/build/CodeBlocks and modified as needed.
+// The build subdirectory is then added to the include path list.
+// RLN 111231
+
+// Linux/UNIX platforms MUST use the configure script to set up the correct xlconfig.h;
+// The 'fixed config header file' cop-outs are only meant for platforms which do not provide bash / sh.
+// (In practice, this boils down to native Win32/64 compilers; MingW32/Cygwin-based ones should run ./configure.)
+
+#else // autoconf did the job:
+
+#include "xlconfig.h"
+
+#if !defined(__FRAMEWORK__)				// MAC Framework
+#if defined(HAVE_ICONV)
+#define HAVE_WORKING_ICONV			1
+#endif
+#endif
+
+#endif
+
+//--------------------------------------------------------------------------
+
 
 #define ALLOCATOR_STL     0
 #define ALLOCATOR_BTI     1
+
+
+#ifdef HAVE_COMMON_XLCONFIG_H
+
+#if defined(USE_BTI_ALLOC)
+#   define ALLOCATOR_DFLT ALLOCATOR_BTI
+#elif defined(ALLOC_BTI)
+#   define ALLOCATOR_DFLT ALLOCATOR_STL
+#else
+#   define ALLOCATOR_DFLT ALLOCATOR_STL
+#endif
+
+
+#else // HAVE_COMMON_XLCONFIG_H
+
 
 #if defined(ALLOC_STL)
 #   define ALLOCATOR_DFLT ALLOCATOR_STL
@@ -110,23 +131,7 @@
 #endif
 
 
-#endif
+#endif // HAVE_COMMON_XLCONFIG_H
 
-#ifdef __BCPLUSPLUS__
-#  include "ac-config.win32.h"
-// I am assuming this header file is created and include automatically by MSVC.
-// Other compilers (I.e. BC++ ) don't have this, so I simply copied the file
-// from the MSC project to the RadStudio project and included it. RLN 111208
-#endif
-
-// This was __linux__ but added the define to the codeblocks config files
-#ifdef __CODEBLOCKS__
-#  include "ac-config.linux32.h"
-// I have been copying these ac-config files
-// for each target compiler under the respective build subdirectory
-// (i.e. xlslib/build/CodeBlocks and modified as needed.
-// The build subdirectory is then added to the include path list.
-// RLN 111231
-#endif
 
 #endif

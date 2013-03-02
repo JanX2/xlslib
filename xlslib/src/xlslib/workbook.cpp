@@ -45,7 +45,7 @@
 
 #include "oledoc/oledoc.h"
 
-#ifdef HAVE_ICONV
+#ifdef HAVE_WORKING_ICONV
 #include <errno.h>
 #endif
 
@@ -79,7 +79,7 @@ workbook::workbook() :
 	m_offset(0),
 	m_current_sheet(0)
 {
-#if HAVE_ICONV
+#if HAVE_WORKING_ICONV
 	m_GlobalRecords.SetIconvCode("wchar_t");
 #endif
 }
@@ -94,7 +94,7 @@ workbook::~workbook()
 	//  CGlobalRecords::Clean();
 }
 
-#ifdef HAVE_ICONV
+#ifdef HAVE_WORKING_ICONV
 int workbook::iconvInType(const char *inType)
 {
 	int	ret;

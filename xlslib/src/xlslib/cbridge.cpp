@@ -84,7 +84,7 @@ extern "C" {
 	xf_t *xlsWorkbookxFormatFont(workbook *w, font_t *font)		{ return w->xformat(font); }
 
 
-#ifdef HAVE_ICONV
+#ifdef HAVE_WORKING_ICONV
 	int xlsWorkbookIconvInType(workbook *w, const char *inType)	{ return w->iconvInType(inType); }
 #endif
 	unsigned8_t xlsWorkbookProperty(workbook *w, property_t prop, const char *s)

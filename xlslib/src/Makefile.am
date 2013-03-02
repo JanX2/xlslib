@@ -4,10 +4,10 @@
 # SEE IF WE REALLY NEED IT THOUGH
 # AM_CXXFLAGS = -O2
 
-AM_CPPFLAGS        =  \
--I$(top_srcdir)/src/data   \
--I$(top_srcdir)/src/oledoc \
--I$(top_srcdir)/src/common \
+AM_CPPFLAGS        =          \
+-I$(top_srcdir)/src/data      \
+-I$(top_srcdir)/src/oledoc    \
+-I$(top_srcdir)/src/common    \
 -I$(top_srcdir)/src/xlslib
 
 lib_LTLIBRARIES         = libxls.la
@@ -108,7 +108,7 @@ xlslib/summinfo.h             \
 xlslib/unit.h                 \
 xlslib/workbook.h
 
-#clean-local:
-#    -rm -rf .deps
-
+distclean-local:
+	-rm -rf .deps/
+	-rm -rf .libs/
 
