@@ -95,6 +95,13 @@
 		<Unit filename="../../../src/xlslib/formtags.h" />
 		<Unit filename="../../../src/xlslib/formula.cpp" />
 		<Unit filename="../../../src/xlslib/formula.h" />
+		<Unit filename="../../../src/xlslib/formula_cell.cpp" />
+		<Unit filename="../../../src/xlslib/formula_cell.h" />
+		<Unit filename="../../../src/xlslib/formula_const.h" />
+		<Unit filename="../../../src/xlslib/formula_estimate.cpp" />
+		<Unit filename="../../../src/xlslib/formula_estimate.h" />
+		<Unit filename="../../../src/xlslib/formula_expr.cpp" />
+		<Unit filename="../../../src/xlslib/formula_expr.h" />
 		<Unit filename="../../../src/xlslib/globalrec.cpp" />
 		<Unit filename="../../../src/xlslib/globalrec.h" />
 		<Unit filename="../../../src/xlslib/index.cpp" />

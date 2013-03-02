@@ -192,6 +192,9 @@
         <FILE FILENAME="..\..\..\src\xlslib\HPSF.cpp" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="HPSF" FORMNAME="" DESIGNCLASS=""/>
         <FILE FILENAME="..\..\..\src\xlslib\globalrec.cpp" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="globalrec" FORMNAME="" DESIGNCLASS=""/>
         <FILE FILENAME="..\..\..\src\xlslib\formula.cpp" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="formula" FORMNAME="" DESIGNCLASS=""/>
+        <FILE FILENAME="..\..\..\src\xlslib\formula_cell.cpp" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="formula_cell" FORMNAME="" DESIGNCLASS=""/>
+        <FILE FILENAME="..\..\..\src\xlslib\formula_estimate.cpp" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="formula_estimate" FORMNAME="" DESIGNCLASS=""/>
+        <FILE FILENAME="..\..\..\src\xlslib\formula_expr.cpp" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="formula_expr" FORMNAME="" DESIGNCLASS=""/>
         <FILE FILENAME="..\..\..\src\xlslib\format.cpp" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="format" FORMNAME="" DESIGNCLASS=""/>
         <FILE FILENAME="..\..\..\src\xlslib\font.cpp" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="font" FORMNAME="" DESIGNCLASS=""/>
         <FILE FILENAME="..\..\..\src\xlslib\extformat.cpp" CONTAINERID="CCompiler" LOCALCOMMAND="" UNITNAME="extformat" FORMNAME="" DESIGNCLASS=""/>

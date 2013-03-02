@@ -669,6 +669,18 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\xlslib\formula_cell.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\xlslib\formula_estimate.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\xlslib\formula_expr.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\xlslib\globalrec.cpp"
 				>
 			</File>
@@ -828,6 +840,22 @@
 			</File>
 			<File
 				RelativePath="..\..\src\xlslib\formula.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\xlslib\formula_cell.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\xlslib\formula_estimate.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\xlslib\formula_expr.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\xlslib\formula_const.h"
 				>
 			</File>
 			<File

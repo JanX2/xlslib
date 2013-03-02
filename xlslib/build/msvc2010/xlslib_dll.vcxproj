@@ -1,0 +1,533 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Itanium">
+      <Configuration>Debug</Configuration>
+      <Platform>Itanium</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Itanium">
+      <Configuration>Release</Configuration>
+      <Platform>Itanium</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{4A077629-8590-434C-9486-0D069DF341AF}</ProjectGuid>
+    <RootNamespace>xlslib</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Itanium'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Itanium'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Itanium'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Itanium'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)bin/$(Platform)_MSVC2010.$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)obj/$(ProjectName)_$(Platform)_MSVC2010.$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)bin/$(Platform)_MSVC2010.$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)obj/$(ProjectName)_$(Platform)_MSVC2010.$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Itanium'">$(SolutionDir)bin/$(Platform)_MSVC2010.$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Itanium'">$(SolutionDir)obj/$(ProjectName)_$(Platform)_MSVC2010.$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Itanium'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)bin/$(Platform)_MSVC2010.$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)obj/$(ProjectName)_$(Platform)_MSVC2010.$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)bin/$(Platform)_MSVC2010.$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)obj/$(ProjectName)_$(Platform)_MSVC2010.$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Itanium'">$(SolutionDir)bin/$(Platform)_MSVC2010.$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Itanium'">$(SolutionDir)obj/$(ProjectName)_$(Platform)_MSVC2010.$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Itanium'">false</LinkIncremental>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Itanium'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Itanium'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Itanium'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Itanium'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Itanium'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Itanium'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <AdditionalIncludeDirectories>..\..\..\xlslib\src;..\..\..\xlslib\build\msvc2010;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DLL;XP_WIN;WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <MinimalRebuild>false</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions</EnableEnhancedInstructionSet>
+      <FloatingPointExceptions>false</FloatingPointExceptions>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <BrowseInformation>true</BrowseInformation>
+      <WarningLevel>Level4</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4267;4244;4127;4100;4706;4018;4389;4351;4103;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(ProjectName).dll</OutputFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateMapFile>true</GenerateMapFile>
+      <MapExports>true</MapExports>
+      <SubSystem>Console</SubSystem>
+      <OptimizeReferences>false</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <TargetMachine>MachineX86</TargetMachine>
+      <Profile>true</Profile>
+      <MapFileName>
+      </MapFileName>
+    </Link>
+    <PostBuildEvent>
+      <Message>process $(TargetPath) for proper DLL exports of all C++ elements</Message>
+      <Command>echo $(SolutionDir)bin/Win32_MSVC2010.$(Configuration)\createDLL -M$(Platform) -n$(OutDir)$(ProjectName).map -l$(IntDir) -i$(OutDir)$(ProjectName).lib -W$(SolutionDir)obj/$(ProjectName)_$(Platform)_MSVC2010.$(Configuration)\
+$(SolutionDir)bin/Win32_MSVC2010.$(Configuration)\createDLL -M$(Platform) -n$(OutDir)$(ProjectName).map -l$(IntDir) -i$(OutDir)$(ProjectName).lib -W$(SolutionDir)obj/$(ProjectName)_$(Platform)_MSVC2010.$(Configuration)\
+</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <AdditionalIncludeDirectories>..\..\..\xlslib\src;..\..\..\xlslib\build\msvc2010;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN64;_WIN64;XP_WIN;WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <MinimalRebuild>false</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions</EnableEnhancedInstructionSet>
+      <FloatingPointExceptions>false</FloatingPointExceptions>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <BrowseInformation>true</BrowseInformation>
+      <WarningLevel>Level4</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4267;4244;4127;4100;4706;4018;4389;4351;4103;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(ProjectName).dll</OutputFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateMapFile>true</GenerateMapFile>
+      <MapExports>true</MapExports>
+      <SubSystem>Console</SubSystem>
+      <OptimizeReferences>false</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <TargetMachine>MachineX64</TargetMachine>
+      <Profile>true</Profile>
+      <MapFileName>
+      </MapFileName>
+    </Link>
+    <PostBuildEvent>
+      <Message>process $(TargetPath) for proper DLL exports of all C++ elements</Message>
+      <Command>echo $(SolutionDir)bin/Win32_MSVC2010.$(Configuration)\createDLL -M$(Platform) -n$(OutDir)$(ProjectName).map -l$(IntDir) -i$(OutDir)$(ProjectName).lib -W$(SolutionDir)obj/$(ProjectName)_$(Platform)_MSVC2010.$(Configuration)\
+$(SolutionDir)bin/Win32_MSVC2010.$(Configuration)\createDLL -M$(Platform) -n$(OutDir)$(ProjectName).map -l$(IntDir) -i$(OutDir)$(ProjectName).lib -W$(SolutionDir)obj/$(ProjectName)_$(Platform)_MSVC2010.$(Configuration)\
+</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Itanium'">
+    <Midl>
+      <TargetEnvironment>Itanium</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <AdditionalIncludeDirectories>..\..\..\xlslib\src;..\..\..\xlslib\build\msvc2010;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN64;_WIN64;XP_WIN;WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <MinimalRebuild>false</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions</EnableEnhancedInstructionSet>
+      <FloatingPointExceptions>false</FloatingPointExceptions>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <BrowseInformation>true</BrowseInformation>
+      <WarningLevel>Level4</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4267;4244;4127;4100;4706;4018;4389;4351;4103;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(ProjectName).dll</OutputFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateMapFile>true</GenerateMapFile>
+      <MapExports>true</MapExports>
+      <SubSystem>Console</SubSystem>
+      <OptimizeReferences>false</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <TargetMachine>MachineIA64</TargetMachine>
+      <Profile>true</Profile>
+      <MapFileName>
+      </MapFileName>
+    </Link>
+    <PostBuildEvent>
+      <Message>process $(TargetPath) for proper DLL exports of all C++ elements</Message>
+      <Command>echo $(SolutionDir)bin/Win32_MSVC2010.$(Configuration)\createDLL -M$(Platform) -n$(OutDir)$(ProjectName).map -l$(IntDir) -i$(OutDir)$(ProjectName).lib -W$(SolutionDir)obj/$(ProjectName)_$(Platform)_MSVC2010.$(Configuration)\
+$(SolutionDir)bin/Win32_MSVC2010.$(Configuration)\createDLL -M$(Platform) -n$(OutDir)$(ProjectName).map -l$(IntDir) -i$(OutDir)$(ProjectName).lib -W$(SolutionDir)obj/$(ProjectName)_$(Platform)_MSVC2010.$(Configuration)\
+</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <Optimization>Full</Optimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <OmitFramePointers>false</OmitFramePointers>
+      <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+      <AdditionalIncludeDirectories>..\..\..\xlslib\src;..\..\..\xlslib\build\msvc2010;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>STATIC_JS_API;XP_WIN;WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions</EnableEnhancedInstructionSet>
+      <FloatingPointExceptions>false</FloatingPointExceptions>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <BrowseInformation>true</BrowseInformation>
+      <WarningLevel>Level4</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4267;4244;4127;4100;4706;4018;4389;4351;4103;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(ProjectName).dll</OutputFile>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <GenerateMapFile>true</GenerateMapFile>
+      <MapExports>true</MapExports>
+      <SubSystem>Console</SubSystem>
+      <OptimizeReferences>false</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <TargetMachine>MachineX86</TargetMachine>
+      <MapFileName>
+      </MapFileName>
+    </Link>
+    <PostBuildEvent>
+      <Message>process $(TargetPath) for proper DLL exports of all C++ elements</Message>
+      <Command>echo $(SolutionDir)bin/Win32_MSVC2010.$(Configuration)\createDLL -M$(Platform) -n$(OutDir)$(ProjectName).map -l$(IntDir) -i$(OutDir)$(ProjectName).lib -W$(SolutionDir)obj/$(ProjectName)_$(Platform)_MSVC2010.$(Configuration)\
+$(SolutionDir)bin/Win32_MSVC2010.$(Configuration)\createDLL -M$(Platform) -n$(OutDir)$(ProjectName).map -l$(IntDir) -i$(OutDir)$(ProjectName).lib -W$(SolutionDir)obj/$(ProjectName)_$(Platform)_MSVC2010.$(Configuration)\
+</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Full</Optimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <OmitFramePointers>false</OmitFramePointers>
+      <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+      <AdditionalIncludeDirectories>..\..\..\xlslib\src;..\..\..\xlslib\build\msvc2010;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN64;_WIN64;XP_WIN;WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions</EnableEnhancedInstructionSet>
+      <FloatingPointExceptions>false</FloatingPointExceptions>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <BrowseInformation>true</BrowseInformation>
+      <WarningLevel>Level4</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4267;4244;4127;4100;4706;4018;4389;4351;4103;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(ProjectName).dll</OutputFile>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <GenerateMapFile>true</GenerateMapFile>
+      <MapExports>true</MapExports>
+      <SubSystem>Console</SubSystem>
+      <OptimizeReferences>false</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <TargetMachine>MachineX64</TargetMachine>
+      <MapFileName>
+      </MapFileName>
+    </Link>
+    <PostBuildEvent>
+      <Message>process $(TargetPath) for proper DLL exports of all C++ elements</Message>
+      <Command>echo $(SolutionDir)bin/Win32_MSVC2010.$(Configuration)\createDLL -M$(Platform) -n$(OutDir)$(ProjectName).map -l$(IntDir) -i$(OutDir)$(ProjectName).lib -W$(SolutionDir)obj/$(ProjectName)_$(Platform)_MSVC2010.$(Configuration)\
+$(SolutionDir)bin/Win32_MSVC2010.$(Configuration)\createDLL -M$(Platform) -n$(OutDir)$(ProjectName).map -l$(IntDir) -i$(OutDir)$(ProjectName).lib -W$(SolutionDir)obj/$(ProjectName)_$(Platform)_MSVC2010.$(Configuration)\
+</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Itanium'">
+    <Midl>
+      <TargetEnvironment>Itanium</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Full</Optimization>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <OmitFramePointers>false</OmitFramePointers>
+      <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+      <AdditionalIncludeDirectories>..\..\..\xlslib\src;..\..\..\xlslib\build\msvc2010;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN64;_WIN64;XP_WIN;WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions</EnableEnhancedInstructionSet>
+      <FloatingPointExceptions>false</FloatingPointExceptions>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <BrowseInformation>true</BrowseInformation>
+      <WarningLevel>Level4</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4267;4244;4127;4100;4706;4018;4389;4351;4103;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(ProjectName).dll</OutputFile>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <GenerateMapFile>true</GenerateMapFile>
+      <MapExports>true</MapExports>
+      <SubSystem>Console</SubSystem>
+      <OptimizeReferences>false</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <TargetMachine>MachineIA64</TargetMachine>
+      <MapFileName>
+      </MapFileName>
+    </Link>
+    <PostBuildEvent>
+      <Message>process $(TargetPath) for proper DLL exports of all C++ elements</Message>
+      <Command>echo $(SolutionDir)bin/Win32_MSVC2010.$(Configuration)\createDLL -M$(Platform) -n$(OutDir)$(ProjectName).map -l$(IntDir) -i$(OutDir)$(ProjectName).lib -W$(SolutionDir)obj/$(ProjectName)_$(Platform)_MSVC2010.$(Configuration)\
+$(SolutionDir)bin/Win32_MSVC2010.$(Configuration)\createDLL -M$(Platform) -n$(OutDir)$(ProjectName).map -l$(IntDir) -i$(OutDir)$(ProjectName).lib -W$(SolutionDir)obj/$(ProjectName)_$(Platform)_MSVC2010.$(Configuration)\
+</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\xlslib\assert_assist.cpp" />
+    <ClCompile Include="..\..\src\xlslib\blank.cpp" />
+    <ClCompile Include="..\..\src\xlslib\boolean.cpp" />
+    <ClCompile Include="..\..\src\xlslib\cbridge.cpp" />
+    <ClCompile Include="..\..\src\xlslib\cell.cpp" />
+    <ClCompile Include="..\..\src\xlslib\colinfo.cpp" />
+    <ClCompile Include="..\..\src\xlslib\colors.cpp" />
+    <ClCompile Include="..\..\src\xlslib\continue.cpp" />
+    <ClCompile Include="..\..\src\xlslib\datast.cpp" />
+    <ClCompile Include="..\..\src\xlslib\docsumminfo.cpp" />
+    <ClCompile Include="..\..\src\xlslib\err.cpp" />
+    <ClCompile Include="..\..\src\xlslib\extformat.cpp" />
+    <ClCompile Include="..\..\src\xlslib\font.cpp" />
+    <ClCompile Include="..\..\src\xlslib\format.cpp" />
+    <ClCompile Include="..\..\src\xlslib\formula.cpp" />
+    <ClCompile Include="..\..\src\xlslib\formula_cell.cpp" />
+    <ClCompile Include="..\..\src\xlslib\formula_estimate.cpp" />
+    <ClCompile Include="..\..\src\xlslib\formula_expr.cpp" />	
+    <ClCompile Include="..\..\src\xlslib\globalrec.cpp" />
+    <ClCompile Include="..\..\src\xlslib\HPSF.cpp" />
+    <ClCompile Include="..\..\src\xlslib\index.cpp" />
+    <ClCompile Include="..\..\src\xlslib\label.cpp" />
+    <ClCompile Include="..\..\src\xlslib\merged.cpp" />
+    <ClCompile Include="..\..\src\xlslib\note.cpp" />
+    <ClCompile Include="..\..\src\xlslib\number.cpp" />
+    <ClCompile Include="..\..\src\xlslib\range.cpp" />
+    <ClCompile Include="..\..\src\xlslib\recdef.cpp" />
+    <ClCompile Include="..\..\src\xlslib\record.cpp" />
+    <ClCompile Include="..\..\src\xlslib\row.cpp" />
+    <ClCompile Include="..\..\src\xlslib\sheetrec.cpp" />
+    <ClCompile Include="..\..\src\xlslib\summinfo.cpp" />
+    <ClCompile Include="..\..\src\xlslib\unit.cpp" />
+    <ClCompile Include="..\..\src\xlslib\workbook.cpp" />
+    <ClCompile Include="..\..\src\common\overnew.cpp" />
+    <ClCompile Include="..\..\src\oledoc\binfile.cpp" />
+    <ClCompile Include="..\..\src\oledoc\oledoc.cpp" />
+    <ClCompile Include="..\..\src\oledoc\olefs.cpp" />
+    <ClCompile Include="..\..\src\oledoc\oleprop.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\src\xlslib\biffsection.h" />
+    <ClInclude Include="..\..\src\xlslib\blank.h" />
+    <ClInclude Include="..\..\src\xlslib\boolean.h" />
+    <ClInclude Include="..\..\src\xlslib\cbridge.h" />
+    <ClInclude Include="..\..\src\xlslib\cell.h" />
+    <ClInclude Include="..\..\src\xlslib\colinfo.h" />
+    <ClInclude Include="..\..\src\xlslib\colors.h" />
+    <ClInclude Include="..\..\src\xlslib\common.h" />
+    <ClInclude Include="..\..\src\xlslib\continue.h" />
+    <ClInclude Include="..\..\src\xlslib\datast.h" />
+    <ClInclude Include="..\..\src\xlslib\docsumminfo.h" />
+    <ClInclude Include="..\..\src\xlslib\err.h" />
+    <ClInclude Include="..\..\src\xlslib\extformat.h" />
+    <ClInclude Include="..\..\src\xlslib\font.h" />
+    <ClInclude Include="..\..\src\xlslib\format.h" />
+    <ClInclude Include="..\..\src\xlslib\formtags.h" />
+    <ClInclude Include="..\..\src\xlslib\formula.h" />
+    <ClInclude Include="..\..\src\xlslib\formula_cell.h" />
+    <ClInclude Include="..\..\src\xlslib\formula_estimate.h" />
+    <ClInclude Include="..\..\src\xlslib\formula_expr.h" />
+    <ClInclude Include="..\..\src\xlslib\formula_const.h" />
+    <ClInclude Include="..\..\src\xlslib\globalrec.h" />
+    <ClInclude Include="..\..\src\xlslib\HPSF.h" />
+    <ClInclude Include="..\..\src\xlslib\index.h" />
+    <ClInclude Include="..\..\src\xlslib\label.h" />
+    <ClInclude Include="..\..\src\xlslib\merged.h" />
+    <ClInclude Include="..\..\src\xlslib\note.h" />
+    <ClInclude Include="..\..\src\xlslib\number.h" />
+    <ClInclude Include="..\..\src\xlslib\range.h" />
+    <ClInclude Include="..\..\src\xlslib\recdef.h" />
+    <ClInclude Include="..\..\src\xlslib\record.h" />
+    <ClInclude Include="..\..\src\xlslib\rectypes.h" />
+    <ClInclude Include="..\..\src\xlslib\row.h" />
+    <ClInclude Include="..\..\src\xlslib\sheetrec.h" />
+    <ClInclude Include="..\..\src\xlslib\summinfo.h" />
+    <ClInclude Include="..\..\src\xlslib\tostr.h" />
+    <ClInclude Include="..\..\src\xlslib\unit.h" />
+    <ClInclude Include="..\..\src\xlslib\workbook.h" />
+    <ClInclude Include="..\BDS\ac-config.win32.h" />
+    <ClInclude Include="..\CodeBlocks\ac-config.win32.h" />
+    <ClInclude Include="..\RadStudio\ac-config.win32.h" />
+    <ClInclude Include="ac-config.win32.h" />
+    <ClInclude Include="..\..\src\common\overnew.h" />
+    <ClInclude Include="..\..\src\common\stringtok.h" />
+    <ClInclude Include="..\..\src\common\systype.h" />
+    <ClInclude Include="..\..\src\common\timespan.h" />
+    <ClInclude Include="..\..\src\common\xls_poppack.h" />
+    <ClInclude Include="..\..\src\common\xls_pshpack1.h" />
+    <ClInclude Include="..\..\src\common\xls_pshpack2.h" />
+    <ClInclude Include="..\..\src\common\xls_pshpack4.h" />
+    <ClInclude Include="..\..\src\common\xlstypes.h" />
+    <ClInclude Include="..\..\src\common\xlsys.h" />
+    <ClInclude Include="..\..\src\oledoc\binfile.h" />
+    <ClInclude Include="..\..\src\oledoc\oledoc.h" />
+    <ClInclude Include="..\..\src\oledoc\olefs.h" />
+    <ClInclude Include="..\..\src\oledoc\oleprop.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\m4\ac___function___c99_vpredef_vars.m4" />
+    <None Include="..\..\m4\ax_add_option.m4" />
+    <None Include="..\..\m4\ax_cc_pragma_pack.m4" />
+    <None Include="..\..\m4\ax_cflags_gcc_option.m4" />
+    <None Include="..\..\m4\ax_cflags_warn_all.m4" />
+    <None Include="..\..\m4\ax_cxxflags_gcc_option.m4" />
+    <None Include="..\..\m4\ax_cxxflags_warn_all.m4" />
+    <None Include="..\..\src\common\xlconfig.h.in" />
+    <None Include="..\BDS\2006\xlslib_static.bdsproj" />
+    <None Include="..\BDS\ac-config.win32.h.in" />
+    <None Include="..\CodeBlocks\ac-config.win32.h.in" />
+    <None Include="..\RadStudio\ac-config.win32.h.in" />
+    <None Include="ac-config.win32.h.in" />
+    <None Include="..\..\xlslibRefGuide.pdf" />
+    <None Include="..\..\xlslibRefManual.xls" />
+    <None Include="..\..\bootstrap" />
+    <None Include="..\..\configure.ac" />
+    <None Include="..\..\INSTALL" />
+    <None Include="..\..\Makefile.am" />
+    <None Include="..\..\NEWS" />
+    <None Include="..\..\README" />
+    <None Include="..\..\TODO" />
+    <None Include="..\..\src\Makefile.am" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\OpenEXR\IlmBase\vc\vc10\IlmBase\createDLL\createDLL.vcxproj">
+      <Project>{10beb970-1565-4944-8768-81bd05dd0a3a}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

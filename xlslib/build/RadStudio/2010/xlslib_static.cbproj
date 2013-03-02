@@ -118,6 +118,15 @@
 			<CppCompile Include="..\..\..\src\xlslib\formula.cpp">
 				<BuildOrder>19</BuildOrder>
 			</CppCompile>
+			<CppCompile Include="..\..\..\src\xlslib\formula_cell.cpp">
+				<BuildOrder>19</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\..\..\src\xlslib\formula_estimate.cpp">
+				<BuildOrder>19</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\..\..\src\xlslib\formula_expr.cpp">
+				<BuildOrder>19</BuildOrder>
+			</CppCompile>
 			<CppCompile Include="..\..\..\src\xlslib\globalrec.cpp">
 				<BuildOrder>20</BuildOrder>
 			</CppCompile>
