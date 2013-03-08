@@ -27,7 +27,7 @@
 			<DCC_CBuilderOutput>JPHNE</DCC_CBuilderOutput>
 			<DynamicRTL>true</DynamicRTL>
 			<UsePackages>true</UsePackages>
-			<IncludePath>$(BDS)\include;$(BDS)\include\dinkumware;$(BDS)\include\vcl;..\..\..\src\common\;..\..\..\src\oledoc\;..\..\..\src\xlslib\;..\..\..\src;..\..\..\build\RadStudio;$(IncludePath)</IncludePath>
+			<IncludePath>$(BDS)\include;$(BDS)\include\dinkumware;..\..\..\src\common\;..\..\..\src\oledoc\;..\..\..\src\xlslib\;..\..\..\src;..\..\..\build\RadStudio;$(IncludePath)</IncludePath>
 			<ILINK_LibraryPath>$(BDS)\lib;$(BDS)\lib\obj;$(BDS)\lib\psdk;$(ILINK_LibraryPath)</ILINK_LibraryPath>
 			<BCC_wpar>false</BCC_wpar>
 			<BCC_OptimizeForSpeed>true</BCC_OptimizeForSpeed>
@@ -58,119 +58,119 @@
 			<TASM_Debugging>None</TASM_Debugging>
 		</PropertyGroup>
 		<ItemGroup>
-			<CppCompile Include="..\..\..\src\common\overnew.cpp">
-				<BuildOrder>0</BuildOrder>
-			</CppCompile>
-			<CppCompile Include="..\..\..\src\oledoc\binfile.cpp">
-				<BuildOrder>1</BuildOrder>
-			</CppCompile>
-			<CppCompile Include="..\..\..\src\oledoc\oledoc.cpp">
-				<BuildOrder>2</BuildOrder>
-			</CppCompile>
-			<CppCompile Include="..\..\..\src\oledoc\olefs.cpp">
-				<BuildOrder>3</BuildOrder>
-			</CppCompile>
-			<CppCompile Include="..\..\..\src\oledoc\oleprop.cpp">
-				<BuildOrder>4</BuildOrder>
-			</CppCompile>
-			<CppCompile Include="..\..\..\src\xlslib\assert_assist.cpp">
-				<BuildOrder>5</BuildOrder>
-			</CppCompile>
-			<CppCompile Include="..\..\..\src\xlslib\blank.cpp">
-				<BuildOrder>6</BuildOrder>
-			</CppCompile>
-			<CppCompile Include="..\..\..\src\xlslib\boolean.cpp">
-				<BuildOrder>7</BuildOrder>
-			</CppCompile>
-			<CppCompile Include="..\..\..\src\xlslib\cbridge.cpp">
-				<BuildOrder>8</BuildOrder>
-			</CppCompile>
-			<CppCompile Include="..\..\..\src\xlslib\cell.cpp">
-				<BuildOrder>9</BuildOrder>
-			</CppCompile>
-			<CppCompile Include="..\..\..\src\xlslib\colinfo.cpp">
-				<BuildOrder>10</BuildOrder>
-			</CppCompile>
-			<CppCompile Include="..\..\..\src\xlslib\colors.cpp">
-				<BuildOrder>11</BuildOrder>
-			</CppCompile>
-			<CppCompile Include="..\..\..\src\xlslib\continue.cpp">
-				<BuildOrder>12</BuildOrder>
-			</CppCompile>
-			<CppCompile Include="..\..\..\src\xlslib\datast.cpp">
-				<BuildOrder>13</BuildOrder>
-			</CppCompile>
-			<CppCompile Include="..\..\..\src\xlslib\docsumminfo.cpp">
-				<BuildOrder>14</BuildOrder>
-			</CppCompile>
-			<CppCompile Include="..\..\..\src\xlslib\err.cpp">
-				<BuildOrder>15</BuildOrder>
-			</CppCompile>
-			<CppCompile Include="..\..\..\src\xlslib\extformat.cpp">
-				<BuildOrder>16</BuildOrder>
-			</CppCompile>
-			<CppCompile Include="..\..\..\src\xlslib\font.cpp">
-				<BuildOrder>17</BuildOrder>
-			</CppCompile>
-			<CppCompile Include="..\..\..\src\xlslib\format.cpp">
-				<BuildOrder>18</BuildOrder>
-			</CppCompile>
-			<CppCompile Include="..\..\..\src\xlslib\formula.cpp">
-				<BuildOrder>19</BuildOrder>
-			</CppCompile>
-			<CppCompile Include="..\..\..\src\xlslib\formula_cell.cpp">
-				<BuildOrder>19</BuildOrder>
-			</CppCompile>
-			<CppCompile Include="..\..\..\src\xlslib\formula_estimate.cpp">
-				<BuildOrder>19</BuildOrder>
-			</CppCompile>
-			<CppCompile Include="..\..\..\src\xlslib\formula_expr.cpp">
-				<BuildOrder>19</BuildOrder>
-			</CppCompile>
-			<CppCompile Include="..\..\..\src\xlslib\globalrec.cpp">
-				<BuildOrder>20</BuildOrder>
-			</CppCompile>
-			<CppCompile Include="..\..\..\src\xlslib\HPSF.cpp">
-				<BuildOrder>21</BuildOrder>
+			<CppCompile Include="..\..\..\src\xlslib\label.cpp">
+				<BuildOrder>23</BuildOrder>
 			</CppCompile>
 			<CppCompile Include="..\..\..\src\xlslib\index.cpp">
 				<BuildOrder>22</BuildOrder>
 			</CppCompile>
-			<CppCompile Include="..\..\..\src\xlslib\label.cpp">
-				<BuildOrder>23</BuildOrder>
+			<CppCompile Include="..\..\..\src\xlslib\note.cpp">
+				<BuildOrder>25</BuildOrder>
 			</CppCompile>
 			<CppCompile Include="..\..\..\src\xlslib\merged.cpp">
 				<BuildOrder>24</BuildOrder>
 			</CppCompile>
-			<CppCompile Include="..\..\..\src\xlslib\note.cpp">
-				<BuildOrder>25</BuildOrder>
+			<CppCompile Include="..\..\..\src\xlslib\formula.cpp">
+				<BuildOrder>19</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\..\..\src\xlslib\format.cpp">
+				<BuildOrder>18</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\..\..\src\xlslib\HPSF.cpp">
+				<BuildOrder>21</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\..\..\src\xlslib\globalrec.cpp">
+				<BuildOrder>20</BuildOrder>
 			</CppCompile>
 			<CppCompile Include="..\..\..\src\xlslib\number.cpp">
 				<BuildOrder>26</BuildOrder>
 			</CppCompile>
-			<CppCompile Include="..\..\..\src\xlslib\range.cpp">
-				<BuildOrder>27</BuildOrder>
-			</CppCompile>
-			<CppCompile Include="..\..\..\src\xlslib\recdef.cpp">
-				<BuildOrder>28</BuildOrder>
-			</CppCompile>
-			<CppCompile Include="..\..\..\src\xlslib\record.cpp">
-				<BuildOrder>29</BuildOrder>
-			</CppCompile>
-			<CppCompile Include="..\..\..\src\xlslib\row.cpp">
-				<BuildOrder>30</BuildOrder>
+			<CppCompile Include="..\..\..\src\xlslib\summinfo.cpp">
+				<BuildOrder>32</BuildOrder>
 			</CppCompile>
 			<CppCompile Include="..\..\..\src\xlslib\sheetrec.cpp">
 				<BuildOrder>31</BuildOrder>
 			</CppCompile>
-			<CppCompile Include="..\..\..\src\xlslib\summinfo.cpp">
-				<BuildOrder>32</BuildOrder>
+			<CppCompile Include="..\..\..\src\xlslib\workbook.cpp">
+				<BuildOrder>34</BuildOrder>
 			</CppCompile>
 			<CppCompile Include="..\..\..\src\xlslib\unit.cpp">
 				<BuildOrder>33</BuildOrder>
 			</CppCompile>
-			<CppCompile Include="..\..\..\src\xlslib\workbook.cpp">
-				<BuildOrder>34</BuildOrder>
+			<CppCompile Include="..\..\..\src\xlslib\recdef.cpp">
+				<BuildOrder>28</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\..\..\src\xlslib\range.cpp">
+				<BuildOrder>27</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\..\..\src\xlslib\row.cpp">
+				<BuildOrder>30</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\..\..\src\xlslib\record.cpp">
+				<BuildOrder>29</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\..\..\src\xlslib\font.cpp">
+				<BuildOrder>17</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\..\..\src\xlslib\assert_assist.cpp">
+				<BuildOrder>5</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\..\..\src\oledoc\oleprop.cpp">
+				<BuildOrder>4</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\..\..\src\xlslib\boolean.cpp">
+				<BuildOrder>7</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\..\..\src\xlslib\blank.cpp">
+				<BuildOrder>6</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\..\..\src\oledoc\binfile.cpp">
+				<BuildOrder>1</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\..\..\src\common\overnew.cpp">
+				<BuildOrder>0</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\..\..\src\oledoc\olefs.cpp">
+				<BuildOrder>3</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\..\..\src\oledoc\oledoc.cpp">
+				<BuildOrder>2</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\..\..\src\xlslib\cbridge.cpp">
+				<BuildOrder>8</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\..\..\src\xlslib\docsumminfo.cpp">
+				<BuildOrder>14</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\..\..\src\xlslib\datast.cpp">
+				<BuildOrder>13</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\..\..\src\xlslib\extformat.cpp">
+				<BuildOrder>16</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\..\..\src\xlslib\err.cpp">
+				<BuildOrder>15</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\..\..\src\xlslib\colinfo.cpp">
+				<BuildOrder>10</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\..\..\src\xlslib\cell.cpp">
+				<BuildOrder>9</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\..\..\src\xlslib\continue.cpp">
+				<BuildOrder>12</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\..\..\src\xlslib\colors.cpp">
+				<BuildOrder>11</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\..\..\src\xlslib\formula_cell.cpp">
+				<BuildOrder>35</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\..\..\src\xlslib\formula_estimate.cpp">
+				<BuildOrder>36</BuildOrder>
+			</CppCompile>
+			<CppCompile Include="..\..\..\src\xlslib\formula_expr.cpp">
+				<BuildOrder>37</BuildOrder>
 			</CppCompile>
 			<BuildConfiguration Include="Base">
 				<Key>Base</Key>
