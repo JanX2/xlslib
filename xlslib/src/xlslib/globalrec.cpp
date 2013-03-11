@@ -4,7 +4,7 @@
  * for dynamic generation of Excel(TM) files.
  *
  * Copyright 2004 Yeico S. A. de C. V. All Rights Reserved.
- * Copyright 2008-2011 David Hoerl All Rights Reserved.
+ * Copyright 2008-2013 David Hoerl All Rights Reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
  * permitted provided that the following conditions are met:
@@ -35,8 +35,8 @@
 #include "xlslib/common.h"
 
 
-using namespace std;
 using namespace xlslib_core;
+using namespace xlslib_strings;
 
 static const unsigned16_t convFail[] = { 'i', 'c', 'o', 'n', 'v', ' ', 'f', 'a', 'i', 'l', 'e', 'd', '!', 0 };
 
@@ -60,7 +60,7 @@ CGlobalRecords::CGlobalRecords() :
 
 	defaultXF(NULL),
 
-#ifdef HAVE_WORKING_ICONV
+#if defined(HAVE_WORKING_ICONV)
 	iconv_code(),
 #endif
 	m_DumpState(GLOBAL_INIT),
@@ -727,7 +727,7 @@ void CGlobalRecords::str16toascii(const u16string& str1, std::string& str2)
 	}
 }
 
-#ifdef HAVE_WORKING_ICONV
+#if defined(HAVE_WORKING_ICONV)
 
 #include <errno.h>
 
@@ -788,7 +788,7 @@ void CGlobalRecords::wide2str16(const ustring& str1, u16string& str2)
 
 #endif
 
-#ifdef HAVE_WORKING_ICONV
+#if defined(HAVE_WORKING_ICONV)
 
 void CGlobalRecords::char2str16(const string& str1, u16string& str2)
 {
@@ -847,9 +847,9 @@ void CGlobalRecords::char2str16(const string& str1, u16string& str2)
 
 #else
 
-void CGlobalRecords::char2str16(const string& str1, u16string& str2)
+void CGlobalRecords::char2str16(const std::string& str1, u16string& str2)
 {
-	string::const_iterator cBegin, cEnd;
+	std::string::const_iterator cBegin, cEnd;
 	size_t len;
 
 	str2.clear();

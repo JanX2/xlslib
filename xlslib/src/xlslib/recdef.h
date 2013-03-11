@@ -4,7 +4,7 @@
  * for dynamic generation of Excel(TM) files.
  *
  * Copyright 2004 Yeico S. A. de C. V. All Rights Reserved.
- * Copyright 2008-2011 David Hoerl All Rights Reserved.
+ * Copyright 2008-2013 David Hoerl All Rights Reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
  * permitted provided that the following conditions are met:
@@ -308,7 +308,7 @@ namespace xlslib_core
 	{
 	public:
 		boundsheet_t(CGlobalRecords& gRecords);
-		boundsheet_t(CGlobalRecords& gRecords, const u16string& sheetname, unsigned16_t attributes, unsigned32_t streampos);
+		boundsheet_t(CGlobalRecords& gRecords, const xlslib_strings::u16string& sheetname, unsigned16_t attributes, unsigned32_t streampos);
 		virtual ~boundsheet_t();
 
 	private:
@@ -316,7 +316,7 @@ namespace xlslib_core
 		boundsheet_t& operator=(const boundsheet_t& right);
 
 	protected:
-		u16string sheetname;
+		xlslib_strings::u16string sheetname;
 		unsigned32_t streampos;
 		bool worksheet : 1;
 		bool ex4macro : 1;
@@ -332,7 +332,7 @@ namespace xlslib_core
 
 	public:
 		unsigned32_t GetStreamPos(void) const { return streampos; }
-		const u16string& GetSheetName(void) const
+		const xlslib_strings::u16string& GetSheetName(void) const
 		{
 			return sheetname;
 		}

@@ -33,23 +33,24 @@
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-
-#include <sys/types.h>
-#include <string>
-
 #define CPP_BRIDGE_XLS
 
 // since xlslib.h does not include these for C files
 #include "common/xlsys.h"
+
+#ifdef HAVE_SYS_TYPES_H
+#include <sys/types.h>
+#endif
+#include <string>
+
 #include "common/systype.h"
 #include "xlslib/common.h" 
 #include "xlslib/record.h"
-#include "xlslib/formula.h"
 
 #include "xlslib.h"
 
-using namespace std;
 using namespace xlslib_core;
+using namespace xlslib_strings;
 
 extern "C" {
 	// Workbook
@@ -62,7 +63,7 @@ extern "C" {
 																}
 	worksheet *xlsWorkbookSheetW(workbook *w, const unichar_t *sheetname)
 																{
-																	std::ustring str = sheetname;
+																	ustring str = sheetname;
 																	return w->sheet(str);
 																}
 	worksheet *xlsWorkbookGetSheet(workbook *w, unsigned16_t sheetnum)
@@ -77,14 +78,14 @@ extern "C" {
 																	return w->format(str);
 																}
 	format_t *xlsWorkbookFormatW(workbook *w, const unichar_t *name) {
-																	std::ustring str = name;
+																	ustring str = name;
 																	return w->format(str);
 																}
 	xf_t *xlsWorkbookxFormat(workbook *w)						{ return w->xformat(); }
 	xf_t *xlsWorkbookxFormatFont(workbook *w, font_t *font)		{ return w->xformat(font); }
 
 
-#ifdef HAVE_WORKING_ICONV
+#if defined(HAVE_WORKING_ICONV)
 	int xlsWorkbookIconvInType(workbook *w, const char *inType)	{ return w->iconvInType(inType); }
 #endif
 	unsigned8_t xlsWorkbookProperty(workbook *w, property_t prop, const char *s)
@@ -127,7 +128,7 @@ extern "C" {
 																}
 	cell_t *xlsWorksheetLabelW(worksheet *w, unsigned32_t row, unsigned32_t col, const unichar_t *strlabel, xf_t *pxformat)
 																{ 
-																	std::ustring str = strlabel;
+																	ustring str = strlabel;
 																	return w->label(row, col, strlabel, pxformat);
 																}
 	cell_t *xlsWorksheetBlank(worksheet *w, unsigned32_t row, unsigned32_t col, xf_t *pxformat)
@@ -154,8 +155,8 @@ extern "C" {
 																}
 	cell_t *xlsWorksheetNoteW(worksheet *w, unsigned32_t row, unsigned32_t col, const unichar_t *remark, const unichar_t *author, xf_t *pxformat)
 																{ 
-																	std::ustring cmt = remark;
-																	std::ustring auth = author;
+																	ustring cmt = remark;
+																	ustring auth = author;
 
 																	return w->note(row, col, cmt, auth, pxformat); 
 																}
@@ -188,7 +189,7 @@ extern "C" {
                                                                 }
     void xlsFormulaPushCharacterArrayW(formula_t *formula, const unichar_t *text, size_t count) 
                                                                 { 
-                                                                    std::ustring str = L"";
+                                                                    ustring str = L"";
                                                                     for (size_t i=0; i<count; i++) {
                                                                         str += text[i];
                                                                     }
@@ -201,7 +202,7 @@ extern "C" {
                                                                 }
     void xlsFormulaPushTextW(formula_t *formula, const unichar_t *text) 
                                                                 { 
-                                                                    std::ustring str = text;
+                                                                    ustring str = text;
                                                                     formula->PushText(str); 
                                                                 }
     void xlsFormulaPushTextArray(formula_t *formula, const char **text, size_t count) 
@@ -215,9 +216,9 @@ extern "C" {
                                                                 }
     void xlsFormulaPushTextArrayW(formula_t *formula, const unichar_t **text, size_t count) 
                                                                 { 
-                                                                    std::vector<std::ustring> vec;
+                                                                    std::vector<ustring> vec;
                                                                     for (size_t i=0; i<count; i++) {
-                                                                        std::ustring str = text[i];
+                                                                        ustring str = text[i];
                                                                         vec.push_back(str);
                                                                     }
                                                                     formula->PushTextArray(vec); 
@@ -255,10 +256,10 @@ extern "C" {
                                                                    rg->last_row = cell->GetRow();
                                                                    rg->first_col = cell->GetCol();
                                                                    rg->last_col = cell->GetCol();
-                                                                   std::ustring sPromptTitle = prompt_title ? prompt_title : L"";
-                                                                   std::ustring sPromptText = prompt_text ? prompt_text : L"";
-                                                                   std::ustring sErrorTitle = error_title ? error_title : L"";
-                                                                   std::ustring sErrorText = error_text ? error_text : L"";
+                                                                   ustring sPromptTitle = prompt_title ? prompt_title : L"";
+                                                                   ustring sPromptText = prompt_text ? prompt_text : L"";
+                                                                   ustring sErrorTitle = error_title ? error_title : L"";
+                                                                   ustring sErrorText = error_text ? error_text : L"";
                                                                    w->validate(rg, options, cond1, cond2,
                                                                            sPromptTitle, sPromptText, sErrorTitle, sErrorText);
                                                                    delete rg;
@@ -293,10 +294,10 @@ extern "C" {
                                                                    rg->last_row = lower_right_cell->GetRow();
                                                                    rg->first_col = upper_left_cell->GetCol();
                                                                    rg->last_col = lower_right_cell->GetCol();
-                                                                   std::ustring sPromptTitle = prompt_title ? prompt_title : L"";
-                                                                   std::ustring sPromptText = prompt_text ? prompt_text : L"";
-                                                                   std::ustring sErrorTitle = error_title ? error_title : L"";
-                                                                   std::ustring sErrorText = error_text ? error_text : L"";
+                                                                   ustring sPromptTitle = prompt_title ? prompt_title : L"";
+                                                                   ustring sPromptText = prompt_text ? prompt_text : L"";
+                                                                   ustring sErrorTitle = error_title ? error_title : L"";
+                                                                   ustring sErrorText = error_text ? error_text : L"";
                                                                    w->validate(rg, options, cond1, cond2,
                                                                            sPromptTitle, sPromptText, sErrorTitle, sErrorText);
                                                                    delete rg;
@@ -310,8 +311,8 @@ extern "C" {
 																}
 	void xlsWorksheetHyperLinkW(worksheet *w, cell_t *cell, const unichar_t *url, const unichar_t *mark)
 																{ 
-																	std::ustring sUrl = url;
-																	std::ustring sMark = mark ? mark : L"";
+																	ustring sUrl = url;
+																	ustring sMark = mark ? mark : L"";
 
 																	w->hyperLink(cell, sUrl, sMark); 
 																}

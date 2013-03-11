@@ -4,7 +4,7 @@
  * for dynamic generation of Excel(TM) files.
  *
  * Copyright 2004 Yeico S. A. de C. V. All Rights Reserved.
- * Copyright 2008-2011 David Hoerl All Rights Reserved.
+ * Copyright 2008-2013 David Hoerl All Rights Reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
  * permitted provided that the following conditions are met:
@@ -31,7 +31,7 @@
 #ifndef XLSLIB_COMMON_H
 #define XLSLIB_COMMON_H
 
-#ifdef HAVE_WORKING_ICONV
+#if defined(HAVE_WORKING_ICONV)
 #include <iconv.h>
 
 /* part of fix for PR #3039001 */

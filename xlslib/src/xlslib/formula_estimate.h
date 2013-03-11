@@ -3,7 +3,7 @@
  * This file is part of xlslib -- A multiplatform, C/C++ library
  * for dynamic generation of Excel(TM) files.
  *
- * Copyright 2010-2011 Ger Hobbelt All Rights Reserved.
+ * Copyright 2010-2013 Ger Hobbelt All Rights Reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
  * permitted provided that the following conditions are met:
@@ -52,16 +52,16 @@ namespace xlslib_core
 		bool SetBoolean(bool value);
 		signed32_t SetInteger(signed32_t value);
 		double SetFloatingPoint(double value);
-		const u16string& SetText(const std::string& value);
-		const u16string& SetText(const std::ustring& value);
+		const xlslib_strings::u16string& SetText(const std::string& value);
+		const xlslib_strings::u16string& SetText(const xlslib_strings::ustring& value);
 #ifndef __FRAMEWORK__
-		const u16string& SetText(const u16string& value);
+		const xlslib_strings::u16string& SetText(const xlslib_strings::u16string& value);
 #endif
 		errcode_t SetErrorCode(errcode_t value);
 
 		unsigned64_t GetEncodedValue(void) const;
 		bool EncodedValueIsString(void) const;
-		const u16string* GetStringValue(void) const;
+		const xlslib_strings::u16string* GetStringValue(void) const;
 
 	protected:
 		union
@@ -69,7 +69,7 @@ namespace xlslib_core
 			bool b;
 			signed32_t i;
 			double f;
-			u16string *s;
+			xlslib_strings::u16string *s;
 			errcode_t e;
 		} value;
 		enum estval_type_t

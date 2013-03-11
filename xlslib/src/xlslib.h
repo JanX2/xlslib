@@ -3,7 +3,7 @@
  * This file is part of xlslib -- A multiplatform, C/C++ library
  * for dynamic generation of Excel(TM) files.
  *
- * Copyright 2008-2011 David Hoerl All Rights Reserved.
+ * Copyright 2008-2013 David Hoerl All Rights Reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
  * permitted provided that the following conditions are met:
@@ -37,11 +37,10 @@
 // The defines are needed by C++ Library Users
 
 #if defined(__cplusplus)
-
-#include <string>
-
 #include "common/xlsys.h"
 #include "common/xlstypes.h"
+
+#include <string>
 
 #include "xlslib/record.h"
 #include "xlslib/globalrec.h"
@@ -59,7 +58,11 @@ using namespace xlslib_core;
 
 #else
 
+#if defined(__FRAMEWORK__)
+#include "xlstypes.h"
+#else
 #include "common/xlstypes.h"
+#endif
 
 // Summary options
 typedef enum {
@@ -1002,8 +1005,10 @@ enum {
 #ifdef CPP_BRIDGE_XLS
 
 #define EXTERN_TYPE
-extern "C" {
 using namespace xlslib_core;
+using namespace xlslib_strings;
+
+extern "C" {
 
 #else
 

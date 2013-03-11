@@ -4,7 +4,7 @@
  * for dynamic generation of Excel(TM) files.
  *
  * Copyright 2004 Yeico S. A. de C. V. All Rights Reserved.
- * Copyright 2008-2011 David Hoerl All Rights Reserved.
+ * Copyright 2008-2013 David Hoerl All Rights Reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
  * permitted provided that the following conditions are met:
@@ -68,7 +68,7 @@ namespace xlslib_core
 		const char*	version() const { return XLSLIB_VERSION; }
 
 		worksheet*	sheet(const std::string& sheetname);
-		worksheet*	sheet(const std::ustring& sheetname);
+		worksheet*	sheet(const xlslib_strings::ustring& sheetname);
 		worksheet*	GetSheet(unsigned16_t sheetnum);
 
 		expression_node_factory_t& GetFormulaFactory(void);
@@ -76,7 +76,7 @@ namespace xlslib_core
 		font_t*		font(unsigned8_t fontnum);          // use as a way to get a font to modify
 		font_t*		font(const std::string& name);
 		format_t*	format(const std::string& formatstr);
-		format_t*	format(const std::ustring& formatstr);
+		format_t*	format(const xlslib_strings::ustring& formatstr);
 
 		bool		setColor(unsigned8_t r, unsigned8_t g, unsigned8_t b, unsigned8_t idx);
 

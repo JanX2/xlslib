@@ -4,7 +4,7 @@
  * for dynamic generation of Excel(TM) files.
  *
  * Copyright 2004 Yeico S. A. de C. V. All Rights Reserved.
- * Copyright 2008-2011 David Hoerl All Rights Reserved.
+ * Copyright 2008-2013 David Hoerl All Rights Reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
  * permitted provided that the following conditions are met:
@@ -145,9 +145,9 @@ namespace xlslib_core
 	private:
 		format_t(const format_t& orig);
 		format_t(CGlobalRecords& gRecords, const std::string& fmtstr);
-		format_t(CGlobalRecords& gRecords, const std::ustring& fmtstr);
+		format_t(CGlobalRecords& gRecords, const xlslib_strings::ustring& fmtstr);
 #ifndef __FRAMEWORK__
-		format_t(CGlobalRecords& gRecords, const u16string& fmtstr);
+		format_t(CGlobalRecords& gRecords, const xlslib_strings::u16string& fmtstr);
 #endif
 		virtual ~format_t(){}
 		/* MSVC2005: C4512: 'xlslib_core::format_t' : assignment operator could not be generated */
@@ -168,14 +168,14 @@ namespace xlslib_core
 		void SetIndex(unsigned16_t idx) {index = idx; }
 
 		// good resource for format strings: http://www.mvps.org/dmcritchie/excel/formula.htm
-		const u16string& GetFormatStr(void) const {return formatstr; }
-		void SetFormatStr(const u16string& fmtstr) {formatstr = fmtstr; }
+		const xlslib_strings::u16string& GetFormatStr(void) const {return formatstr; }
+		void SetFormatStr(const xlslib_strings::u16string& fmtstr) {formatstr = fmtstr; }
 
 	public:
 		static unsigned16_t format2index(format_number_t idx);
 
 	private:
-		u16string formatstr;
+		xlslib_strings::u16string formatstr;
 		unsigned16_t index;
 		unsigned32_t m_usage_counter;
 

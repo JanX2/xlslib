@@ -4,7 +4,7 @@
  * for dynamic generation of Excel(TM) files.
  *
  * Copyright 2004 Yeico S. A. de C. V. All Rights Reserved.
- * Copyright 2008-2011 David Hoerl All Rights Reserved.
+ * Copyright 2008-2013 David Hoerl All Rights Reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
  * permitted provided that the following conditions are met:
@@ -58,6 +58,8 @@
 // memory.h needed for memset. RLN 111215
 // These may be needed for other compilers as well.
 #endif
+
+using namespace xlslib_strings;
 
 namespace xlslib_core
 {
@@ -178,9 +180,9 @@ namespace xlslib_core
 	{
 		XL_ASSERT(index != INVALID_STORE_INDEX);
 		XL_ASSERT(index >= 0 ? index < (int)store.size() : 1);
-		XL_ASSERT(index < 0 ? (-1 ^ index) < (int)store.size() : 1);
+		XL_ASSERT(index < 0 ? (~index) < (int)store.size() : 1);
 
-		return index >= 0 ? store[(size_t)index] : store[-1ul ^ (size_t)index];
+		return index >= 0 ? store[(size_t)index] : store[~(size_t)index];
 	}
 
 	// Queue a new unit
@@ -460,7 +462,58 @@ namespace xlslib_core
         }
         return externsheet;
     }
+#if 0
+	CUnit* CDataStorage::MakeSST(const Label_Vect_t& labels)
+	{
+		CRecord *record = new CRecord(*this);
+		size_t count = labels.size();
+		record->SetAlreadyContinued(true);
 
+		size_t offset = 0; // offset of last written data
+
+		record->SetRecordTypeIndexed(RECTYPE_SST, 0);
+		record->AddValue32(static_cast<unsigned32_t>(count)); // usages
+		record->AddValue32(static_cast<unsigned32_t>(count)); // number of strings to follow
+
+		size_t currSize = record->GetDataSize();
+
+		cLabel_Vect_Itor_t label_end = labels.end();
+		for(cLabel_Vect_Itor_t label = labels.begin(); label != label_end; ++label) {
+			const label_t *currLabel = *label;
+			u16string str16 = currLabel->GetStrLabel();
+
+			size_t strLen;
+			bool isAscii;
+			size_t strSize = record->UnicodeStringLength(str16, strLen, isAscii, CUnit::LEN2_FLAGS_UNICODE /* = LEN2_FLAGS_UNICODE */ );
+			if(strSize > MAX_RECORD_SIZE) {
+				static const unsigned16_t tooLong[] = { 'L', 'e', 'n', 'g', 't', 'h', ' ', 't', 'o', 'o', ' ', 'l', 'o', 'n', 'g', '!' , 0};
+				str16 = (xchar16_t *)(tooLong);	// cannot static_cast or const_cast this expression
+				strSize = record->UnicodeStringLength(str16, strLen, isAscii, CUnit::LEN2_FLAGS_UNICODE /* = LEN2_FLAGS_UNICODE */ );
+			}
+
+			//printf("TEST: (currSize=%ld + strSize=%ld ) offset=%ld\n", currSize, strSize, offset);
+
+			// Payload is always 4 less than currSize, so account for that here
+			if((currSize + strSize) > (MAX_RECORD_SIZE+4)) {
+				record->SetRecordLengthIndexed(currSize-RECORD_HEADER_SIZE, offset);
+
+				offset = record->GetDataSize();         // new offset is where we are now
+				//printf("CHUNK: size=%ld END=%ld\n", currSize, offset);
+				record->AddFixedDataArray(0, 4);        // space for header
+				record->SetRecordTypeIndexed(RECTYPE_CONTINUE, offset);
+			}
+			record->AddUnicodeString(str16, CUnit::LEN2_FLAGS_UNICODE);
+			currSize = record->GetDataSize() - offset; // at end so its valid when we break out of the loop
+			//printf("WROTE %ld bytes:  total=%ld currBlock=%ld offset=%ld\n", strSize, record->GetDataSize(), currSize, offset);
+		}
+		//totalSize = record->GetDataSize();		// total size of this record
+		//printf("FINAL: cursize=%ld offset=%ld\n", currSize, offset);
+		record->SetRecordLengthIndexed(currSize-RECORD_HEADER_SIZE, offset);
+
+		//printf("TOTAL STRING SIZE: %ld\n", record->GetDataSize());
+		return record;
+	}
+#endif
 	CUnit* CDataStorage::MakeSST(const Label_Vect_t& labels)
 	{
 		CRecord *record = new CRecord(*this);

@@ -3,7 +3,7 @@
  * This file is part of xlslib -- A multiplatform, C/C++ library
  * for dynamic generation of Excel(TM) files.
  *
- * Copyright 2010-2011 Ger Hobbelt All Rights Reserved.
+ * Copyright 2010-2013 Ger Hobbelt All Rights Reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
  * permitted provided that the following conditions are met:
@@ -44,6 +44,7 @@
 #endif
 
 using namespace xlslib_core;
+using namespace xlslib_strings;
 
 expression_node_t::expression_node_t(CGlobalRecords& gRecords)
 {
@@ -259,7 +260,7 @@ text_value_node_t::text_value_node_t(CGlobalRecords& gRecords, const std::string
 	m_GlobalRecords.char2str16(v, this->value);
 }
 
-text_value_node_t::text_value_node_t(CGlobalRecords& gRecords, const std::ustring& v) :
+text_value_node_t::text_value_node_t(CGlobalRecords& gRecords, const ustring& v) :
 	terminal_node_t(gRecords),
 	m_GlobalRecords(gRecords)
 {

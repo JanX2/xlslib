@@ -4,7 +4,7 @@
  * for dynamic generation of Excel(TM) files.
  *
  * Copyright 2004 Yeico S. A. de C. V. All Rights Reserved.
- * Copyright 2008-2011 David Hoerl All Rights Reserved.
+ * Copyright 2008-2013 David Hoerl All Rights Reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
  * permitted provided that the following conditions are met:
@@ -33,8 +33,8 @@
 #include "xlslib/globalrec.h"
 #include "xlslib/rectypes.h"
 
-using namespace std;
 using namespace xlslib_core;
+using namespace xlslib_strings;
 
 
 static const unsigned16_t format2index_arr[] =
@@ -109,7 +109,7 @@ format_t::format_t(CGlobalRecords& gRecords, const std::string& fmtstr) :
 	gRecords.char2str16(fmtstr, formatstr);
 }
 
-format_t::format_t(CGlobalRecords& gRecords, const std::ustring& fmtstr) :
+format_t::format_t(CGlobalRecords& gRecords, const ustring& fmtstr) :
 	formatstr(),
 	index(0),
 	m_usage_counter(0),
@@ -126,7 +126,6 @@ format_t::format_t(CGlobalRecords& gRecords, const u16string& fmtstr) :
 	m_GlobalRecords(gRecords)
 {
 }
-
 #endif
 
 format_t &format_t::operator =(const format_t &src)

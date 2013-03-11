@@ -3,7 +3,7 @@
  * This file is part of xlslib -- A multiplatform, C/C++ library
  * for dynamic generation of Excel(TM) files.
  *
- * Copyright 2010-2011 Ger Hobbelt All Rights Reserved.
+ * Copyright 2010-2013 Ger Hobbelt All Rights Reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
  * permitted provided that the following conditions are met:
@@ -150,9 +150,9 @@ namespace xlslib_core
 	{
 	public:
 		text_value_node_t(CGlobalRecords& gRecords, const std::string& value);
-		text_value_node_t(CGlobalRecords& gRecords, const std::ustring& value);
+		text_value_node_t(CGlobalRecords& gRecords, const xlslib_strings::ustring& value);
 #ifndef __FRAMEWORK__
-		text_value_node_t(CGlobalRecords& gRecords, const u16string& value);
+		text_value_node_t(CGlobalRecords& gRecords, const xlslib_strings::u16string& value);
 #endif
 		virtual ~text_value_node_t();
 
@@ -167,7 +167,7 @@ namespace xlslib_core
 		virtual void GetResultEstimate(estimated_formula_result_t &dst) const;
 
 	protected:
-		u16string value;
+		xlslib_strings::u16string value;
 
 		CGlobalRecords& m_GlobalRecords;
 
@@ -381,7 +381,7 @@ namespace xlslib_core
 		error_value_node_t *error_value(errcode_t value);
 		missing_arg_node_t *missing_arg(void);
 		text_value_node_t *text(const std::string& value);
-		text_value_node_t *text(const u16string& value);
+		text_value_node_t *text(const xlslib_strings::u16string& value);
 		
 		cell_deref_node_t *cell(const cell_t& value, cell_addr_mode_t attr, cell_op_class_t opclass = CELLOP_AS_VALUE);
 		cell_deref_node_t *cell(const cell_t& value, const worksheet* ws, cell_addr_mode_t attr, cell_op_class_t opclass = CELLOP_AS_VALUE);

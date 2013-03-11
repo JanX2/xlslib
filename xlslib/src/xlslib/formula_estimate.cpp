@@ -3,7 +3,7 @@
  * This file is part of xlslib -- A multiplatform, C/C++ library
  * for dynamic generation of Excel(TM) files.
  *
- * Copyright 2010-2011 Ger Hobbelt All Rights Reserved.
+ * Copyright 2010-2013 Ger Hobbelt All Rights Reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
  * permitted provided that the following conditions are met:
@@ -39,6 +39,7 @@
 #endif
 
 using namespace xlslib_core;
+using namespace xlslib_strings;
 
 estimated_formula_result_t::estimated_formula_result_t(CGlobalRecords& gRecords) :
 	value_type(ESTVAL_UNKNOWN),
@@ -133,7 +134,7 @@ const u16string& estimated_formula_result_t::SetText(const std::string& v)
 	return *value.s;
 }
 
-const u16string& estimated_formula_result_t::SetText(const std::ustring& v)
+const u16string& estimated_formula_result_t::SetText(const ustring& v)
 {
 	clear_value(ESTVAL_STRING);
 	m_GlobalRecords.wide2str16(v, *value.s);
@@ -154,23 +155,6 @@ errcode_t estimated_formula_result_t::SetErrorCode(errcode_t v)
 	return value.e = v;
 }
 
-static inline unsigned64_t encode_fp2u64(double value)
-{
-#include "common/xls_pshpack1.h"
-
-	union
-	{
-		double f;
-		unsigned64_t i;
-		unsigned8_t b[8];
-	} v;
-
-#include "common/xls_poppack.h"
-
-	v.f = value;
-	return v.i;
-}
-
 unsigned64_t estimated_formula_result_t::GetEncodedValue(void) const
 {
 	unsigned64_t rv;
@@ -186,11 +170,11 @@ unsigned64_t estimated_formula_result_t::GetEncodedValue(void) const
 		break;
 
 	case ESTVAL_INTEGER:
-		rv = encode_fp2u64(value.i);
+		rv = CUnit::EncodeFP2I64(value.i);
 		break;
 
 	case ESTVAL_FLOATINGPOINT:
-		rv = encode_fp2u64(value.f);
+		rv = CUnit::EncodeFP2I64(value.f);
 		break;
 
 	case ESTVAL_STRING:

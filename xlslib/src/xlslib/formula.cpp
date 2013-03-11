@@ -1,3 +1,31 @@
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *
+ * This file is part of xlslib -- A multiplatform, C/C++ library
+ * for dynamic generation of Excel(TM) files.
+ *
+ * Copyright 2010-2013 Ger Hobbelt All Rights Reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without modification, are
+ * permitted provided that the following conditions are met:
+ *
+ *    1. Redistributions of source code must retain the above copyright notice, this list of
+ *       conditions and the following disclaimer.
+ *
+ *    2. Redistributions in binary form must reproduce the above copyright notice, this list
+ *       of conditions and the following disclaimer in the documentation and/or other materials
+ *       provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED BY David Hoerl ''AS IS'' AND ANY EXPRESS OR IMPLIED
+ * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+ * FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL David Hoerl OR
+ * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+ * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 #ifdef __BCPLUSPLUS__
 #include <memory.h>
@@ -15,6 +43,7 @@
 #include "xlslib/sheetrec.h"
 
 using namespace xlslib_core;
+using namespace xlslib_strings;
 
 unsigned16_t xlslib_core::NumberOfArgsForExcelFunction(expr_function_code_t func)
 {
@@ -745,13 +774,14 @@ signed8_t formula_t::PushText(const std::string& v) {
     return PushText(value);
 }
 
-signed8_t formula_t::PushText(const std::ustring& v) {
+signed8_t formula_t::PushText(const ustring& v) {
     u16string value;
 	m_GlobalRecords.wide2str16(v, value);
 
     return PushText(value);
 }
 
+#if !defined(__FRAMEWORK__)
 signed8_t formula_t::PushText(const u16string& value) {
 	signed8_t errcode = NO_ERRORS;
 
@@ -761,6 +791,7 @@ signed8_t formula_t::PushText(const u16string& value) {
 
 	return errcode;
 }
+#endif
 
 signed8_t formula_t::PushTextArray(const std::vector<std::string>& vec) {
 	signed8_t errcode = NO_ERRORS;
@@ -779,7 +810,7 @@ signed8_t formula_t::PushTextArray(const std::vector<std::string>& vec) {
     return errcode;
 }
 
-signed8_t formula_t::PushTextArray(const std::vector<std::ustring>& vec) {
+signed8_t formula_t::PushTextArray(const std::vector<ustring>& vec) {
 	signed8_t errcode = NO_ERRORS;
     errcode |= main_data->AddValue8(OP_ARRAYA);
     errcode |= main_data->AddFixedDataArray(0, 7);
@@ -787,7 +818,7 @@ signed8_t formula_t::PushTextArray(const std::vector<std::ustring>& vec) {
     errcode |= aux_data->AddValue16((unsigned16_t)vec.size());
     for(unsigned int i=0; i<vec.size(); i++) {
         errcode |= aux_data->AddValue8(0x01);
-        std::ustring str = vec[i];
+        ustring str = vec[i];
         u16string value;
         m_GlobalRecords.wide2str16(str, value);
 

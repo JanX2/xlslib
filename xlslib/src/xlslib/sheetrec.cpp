@@ -4,7 +4,7 @@
  * for dynamic generation of Excel(TM) files.
  *
  * Copyright 2004 Yeico S. A. de C. V. All Rights Reserved.
- * Copyright 2008-2011 David Hoerl All Rights Reserved.
+ * Copyright 2008-2013 David Hoerl All Rights Reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
  * permitted provided that the following conditions are met:
@@ -51,6 +51,7 @@
 
 
 using namespace xlslib_core;
+using namespace xlslib_strings;
 
 #define MAX_ROWBLOCK_SIZE            16
 // was: 32, but CONTINUE-d DBCELLs are not liked by 2003 ???
@@ -58,7 +59,7 @@ using namespace xlslib_core;
 #define RB_DBCELL_MINSIZE             8
 #define RB_DBCELL_CELLSIZEOFFSET      2
 
-// People using xlslib with at least 1200 colums maybe more - bug fix to such a file - so this comment has to be incorrect for current Excel versions
+// People using xlslib with at least 1200 columns maybe more - bug fix to such a file - so this comment has to be incorrect for current Excel versions
 #define MAX_COLUMNS_PER_ROW			256
 // (out of date): Excel 2003 limit: 256 columns per row. (Update this when we upgrade this lib to support BIFF12 !)
 
@@ -692,7 +693,7 @@ cell_t* worksheet::label(unsigned32_t row, unsigned32_t col,
 }
 
 cell_t* worksheet::label(unsigned32_t row, unsigned32_t col,
-						 const std::ustring& strlabel, xf_t* pxformat)
+						 const ustring& strlabel, xf_t* pxformat)
 {
 	label_t* lbl;
 
@@ -773,7 +774,7 @@ cell_t* worksheet::note(unsigned32_t row, unsigned32_t col,
 }
 
 cell_t* worksheet::note(unsigned32_t row, unsigned32_t col,
-						const std::ustring& remark, const std::ustring& author, xf_t* pxformat)
+						const ustring& remark, const ustring& author, xf_t* pxformat)
 {
 	note_t* note = new note_t(m_GlobalRecords, row, col, remark, author, pxformat);
 	AddCell(note);
@@ -1215,8 +1216,8 @@ void worksheet::validate(const range_t *crange, unsigned32_t options,
 
 void worksheet::validate(const range_t *crange, unsigned32_t options,
         const formula_t *cond1, const formula_t *cond2,
-        const std::ustring& promptTitle, const std::ustring& promptText,
-        const std::ustring& errorTitle, const std::ustring& errorText) {
+        const ustring& promptTitle, const ustring& promptText,
+        const ustring& errorTitle, const ustring& errorText) {
     struct DataValidation *dv = new DataValidation;
     dv->first_row = crange->first_row;
     dv->last_row = crange->last_row;
@@ -1244,7 +1245,7 @@ void worksheet::hyperLink(const cell_t *cell, const std::string& url, const std:
 
 	m_HyperLinks.push_back(link);
 }
-void worksheet::hyperLink(const cell_t *cell, const std::ustring& url, const std::ustring& mark)
+void worksheet::hyperLink(const cell_t *cell, const ustring& url, const ustring& mark)
 {
 	struct HyperLink *link = new HyperLink;
 

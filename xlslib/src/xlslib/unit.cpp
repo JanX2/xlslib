@@ -4,7 +4,7 @@
  * for dynamic generation of Excel(TM) files.
  *
  * Copyright 2004 Yeico S. A. de C. V. All Rights Reserved.
- * Copyright 2008-2011 David Hoerl All Rights Reserved.
+ * Copyright 2008-2013 David Hoerl All Rights Reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
  * permitted provided that the following conditions are met:
@@ -41,6 +41,7 @@
 #include "xlslib/datast.h"
 
 using namespace xlslib_core;
+using namespace xlslib_strings;
 
 /*
  *********************************************************************************
@@ -187,11 +188,9 @@ signed8_t CUnit::AddValue64(unsigned64_t newval)
 	return errcode;
 }
 
-signed8_t CUnit::AddValue64FP(double newval)
+unsigned64_t CUnit::EncodeFP2I64(double newval)
 {
-	signed8_t errcode = NO_ERRORS;
-
-#include "common/xls_pshpack1.h"
+//#include "common/xls_pshpack1.h"
 
 	union
 	{
@@ -200,21 +199,22 @@ signed8_t CUnit::AddValue64FP(double newval)
 		unsigned8_t b[8];
 	} v;
 
-#include "common/xls_poppack.h"
+//#include "common/xls_poppack.h"
+
+	XL_ASSERT(sizeof(v.f) == sizeof(v.i));
+	XL_ASSERT(sizeof(v.f) == sizeof(v.b));
+	XL_ASSERT(sizeof(v) == sizeof(v.f));
 
 	v.f = newval;
 
-	if(AddValue8(BYTE_0(v.i))) {errcode = GENERAL_ERROR; }
-	if(AddValue8(BYTE_1(v.i))) {errcode = GENERAL_ERROR; }
-	if(AddValue8(BYTE_2(v.i))) {errcode = GENERAL_ERROR; }
-	if(AddValue8(BYTE_3(v.i))) {errcode = GENERAL_ERROR; }
+	return v.i;
+}
 
-	if(AddValue8(BYTE_4(v.i))) {errcode = GENERAL_ERROR; }
-	if(AddValue8(BYTE_5(v.i))) {errcode = GENERAL_ERROR; }
-	if(AddValue8(BYTE_6(v.i))) {errcode = GENERAL_ERROR; }
-	if(AddValue8(BYTE_7(v.i))) {errcode = GENERAL_ERROR; }
+signed8_t CUnit::AddValue64FP(double newval)
+{
+	unsigned64_t i = EncodeFP2I64(newval);
 
-	return errcode;
+	return AddValue64(i);
 }
 
 signed8_t CUnit::SetValueAt16(unsigned16_t newval, unsigned32_t index)

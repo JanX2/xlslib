@@ -4,7 +4,7 @@
  * for dynamic generation of Excel(TM) files.
  *
  * Copyright 2004 Yeico S. A. de C. V. All Rights Reserved.
- * Copyright 2008-2011 David Hoerl All Rights Reserved.
+ * Copyright 2008-2013 David Hoerl All Rights Reserved.
  *
  * Redistribution and use in source and binary forms, with or without modification, are
  * permitted provided that the following conditions are met:
@@ -52,20 +52,20 @@ namespace xlslib_core
 		friend class worksheet;
 
 	private:
-		label_t(CGlobalRecords& gRecords, unsigned32_t rowval, unsigned32_t colval, const u16string& labelstrval, xf_t* pxfval = NULL);
+		label_t(CGlobalRecords& gRecords, unsigned32_t rowval, unsigned32_t colval, const xlslib_strings::u16string& labelstrval, xf_t* pxfval = NULL);
 		label_t(CGlobalRecords& gRecords, unsigned32_t rowval, unsigned32_t colval, const std::string& labelstrval, xf_t* pxfval = NULL);
 #ifndef __FRAMEWORK__
-		label_t(CGlobalRecords& gRecords, unsigned32_t rowval, unsigned32_t colval, const std::ustring& labelstrval, xf_t* pxfval = NULL);
+		label_t(CGlobalRecords& gRecords, unsigned32_t rowval, unsigned32_t colval, const xlslib_strings::ustring& labelstrval, xf_t* pxfval = NULL);
 #endif
 		virtual ~label_t();
 
 	private:
-		u16string strLabel;
+		xlslib_strings::u16string strLabel;
 		bool inSST;
 		void setType();
 
 	public:
-		const u16string& GetStrLabel() const { return strLabel; }
+		const xlslib_strings::u16string& GetStrLabel() const { return strLabel; }
 
 		virtual size_t GetSize(void) const;
 		virtual CUnit* GetData(CDataStorage &datastore) const;
