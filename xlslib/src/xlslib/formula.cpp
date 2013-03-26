@@ -50,6 +50,7 @@ unsigned16_t xlslib_core::NumberOfArgsForExcelFunction(expr_function_code_t func
     unsigned16_t result = A_UNKNOWN;
     switch (func) {
         case FUNC_UDF: result = A_UNKNOWN; break;
+		case FUNC_IF: result = A_2_OR_3; break;
 		case FUNC_COUNT: result = A_1_OR_MORE; break;
 		case FUNC_ISNA: result = A_1; break;
 		case FUNC_ISERROR: result = A_1; break;

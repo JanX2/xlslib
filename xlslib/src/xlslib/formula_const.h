@@ -205,6 +205,7 @@ namespace xlslib_core
 	 * Built-in Excel functions and command equivalents
 	 */
 #define xlfCount 0
+#define xlfIf 1
 #define xlfIsna 2
 #define xlfIserror 3
 #define xlfSum 4
@@ -752,6 +753,7 @@ namespace xlslib_core
 		 * Built-in Excel functions and command equivalents
 		 */
 		FUNC_COUNT = xlfCount,
+		FUNC_IF = xlfIf,
 		FUNC_ISNA = xlfIsna,
 		FUNC_ISERROR = xlfIserror,
 		FUNC_SUM = xlfSum,

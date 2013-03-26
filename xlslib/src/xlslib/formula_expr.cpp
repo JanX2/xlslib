@@ -625,6 +625,7 @@ void function_basenode_t::GetResultEstimate(estimated_formula_result_t &dst) con
 	case FUNC_UDF:
 		XL_ASSERTS("Should've been handled by the udf class!");
 
+	case FUNC_IF:
 	case FUNC_ISNA:
 	case FUNC_ISERROR:
 	case FUNC_TRUE:

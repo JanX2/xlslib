@@ -432,7 +432,8 @@ typedef enum {
      * Built-in Excel functions and command equivalents
      */
     FUNC_COUNT = 0,
-    FUNC_ISNA = 2,
+    FUNC_IF,
+    FUNC_ISNA,
     FUNC_ISERROR,
     FUNC_SUM,
     FUNC_AVERAGE,
