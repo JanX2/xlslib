@@ -40,6 +40,7 @@
 #include "xlslib/formula_cell.h"
 #include "xlslib/formula_const.h"
 #include "xlslib/datast.h"
+#include "xlslib/common.h"
 #include "xlslib/sheetrec.h"
 
 using namespace xlslib_core;

@@ -33,6 +33,7 @@
 #include "xlslib/formula_estimate.h"
 #include "xlslib/formula_cell.h"
 #include "xlslib/formula.h"
+#include "xlslib/common.h"
 #include "xlslib/sheetrec.h"
 
 #ifdef __BCPLUSPLUS__

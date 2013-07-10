@@ -222,6 +222,7 @@ CUnit* worksheet::DumpData(CDataStorage &datastore, size_t offset, size_t writeL
 			m_CurrentCell = m_Cells.begin();
 			m_CurrentHlink = m_HyperLinks.begin();
 			m_CurrentDval = m_DataValidations.begin();
+			m_Current_Range = m_MergedRanges.begin();
 			repeat  = true;
 			CHANGE_DUMPSTATE(SHEET_BOF);
 			break;
@@ -360,16 +361,31 @@ CUnit* worksheet::DumpData(CDataStorage &datastore, size_t offset, size_t writeL
 		case SHEET_MERGED:
 			XTRACE("\tMERGED");
 			if(!m_MergedRanges.empty())	{
-				m_pCurrentData = datastore.MakeCMergedCells();
-				((CMergedCells*)m_pCurrentData)->SetNumRanges(m_MergedRanges.size());
-				for(Range_Vect_Itor_t mr = m_MergedRanges.begin(); mr != m_MergedRanges.end(); mr++) {
-					((CMergedCells*)m_pCurrentData)->AddRange(*mr);
+				size_t m_ranges = static_cast<size_t>(m_MergedRanges.end() - m_Current_Range);
+				if(m_ranges) {
+					m_pCurrentData = datastore.MakeCMergedCells();
+					if(m_ranges > 1027) {
+						m_ranges = 1027;
+					}
+
+					((CMergedCells*)m_pCurrentData)->SetNumRanges(m_ranges);
+					for(size_t i=0; i<m_ranges; ++i) {
+						((CMergedCells*)m_pCurrentData)->AddRange(*m_Current_Range++);
+					}
+					repeat = false;
+					changeDumpState = false;
+				} else {
+					repeat = true;
+					changeDumpState = true;
 				}
-				repeat = false;
 			} else {
+				// if the list is empty, change the dump state.
 				repeat = true;
+				changeDumpState = true;
 			}
-			CHANGE_DUMPSTATE(SHEET_WINDOW2);
+			if(changeDumpState) {
+				CHANGE_DUMPSTATE(SHEET_WINDOW2);
+			}
 			break;
 
 		case SHEET_WINDOW2:

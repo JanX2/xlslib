@@ -205,11 +205,12 @@ namespace xlslib_core
 		friend class workbook;
 
 	private:
-		CGlobalRecords&			m_GlobalRecords;
+		CGlobalRecords& m_GlobalRecords;
 		SheetRecordDumpState_t m_DumpState;
-		CUnit*					m_pCurrentData;
+		CUnit* m_pCurrentData;
 
 		Range_Vect_t m_MergedRanges;
+		Range_Vect_Itor_t m_Current_Range;
 
 		Colinfo_Set_t m_Colinfos;
 		Colinfo_Set_Itor_t m_Current_Colinfo;
@@ -241,7 +242,7 @@ namespace xlslib_core
 
 		// cache a bit for speedups
 		Cell_Set_Itor_t	cellIterHint;
-		cell_t*					cellHint;
+		cell_t* cellHint;
 
 		bool defRowsHidden;
 		unsigned16_t defRowHeight;
