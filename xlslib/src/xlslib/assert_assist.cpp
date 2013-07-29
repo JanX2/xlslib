@@ -3,7 +3,8 @@
  * This file is part of xlslib -- A multiplatform, C/C++ library
  * for dynamic generation of Excel(TM) files.
  *
-3 *
+ * Copyright 2010-2011 Ger Hobbelt All Rights Reserved.
+ *
  * Redistribution and use in source and binary forms, with or without modification, are
  * permitted provided that the following conditions are met:
  *
@@ -30,6 +31,7 @@
 #include "common/systype.h"
 
 #include "xlslib/tostr.h"
+
 
 static void exception_throwing_assertion_reporter(const char *expr, const char *filename, int lineno, const char *funcname)
 {
