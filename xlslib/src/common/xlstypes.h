@@ -99,7 +99,7 @@ typedef unsigned long long	unsigned64_t;
 namespace xlslib_strings
 {
 
-// MAC Framework
+// Mac OS X Framework
 #if defined(__FRAMEWORK__)
 
 #include "xlconfig.h"
@@ -111,7 +111,7 @@ typedef std::basic_string<unsigned16_t> u16string;
 typedef std::string string;
 typedef unsigned16_t xchar16_t;
 
-// Not Framework
+// Not a Framework
 #else										
 
 // Windows

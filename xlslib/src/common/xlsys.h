@@ -93,7 +93,7 @@
 
 #include "xlconfig.h"
 
-#if !defined(__FRAMEWORK__)				// MAC Framework
+#if !defined(__FRAMEWORK__)				// Mac OS X Framework
 #if defined(HAVE_ICONV)
 #define HAVE_WORKING_ICONV			1
 #endif
