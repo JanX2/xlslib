@@ -249,6 +249,14 @@ extern "C"
 #define XL_FUNCNAME()                   "???"
 #endif
 
+#ifndef CLANG_ANALYZER_NORETURN
+#if __has_feature(attribute_analyzer_noreturn)
+#define CLANG_ANALYZER_NORETURN __attribute__((analyzer_noreturn))
+#else
+#define CLANG_ANALYZER_NORETURN
+#endif
+#endif
+
 /**
 Custom ASSERT macro; since we create a library, we'ld better allow the user of that
 lib to set up how [s]he wants to have her/his assertion failures reported.
@@ -317,7 +325,7 @@ will be properly 'munched'.
 
 typedef void xlslib_userdef_assertion_reporter(const char *expr, const char *fname, int lineno, const char *funcname);
 
-void xlslib_report_failed_assertion(const char *expr, const char *fname, int lineno, const char *funcname);
+void xlslib_report_failed_assertion(const char *expr, const char *fname, int lineno, const char *funcname) CLANG_ANALYZER_NORETURN;
 
 /**
 override the default (C++ exception throwing) assertion failure reporting function within xlslib.
