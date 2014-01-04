@@ -167,8 +167,8 @@ void hpsf_doc_t::insert(HPSFitem *item)
 
 		if(!success) {
 			existingItem = *(ret.first);
-			delete existingItem;
 			itemList.erase(existingItem);
+			delete existingItem;
 		}
 	} while(!success);
 }
