@@ -1786,6 +1786,7 @@ static const struct
 	{ "CUBEKPIMEMBER", FUNC_CUBEKPIMEMBER },
 	{ "CUBESET", FUNC_CUBESET },
 	{ "CUBESETCOUNT", FUNC_CUBESETCOUNT },
+	{ "IF", FUNC_IF },
 	{ "IFERROR", FUNC_IFERROR },
 	{ "COUNTIFS", FUNC_COUNTIFS },
 	{ "SUMIFS", FUNC_SUMIFS },
@@ -1891,7 +1892,7 @@ char *FormulaFunctionsTest(const char *md5_checksum)
 		expression_node_factory_t& maker = wb.GetFormulaFactory();
 
 		unsigned16_t argmask = NumberOfArgsForExcelFunction(fn);
-		if (argmask != 0 && !(argmask & 0x8000U) /* A_MACRO */) 
+		if (argmask != 0 && !(argmask & 0x80000000U) /* A_MACRO */)
 		{
 			if (argmask & 0x0001)
 			{

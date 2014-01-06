@@ -45,8 +45,8 @@ namespace xlslib_core
 	// 'operand class'
 	typedef enum cell_op_class_t
 	{
+		CELLOP_AS_REFER     = 0x20, // [R] - reference, i.e. the cell address itself
 		CELLOP_AS_VALUE     = 0x40, //  V  - value, i.e. the value stored in the cell
-		CELLOP_AS_REFERENCE = 0x20, // [R] - reference, i.e. the cell address itself
 		CELLOP_AS_ARRAY     = 0x60, //  A  - array, i.e. the cell address in {...} array form
 	} cell_op_class_t;
 
@@ -151,44 +151,44 @@ namespace xlslib_core
 
 	enum
 	{
-		A_UNKNOWN = 0U,
-		A_0 = 0x0001,
-		A_1 = 0x0002,
-		A_2 = 0x0004,
-		A_3 = 0x0008,
-		A_4 = 0x0010,
-		A_5 = 0x0020,
-		A_6 = 0x0040,
-		A_0_OR_1 = 0x0003,
-		A_0_TO_2 = 0x0007,
-		A_0_TO_3 = 0x000F,
-		A_0_TO_4 = 0x001F,
-		A_0_TO_5 = 0x003F,
-		A_1_OR_2 = 0x0006,
-		A_1_OR_MORE = 0x7FFE,
-		A_2_OR_MORE = 0x7FFC,
-		A_1_TO_3 = 0x000E,
-		A_1_TO_4 = 0x001E,
-		A_1_TO_5 = 0x003E,
-		A_1_TO_7 = 0x00FE,
-		A_2_OR_3 = 0x000C,
-		A_2_TO_4 = 0x001C,
-		A_2_TO_5 = 0x003C,
-		A_2_TO_9 = 0x03FC,
-		A_3_OR_MORE = 0x7FF8,
-		A_3_OR_4 = 0x0018,
-		A_3_TO_5 = 0x0038,
-		A_3_TO_6 = 0x0078,
-		A_4_OR_5 = 0x0030,
-		A_4_TO_6 = 0x0070,
-		A_5_OR_6 = 0x0060,
-		A_5_TO_7 = 0x00E0,
-		A_6_OR_7 = 0x00C0,
-		A_6_TO_8 = 0x01C0,
-		A_7_OR_8 = 0x0180,
-		A_8_OR_9 = 0x0300,
+		A_0				= 0x00000001,
+		A_1				= 0x00000002,
+		A_2				= 0x00000004,
+		A_3				= 0x00000008,
+		A_4				= 0x00000010,
+		A_5				= 0x00000020,
+		A_6				= 0x00000040,
+		A_0_OR_1		= 0x00000003,
+		A_0_TO_2		= 0x00000007,
+		A_0_TO_3		= 0x0000000F,
+		A_0_TO_4		= 0x0000001F,
+		A_0_TO_5		= 0x0000003F,
+		A_1_OR_2		= 0x00000006,
+		A_1_OR_MORE		= 0x7FFFFFFE,
+		A_2_OR_MORE		= 0x7FFFFFFC,
+		A_1_TO_3		= 0x0000000E,
+		A_1_TO_4		= 0x0000001E,
+		A_1_TO_5		= 0x0000003E,
+		A_1_TO_7		= 0x000000FE,
+		A_2_OR_3		= 0x0000000C,
+		A_2_TO_4		= 0x0000001C,
+		A_2_TO_5		= 0x0000003C,
+		A_2_TO_9		= 0x000003FC,
+		A_3_OR_MORE		= 0x7FFFFFF8,
+		A_3_OR_4		= 0x00000018,
+		A_3_TO_5		= 0x00000038,
+		A_3_TO_6		= 0x00000078,
+		A_4_OR_5		= 0x00000030,
+		A_4_TO_6		= 0x00000070,
+		A_5_OR_6		= 0x00000060,
+		A_5_TO_7		= 0x000000E0,
+		A_6_OR_7		= 0x000000C0,
+		A_6_TO_8		= 0x000001C0,
+		A_7_OR_8		= 0x00000180,
+		A_8_OR_9		= 0x00000300,
 
-		A_MACRO = 0x8000,
+		A_UNKNOWN		= 0x7FFFFFFF,	// means we accept any number of arguments (ie whatever the user asks for)
+		A_MACRO			= 0x80000000,	// illegal function ???
 	};
 
 #if !defined(xlUDF)
@@ -555,6 +555,7 @@ namespace xlslib_core
 #define xlfVarPA 365
 #define xlfStDevA 366
 #define xlfVarA 367
+#if 0 // these should not be provided to an older excel
 	/* [i_a] since Excel 2007: */
 #define xlfBahttext 368
 #define xlfThaidayofweek 369
@@ -736,6 +737,7 @@ namespace xlslib_core
 #define xlfGammaln_precise 545
 #define xlfCeiling_precise 546
 #define xlfFloor_precise 547
+#endif
 
 #endif
 // XLCALL.H not loaded
@@ -1103,6 +1105,7 @@ namespace xlslib_core
 		FUNC_VARPA = xlfVarPA,
 		FUNC_STDEVA = xlfStDevA,
 		FUNC_VARA = xlfVarA,
+#if 0 // these should not be provided to an older excel
 		FUNC_BAHTTEXT = xlfBahttext,
 		FUNC_THAIDAYOFWEEK = xlfThaidayofweek,
 		FUNC_THAIDIGIT = xlfThaidigit,
@@ -1282,6 +1285,7 @@ namespace xlslib_core
 		FUNC_GAMMALN_PRECISE = xlfGammaln_precise,
 		FUNC_CEILING_PRECISE = xlfCeiling_precise,
 		FUNC_FLOOR_PRECISE = xlfFloor_precise,
+#endif
 	};
 }
 

@@ -48,11 +48,11 @@ namespace xlslib_core
 	 *  @note
 	 *  Bit 0 (0x0001U) indicates whether the function accepts @e zero (0) arguments.
 	 *
-	 *  Bit 1..14 indicate whether the function accepts 1..14 arguments.
+	 *  Bit 1..30 indicate whether the function accepts 1..30 arguments.
 	 *
-	 *  Bit 15 (0x8000U) indicates the function accepts more than 14 arguments.
+	 *  Bit 31 (0x80000000U) indicates that the "function" is really a MACRO
 	 */
-	unsigned16_t NumberOfArgsForExcelFunction(expr_function_code_t func);
+	unsigned32_t NumberOfArgsForExcelFunction(expr_function_code_t func);
 
 
     class formula_t

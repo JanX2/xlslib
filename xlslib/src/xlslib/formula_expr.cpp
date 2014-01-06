@@ -608,6 +608,7 @@ function_basenode_t::~function_basenode_t()
 {
 }
 
+// Note: commented out case statements because code is too new for older Excel programs
 void function_basenode_t::GetResultEstimate(estimated_formula_result_t &dst) const
 {
 	/*
@@ -644,7 +645,7 @@ void function_basenode_t::GetResultEstimate(estimated_formula_result_t &dst) con
 	case FUNC_ISNONTEXT:
 	case FUNC_ISLOGICAL:
 	case FUNC_ISPMT:
-	case FUNC_ISTHAIDIGIT:
+	//case FUNC_ISTHAIDIGIT:
 		dst.SetCalcOnLoad();
 		dst.SetBoolean(false);     // faked value estimate!
 		break;
@@ -664,8 +665,8 @@ void function_basenode_t::GetResultEstimate(estimated_formula_result_t &dst) con
 	case FUNC_DCOUNTA:
 	case FUNC_COUNTIF:
 	case FUNC_COUNTBLANK:
-	case FUNC_WEEKNUM:
-	case FUNC_COUNTIFS:
+	//case FUNC_WEEKNUM:
+	//case FUNC_COUNTIFS:
 		dst.SetCalcOnLoad();
 		dst.SetInteger(42);     // faked value estimate!
 		break;
@@ -700,8 +701,6 @@ void function_basenode_t::GetResultEstimate(estimated_formula_result_t &dst) con
 	case FUNC_DVAR:
 	case FUNC_DATE:
 	case FUNC_TIME:
-	case FUNC_NOW:
-	case FUNC_OFFSET:
 	case FUNC_ATAN2:
 	case FUNC_ASIN:
 	case FUNC_ACOS:
@@ -714,7 +713,6 @@ void function_basenode_t::GetResultEstimate(estimated_formula_result_t &dst) con
 	case FUNC_ROUNDUP:
 	case FUNC_ROUNDDOWN:
 	case FUNC_DAYS360:
-	case FUNC_TODAY:
 	case FUNC_MEDIAN:
 	case FUNC_SUMPRODUCT:
 	case FUNC_SINH:
@@ -737,6 +735,7 @@ void function_basenode_t::GetResultEstimate(estimated_formula_result_t &dst) con
 	case FUNC_VARPA:
 	case FUNC_STDEVA:
 	case FUNC_VARA:
+#if 0 // these should not be provided to an older excel
 	case FUNC_SERIESSUM:
 	case FUNC_ERF:
 	case FUNC_ERFC:
@@ -751,6 +750,7 @@ void function_basenode_t::GetResultEstimate(estimated_formula_result_t &dst) con
 	case FUNC_GAMMALN_PRECISE:
 	case FUNC_CEILING_PRECISE:
 	case FUNC_FLOOR_PRECISE:
+#endif
 		dst.SetCalcOnLoad();
 		dst.SetFloatingPoint(42.0);     // faked value estimate!
 		break;
@@ -767,6 +767,7 @@ void function_basenode_t::GetResultEstimate(estimated_formula_result_t &dst) con
 	case FUNC_ROMAN:
 	case FUNC_HYPERLINK:
 	case FUNC_PHONETIC:
+#if 0 // these should not be provided to an older excel
 	case FUNC_BAHTTEXT:
 	case FUNC_HEX2BIN:
 	case FUNC_HEX2DEC:
@@ -780,16 +781,32 @@ void function_basenode_t::GetResultEstimate(estimated_formula_result_t &dst) con
 	case FUNC_BIN2DEC:
 	case FUNC_BIN2OCT:
 	case FUNC_BIN2HEX:
+#endif
 		dst.SetCalcOnLoad();
 		dst.SetText("???");     // faked value estimate!
 		break;
 
+	case FUNC_NOW:
+	case FUNC_TODAY:
 	case FUNC_RAND:
 	case FUNC_VOLATILE:
-	case FUNC_RANDBETWEEN:
+	//case FUNC_RANDBETWEEN:
 		dst.SetCalcAlways();
 		dst.SetCalcOnLoad();
 		dst.SetFloatingPoint(0.5);     // faked random value estimate!
+		break;
+
+	case FUNC_OFFSET:
+	case FUNC_INDIRECT:
+		dst.SetCalcAlways();
+		dst.SetCalcOnLoad();
+		dst.SetInteger(42);     // faked value estimate!
+		break;
+
+	case FUNC_CELL:
+		dst.SetCalcAlways();
+		dst.SetCalcOnLoad();
+		dst.SetText("???");     // faked value estimate!
 		break;
 	}
 }
@@ -797,12 +814,12 @@ void function_basenode_t::GetResultEstimate(estimated_formula_result_t &dst) con
 size_t function_basenode_t::GetSize(bool include_subtree) const
 {
 	size_t len = 1+2; // OP_FUNC
-	unsigned16_t argcntmask = NumberOfArgsForExcelFunction(func);
+	unsigned32_t argcntmask = NumberOfArgsForExcelFunction(func);
 	size_t chcnt = GetNumberOfChilds();
 
 	// XL_ASSERT(argcntmask & (1U << (chcnt > 15 ? 15 : chcnt)));
-	if (chcnt >= 15 || (argcntmask & ~(1U << chcnt))) {
-		len += 1;
+	if (argcntmask == A_UNKNOWN || (argcntmask & ~(1U << chcnt))) {
+		len += 1;	// with the Function with variable args, we push ONE additional byte
 	}
 
 	if (include_subtree) {
@@ -817,7 +834,7 @@ size_t function_basenode_t::GetSize(bool include_subtree) const
 signed8_t function_basenode_t::DumpData(formula_t &stack, bool include_subtree) const
 {
 	signed8_t errcode = NO_ERRORS;
-	unsigned16_t argcntmask = NumberOfArgsForExcelFunction(func);
+	unsigned32_t argcntmask = NumberOfArgsForExcelFunction(func);
 	size_t chcnt = GetNumberOfChilds();
 
 	if (include_subtree) {
@@ -830,7 +847,7 @@ signed8_t function_basenode_t::DumpData(formula_t &stack, bool include_subtree) 
 	}
 
 	// XL_ASSERT(argcntmask & (1U << (chcnt > 15 ? 15 : chcnt)));
-	if (chcnt >= 15 || (argcntmask & ~(1U << chcnt))) {
+	if (argcntmask == A_UNKNOWN || (argcntmask & ~(1U << chcnt))) {
         errcode |= stack.PushFunction(func, chcnt);
 	} else {
         errcode |= stack.PushFunction(func);
