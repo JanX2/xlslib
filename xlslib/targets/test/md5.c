@@ -385,6 +385,7 @@ int load_file(unsigned8_t **buf_ref, size_t *buflen_ref, const char *filepath)
 	}
 
 	fclose(f);
+	if(!b) goto fail_dramatically;
 
 	*buf_ref = b;
 	*buflen_ref = blen;
