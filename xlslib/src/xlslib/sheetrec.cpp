@@ -798,20 +798,32 @@ cell_t* worksheet::note(unsigned32_t row, unsigned32_t col,
 }
 
 cell_t* worksheet::formula(unsigned32_t row, unsigned32_t col,
+						   bool array_formula,
 						   expression_node_t* expression_root,
 						   bool auto_destruct_expression_tree,
 						   xf_t* pxformat)
 {
 	formula_cell_t* expr = new formula_cell_t(m_GlobalRecords, row, col, 
-            expression_root, auto_destruct_expression_tree, pxformat);
+            expression_root, array_formula, auto_destruct_expression_tree, pxformat);
 	AddCell(expr);
 	return expr;
 }
 
 cell_t* worksheet::formula(unsigned32_t row, unsigned32_t col,
-						   formula_t *formula, xf_t* pxformat)
+						   expression_node_t* expression_root,
+						   bool auto_destruct_expression_tree,
+						   xf_t* pxformat)
 {
-	formula_cell_t* expr = new formula_cell_t(m_GlobalRecords, row, col, formula, pxformat);
+	formula_cell_t* expr = new formula_cell_t(m_GlobalRecords, row, col, 
+            expression_root, false, auto_destruct_expression_tree, pxformat);
+	AddCell(expr);
+	return expr;
+}
+
+cell_t* worksheet::formula(unsigned32_t row, unsigned32_t col,
+						   formula_t *formula, bool array_formula, xf_t* pxformat)
+{
+	formula_cell_t* expr = new formula_cell_t(m_GlobalRecords, row, col, formula, array_formula, pxformat);
 	AddCell(expr);
 	return expr;
 }

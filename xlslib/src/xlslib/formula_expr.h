@@ -389,11 +389,11 @@ namespace xlslib_core
 		cellarea_deref_node_t *area(const cell_t& upper_left_corner, const cell_t& lower_right_corner, const worksheet* ws, cell_addr_mode_t attr, cell_op_class_t opclass = CELLOP_AS_VALUE);
 		unary_op_node_t *op(expr_operator_code_t op, expression_node_t* arg);
 		binary_op_node_t *op(expr_operator_code_t op, expression_node_t* arg1, expression_node_t* arg2);
-		z_ary_func_node_t *f(expr_function_code_t func);
-		unary_func_node_t *f(expr_function_code_t func, expression_node_t* arg);
-		binary_func_node_t *f(expr_function_code_t func, expression_node_t* arg1, expression_node_t* arg2);
-		n_ary_func_node_t *f(expr_function_code_t func, size_t argcount, expression_node_t** arg_arr = NULL);
-		userdef_func_node_t *udf(int expr_user_function, size_t argcount = 0, expression_node_t** arg_arr = NULL);
+		z_ary_func_node_t *f(expr_function_code_t func, cell_op_class_t op_class = CELLOP_BOGUS);
+		unary_func_node_t *f(expr_function_code_t func, expression_node_t* arg, cell_op_class_t op_class = CELLOP_BOGUS);
+		binary_func_node_t *f(expr_function_code_t func, expression_node_t* arg1, expression_node_t* arg2, cell_op_class_t op_class = CELLOP_BOGUS);
+		n_ary_func_node_t *f(expr_function_code_t func, size_t argcount, expression_node_t** arg_arr, cell_op_class_t op_class = CELLOP_BOGUS);
+		userdef_func_node_t *udf(int expr_user_function, size_t argcount = 0, expression_node_t** arg_arr = NULL, cell_op_class_t op_class = CELLOP_BOGUS);
 
 	protected:
 		CGlobalRecords& m_GlobalRecords;

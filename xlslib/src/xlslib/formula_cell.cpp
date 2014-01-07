@@ -54,11 +54,12 @@ using namespace xlslib_strings;
  * The section on formulas is entitled "Microsoft Excel Formulas"
  */
 
-formula_cell_t::formula_cell_t(CGlobalRecords& gRecords, unsigned32_t rowval, unsigned32_t colval, expression_node_t* ast_val, bool autodes, xf_t* pxfval) :
+formula_cell_t::formula_cell_t(CGlobalRecords& gRecords, unsigned32_t rowval, unsigned32_t colval, expression_node_t* ast_val, bool a_formula, bool autodes, xf_t* pxfval) :
 	cell_t(gRecords, rowval, colval, pxfval),
 	ast(ast_val),
 	auto_destruct_expression_tree(autodes),
-    stack(NULL)
+	array_formula(a_formula),
+	stack(NULL)
 {
 	XL_ASSERT(ast_val);
 
@@ -68,9 +69,11 @@ formula_cell_t::formula_cell_t(CGlobalRecords& gRecords, unsigned32_t rowval, un
 }
 
 formula_cell_t::formula_cell_t(CGlobalRecords& gRecords, unsigned32_t rowval, unsigned32_t colval, 
-        formula_t *stack_val, xf_t* pxfval) :
+        formula_t *stack_val, bool a_formula, xf_t* pxfval) :
 	cell_t(gRecords, rowval, colval, pxfval),
     ast(NULL),
+	auto_destruct_expression_tree(true),
+	array_formula(a_formula),
 	stack(stack_val)
 {
 	XL_ASSERT(stack_val);
@@ -104,8 +107,10 @@ size_t formula_cell_t::GetSize(void) const
 	size_t len = 4+2+2+2+8+2+4+2;
     if (expr) {
         len += expr->GetSize();
+printf("ESize: %ld\n", expr->GetSize());
     } else if (stack) {
         len += stack->GetSize();
+printf("SSize: %ld\n", stack->GetSize());
     }
     GetResultEstimate(estimate);
 
@@ -116,7 +121,7 @@ size_t formula_cell_t::GetSize(void) const
 		XL_ASSERT(str);
 		len += 4 + str->length() * (CGlobalRecords::IsASCII(*str) ? sizeof(unsigned8_t) : sizeof(unsigned16_t));
 	}
-
+printf("Size: %ld\n", len);
 	return len;
 }
 
@@ -146,36 +151,60 @@ void formula_cell_t::DumpData(CUnit &dst) const
 CFormula::CFormula(CDataStorage &datastore, const formula_cell_t& expr) :
 	CRecord(datastore)
 {
+	size_t basepos = 0;
+
 	SetRecordType(RECTYPE_FORMULA);  // followed by the RECTYPE_STRING record when the formula evaluates to a string!
 	AddValue16((unsigned16_t)expr.GetRow());
 	AddValue16((unsigned16_t)expr.GetCol());
 	AddValue16(expr.GetXFIndex());
 
 	estimated_formula_result_t estimate(expr.GetGlobalRecords());
-
 	expr.GetResultEstimate(estimate);
-	AddValue64(estimate.GetEncodedValue()); // current_value_of_formula
-	AddValue16(estimate.GetOptionFlags()); // flags: grbit
+	AddValue64(estimate.GetEncodedValue());	// current_value_of_formula
+	AddValue16(estimate.GetOptionFlags());	// flags: grbit
+
 	AddValue32(0); // chn
+
+	if(expr.IsArrayFormula()) {
+		AddValue16(1+2+2);							// len
+		AddValue8(1);								// tExpr
+		AddValue16((unsigned16_t)expr.GetRow());
+		AddValue16((unsigned16_t)expr.GetCol());
+		SetRecordLength(GetDataSize()-RECORD_HEADER_SIZE);
+
+		// fake it by appending it at the tail of the current record!
+		basepos = GetDataSize();
+
+		AddValue16(RECTYPE_ARRAY);  // followed by the RECTYPE_STRING record when the formula evaluates to a string!
+		AddValue16(0);				// placeholder for len
+
+		AddValue16((unsigned16_t)expr.GetRow());
+		AddValue16((unsigned16_t)expr.GetRow());
+		AddValue8((unsigned8_t)expr.GetCol());
+		AddValue8((unsigned8_t)expr.GetCol());
+		AddValue16(estimate.GetOptionFlags()); // flags: grbit
+
+		AddValue32(0); // chn
+	}
 
 	size_t len_position = GetDataSize();
 	AddValue16(0 /* expr.GetSize() */ ); // length_of_parsed_expr
-
-	expr.DumpData(*this); 
-
+	
+	expr.DumpData(*this);
 	size_t end = GetDataSize();
-	SetValueAt16((unsigned16_t)(end - len_position - 2), len_position);
+	SetValueAt16((unsigned16_t)(end - len_position - 2), len_position);	// go back and set real value for token length
+printf("END=%ld Val16=%d recordLen=%ld\n", end, (unsigned16_t)(end - len_position - 2), GetDataSize()-RECORD_HEADER_SIZE);
 
-	SetRecordLength(GetDataSize()-RECORD_HEADER_SIZE);
+	SetValueAt16((unsigned16_t)(GetDataSize() - basepos - RECORD_HEADER_SIZE), basepos + 2);	// SetRecordLength on either FORMULA or the ARRAY
 
 	if (estimate.EncodedValueIsString()) {
 		// FORMULA BIFF8 is immediately followed by a STRING BIFF8 record!
 		//
 		// fake it by appending it at the tail of the current record!
-		size_t basepos = GetDataSize();
+		basepos = GetDataSize();
 
 		AddValue16(RECTYPE_STRING);
-		AddValue16(0);
+		AddValue16(0);				// placeholder for len
 
 		const u16string* str = estimate.GetStringValue();
 
@@ -183,53 +212,10 @@ CFormula::CFormula(CDataStorage &datastore, const formula_cell_t& expr) :
 		XL_ASSERT(str->length() < 256); // dbg
 		AddUnicodeString(*str, LEN2_FLAGS_UNICODE);
 
-		SetValueAt16((unsigned16_t)(GetDataSize() - basepos - 4), basepos + 2);
+		SetValueAt16((unsigned16_t)(GetDataSize() - basepos - RECORD_HEADER_SIZE), basepos + 2); // SetRecordLength
 	}
 }
 
 CFormula::~CFormula()
 {
 }
-
-/*
- *  BIFF 6 (06h)  41  72 01 02 00 0F 00 00 00  C8 7C 66 0C FF FF 00 00
- *  C0 00 00 FC 13 00 39 00  00 01 00 00 00 17 02 00
- *  46 38 1E 0A 00 42 03 FF  00
- *
- *  row=0172
- *  col = 0002
- *  ixfe = 000F
- *  num = FFFF0C667CC80000   --> string
- *  flags = 0000
- *  chn = FC00000C
- *  cce.len = 00013
- *  rgce = 39 00 00 01 00 00 00 17 02 00 46 38 1E 0A 00 42 03 FF 00
- *
- *  ptgNameX(39): ixti = 0000, ilbl = 0001, reserved = 0000
- *  ptgStr(17): cch.len = 02, flags = 0, str = 46 38 ("F8")
- *  ptgInt(1E): val = 000A (10)
- *  ptgFuncVarV(42): 00FF03 --> cargs = 3, prompt = 0, iftab = 00FF, CE = 0
- *
- *  BIFF STRING (207h)  13  0A 00 00 30 30 31 31 31  31 31 30 30 30
- *  BIFF 6 (06h)  38  73 01 02 00 0F 00 00 00  00 00 00 00 6F 40 00 00
- *  C0 00 00 FD 10 00 39 01  00 02 00 00 00 17 02 00
- *  46 38 42 02 FF 00
- *  rgce = 39 01 00 02 00 00 00 17 02 00 46 38 42 02 FF 00
- *
- *  ptgNameX(39): ixti = 0000, ilbl = 0001, reserved = 0000
- *  ptgStr(17): cch.len = 02, flags = 0, str = 46 38 ("F8")
- *  ptgFuncVarV(42): 00FF02 --> cargs = 2, prompt = 0, iftab = 00FF, CE = 0
- *
- *  BIFF 6 (06h)  45  74 01 02 00 0F 00 00 00  E0 D7 A6 04 FF FF 00 00
- *  72 01 02 FE 17 00 39 01  00 01 00 00 00 17 02 00
- *  46 38 19 40 00 01 1E 0A  00 42 03 FF 00
- *  BIFF STRING (207h)  13  0A 00 00 30 30 30 30 30  30 30 33 37 30
- *
- *
- *
- *
- *  BIFF 6 (06h)  37  6A 00 02 00 0F 00 F0 77  1B 7F CF EB BA 3F 00 00
- *  C0 00 00 FC 0F 00
- *  1E 01 00 1E 02 00 1E 03 00 1E 04 00 41 2E 01  012e  256+32+14  302
- */
-

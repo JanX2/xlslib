@@ -332,10 +332,14 @@ namespace xlslib_core
 					 const xlslib_strings::ustring& remark, const xlslib_strings::ustring& author, xf_t* pxformat = NULL);
 
 		cell_t* formula(unsigned32_t row, unsigned32_t col,
+						bool array_formula,
 						expression_node_t* expression_root, bool auto_destruct_expression_tree = false,
 						xf_t* pxformat = NULL);
 		cell_t* formula(unsigned32_t row, unsigned32_t col,
-						formula_t *formula, xf_t* pxformat = NULL);
+						expression_node_t* expression_root, bool auto_destruct_expression_tree = false,
+						xf_t* pxformat = NULL);
+		cell_t* formula(unsigned32_t row, unsigned32_t col,
+						formula_t *formula, bool array_formula, xf_t* pxformat);
 
         void validate(const range_t *crange, unsigned32_t options,
                 const formula_t *cond1 = NULL, const formula_t *cond2 = NULL,

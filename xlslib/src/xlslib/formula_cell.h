@@ -47,28 +47,32 @@ namespace xlslib_core
 
 	class formula_cell_t : public cell_t
 	{
-	public:
-		formula_cell_t(CGlobalRecords& gRecords, unsigned32_t rowval, unsigned32_t colval,
-				  expression_node_t* ast, bool auto_destruct_expression_tree = false,
-				  xf_t* pxfval = NULL);
-		formula_cell_t(CGlobalRecords& gRecords, unsigned32_t rowval, unsigned32_t colval,
-                formula_t* stack, xf_t* pxfval = NULL);
-		virtual ~formula_cell_t();
+		friend class worksheet;
 
     private:
+		formula_cell_t(CGlobalRecords& gRecords, unsigned32_t rowval, unsigned32_t colval,
+				  expression_node_t* ast, bool a_formula, bool auto_destruct_expression_tree = false,
+				  xf_t* pxfval = NULL);
+		formula_cell_t(CGlobalRecords& gRecords, unsigned32_t rowval, unsigned32_t colval,
+                formula_t* stack, bool a_formula, xf_t* pxfval);
+		virtual ~formula_cell_t();
+
 		virtual size_t GetSize(void) const;
 		virtual CUnit* GetData(CDataStorage &datastore) const;
-		const expression_node_t *GetAST() const {return ast; }
+		const expression_node_t *GetAST() const { return ast; }
 
 	private:
 		expression_node_t *ast;
 		bool auto_destruct_expression_tree;
+
+		bool array_formula;
 
         formula_t *stack;
 
 	public:
         void DumpData(CUnit &dst) const;
 		void GetResultEstimate(estimated_formula_result_t &dst) const;
+		bool IsArrayFormula(void) const { return array_formula; }
 	};
 
 	// forward ref

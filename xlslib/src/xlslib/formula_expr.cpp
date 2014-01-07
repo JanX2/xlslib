@@ -1097,27 +1097,27 @@ binary_op_node_t *expression_node_factory_t::op(expr_operator_code_t op, express
 	return new binary_op_node_t(m_GlobalRecords, op, arg1, arg2);
 }
 
-z_ary_func_node_t *expression_node_factory_t::f(expr_function_code_t func)
+z_ary_func_node_t *expression_node_factory_t::f(expr_function_code_t func, cell_op_class_t op_class)
 {
 	return new z_ary_func_node_t(m_GlobalRecords, func);
 }
 
-unary_func_node_t *expression_node_factory_t::f(expr_function_code_t func, expression_node_t* arg)
+unary_func_node_t *expression_node_factory_t::f(expr_function_code_t func, expression_node_t* arg, cell_op_class_t op_class)
 {
 	return new unary_func_node_t(m_GlobalRecords, func, arg);
 }
 
-binary_func_node_t *expression_node_factory_t::f(expr_function_code_t func, expression_node_t* arg1, expression_node_t* arg2)
+binary_func_node_t *expression_node_factory_t::f(expr_function_code_t func, expression_node_t* arg1, expression_node_t* arg2, cell_op_class_t op_class)
 {
 	return new binary_func_node_t(m_GlobalRecords, func, arg1, arg2);
 }
 
-n_ary_func_node_t *expression_node_factory_t::f(expr_function_code_t func, size_t argcount, expression_node_t** arg_arr)
+n_ary_func_node_t *expression_node_factory_t::f(expr_function_code_t func, size_t argcount, expression_node_t** arg_arr, cell_op_class_t op_class)
 {
 	return new n_ary_func_node_t(m_GlobalRecords, func, argcount, arg_arr);
 }
 
-userdef_func_node_t *expression_node_factory_t::udf(int expr_user_function, size_t argcount, expression_node_t** arg_arr)
+userdef_func_node_t *expression_node_factory_t::udf(int expr_user_function, size_t argcount, expression_node_t** arg_arr, cell_op_class_t op_class)
 {
 	return new userdef_func_node_t(m_GlobalRecords, expr_user_function, argcount, arg_arr);
 }

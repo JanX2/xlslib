@@ -226,9 +226,13 @@ extern "C" {
 
 	cell_t *xlsWorksheetFormulaCell(worksheet *w, unsigned32_t row, unsigned32_t col, formula_t *formula, xf_t *pxformat)
 																{
-																	return w->formula(row, col, formula, pxformat);
+																	return w->formula(row, col, formula, false, pxformat);
 																}
-    void xlsWorksheetValidateCell(worksheet *w, cell_t *cell, unsigned32_t options, 
+	cell_t *xlsWorksheetFormulaCellArray(worksheet *w, unsigned32_t row, unsigned32_t col, formula_t *formula, xf_t *pxformat)
+																{
+																	return w->formula(row, col, formula, true, pxformat);
+																}
+    void xlsWorksheetValidateCell(worksheet *w, cell_t *cell, unsigned32_t options,
             const formula_t *cond1, const formula_t *cond2,
             const char *prompt_title, const char *prompt_text,
             const char *error_title, const char *error_text)   

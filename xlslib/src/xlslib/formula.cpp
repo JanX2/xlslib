@@ -213,6 +213,7 @@ signed8_t formula_t::PushFunction(expr_function_code_t func) {
 	function_property func_prop = PropertyForForExcelFunction(func);
 	unsigned32_t argcntmask = func_prop.num_args;
 	unsigned8_t op = (OP_FUNC & ~CELLOP_AS_REFER) | func_prop.op_class;
+if(func == FUNC_IF) op |= CELLOP_AS_ARRAY;
     signed8_t errcode = NO_ERRORS;
     if (argcntmask == A_0 || argcntmask == A_1 || argcntmask == A_2 ||
             argcntmask == A_3 || argcntmask == A_4 || argcntmask == A_5 ||
@@ -229,6 +230,7 @@ signed8_t formula_t::PushFunction(expr_function_code_t func, size_t argcount) {
 	function_property func_prop = PropertyForForExcelFunction(func);
 	unsigned32_t argcntmask = func_prop.num_args;
 	unsigned8_t op = (OP_FUNCVAR & ~CELLOP_AS_REFER) | func_prop.op_class;
+if(func == FUNC_IF) op |= CELLOP_AS_ARRAY;
     signed8_t errcode = NO_ERRORS;
     if (argcntmask == A_UNKNOWN || (argcntmask & ~(1U << argcount))) {
 		errcode |= main_data->AddValue8(op);

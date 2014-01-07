@@ -1090,7 +1090,8 @@ EXTERN_TYPE void xlsFormulaPushTextArray(formula_t *formula, const char **text, 
 EXTERN_TYPE void xlsFormulaPushTextArrayW(formula_t *formula, const unichar_t **text, size_t count);
 
 EXTERN_TYPE cell_t *xlsWorksheetFormulaCell(worksheet *w, unsigned32_t row, unsigned32_t col, formula_t *stack, xf_t *pxformat);
-EXTERN_TYPE void xlsWorksheetValidateCell(worksheet *w, cell_t *cell, unsigned32_t options, 
+EXTERN_TYPE cell_t *xlsWorksheetFormulaCellArray(worksheet *w, unsigned32_t row, unsigned32_t col, formula_t *formula, xf_t *pxformat);
+EXTERN_TYPE void xlsWorksheetValidateCell(worksheet *w, cell_t *cell, unsigned32_t options,
         const formula_t *cond1, const formula_t *cond2, 
         const char *prompt_title, const char *prompt_text, 
         const char *error_title, const char *error_text);
