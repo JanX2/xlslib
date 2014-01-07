@@ -598,9 +598,10 @@ signed8_t binary_op_node_t::DumpData(formula_t &stack, bool include_subtree) con
 	return errcode;
 }
 
-function_basenode_t::function_basenode_t(CGlobalRecords& gRecords, expr_function_code_t f) :
+function_basenode_t::function_basenode_t(CGlobalRecords& gRecords, expr_function_code_t f, cell_op_class_t op_c) :
 	expression_node_t(gRecords),
-	func(f)
+	func(f),
+	op_class(op_c)
 {
 }
 
@@ -848,16 +849,16 @@ signed8_t function_basenode_t::DumpData(formula_t &stack, bool include_subtree) 
 
 	// XL_ASSERT(argcntmask & (1U << (chcnt > 15 ? 15 : chcnt)));
 	if (argcntmask == A_UNKNOWN || (argcntmask & ~(1U << chcnt))) {
-        errcode |= stack.PushFunction(func, chcnt);
+        errcode |= stack.PushFunction(func, chcnt, op_class);
 	} else {
-        errcode |= stack.PushFunction(func);
+        errcode |= stack.PushFunction(func, op_class);
 	}
 
 	return errcode;
 }
 
-z_ary_func_node_t::z_ary_func_node_t(CGlobalRecords& gRecords, expr_function_code_t func) :
-	function_basenode_t(gRecords, func)
+z_ary_func_node_t::z_ary_func_node_t(CGlobalRecords& gRecords, expr_function_code_t func, cell_op_class_t op_c) :
+	function_basenode_t(gRecords, func, op_c)
 {
 }
 
@@ -865,8 +866,8 @@ z_ary_func_node_t::~z_ary_func_node_t()
 {
 }
 
-unary_func_node_t::unary_func_node_t(CGlobalRecords& gRecords, expr_function_code_t op, expression_node_t* a) :
-	function_basenode_t(gRecords, op),
+unary_func_node_t::unary_func_node_t(CGlobalRecords& gRecords, expr_function_code_t op, cell_op_class_t op_c, expression_node_t* a) :
+	function_basenode_t(gRecords, op, op_c),
 	arg(a)
 {
 }
@@ -886,8 +887,8 @@ unsigned16_t unary_func_node_t::GetNumberOfChilds(void) const
 	return 1;
 }
 
-binary_func_node_t::binary_func_node_t(CGlobalRecords& gRecords, expr_function_code_t op, expression_node_t* arg1, expression_node_t* arg2) :
-	function_basenode_t(gRecords, op)
+binary_func_node_t::binary_func_node_t(CGlobalRecords& gRecords, expr_function_code_t op, cell_op_class_t op_c, expression_node_t* arg1, expression_node_t* arg2) :
+	function_basenode_t(gRecords, op, op_c)
 {
 	args[0] = arg1;
 	args[1] = arg2;
@@ -907,8 +908,8 @@ unsigned16_t binary_func_node_t::GetNumberOfChilds(void) const
 	return 2;
 }
 
-n_ary_func_node_t::n_ary_func_node_t(CGlobalRecords& gRecords, expr_function_code_t func, size_t count, expression_node_t** arr) :
-	function_basenode_t(gRecords, func),
+n_ary_func_node_t::n_ary_func_node_t(CGlobalRecords& gRecords, expr_function_code_t func, cell_op_class_t op_c, size_t count, expression_node_t** arr) :
+	function_basenode_t(gRecords, func, op_c),
 	arg_arrsize((unsigned16_t)count),
 	arg_count(0),
 	arg_arr(NULL)
@@ -967,8 +968,8 @@ function_basenode_t& n_ary_func_node_t::PushArg(expression_node_t* arg)
 	return *this;
 }
 
-userdef_func_node_t::userdef_func_node_t(CGlobalRecords& gRecords, int udf_num, size_t count, expression_node_t** arr) :
-	n_ary_func_node_t(gRecords, FUNC_UDF, count, arr),
+userdef_func_node_t::userdef_func_node_t(CGlobalRecords& gRecords, int udf_num, cell_op_class_t op_class, size_t count, expression_node_t** arr) :
+	n_ary_func_node_t(gRecords, FUNC_UDF, op_class, count, arr),
 	expr_user_function_code(udf_num)
 {
 }
@@ -1099,26 +1100,26 @@ binary_op_node_t *expression_node_factory_t::op(expr_operator_code_t op, express
 
 z_ary_func_node_t *expression_node_factory_t::f(expr_function_code_t func, cell_op_class_t op_class)
 {
-	return new z_ary_func_node_t(m_GlobalRecords, func);
+	return new z_ary_func_node_t(m_GlobalRecords, func, op_class);
 }
 
 unary_func_node_t *expression_node_factory_t::f(expr_function_code_t func, expression_node_t* arg, cell_op_class_t op_class)
 {
-	return new unary_func_node_t(m_GlobalRecords, func, arg);
+	return new unary_func_node_t(m_GlobalRecords, func, op_class, arg);
 }
 
 binary_func_node_t *expression_node_factory_t::f(expr_function_code_t func, expression_node_t* arg1, expression_node_t* arg2, cell_op_class_t op_class)
 {
-	return new binary_func_node_t(m_GlobalRecords, func, arg1, arg2);
+	return new binary_func_node_t(m_GlobalRecords, func, op_class, arg1, arg2);
 }
 
 n_ary_func_node_t *expression_node_factory_t::f(expr_function_code_t func, size_t argcount, expression_node_t** arg_arr, cell_op_class_t op_class)
 {
-	return new n_ary_func_node_t(m_GlobalRecords, func, argcount, arg_arr);
+	return new n_ary_func_node_t(m_GlobalRecords, func, op_class, argcount, arg_arr);
 }
 
 userdef_func_node_t *expression_node_factory_t::udf(int expr_user_function, size_t argcount, expression_node_t** arg_arr, cell_op_class_t op_class)
 {
-	return new userdef_func_node_t(m_GlobalRecords, expr_user_function, argcount, arg_arr);
+	return new userdef_func_node_t(m_GlobalRecords, expr_user_function, op_class, argcount, arg_arr);
 }
 

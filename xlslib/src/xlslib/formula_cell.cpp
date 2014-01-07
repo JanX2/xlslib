@@ -107,13 +107,13 @@ size_t formula_cell_t::GetSize(void) const
 	size_t len = 4+2+2+2+8+2+4+2;
     if (expr) {
         len += expr->GetSize();
-printf("ESize: %ld\n", expr->GetSize());
+		//printf("ESize: %ld\n", expr->GetSize());
     } else if (stack) {
         len += stack->GetSize();
-printf("SSize: %ld\n", stack->GetSize());
+		//printf("SSize: %ld\n", stack->GetSize());
     }
     GetResultEstimate(estimate);
-
+#warning Estimate size does not seem to work very well - quite low
 	if (estimate.EncodedValueIsString()) {
 		// FORMULA BIFF8 is immediately followed by a STRING BIFF8 record!
 		const u16string* str = estimate.GetStringValue();
@@ -121,7 +121,7 @@ printf("SSize: %ld\n", stack->GetSize());
 		XL_ASSERT(str);
 		len += 4 + str->length() * (CGlobalRecords::IsASCII(*str) ? sizeof(unsigned8_t) : sizeof(unsigned16_t));
 	}
-printf("Size: %ld\n", len);
+	//printf("Size: %ld\n", len);
 	return len;
 }
 
@@ -193,7 +193,6 @@ CFormula::CFormula(CDataStorage &datastore, const formula_cell_t& expr) :
 	expr.DumpData(*this);
 	size_t end = GetDataSize();
 	SetValueAt16((unsigned16_t)(end - len_position - 2), len_position);	// go back and set real value for token length
-printf("END=%ld Val16=%d recordLen=%ld\n", end, (unsigned16_t)(end - len_position - 2), GetDataSize()-RECORD_HEADER_SIZE);
 
 	SetValueAt16((unsigned16_t)(GetDataSize() - basepos - RECORD_HEADER_SIZE), basepos + 2);	// SetRecordLength on either FORMULA or the ARRAY
 

@@ -1082,6 +1082,8 @@ EXTERN_TYPE void xlsFormulaPushCellAreaReference(formula_t *formula, cell_t *upp
             cell_t *lower_right_cell, cell_addr_mode_t opt);
 EXTERN_TYPE void xlsFormulaPushFunction(formula_t *formula, expr_function_code_t func);
 EXTERN_TYPE void xlsFormulaPushFunctionV(formula_t *formula, expr_function_code_t func, size_t arg_count);
+EXTERN_TYPE void xlsFormulaPushFunctionC(formula_t *formula, expr_function_code_t func, cell_op_class_t op_class);
+EXTERN_TYPE void xlsFormulaPushFunctionVC(formula_t *formula, expr_function_code_t func, size_t arg_count, cell_op_class_t op_class);
 EXTERN_TYPE void xlsFormulaPushText(formula_t *formula, const char *text);
 EXTERN_TYPE void xlsFormulaPushTextW(formula_t *formula, const unichar_t *text);
 EXTERN_TYPE void xlsFormulaPushCharacterArray(formula_t *formula, const char *text, size_t count);

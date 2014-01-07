@@ -76,8 +76,8 @@ namespace xlslib_core
         signed8_t PushOperator(expr_operator_code_t op);
         signed8_t PushCellReference(const cell_t& cell, cell_addr_mode_t opt);
         signed8_t PushCellAreaReference(const cell_t& upper_left_cell, const cell_t& lower_right_cell, cell_addr_mode_t opt);
-        signed8_t PushFunction(expr_function_code_t func);
-        signed8_t PushFunction(expr_function_code_t func, size_t argcount);
+        signed8_t PushFunction(expr_function_code_t func, cell_op_class_t op_class);
+        signed8_t PushFunction(expr_function_code_t func, size_t argcount, cell_op_class_t op_class);
         signed8_t PushText(const std::string& v);
         signed8_t PushText(const xlslib_strings::ustring& v);
 #if !defined(__FRAMEWORK__)

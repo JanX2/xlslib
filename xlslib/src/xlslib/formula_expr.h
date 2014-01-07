@@ -268,7 +268,7 @@ namespace xlslib_core
 	class function_basenode_t : public expression_node_t
 	{
 	public:
-		function_basenode_t(CGlobalRecords& gRecords, expr_function_code_t func);
+		function_basenode_t(CGlobalRecords& gRecords, expr_function_code_t func, cell_op_class_t op_class);
 		virtual ~function_basenode_t();
 
 	public:
@@ -279,12 +279,13 @@ namespace xlslib_core
 
 	protected:
 		expr_function_code_t func;
+		cell_op_class_t op_class;
 	};
 
 	class z_ary_func_node_t : public function_basenode_t
 	{
 	public:
-		z_ary_func_node_t(CGlobalRecords& gRecords, expr_function_code_t op);
+		z_ary_func_node_t(CGlobalRecords& gRecords, expr_function_code_t op, cell_op_class_t op_class);
 		virtual ~z_ary_func_node_t();
 
 	public:
@@ -295,7 +296,7 @@ namespace xlslib_core
 	class unary_func_node_t : public function_basenode_t
 	{
 	public:
-		unary_func_node_t(CGlobalRecords& gRecords, expr_function_code_t op, expression_node_t* arg);
+		unary_func_node_t(CGlobalRecords& gRecords, expr_function_code_t op, cell_op_class_t op_class, expression_node_t* arg);
 		virtual ~unary_func_node_t();
 
 	public:
@@ -312,7 +313,7 @@ namespace xlslib_core
 	class binary_func_node_t : public function_basenode_t
 	{
 	public:
-		binary_func_node_t(CGlobalRecords& gRecords, expr_function_code_t op, expression_node_t* arg1, expression_node_t* arg2);
+		binary_func_node_t(CGlobalRecords& gRecords, expr_function_code_t op, cell_op_class_t op_class, expression_node_t* arg1, expression_node_t* arg2);
 		virtual ~binary_func_node_t();
 
 	public:
@@ -329,7 +330,7 @@ namespace xlslib_core
 	class n_ary_func_node_t : public function_basenode_t
 	{
 	public:
-		n_ary_func_node_t(CGlobalRecords& gRecords, expr_function_code_t op, size_t argcount = 0, expression_node_t** arg_arr = NULL);
+		n_ary_func_node_t(CGlobalRecords& gRecords, expr_function_code_t op, cell_op_class_t op_class, size_t argcount = 0, expression_node_t** arg_arr = NULL);
 		virtual ~n_ary_func_node_t();
 
 	public:
@@ -350,7 +351,7 @@ namespace xlslib_core
 	class userdef_func_node_t : public n_ary_func_node_t
 	{
 	public:
-		userdef_func_node_t(CGlobalRecords& gRecords, int expr_user_function, size_t argcount = 0, expression_node_t** arg_arr = NULL);
+		userdef_func_node_t(CGlobalRecords& gRecords, int expr_user_function, cell_op_class_t op_class, size_t argcount = 0, expression_node_t** arg_arr = NULL);
 		virtual ~userdef_func_node_t();
 
 	public:
@@ -389,11 +390,11 @@ namespace xlslib_core
 		cellarea_deref_node_t *area(const cell_t& upper_left_corner, const cell_t& lower_right_corner, const worksheet* ws, cell_addr_mode_t attr, cell_op_class_t opclass = CELLOP_AS_VALUE);
 		unary_op_node_t *op(expr_operator_code_t op, expression_node_t* arg);
 		binary_op_node_t *op(expr_operator_code_t op, expression_node_t* arg1, expression_node_t* arg2);
-		z_ary_func_node_t *f(expr_function_code_t func, cell_op_class_t op_class = CELLOP_BOGUS);
-		unary_func_node_t *f(expr_function_code_t func, expression_node_t* arg, cell_op_class_t op_class = CELLOP_BOGUS);
-		binary_func_node_t *f(expr_function_code_t func, expression_node_t* arg1, expression_node_t* arg2, cell_op_class_t op_class = CELLOP_BOGUS);
-		n_ary_func_node_t *f(expr_function_code_t func, size_t argcount, expression_node_t** arg_arr, cell_op_class_t op_class = CELLOP_BOGUS);
-		userdef_func_node_t *udf(int expr_user_function, size_t argcount = 0, expression_node_t** arg_arr = NULL, cell_op_class_t op_class = CELLOP_BOGUS);
+		z_ary_func_node_t *f(expr_function_code_t func, cell_op_class_t op_class = CELL_DEFAULT);
+		unary_func_node_t *f(expr_function_code_t func, expression_node_t* arg, cell_op_class_t op_class = CELL_DEFAULT);
+		binary_func_node_t *f(expr_function_code_t func, expression_node_t* arg1, expression_node_t* arg2, cell_op_class_t op_class = CELL_DEFAULT);
+		n_ary_func_node_t *f(expr_function_code_t func, size_t argcount, expression_node_t** arg_arr, cell_op_class_t op_class = CELL_DEFAULT);
+		userdef_func_node_t *udf(int expr_user_function, size_t argcount = 0, expression_node_t** arg_arr = NULL, cell_op_class_t op_class = CELL_DEFAULT);
 
 	protected:
 		CGlobalRecords& m_GlobalRecords;

@@ -209,11 +209,11 @@ signed8_t formula_t::PushAreaReference(unsigned32_t ul_row, unsigned32_t ul_col,
 	return errcode;
 }
 
-signed8_t formula_t::PushFunction(expr_function_code_t func) {
+signed8_t formula_t::PushFunction(expr_function_code_t func, cell_op_class_t op_class) {
 	function_property func_prop = PropertyForForExcelFunction(func);
 	unsigned32_t argcntmask = func_prop.num_args;
-	unsigned8_t op = (OP_FUNC & ~CELLOP_AS_REFER) | func_prop.op_class;
-if(func == FUNC_IF) op |= CELLOP_AS_ARRAY;
+	cell_op_class_t op_cl = op_class == CELL_DEFAULT ? func_prop.op_class : op_class;
+	unsigned8_t op = (OP_FUNC & ~CELLOP_AS_REFER) | op_cl;
     signed8_t errcode = NO_ERRORS;
     if (argcntmask == A_0 || argcntmask == A_1 || argcntmask == A_2 ||
             argcntmask == A_3 || argcntmask == A_4 || argcntmask == A_5 ||
@@ -226,11 +226,11 @@ if(func == FUNC_IF) op |= CELLOP_AS_ARRAY;
     return errcode;
 }
 
-signed8_t formula_t::PushFunction(expr_function_code_t func, size_t argcount) {
+signed8_t formula_t::PushFunction(expr_function_code_t func, size_t argcount, cell_op_class_t op_class) {
 	function_property func_prop = PropertyForForExcelFunction(func);
 	unsigned32_t argcntmask = func_prop.num_args;
-	unsigned8_t op = (OP_FUNCVAR & ~CELLOP_AS_REFER) | func_prop.op_class;
-if(func == FUNC_IF) op |= CELLOP_AS_ARRAY;
+	cell_op_class_t op_cl = op_class == CELL_DEFAULT ? func_prop.op_class : op_class;
+	unsigned8_t op = (OP_FUNCVAR & ~CELLOP_AS_REFER) | op_cl;
     signed8_t errcode = NO_ERRORS;
     if (argcntmask == A_UNKNOWN || (argcntmask & ~(1U << argcount))) {
 		errcode |= main_data->AddValue8(op);

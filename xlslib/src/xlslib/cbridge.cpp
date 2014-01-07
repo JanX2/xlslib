@@ -177,9 +177,11 @@ extern "C" {
     void xlsFormulaPushCellReference(formula_t *formula, cell_t *cell, cell_addr_mode_t opt) { formula->PushCellReference(*cell, opt); }
     void xlsFormulaPushCellAreaReference(formula_t *formula, cell_t *upper_left_cell, 
             cell_t *lower_right_cell, cell_addr_mode_t opt) { formula->PushCellAreaReference(*upper_left_cell, *lower_right_cell, opt); }
-    void xlsFormulaPushFunction(formula_t *formula, expr_function_code_t func) { formula->PushFunction(func); }
-    void xlsFormulaPushFunctionV(formula_t *formula, expr_function_code_t func, size_t arg_count) { formula->PushFunction(func, arg_count); }
-    void xlsFormulaPushCharacterArray(formula_t *formula, const char *text, size_t count) 
+    void xlsFormulaPushFunction(formula_t *formula, expr_function_code_t func) { formula->PushFunction(func, CELL_DEFAULT); }
+    void xlsFormulaPushFunctionV(formula_t *formula, expr_function_code_t func, size_t arg_count) { formula->PushFunction(func, arg_count, CELL_DEFAULT); }
+    void xlsFormulaPushFunctionC(formula_t *formula, expr_function_code_t func, cell_op_class_t op_class) { formula->PushFunction(func, op_class); }
+    void xlsFormulaPushFunctionVC(formula_t *formula, expr_function_code_t func, size_t arg_count, cell_op_class_t op_class) { formula->PushFunction(func, arg_count, op_class); }
+    void xlsFormulaPushCharacterArray(formula_t *formula, const char *text, size_t count)
                                                                 { 
                                                                     std::string str = "";
                                                                     for (size_t i=0; i<count; i++) {
