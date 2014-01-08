@@ -819,6 +819,7 @@ size_t function_basenode_t::GetSize(bool include_subtree) const
 	size_t chcnt = GetNumberOfChilds();
 
 	// XL_ASSERT(argcntmask & (1U << (chcnt > 15 ? 15 : chcnt)));
+	// if the function allows more than one possible argument count
 	if (argcntmask == A_UNKNOWN || (argcntmask & ~(1U << chcnt))) {
 		len += 1;	// with the Function with variable args, we push ONE additional byte
 	}
@@ -848,6 +849,7 @@ signed8_t function_basenode_t::DumpData(formula_t &stack, bool include_subtree) 
 	}
 
 	// XL_ASSERT(argcntmask & (1U << (chcnt > 15 ? 15 : chcnt)));
+	// if the function allows more than one possible argument count
 	if (argcntmask == A_UNKNOWN || (argcntmask & ~(1U << chcnt))) {
         errcode |= stack.PushFunction(func, chcnt, op_class);
 	} else {

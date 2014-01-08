@@ -233,13 +233,12 @@ signed8_t formula_t::PushFunction(expr_function_code_t func, size_t argcount, ce
 	unsigned8_t op = (OP_FUNCVAR & ~CELLOP_AS_REFER) | op_cl;
     signed8_t errcode = NO_ERRORS;
 	// argcntmask test is: is there just one bit of options, and the current count is not it
-printf("func=%d argbcmask=%x argcount=%ld mask=%8.8x\n", func, argcntmask, argcount, (1U << argcount));
+	// printf("func=%d argbcmask=%x argcount=%ld mask=%8.8x\n", func, argcntmask, argcount, (1U << argcount));
     if (argcntmask == A_UNKNOWN || (argcount <= 30 && (argcntmask & (1U << argcount)))) {
 		errcode |= main_data->AddValue8(op);
 		errcode |= main_data->AddValue8((unsigned8_t)argcount & 0x7F); // no prompt for user: 0x80 not set
 		errcode |= main_data->AddValue16((unsigned16_t)func & 0x7FFF); 
     } else {
-printf("YIKES!!!\n");
         errcode = GENERAL_ERROR;
     }
     return errcode;
