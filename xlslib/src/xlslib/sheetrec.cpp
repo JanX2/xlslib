@@ -781,7 +781,6 @@ cell_t* worksheet::error(unsigned32_t row, unsigned32_t col,
 	return num;
 }
 
-#if 0
 cell_t* worksheet::note(unsigned32_t row, unsigned32_t col,
 						const std::string& remark, const std::string& author, xf_t* pxformat)
 {
@@ -797,7 +796,6 @@ cell_t* worksheet::note(unsigned32_t row, unsigned32_t col,
 	AddCell(note);
 	return note;
 }
-#endif
 
 cell_t* worksheet::formula(unsigned32_t row, unsigned32_t col,
 						   bool array_formula,

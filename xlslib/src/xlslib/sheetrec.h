@@ -325,14 +325,12 @@ namespace xlslib_core
 
 		cell_t* error(unsigned32_t row, unsigned32_t col,
 					  errcode_t errorcode, xf_t* pxformat = NULL);
-#if 0
-// the "note" object is quite complex and not yet fully implemented
-// the original source was BIFF5, where notes were simple, in BIFF8 they were enhanced to use Drawing Objects
+
 		cell_t* note(unsigned32_t row, unsigned32_t col,
 					 const std::string& remark, const std::string& author, xf_t* pxformat = NULL);
 		cell_t* note(unsigned32_t row, unsigned32_t col,
 					 const xlslib_strings::ustring& remark, const xlslib_strings::ustring& author, xf_t* pxformat = NULL);
-#endif
+
 		cell_t* formula(unsigned32_t row, unsigned32_t col,
 						bool array_formula,
 						expression_node_t* expression_root, bool auto_destruct_expression_tree = false,
