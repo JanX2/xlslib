@@ -135,25 +135,29 @@ signed8_t formula_t::PushOperator(expr_operator_code_t op)
     return errcode;
 }
 
-signed8_t formula_t::PushCellReference(const cell_t& cell, cell_addr_mode_t opt)
+signed8_t formula_t::PushCellReference(const cell_t& cell, cell_addr_mode_t opt, cell_op_class_t op_class)
 {
 	signed8_t ret;
 	unsigned32_t idx;
 
 	idx = cell.GetWorksheet() ? cell.GetWorksheet()->GetIndex() : invalidIndex;
-	ret = PushReference(cell.GetRow(), cell.GetCol(), idx, opt);
+	ret = PushReference(cell.GetRow(), cell.GetCol(), idx, opt, op_class);
 	return ret;
 }
 
-signed8_t formula_t::PushReference(unsigned32_t row, unsigned32_t col, unsigned32_t idx, cell_addr_mode_t opt)
+signed8_t formula_t::PushReference(unsigned32_t row, unsigned32_t col, unsigned32_t idx, cell_addr_mode_t opt, cell_op_class_t op_class)
 {
     signed8_t errcode = NO_ERRORS;
 
+	(void)op_class;
+
     if (m_Worksheet == NULL || idx == invalidIndex || idx == m_Worksheet->GetIndex()) {
-        errcode |= main_data->AddValue8(OP_REFV);
+		unsigned8_t op = (OP_REF & ~CELLOP_AS_ARRAY) | op_class;
+        errcode |= main_data->AddValue8(op);
         col &= 0x3FFF;
     } else {
-        errcode |= main_data->AddValue8(OP_REF3DV);
+		unsigned8_t op = (OP_REF3D & ~CELLOP_AS_ARRAY) | op_class;
+        errcode |= main_data->AddValue8(op);
         errcode |= main_data->AddValue16(static_cast<unsigned16_t>(idx));
         col &= 0x00FF;
     }
@@ -166,7 +170,7 @@ signed8_t formula_t::PushReference(unsigned32_t row, unsigned32_t col, unsigned3
 	return errcode;
 }
 
-signed8_t formula_t::PushCellAreaReference(const cell_t& upper_left_cell, const cell_t& lower_right_cell, cell_addr_mode_t opt)
+signed8_t formula_t::PushCellAreaReference(const cell_t& upper_left_cell, const cell_t& lower_right_cell, cell_addr_mode_t opt, cell_op_class_t op_class)
 {
 	signed8_t ret;
 	unsigned32_t ul_idx, lr_idx;
@@ -174,21 +178,23 @@ signed8_t formula_t::PushCellAreaReference(const cell_t& upper_left_cell, const 
 	ul_idx = upper_left_cell.GetWorksheet() ? upper_left_cell.GetWorksheet()->GetIndex() : invalidIndex;
 	lr_idx = lower_right_cell.GetWorksheet() ? lower_right_cell.GetWorksheet()->GetIndex() : invalidIndex;
 
-	ret = PushAreaReference(upper_left_cell.GetRow(), upper_left_cell.GetCol(), ul_idx, lower_right_cell.GetRow(), lower_right_cell.GetCol(), lr_idx, opt);
+	ret = PushAreaReference(upper_left_cell.GetRow(), upper_left_cell.GetCol(), ul_idx, lower_right_cell.GetRow(), lower_right_cell.GetCol(), lr_idx, opt, op_class);
 	return ret;
 }
 
-signed8_t formula_t::PushAreaReference(unsigned32_t ul_row, unsigned32_t ul_col, unsigned32_t ul_idx, unsigned32_t lr_row, unsigned32_t lr_col, unsigned32_t lr_idx, cell_addr_mode_t opt)
+signed8_t formula_t::PushAreaReference(unsigned32_t ul_row, unsigned32_t ul_col, unsigned32_t ul_idx, unsigned32_t lr_row, unsigned32_t lr_col, unsigned32_t lr_idx, cell_addr_mode_t opt, cell_op_class_t op_class)
 {
     signed8_t errcode = NO_ERRORS;
 	(void)lr_idx;	// prevent warning
 
     if (m_Worksheet == NULL || ul_idx == invalidIndex || ul_idx == m_Worksheet->GetIndex()) {
-        errcode |= main_data->AddValue8(OP_AREAA); // OP_AREA. OP_AREAV, OP_AREAA
+		unsigned8_t op = (OP_AREA & ~CELLOP_AS_ARRAY) | op_class;
+        errcode |= main_data->AddValue8(op);
         ul_col &= 0x3FFF;
         lr_col &= 0x3FFF;
     } else {
-        errcode |= main_data->AddValue8(OP_AREA3DA); // OP_AREA. OP_AREAV, OP_AREAA
+		unsigned8_t op = (OP_AREA3D & ~CELLOP_AS_ARRAY) | op_class;
+        errcode |= main_data->AddValue8(op);
         errcode |= main_data->AddValue16(static_cast<unsigned16_t>(ul_idx));
         ul_col &= 0x00FF;
         lr_col &= 0x00FF;
@@ -213,7 +219,7 @@ signed8_t formula_t::PushFunction(expr_function_code_t func, cell_op_class_t op_
 	function_property func_prop = PropertyForForExcelFunction(func);
 	unsigned32_t argcntmask = func_prop.num_args;
 	cell_op_class_t op_cl = op_class == CELL_DEFAULT ? func_prop.op_class : op_class;
-	unsigned8_t op = (OP_FUNC & ~CELLOP_AS_REFER) | op_cl;
+	unsigned8_t op = (OP_FUNC & ~CELLOP_AS_ARRAY) | op_cl;
     signed8_t errcode = NO_ERRORS;
     if (argcntmask == A_0 || argcntmask == A_1 || argcntmask == A_2 ||
             argcntmask == A_3 || argcntmask == A_4 || argcntmask == A_5 ||
@@ -230,7 +236,7 @@ signed8_t formula_t::PushFunction(expr_function_code_t func, size_t argcount, ce
 	function_property func_prop = PropertyForForExcelFunction(func);
 	unsigned32_t argcntmask = func_prop.num_args;
 	cell_op_class_t op_cl = op_class == CELL_DEFAULT ? func_prop.op_class : op_class;
-	unsigned8_t op = (OP_FUNCVAR & ~CELLOP_AS_REFER) | op_cl;
+	unsigned8_t op = (OP_FUNCVAR & ~CELLOP_AS_ARRAY) | op_cl;
     signed8_t errcode = NO_ERRORS;
 	// argcntmask test is: is there just one bit of options, and the current count is not it
 	// printf("func=%d argbcmask=%x argcount=%ld mask=%8.8x\n", func, argcntmask, argcount, (1U << argcount));
@@ -338,9 +344,10 @@ static const uint32_t maxProperties = 368; // 548 if you enable newer functions 
 
 // Notes: the function_properties table was build by combining Ger's original switch statement for the number of arguments with
 //    a second table mapping the 'FUNC_...' values to the Excel English function name (search for "function_arr"). The CELLOP_AS_
-//    values come mostly from the OpenOffice "MIcrosoft Excel File Format" Table 3.11.1 (I could not find the same thing within
+//    values come mostly from the OpenOffice "Microsoft Excel File Format" Table 3.11.1 (I could not find the same thing within
 //    MS's own document!). I disagreed with several of the OpenOffice values and overrode them (for instance, IF does not return
 //    a reference!)
+// Also, I have no idea (yet) what the purpose of A_MACRO is...
 
 #define XLNAME(x)	// this can be turned on to add a name to the table, when used for diagnostics
 static function_property function_properties[maxProperties] = {

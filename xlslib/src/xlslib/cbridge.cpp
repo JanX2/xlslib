@@ -174,9 +174,15 @@ extern "C" {
                                                                     formula->PushFloatingPointArray(vec);
                                                                 }
     void xlsFormulaPushOperator(formula_t *formula, expr_operator_code_t op) { formula->PushOperator(op); }
-    void xlsFormulaPushCellReference(formula_t *formula, cell_t *cell, cell_addr_mode_t opt) { formula->PushCellReference(*cell, opt); }
+	
+    void xlsFormulaPushCellReference(formula_t *formula, cell_t *cell, cell_addr_mode_t opt) { formula->PushCellReference(*cell, opt, CELLOP_AS_VALUE); }
     void xlsFormulaPushCellAreaReference(formula_t *formula, cell_t *upper_left_cell, 
-            cell_t *lower_right_cell, cell_addr_mode_t opt) { formula->PushCellAreaReference(*upper_left_cell, *lower_right_cell, opt); }
+            cell_t *lower_right_cell, cell_addr_mode_t opt) { formula->PushCellAreaReference(*upper_left_cell, *lower_right_cell, opt, CELLOP_AS_VALUE); }
+
+    void xlsFormulaPushCellReferenceC(formula_t *formula, cell_t *cell, cell_addr_mode_t opt, cell_op_class_t op_class) { formula->PushCellReference(*cell, opt, op_class); }
+    void xlsFormulaPushCellAreaReferenceC(formula_t *formula, cell_t *upper_left_cell,
+            cell_t *lower_right_cell, cell_addr_mode_t opt, cell_op_class_t op_class) { formula->PushCellAreaReference(*upper_left_cell, *lower_right_cell, opt, op_class); }
+
     void xlsFormulaPushFunction(formula_t *formula, expr_function_code_t func) { formula->PushFunction(func, CELL_DEFAULT); }
     void xlsFormulaPushFunctionV(formula_t *formula, expr_function_code_t func, size_t arg_count) { formula->PushFunction(func, arg_count, CELL_DEFAULT); }
     void xlsFormulaPushFunctionC(formula_t *formula, expr_function_code_t func, cell_op_class_t op_class) { formula->PushFunction(func, op_class); }

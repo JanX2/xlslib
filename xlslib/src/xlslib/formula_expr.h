@@ -348,6 +348,8 @@ namespace xlslib_core
 		expression_node_t** arg_arr;
 	};
 
+#if 0
+	// Requires the addition of VBA (which is HUGE)
 	class userdef_func_node_t : public n_ary_func_node_t
 	{
 	public:
@@ -363,7 +365,7 @@ namespace xlslib_core
 	protected:
 		int expr_user_function_code;
 	};
-
+#endif
 
 	class expression_node_factory_t
 	{
@@ -394,7 +396,7 @@ namespace xlslib_core
 		unary_func_node_t *f(expr_function_code_t func, expression_node_t* arg, cell_op_class_t op_class = CELL_DEFAULT);
 		binary_func_node_t *f(expr_function_code_t func, expression_node_t* arg1, expression_node_t* arg2, cell_op_class_t op_class = CELL_DEFAULT);
 		n_ary_func_node_t *f(expr_function_code_t func, size_t argcount, expression_node_t** arg_arr, cell_op_class_t op_class = CELL_DEFAULT);
-		userdef_func_node_t *udf(int expr_user_function, size_t argcount = 0, expression_node_t** arg_arr = NULL, cell_op_class_t op_class = CELL_DEFAULT);
+		//userdef_func_node_t *udf(int expr_user_function, size_t argcount = 0, expression_node_t** arg_arr = NULL, cell_op_class_t op_class = CELL_DEFAULT);
 
 	protected:
 		CGlobalRecords& m_GlobalRecords;

@@ -74,8 +74,8 @@ namespace xlslib_core
         signed8_t PushInteger(signed32_t value);
         signed8_t PushFloatingPoint(double value);
         signed8_t PushOperator(expr_operator_code_t op);
-        signed8_t PushCellReference(const cell_t& cell, cell_addr_mode_t opt);
-        signed8_t PushCellAreaReference(const cell_t& upper_left_cell, const cell_t& lower_right_cell, cell_addr_mode_t opt);
+        signed8_t PushCellReference(const cell_t& cell, cell_addr_mode_t opt, cell_op_class_t op_class);
+        signed8_t PushCellAreaReference(const cell_t& upper_left_cell, const cell_t& lower_right_cell, cell_addr_mode_t opt, cell_op_class_t op_class);
         signed8_t PushFunction(expr_function_code_t func, cell_op_class_t op_class);
         signed8_t PushFunction(expr_function_code_t func, size_t argcount, cell_op_class_t op_class);
         signed8_t PushText(const std::string& v);
@@ -96,8 +96,8 @@ namespace xlslib_core
         CUnit *aux_data;
 
 	private:
-		signed8_t PushReference(unsigned32_t row, unsigned32_t col, unsigned32_t idx, cell_addr_mode_t opt);
-        signed8_t PushAreaReference(unsigned32_t ul_row, unsigned32_t ul_col, unsigned32_t ul_idx, unsigned32_t lr_row, unsigned32_t lr_col, unsigned32_t lr_idx, cell_addr_mode_t opt);
+		signed8_t PushReference(unsigned32_t row, unsigned32_t col, unsigned32_t idx, cell_addr_mode_t opt, cell_op_class_t op_class);
+        signed8_t PushAreaReference(unsigned32_t ul_row, unsigned32_t ul_col, unsigned32_t ul_idx, unsigned32_t lr_row, unsigned32_t lr_col, unsigned32_t lr_idx, cell_addr_mode_t opt, cell_op_class_t op_class);
     };
 }
 

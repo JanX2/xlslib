@@ -382,7 +382,7 @@
 
 /* NAME: Defined Name */
 #define RECTYPE_NAME							\
-	0x218 // Excel 2007 spits out 0x18 instead!
+	0x18
 
 /* NOTE: Comment Associated with a Cell */
 #define RECTYPE_NOTE							\

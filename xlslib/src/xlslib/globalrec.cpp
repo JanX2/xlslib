@@ -843,7 +843,7 @@ void CGlobalRecords::char2str16(const string& str1, u16string& str2)
 		while(cBegin != cEnd) {
 			str2.push_back((unsigned16_t)*cBegin++);
 		}
-		XL_ASSERT(str2.length() == str1.length());
+		//XL_ASSERT(str2.length() == str1.length()); // causing problems with CLANG analyze
 	}
 }
 

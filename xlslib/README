@@ -5,7 +5,7 @@ xlslib - utility to create .xls files
 $Id: README,v 1.3 2008/10/25 18:48:48 dhoerl Exp $
 
 == HOME ==
-The home for smartmontools is located at:
+The home for xlslib is located at:
     
     http://xlslib.sourceforge.net/
 
@@ -48,7 +48,7 @@ C/C++ version.
 
 == CREDITS ==
 This code was originally developed at Yeico S.A. de C.V. by
-Ruben D. Gonzalez and others. 0.2.5 and later developed by David Hoerl
+Ruben D. Gonzalez and others. 0.2.5 and later enhanced by David Hoerl
 and Ger Hobbelt.
 
 

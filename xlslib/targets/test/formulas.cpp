@@ -9,6 +9,9 @@ using namespace std;
 using namespace xlslib_core;
 
 extern void formula_database(workbook &wb);
+extern void formula_numbers(workbook &wb);
+extern void formula_text(workbook &wb);
+extern void formula_date_time(workbook &wb);
 
 #if 0
 		boolean_value_node_t *boolean(bool value);
@@ -25,19 +28,22 @@ extern void formula_database(workbook &wb);
 		cellarea_deref_node_t *area(const cell_t& upper_left_corner, const cell_t& lower_right_corner, const worksheet* ws, cell_addr_mode_t attr, cell_op_class_t opclass = CELLOP_AS_VALUE);
 		unary_op_node_t *op(expr_operator_code_t op, expression_node_t* arg);
 		binary_op_node_t *op(expr_operator_code_t op, expression_node_t* arg1, expression_node_t* arg2);
-		z_ary_func_node_t *f(expr_function_code_t func);
-		unary_func_node_t *f(expr_function_code_t func, expression_node_t* arg);
-		binary_func_node_t *f(expr_function_code_t func, expression_node_t* arg1, expression_node_t* arg2);
-		n_ary_func_node_t *f(expr_function_code_t func, size_t argcount, expression_node_t** arg_arr = NULL);
-		userdef_func_node_t *udf(int expr_user_function, size_t argcount = 0, expression_node_t** arg_arr = NULL);
+		z_ary_func_node_t *f(expr_function_code_t func, cell_op_class_t op_class = CELL_DEFAULT);
+		unary_func_node_t *f(expr_function_code_t func, expression_node_t* arg, cell_op_class_t op_class = CELL_DEFAULT);
+		binary_func_node_t *f(expr_function_code_t func, expression_node_t* arg1, expression_node_t* arg2, cell_op_class_t op_class = CELL_DEFAULT);
+		n_ary_func_node_t *f(expr_function_code_t func, size_t argcount, expression_node_t** arg_arr, cell_op_class_t op_class = CELL_DEFAULT);
+		userdef_func_node_t *udf(int expr_user_function, size_t argcount = 0, expression_node_t** arg_arr = NULL, cell_op_class_t op_class = CELL_DEFAULT);
 #endif
 
 void formulas(void)
 {
 	workbook wb;
-
-	formula_numbers(wb);
+	
+	//formula_text(wb);
+	//formula_numbers(wb);
 	//formula_database(wb);
+	//formula_date_time(wb);
+	//formula_date_time(wb);
 	
 
 
@@ -49,10 +55,166 @@ void formulas(void)
 	fprintf(stderr, "Dump End \n");
 }
 
-void formula_database(workbook &wb)
+void formula_date_time(workbook &wb)
 {
+	worksheet* sh = wb.sheet("Date and Time");
+	expression_node_factory_t& maker = wb.GetFormulaFactory();
+
+	sh->colwidth(0, 256*8);
+	sh->colwidth(1, 256*15);
+	sh->colwidth(2, 256*22);
+
+	// NOW() and TEXT(cell, "mmm dd, yyyy  hh:mm")
+	unsigned int row = 0;
+	{
+		sh->label(row, 0, "Now->");
+		expression_node_t *f = maker.f(FUNC_NOW, CELL_DEFAULT);
+		cell_t *c = sh->formula(row, 1, f, true);
+
+		expression_node_t *today = maker.cell(*c, CELL_RELATIVE_A1, CELLOP_AS_VALUE);
+		expression_node_t *format = maker.text("mmm dd, yyyy  hh:mm");
+
+		expression_node_t *f1 = maker.f(FUNC_TEXT, today, format, CELL_DEFAULT);
+		sh->formula(row, 2, f1, true);
+	}
+	
+	// TODAY() and TEXT(cell, "mmm dd, yyyy")
+	++row;
+	{
+		sh->label(row, 0, "Today->");
+		expression_node_t *f = maker.f(FUNC_TODAY, CELL_DEFAULT);
+		cell_t *c = sh->formula(row, 1, f, true);
+
+		expression_node_t *today = maker.cell(*c, CELL_RELATIVE_A1, CELLOP_AS_VALUE);
+		expression_node_t *format = maker.text("mmm dd, yyyy");
+
+		expression_node_t *f1 = maker.f(FUNC_TEXT, today, format, CELL_DEFAULT);
+		sh->formula(row, 2, f1, true);
+	}
+
+	// TODAY() and YEAR(cell)
+	++row;
+	{
+		sh->label(row, 0, "Year->");
+		expression_node_t *f = maker.f(FUNC_TODAY, CELL_DEFAULT);
+		cell_t *c = sh->formula(row, 1, f, true);
+
+		expression_node_t *today = maker.cell(*c, CELL_RELATIVE_A1, CELLOP_AS_VALUE);
+
+		expression_node_t *f1 = maker.f(FUNC_YEAR, today, CELL_DEFAULT);
+		sh->formula(row, 2, f1, true);
+	}
+
+}
 
 
+void formula_text(workbook &wb)
+{
+	worksheet* sh = wb.sheet("TEXT");
+	expression_node_factory_t& maker = wb.GetFormulaFactory();
+	
+	unsigned int len = 3;
+	unsigned int row = 1;
+	unsigned int formula_col = len + 1;
+
+	{
+		char buf[256];
+		sprintf(buf, "Remark item %d/%d/%d", 1,2,3);
+
+		sh->number(0,0, (signed32_t)99);
+		//sh->note(0,0, buf, "GHO");
+	}
+	
+	sh->colwidth(formula_col, 256*64);
+	sh->label(0, formula_col, "FORMULAS");
+	
+	// CONCATENATE(cell, " ", cell, " ", cell)
+	expression_node_t *cells[len*2];
+	cell_t *real_cells[len];
+	unsigned int idx = 0;
+	for(unsigned int i=0; i<len; ++i) {
+		char msg[64];
+		sprintf(msg, "%c", '!' + row * i + i);
+		cell_t *c = sh->label(row, i, msg);
+		if(i) cells[idx++] = maker.text(" ");
+		cells[idx++] = maker.cell(*c, CELL_RELATIVE_A1, CELLOP_AS_VALUE);
+		
+		// use later below
+		real_cells[i] = c;
+	}
+	{
+		expression_node_t *f = maker.f(FUNC_CONCATENATE, idx, cells, CELL_DEFAULT); // CELL_DEFAULT CELLOP_AS_ARRAY
+		sh->formula(row, formula_col, f, true);
+	}
+	
+	
+	// CONCATENATE(TEXT(cell), " ", TEXT(cell), " ", TEXT(cell))
+	++row;
+	idx = 0;
+	expression_node_t *funcs[len];
+	for(unsigned int i=0; i<len; ++i) {
+		cell_t *c = sh->number(row, i, 1+i);
+		expression_node_t *cr = maker.cell(*c, CELL_RELATIVE_A1, CELLOP_AS_VALUE);
+		if(i) funcs[idx++] = maker.text(" ");
+		funcs[idx++] = maker.f(FUNC_TEXT, cr, CELL_DEFAULT); // CELL_DEFAULT CELLOP_AS_ARRAY
+	}
+	{
+		expression_node_t *f = maker.f(FUNC_CONCATENATE, idx, funcs, CELL_DEFAULT); // CELL_DEFAULT CELLOP_AS_ARRAY
+		sh->formula(row, formula_col, f, true);
+	}
+}
+
+void formula_numbers(workbook &wb)
+{
+	worksheet* sh = wb.sheet("NUMBERS");
+	expression_node_factory_t& maker = wb.GetFormulaFactory();
+	
+	unsigned int len = 4;
+	unsigned int row = 1;
+	unsigned int formula_col = len + 1;
+	
+	sh->label(0, formula_col, "FORMULAS");
+	
+	// SUM(cell, cell, cell, cell)
+	expression_node_t *cells[len];
+	for(unsigned int i=0; i<len; ++i) {
+		cell_t *c = sh->number(row, i, 1+i);
+		cells[i] = maker.cell(*c, CELL_RELATIVE_A1, CELLOP_AS_VALUE);
+	}
+	{
+		expression_node_t *f = maker.f(FUNC_SUM, len, cells, CELL_DEFAULT); // CELL_DEFAULT CELLOP_AS_ARRAY
+		sh->formula(row, formula_col, f, true);
+	}
+	
+	// SUM(cell:cell)
+	++row;
+	cell_t *real_cells[len];
+	for(unsigned int i=0; i<len; ++i) {
+		real_cells[i] = sh->number(row, i, (1+i)*row);
+		//cells[i] = maker.cell(*c, CELL_RELATIVE_A1, CELLOP_AS_VALUE);
+	}
+	{
+		expression_node_t *area = maker.area((cell_t&)*(real_cells[0]), (cell_t&)*(real_cells[len-1]), CELL_RELATIVE_A1, CELLOP_AS_REFER);
+		expression_node_t *areas[1];
+		areas[0] = area;
+		expression_node_t *f = maker.f(FUNC_SUM, 1, areas, CELL_DEFAULT);
+		sh->formula(row, formula_col, f, true);
+	}
+	// SUM(cell:cell, 5.101)
+	++row;
+	for(unsigned int i=0; i<len; ++i) {
+		real_cells[i] = sh->number(row, i, (1+i)*row);
+		//cells[i] = maker.cell(*c, CELL_RELATIVE_A1, CELLOP_AS_VALUE);
+	}
+	{
+		expression_node_t *area = maker.area((cell_t&)*(real_cells[0]), (cell_t&)*(real_cells[len-1]), CELL_RELATIVE_A1, CELLOP_AS_REFER);
+		expression_node_t *args[2];
+		args[0] = area;
+		args[1] = maker.floating_point(5.101);
+		
+		expression_node_t *f = maker.f(FUNC_SUM, 2, args, CELL_DEFAULT);
+		sh->formula(row, formula_col, f, true);
+	}
 }
 
 void formula_database(workbook &wb)

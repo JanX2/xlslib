@@ -1069,7 +1069,6 @@ EXTERN_TYPE cell_t *xlsWorksheetNote(worksheet *w, unsigned32_t row, unsigned32_
 EXTERN_TYPE cell_t *xlsWorksheetNoteW(worksheet *w, unsigned32_t row, unsigned32_t col, const unichar_t *remark, const unichar_t *author, xf_t *pxformat);
 
 EXTERN_TYPE formula_t *xlsWorksheetFormula(worksheet *w);
-
 EXTERN_TYPE void xlsFormulaPushBoolean(formula_t *formula, bool value);
 EXTERN_TYPE void xlsFormulaPushMissingArgument(formula_t *formula);
 EXTERN_TYPE void xlsFormulaPushError(formula_t *formula, unsigned8_t value);
@@ -1080,6 +1079,8 @@ EXTERN_TYPE void xlsFormulaPushOperator(formula_t *formula, expr_operator_code_t
 EXTERN_TYPE void xlsFormulaPushCellReference(formula_t *formula, cell_t *cell, cell_addr_mode_t opt);
 EXTERN_TYPE void xlsFormulaPushCellAreaReference(formula_t *formula, cell_t *upper_left_cell, 
             cell_t *lower_right_cell, cell_addr_mode_t opt);
+EXTERN_TYPE void xlsFormulaPushCellReferenceC(formula_t *formula, cell_t *cell, cell_addr_mode_t opt, cell_op_class_t op_class);
+EXTERN_TYPE void xlsFormulaPushCellAreaReferenceC(formula_t *formula, cell_t *upper_left_cell, cell_t *lower_right_cell, cell_addr_mode_t opt, cell_op_class_t op_class);
 EXTERN_TYPE void xlsFormulaPushFunction(formula_t *formula, expr_function_code_t func);
 EXTERN_TYPE void xlsFormulaPushFunctionV(formula_t *formula, expr_function_code_t func, size_t arg_count);
 EXTERN_TYPE void xlsFormulaPushFunctionC(formula_t *formula, expr_function_code_t func, cell_op_class_t op_class);

@@ -350,7 +350,7 @@ size_t cell_deref_node_t::GetSize(bool include_subtree) const
 signed8_t cell_deref_node_t::DumpData(formula_t &stack, bool include_subtree) const
 {
 	(void)include_subtree;
-    return stack.PushReference(row_, col_, idx_, attr);
+    return stack.PushReference(row_, col_, idx_, attr, operand_class);
 }
 
 cellarea_deref_node_t::cellarea_deref_node_t(CGlobalRecords& gRecords, const cell_t& u_l_c, const cell_t& l_r_c, cell_addr_mode_t attr,
@@ -385,7 +385,7 @@ size_t cellarea_deref_node_t::GetSize(bool include_subtree) const
 signed8_t cellarea_deref_node_t::DumpData(formula_t &stack, bool include_subtree) const
 {
 	(void)include_subtree; // stop warning
-    return stack.PushAreaReference(row_, col_, idx_, lrrow_, lrcol_, lridx_, attr);
+    return stack.PushAreaReference(row_, col_, idx_, lrrow_, lrcol_, lridx_, attr, operand_class);
 }
 
 void cellarea_deref_node_t::GetResultEstimate(estimated_formula_result_t &dst) const
@@ -970,6 +970,9 @@ function_basenode_t& n_ary_func_node_t::PushArg(expression_node_t* arg)
 	return *this;
 }
 
+#if 0
+	// Requires the addition of VBA (which is HUGE)
+
 userdef_func_node_t::userdef_func_node_t(CGlobalRecords& gRecords, int udf_num, cell_op_class_t op_class, size_t count, expression_node_t** arr) :
 	n_ary_func_node_t(gRecords, FUNC_UDF, op_class, count, arr),
 	expr_user_function_code(udf_num)
@@ -1017,6 +1020,7 @@ signed8_t userdef_func_node_t::DumpData(formula_t &stack, bool include_subtree) 
 
 	return GENERAL_ERROR; // not supported yet...
 }
+#endif
 
 expression_node_factory_t::expression_node_factory_t(CGlobalRecords& glbl) :
 	m_GlobalRecords(glbl)
@@ -1120,8 +1124,9 @@ n_ary_func_node_t *expression_node_factory_t::f(expr_function_code_t func, size_
 	return new n_ary_func_node_t(m_GlobalRecords, func, op_class, argcount, arg_arr);
 }
 
+#if 0
 userdef_func_node_t *expression_node_factory_t::udf(int expr_user_function, size_t argcount, expression_node_t** arg_arr, cell_op_class_t op_class)
 {
 	return new userdef_func_node_t(m_GlobalRecords, expr_user_function, op_class, argcount, arg_arr);
 }
-
+#endif

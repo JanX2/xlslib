@@ -113,7 +113,7 @@ size_t formula_cell_t::GetSize(void) const
 		//printf("SSize: %ld\n", stack->GetSize());
     }
     GetResultEstimate(estimate);
-#warning Estimate size does not seem to work very well - quite low
+	// TODO: Estimate size does not seem to work very well - quite low
 	if (estimate.EncodedValueIsString()) {
 		// FORMULA BIFF8 is immediately followed by a STRING BIFF8 record!
 		const u16string* str = estimate.GetStringValue();
