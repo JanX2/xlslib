@@ -1877,6 +1877,8 @@ char *FormulaFunctionsTest(const char *md5_checksum)
 	for (unsigned32_t r = 0; r < number_of_builtin_functions; r++)
 	{
 		expr_function_code_t fn = function_arr[r].code;
+#if 0
+// These just won't work for older excel programs
 		if (FUNC_BAHTTEXT == fn)
 		{
 			row = 4;
@@ -1891,7 +1893,7 @@ char *FormulaFunctionsTest(const char *md5_checksum)
 			cur_sh = sh[2];
 			row = 4;
 		}
-
+#endif
 		expression_node_factory_t& maker = wb.GetFormulaFactory();
 
 		unsigned16_t argmask = NumberOfArgsForExcelFunction(fn);
