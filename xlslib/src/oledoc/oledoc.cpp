@@ -150,7 +150,7 @@ int COleDoc::DumpHeader(blocks bks, size_t total_data_size)
 #if OLE_DEBUG
 		std::cerr << "sectorID=" << sectorID << std::endl;
 #endif
-		WriteUnsigned32(sectorID++);
+		WriteUnsigned32((unsigned)sectorID++);
 	}
 #if OLE_DEBUG
 	std::cerr << std::hex << Position() << std::dec << std::endl;
@@ -169,12 +169,12 @@ int COleDoc::DumpHeader(blocks bks, size_t total_data_size)
 	// plow ahead, adding up to 127 entries per extra MSAT block
 	msatID = 1; // sector 0 is the first MSAT, if used
 	for(i=1; i<=bks.extra_bat_count; i++) {
-		WriteUnsigned32(sectorID++);
+		WriteUnsigned32((unsigned)sectorID++);
 		if((i % BAT_BLOCKS_PER_MSAT_BLOCK) == 0) {
 			if(i == bks.extra_bat_count) {
 				WriteSigned32(BAT_END_CHAIN); // pointer to next MSAT
 			} else {
-				WriteUnsigned32(msatID++);  // pointer to next MSAT
+				WriteUnsigned32((unsigned)msatID++);  // pointer to next MSAT
 			}
 		}
 	}
