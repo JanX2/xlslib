@@ -121,7 +121,7 @@ CLabel::CLabel(CDataStorage &datastore, const label_t& labeldef) :
 	AddValue16(labeldef.GetXFIndex());
 	if(labeldef.GetInSST()) {
 		size_t index = labeldef.GetGlobalRecords().GetLabelSSTIndex(labeldef);
-		AddValue32(index);
+		AddValue32((unsigned)index);
 	} else {
 		AddUnicodeString(labeldef.GetStrLabel(), LEN2_FLAGS_UNICODE);
 	}
