@@ -1,6 +1,5 @@
 #!/bin/sh
 
-/Volumes/Data/svn/xlslib/xlslib/targets/test
 ./testC /Volumes/Data/svn/xlslib/xlslib/targets/test
 ./testCPP /Volumes/Data/svn/xlslib/xlslib/targets/test
 ./PR2859188 /Volumes/Data/svn/xlslib/xlslib/targets/test
