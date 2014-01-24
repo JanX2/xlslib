@@ -40,29 +40,61 @@
 
 namespace xlslib_core
 {
+	// Used internally
+	struct sheet_notes {
+		uint16_t	sheet_idx;
+		uint16_t	sheet_notes;		// can be a total count, or an index less than that
+	};
+	
+	// Google "[MS-XLS]", look at section 2.5.191 OfficeArtClientAnchorChart
+	struct NoteRec {
+		uint16_t	Flag;
+		uint16_t	Col1;
+		uint16_t	DX1;
+		uint16_t	Row1;
+		uint16_t	DY1;
+		uint16_t	Col2;
+		uint16_t	DX2;
+		uint16_t	Row2;
+		uint16_t	DY2;
+	};
+
 	class note_t : public cell_t
 	{
 		friend class worksheet;
 
 	private:
-		note_t(CGlobalRecords& gRecords, unsigned32_t rowval, unsigned32_t colval, const std::string& text, const std::string& author, xf_t* pxfval = NULL);
-		note_t(CGlobalRecords& gRecords, unsigned32_t rowval, unsigned32_t colval, const xlslib_strings::ustring& text, const xlslib_strings::ustring& author, xf_t* pxfval = NULL);
+		note_t(CGlobalRecords& gRecords, unsigned32_t rowval, unsigned32_t colval, const std::string& author, const std::string& text, xf_t* pxfval = NULL);
+		note_t(CGlobalRecords& gRecords, unsigned32_t rowval, unsigned32_t colval, const xlslib_strings::ustring& author, const xlslib_strings::ustring& text, xf_t* pxfval = NULL);
 #ifndef __FRAMEWORK__
-		note_t(CGlobalRecords& gRecords, unsigned32_t rowval, unsigned32_t colval, const xlslib_strings::u16string& text, const xlslib_strings::u16string& author, xf_t* pxfval = NULL);
+		note_t(CGlobalRecords& gRecords, unsigned32_t rowval, unsigned32_t colval, const xlslib_strings::u16string& author, const xlslib_strings::u16string& text, xf_t* pxfval = NULL);
 #endif
+		void MakeDrawing(CRecord *data, unsigned32_t& currentSPID, unsigned16_t sheetIndex, unsigned16_t notesInThisSheet) const;
+		void Finalize(unsigned16_t rowval, unsigned16_t colval);
 		virtual ~note_t();
+
+	private:
+		xlslib_strings::u16string author;
+		xlslib_strings::u16string text;
+		NoteRec noteRec;
+		unsigned32_t fillColor;
+		unsigned16_t idx;
 
 	public:
 		virtual size_t GetSize(void) const;
 		virtual CUnit* GetData(CDataStorage &datastore) const;
+		unsigned16_t GetIndex(void) const { return idx; }
+		NoteRec GetNoteRect(void) const { return noteRec; }
+		void SetNoteRect(const NoteRec nRect) { noteRec = nRect; }
+		void SetFillColor(uint8_t red, uint8_t green, uint8_t blue) { fillColor = ((unsigned32_t)blue << 16) | ((unsigned32_t)green << 8) | (unsigned32_t)red; }
 
-	private:
-		xlslib_strings::u16string text;
-		xlslib_strings::u16string author;
-
-	public:
-		const xlslib_strings::u16string& GetNote(void) const {return text; }
 		const xlslib_strings::u16string& GetAuthor(void) const {return author; }
+		const xlslib_strings::u16string& GetNote(void) const {return text; }
+	
+	private:
+		void SetIndex(unsigned16_t index) { idx = index; }
+		void dumpDrawingContainer(CRecord *data, unsigned16_t sheetIndex, unsigned32_t& currentSPID, uint32_t noteCount) const;
+		void dumpDrawingText(CRecord *data, unsigned16_t sheetIndex, unsigned32_t& currentSPID) const;
 	};
 
 
@@ -73,19 +105,16 @@ namespace xlslib_core
 	{
 		friend class CDataStorage;
 
+	public:
+		static void MakeDrawingGroup(CRecord *data, unsigned32_t count, const sheet_notes *notes);
+
 	protected:
 		CNote(CDataStorage &datastore, const note_t& notedef);
-
-		void mk_obj_Record(const note_t* notedef);
-		void mk_obj_CMO_SubRecord(const note_t* notedef);
-		void mk_obj_END_SubRecord(const note_t* notedef);
-		void mk_obj_NTS_SubRecord(const note_t* notedef);
 
 	private:
 		virtual ~CNote();
 	};
 }
-
 
 // #include "common/xls_poppack.h"
 
