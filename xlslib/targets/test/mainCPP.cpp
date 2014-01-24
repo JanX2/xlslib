@@ -1674,6 +1674,8 @@ static const struct
 	{ "VARPA", FUNC_VARPA },
 	{ "STDEVA", FUNC_STDEVA },
 	{ "VARA", FUNC_VARA },
+#if 0
+	// These not in "old" Excel, only the new xml based excel
 	{ "BAHTTEXT", FUNC_BAHTTEXT },
 	{ "THAIDAYOFWEEK", FUNC_THAIDAYOFWEEK },
 	{ "THAIDIGIT", FUNC_THAIDIGIT },
@@ -1854,6 +1856,7 @@ static const struct
 	{ "GAMMALN_PRECISE", FUNC_GAMMALN_PRECISE },
 	{ "CEILING_PRECISE", FUNC_CEILING_PRECISE },
 	{ "FLOOR_PRECISE", FUNC_FLOOR_PRECISE },
+#endif
 };
 
 
