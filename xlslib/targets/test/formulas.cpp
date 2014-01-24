@@ -224,8 +224,8 @@ void formula_database(workbook &wb)
 	expression_node_factory_t& maker = wb.GetFormulaFactory();
 
 	cell_t *topLeft, *botRight;
-	uint32_t row, col, offset;
-	offset = 0;
+	uint32_t row, col /*, offset */;
+	//offset = 0;
 	
 	// Headers
 	for(col=1; col<=8; ++col) {
@@ -361,3 +361,80 @@ if(row==31) {
 #endif
 
 
+
+#if 0
+	{
+		fprintf(stderr, "Start \n");
+		workbook wb;
+		worksheet* sh = wb.sheet("ARRAY FORMULA");
+		expression_node_factory_t& maker = wb.GetFormulaFactory();
+
+
+
+#if 1
+		// row & col
+		cell_t *a1t = sh->number(0, 0, -10);
+					  sh->number(1, 0,  20);
+		cell_t *a1b = sh->number(2, 0, -30);
+		
+		cell_t *a2t = sh->number(0, 1,  10);
+					  sh->number(1, 1, -20);
+		cell_t *a2b = sh->number(2, 1,  30);
+
+		cellarea_deref_node_t *a1 = maker.area(*a1t, *a1b, CELL_RELATIVE_A1, CELLOP_AS_ARRAY);
+		cellarea_deref_node_t *a2 = maker.area(*a2t, *a2b, CELL_RELATIVE_A1, CELLOP_AS_ARRAY);
+		expression_node_t *i1 = maker.op(OP_GT, a1, a2);
+
+
+		cellarea_deref_node_t *aa1 = maker.area(*a1t, *a1b, CELL_RELATIVE_A1, CELLOP_AS_ARRAY);
+		cellarea_deref_node_t *aa2 = maker.area(*a2t, *a2b, CELL_RELATIVE_A1, CELLOP_AS_ARRAY);
+		expression_node_t *args[3] = { i1, aa1, aa2 };
+		expression_node_t *i2 = maker.f(FUNC_IF, 3, args, CELLOP_AS_ARRAY);
+		expression_node_t *pExpFormula = maker.f(FUNC_SUM, i2, CELLOP_AS_ARRAY);
+
+		sh->formula(0, 2, true, pExpFormula, true);
+#else
+		// row & col
+		cell_t *a1t = sh->number(0, 0, -10);
+		cell_t *a2t = sh->number(0, 1,  10);
+
+		cell_deref_node_t *c1 = maker.cell(*a1t, CELL_RELATIVE_A1);
+		cell_deref_node_t *c2 = maker.cell(*a2t, CELL_RELATIVE_A1);
+		expression_node_t *i1 = maker.op(OP_GT, c1, c2);
+
+		cell_deref_node_t *cc1 = maker.cell(*a1t, CELL_RELATIVE_A1);
+		cell_deref_node_t *cc2 = maker.cell(*a2t, CELL_RELATIVE_A1);
+		expression_node_t *args[3] = { i1, cc1, cc2 };
+	
+		expression_node_t *pExpFormula = maker.f(FUNC_IF, 3, args);
+
+		sh->formula(0, 2, pExpFormula, true);
+#endif
+
+
+#if 0
+		boolean_value_node_t *boolean(bool value);
+		integer_value_node_t *integer(signed32_t value);
+		float_value_node_t *floating_point(double value);
+		error_value_node_t *error_value(errcode_t value);
+		missing_arg_node_t *missing_arg(void);
+		text_value_node_t *text(const std::string& value);
+		text_value_node_t *text(const xlslib_strings::u16string& value);
+		
+		cell_deref_node_t *cell(const cell_t& value, cell_addr_mode_t attr, cell_op_class_t opclass = CELLOP_AS_VALUE);
+		cell_deref_node_t *cell(const cell_t& value, const worksheet* ws, cell_addr_mode_t attr, cell_op_class_t opclass = CELLOP_AS_VALUE);
+		cellarea_deref_node_t *area(const cell_t& upper_left_corner, const cell_t& lower_right_corner, cell_addr_mode_t attr, cell_op_class_t opclass = CELLOP_AS_VALUE);
+		cellarea_deref_node_t *area(const cell_t& upper_left_corner, const cell_t& lower_right_corner, const worksheet* ws, cell_addr_mode_t attr, cell_op_class_t opclass = CELLOP_AS_VALUE);
+		unary_op_node_t *op(expr_operator_code_t op, expression_node_t* arg);
+		binary_op_node_t *op(expr_operator_code_t op, expression_node_t* arg1, expression_node_t* arg2);
+		z_ary_func_node_t *f(expr_function_code_t func);
+		unary_func_node_t *f(expr_function_code_t func, expression_node_t* arg);
+		binary_func_node_t *f(expr_function_code_t func, expression_node_t* arg1, expression_node_t* arg2);
+		n_ary_func_node_t *f(expr_function_code_t func, size_t argcount, expression_node_t** arg_arr = NULL);
+		userdef_func_node_t *udf(int expr_user_function, size_t argcount = 0, expression_node_t** arg_arr = NULL);
+#endif
+		// FUNC_IF
+
+		
+		
+#endif
