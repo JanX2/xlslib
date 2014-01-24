@@ -74,12 +74,12 @@ signed8_t CRecord::SetRecordLength(size_t rlength)
 
 signed8_t CRecord::SetRecordTypeIndexed(unsigned16_t rtype, size_t index)
 {
-	return SetValueAt16(rtype, index);
+	return SetValueAt16(rtype, (unsigned)index);
 }
 
 signed8_t CRecord::SetRecordLengthIndexed(size_t rlength, size_t index)
 {
-	return SetValueAt16((unsigned16_t)rlength, index+2);
+	return SetValueAt16((unsigned16_t)rlength, (unsigned)index+2);
 }
 
 size_t CRecord::GetRecordLength() const
