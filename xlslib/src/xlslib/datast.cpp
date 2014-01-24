@@ -449,6 +449,45 @@ namespace xlslib_core
         return supbook;
     }
 
+	CUnit* CDataStorage::MakeDrawingGroup(const Boundsheet_Vect_t& bsheets)
+	{
+		CRecord* data = NULL;
+	
+		Boundsheet_Vect_CItor_t bsheet_end = bsheets.end();
+			
+		unsigned32_t total_notes = 0;
+		unsigned32_t sheets_with_notes = 0;
+		for(Boundsheet_Vect_CItor_t bsheet = bsheets.begin(); bsheet != bsheet_end; ++bsheet) {
+			unsigned32_t count = (*bsheet)->GetNoteCount();
+			if(count) {
+				++sheets_with_notes;
+				total_notes += count;
+			}
+		}
+
+		if(total_notes) {
+			sheet_notes *notes = new sheet_notes[sheets_with_notes];
+
+			unsigned16_t notes_idx = 0;
+			unsigned16_t idx = 0;
+			for(Boundsheet_Vect_CItor_t bsheet = bsheets.begin(); bsheet != bsheet_end; ++bsheet) {
+				unsigned16_t count = (*bsheet)->GetNoteCount();
+				if(count) {
+					sheet_notes tmp = { idx, count };
+					notes[notes_idx] = tmp;
+					++notes_idx;
+				}
+				++idx;
+			}
+			data = new CRecord(*this);
+			CNote::MakeDrawingGroup(data, sheets_with_notes, notes);
+
+			delete[] notes;
+		}
+
+		return data;
+	}
+
     CUnit* CDataStorage::MakeCExternSheet(const Boundsheet_Vect_t& sheets) {
         CRecord *externsheet= new CRecord(*this);
         externsheet->Inflate(4+2+sheets.size()*6);
@@ -462,58 +501,8 @@ namespace xlslib_core
         }
         return externsheet;
     }
-#if 0
-	CUnit* CDataStorage::MakeSST(const Label_Vect_t& labels)
-	{
-		CRecord *record = new CRecord(*this);
-		size_t count = labels.size();
-		record->SetAlreadyContinued(true);
 
-		size_t offset = 0; // offset of last written data
-
-		record->SetRecordTypeIndexed(RECTYPE_SST, 0);
-		record->AddValue32(static_cast<unsigned32_t>(count)); // usages
-		record->AddValue32(static_cast<unsigned32_t>(count)); // number of strings to follow
-
-		size_t currSize = record->GetDataSize();
-
-		cLabel_Vect_Itor_t label_end = labels.end();
-		for(cLabel_Vect_Itor_t label = labels.begin(); label != label_end; ++label) {
-			const label_t *currLabel = *label;
-			u16string str16 = currLabel->GetStrLabel();
-
-			size_t strLen;
-			bool isAscii;
-			size_t strSize = record->UnicodeStringLength(str16, strLen, isAscii, CUnit::LEN2_FLAGS_UNICODE /* = LEN2_FLAGS_UNICODE */ );
-			if(strSize > MAX_RECORD_SIZE) {
-				static const unsigned16_t tooLong[] = { 'L', 'e', 'n', 'g', 't', 'h', ' ', 't', 'o', 'o', ' ', 'l', 'o', 'n', 'g', '!' , 0};
-				str16 = (xchar16_t *)(tooLong);	// cannot static_cast or const_cast this expression
-				strSize = record->UnicodeStringLength(str16, strLen, isAscii, CUnit::LEN2_FLAGS_UNICODE /* = LEN2_FLAGS_UNICODE */ );
-			}
-
-			//printf("TEST: (currSize=%ld + strSize=%ld ) offset=%ld\n", currSize, strSize, offset);
-
-			// Payload is always 4 less than currSize, so account for that here
-			if((currSize + strSize) > (MAX_RECORD_SIZE+4)) {
-				record->SetRecordLengthIndexed(currSize-RECORD_HEADER_SIZE, offset);
-
-				offset = record->GetDataSize();         // new offset is where we are now
-				//printf("CHUNK: size=%ld END=%ld\n", currSize, offset);
-				record->AddFixedDataArray(0, 4);        // space for header
-				record->SetRecordTypeIndexed(RECTYPE_CONTINUE, offset);
-			}
-			record->AddUnicodeString(str16, CUnit::LEN2_FLAGS_UNICODE);
-			currSize = record->GetDataSize() - offset; // at end so its valid when we break out of the loop
-			//printf("WROTE %ld bytes:  total=%ld currBlock=%ld offset=%ld\n", strSize, record->GetDataSize(), currSize, offset);
-		}
-		//totalSize = record->GetDataSize();		// total size of this record
-		//printf("FINAL: cursize=%ld offset=%ld\n", currSize, offset);
-		record->SetRecordLengthIndexed(currSize-RECORD_HEADER_SIZE, offset);
-
-		//printf("TOTAL STRING SIZE: %ld\n", record->GetDataSize());
-		return record;
-	}
-#endif
+	// Old makeSST, commented out, still in svn before 1/1/2014 (not sure why it was kept around)
 	CUnit* CDataStorage::MakeSST(const Label_Vect_t& labels)
 	{
 		CRecord *record = new CRecord(*this);

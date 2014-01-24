@@ -135,7 +135,7 @@ namespace xlslib_core
 		{
 			XL_ASSERT(m_is_in_use);
 			XL_ASSERT(len <= GetSize());
-			m_nDataSize = len;
+			m_nDataSize = (unsigned)len;
 		}
 
 		inline size_t GetSize(void) const
@@ -316,7 +316,8 @@ namespace xlslib_core
 		CHPSFdoc* MakeCHPSFdoc(const hpsf_doc_t &docdef);
         CUnit* MakeCExternBook(unsigned16_t sheet_count);
         CUnit* MakeCExternSheet(const Boundsheet_Vect_t& sheets);
-		CUnit *MakeSST(const Label_Vect_t& labels);
+		CUnit* MakeSST(const Label_Vect_t& labels);
+		CUnit* MakeDrawingGroup(const Boundsheet_Vect_t& m_BoundSheets);
 	};
 }
 
