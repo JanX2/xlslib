@@ -326,6 +326,8 @@ namespace xlslib_core
 		bool hidden : 1;
 		bool veryhidden : 1;
 
+		unsigned16_t notes;
+
 		CBSheet	*sheetData;
 
 		CGlobalRecords& m_GlobalRecords;
@@ -352,6 +354,8 @@ namespace xlslib_core
 			return sh;
 		}
 
+		unsigned16_t GetNoteCount(void) const { return notes; }
+		void BumpNoteCount(void) { ++notes; }
 		void SetSheetStreamPosition(size_t offset);
 		const CBSheet *GetSheetData(void) const { return sheetData; }
 
@@ -360,6 +364,8 @@ namespace xlslib_core
 
 	typedef std::vector<xlslib_core::boundsheet_t* XLSLIB_DFLT_ALLOCATOR> Boundsheet_Vect_t;
 	typedef Boundsheet_Vect_t::iterator Boundsheet_Vect_Itor_t;
+	typedef Boundsheet_Vect_t::const_iterator Boundsheet_Vect_CItor_t;
+
 
 	class CBSheet : public CRecord
 	{

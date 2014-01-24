@@ -41,6 +41,7 @@ using namespace xlslib_strings;
 boundsheet_t::boundsheet_t(CGlobalRecords& gRecords) :
 	sheetname(),
 	streampos(0),
+	notes(0),
 	sheetData(NULL),
 	m_GlobalRecords(gRecords)
 {
@@ -50,6 +51,7 @@ boundsheet_t::boundsheet_t(CGlobalRecords& gRecords) :
 boundsheet_t::boundsheet_t(CGlobalRecords& gRecords, const u16string& sn, unsigned16_t attributes, unsigned32_t sp) :
 	sheetname(sn),
 	streampos(sp),
+	notes(0),
 	sheetData(NULL),
 	m_GlobalRecords(gRecords)
 {
@@ -81,6 +83,7 @@ boundsheet_t::boundsheet_t(const boundsheet_t& that) :
 	visible(that.visible),
 	hidden(that.hidden),
 	veryhidden(that.veryhidden),
+	notes(that.notes),
 	sheetData(that.sheetData),
 	m_GlobalRecords(that.m_GlobalRecords)
 {
