@@ -98,13 +98,13 @@ void note_t::Finalize(unsigned16_t rowval, unsigned16_t colval)
 {
 	size_t alen = author.length();
 	if(alen == 0 || alen > 54) {
-		char16_t warning[] = { 'A', 'u', 't', 'h', 'o', 'r', ' ', 'M', 'u', 's', 't', ' ', 'B', 'e', ' ', '1', ' ', 't', 'o', ' ', '5', '4', 'c', 'h', 'a', 'r', 's', ' ', 'l', 'o', 'n', 'g', 0};
+		xchar16_t warning[] = { 'A', 'u', 't', 'h', 'o', 'r', ' ', 'M', 'u', 's', 't', ' ', 'B', 'e', ' ', '1', ' ', 't', 'o', ' ', '5', '4', 'c', 'h', 'a', 'r', 's', ' ', 'l', 'o', 'n', 'g', 0};
 		author.assign(warning);
 		alen = author.length();
 	}
 	size_t tlen = text.length();
 	if(tlen == 0 || tlen > 2048) {
-		char16_t warning[] = { 'T', 'e', 'x', 't',  ' ', 'M', 'u', 's', 't', ' ', 'B', 'e', ' ', '1', ' ', 't', 'o', ' ', '2', '0', '4', '8', 'c', 'h', 'a', 'r', 's', ' ', 'l', 'o', 'n', 'g', 0};
+		xchar16_t warning[] = { 'T', 'e', 'x', 't',  ' ', 'M', 'u', 's', 't', ' ', 'B', 'e', ' ', '1', ' ', 't', 'o', ' ', '2', '0', '4', '8', 'c', 'h', 'a', 'r', 's', ' ', 'l', 'o', 'n', 'g', 0};
 		text.assign(warning);
 		tlen = text.length();
 	}
