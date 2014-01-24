@@ -35,10 +35,7 @@
 #include "xlslib/range.h"
 #include "xlslib/colinfo.h"
 #include "xlslib/row.h"
-
 #include "xlslib/sheetrec.h"
-
-#include "xlslib/range.h"
 
 using namespace xlslib_core;
 
