@@ -298,8 +298,9 @@ c =  xlsWorksheetNumberInt(s, row, col, 0, xf);
 #endif
 c = xlsWorksheetBoolean(s, row, col, FALSE, xf);
 c = xlsWorksheetError(s, row, col, XLERR_VALUE, xf);
-c = xlsWorksheetNote(s, row, col, name, name, xf);
-c = xlsWorksheetNoteW(s, row, col, uname, uname, xf);
+
+xlsWorksheetNote(s, row, col, name, name, xf);
+xlsWorksheetNoteW(s, row, col, uname, uname, xf);
 
 formula = xlsWorksheetFormula(s);
 
