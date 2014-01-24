@@ -146,19 +146,23 @@ extern "C" {
 	cell_t *xlsWorksheetError(worksheet *w, unsigned32_t row, unsigned32_t col, errcode_t errval, xf_t *pxformat)
 																{ return w->error(row, col, errval, pxformat); }
 
-	cell_t *xlsWorksheetNote(worksheet *w, unsigned32_t row, unsigned32_t col, const char *remark, const char *author, xf_t *pxformat)
+	note_t *xlsWorksheetNote(worksheet *w, unsigned32_t row, unsigned32_t col, const char *author, const char *remark, xf_t *pxformat)
 																{ 
-																	std::string cmt = remark;
 																	std::string auth = author;
+																	std::string cmt = remark;
 
-																	return w->note(row, col, cmt, auth, pxformat); 
+																	return w->note(row, col, auth, cmt, pxformat);
 																}
-	cell_t *xlsWorksheetNoteW(worksheet *w, unsigned32_t row, unsigned32_t col, const unichar_t *remark, const unichar_t *author, xf_t *pxformat)
+	note_t *xlsWorksheetNoteW(worksheet *w, unsigned32_t row, unsigned32_t col, const unichar_t *author, const unichar_t *remark, xf_t *pxformat)
 																{ 
-																	ustring cmt = remark;
 																	ustring auth = author;
+																	ustring cmt = remark;
 
-																	return w->note(row, col, cmt, auth, pxformat); 
+																	return w->note(row, col, auth, cmt, pxformat); 
+																}
+	void xlsNoteSetFillColor(note_t *note, unsigned8_t red, unsigned8_t green, unsigned8_t blue)
+																{
+																	note->SetFillColor(red, green, blue);
 																}
     formula_t *xlsWorksheetFormula(worksheet *w) { return w->formula_data(); }
     void xlsFormulaPushBoolean(formula_t *formula, bool value) { formula->PushBoolean(value); }
