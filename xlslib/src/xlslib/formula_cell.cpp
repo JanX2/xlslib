@@ -192,9 +192,9 @@ CFormula::CFormula(CDataStorage &datastore, const formula_cell_t& expr) :
 	
 	expr.DumpData(*this);
 	size_t end = GetDataSize();
-	SetValueAt16((unsigned16_t)(end - len_position - 2), len_position);	// go back and set real value for token length
+	SetValueAt16((unsigned16_t)(end - len_position - 2), (unsigned)len_position);	// go back and set real value for token length
 
-	SetValueAt16((unsigned16_t)(GetDataSize() - basepos - RECORD_HEADER_SIZE), basepos + 2);	// SetRecordLength on either FORMULA or the ARRAY
+	SetValueAt16((unsigned16_t)(GetDataSize() - basepos - RECORD_HEADER_SIZE), (unsigned)basepos + 2);	// SetRecordLength on either FORMULA or the ARRAY
 
 	if (estimate.EncodedValueIsString()) {
 		// FORMULA BIFF8 is immediately followed by a STRING BIFF8 record!
@@ -211,7 +211,7 @@ CFormula::CFormula(CDataStorage &datastore, const formula_cell_t& expr) :
 		XL_ASSERT(str->length() < 256); // dbg
 		AddUnicodeString(*str, LEN2_FLAGS_UNICODE);
 
-		SetValueAt16((unsigned16_t)(GetDataSize() - basepos - RECORD_HEADER_SIZE), basepos + 2); // SetRecordLength
+		SetValueAt16((unsigned16_t)(GetDataSize() - basepos - RECORD_HEADER_SIZE), (unsigned)basepos + 2); // SetRecordLength
 	}
 }
 
