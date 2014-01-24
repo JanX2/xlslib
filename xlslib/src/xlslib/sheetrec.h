@@ -46,6 +46,7 @@ namespace xlslib_core
 	 ***********************************
 	 */
 	class cell_t;
+	class note_t;
 	class range;
 	typedef std::vector<xlslib_core::range* XLSLIB_DFLT_ALLOCATOR> RangeObj_Vect_t;
 	typedef RangeObj_Vect_t::iterator RangeObj_Vect_Itor_t;
@@ -53,6 +54,7 @@ namespace xlslib_core
 	typedef std::vector<xlslib_core::range_t* XLSLIB_DFLT_ALLOCATOR> Range_Vect_t;
 
 	class expression_node_t;
+	class formula_t;
 
 	typedef enum
 	{
@@ -64,6 +66,8 @@ namespace xlslib_core
 		SHEET_DFLT_COL_WIDTH,
 		SHEET_DIMENSION,
 		SHEET_ROWBLOCKS,
+		SHEET_DRAWINGS,
+		SHEET_NOTES,
 		SHEET_MERGED,
 		SHEET_WINDOW2,
 		SHEET_H_LINKS,
@@ -220,11 +224,16 @@ namespace xlslib_core
 
 		unsigned32_t minRow, minCol, maxRow, maxCol;
 		unsigned16_t sheetIndex;
+		unsigned32_t currentSPIDidx;
 
 		Cell_Set_t m_Cells;
 		Cell_Set_Itor_t	m_CurrentCell;              // Init this one in the RowBlocksDump INIT state
 		Cell_Set_Itor_t	m_CurrentSizeCell;          // Init this one in the INIT state
 		//bool m_CellsSorted;
+		
+		Cell_Set_t m_Notes;
+		Cell_Set_Itor_t	m_CurrentNote;              // Init this one in the RowBlocksDump INIT state
+		unsigned16_t m_CurrentNoteIdx;
 
 		RangeObj_Vect_t	m_Ranges;
 		RBSize_Vect_t m_RBSizes;
@@ -243,6 +252,8 @@ namespace xlslib_core
 		// cache a bit for speedups
 		Cell_Set_Itor_t	cellIterHint;
 		cell_t* cellHint;
+		Cell_Set_Itor_t	noteIterHint;
+		cell_t* noteHint;
 
 		bool defRowsHidden;
 		unsigned16_t defRowHeight;
@@ -267,6 +278,7 @@ namespace xlslib_core
 		size_t					EstimateNumBiffUnitsNeeded(void);
 
 		void					AddCell(cell_t* pcell);
+		void					AddNote(cell_t* pcell);
 		CUnit*					DumpData(CDataStorage &datastore, size_t offset, size_t writeLen /*, size_t &Last_BOF_offset*/);
 
 		CUnit*					MakeDataValidationHeader(CDataStorage& datastore, unsigned32_t dval_count);
@@ -287,6 +299,13 @@ namespace xlslib_core
 
 		void					GetFirstLastRowsAndColumns(unsigned32_t* first_row, unsigned32_t* last_row, unsigned32_t* first_col, unsigned32_t* last_col); /* [i_a] */
 
+#if 0
+		static unsigned32_t		MakeSPID(unsigned32_t sheet_idx, unsigned32_t item) {
+																						unsigned32_t val = (sheet_idx+1) * 1000;
+																						val += startingSPID + item;
+																						return val;
+																					}
+#endif
 		// Cell operations
 		void merge(unsigned32_t first_row, unsigned32_t first_col,
 				   unsigned32_t last_row, unsigned32_t last_col);
@@ -326,10 +345,10 @@ namespace xlslib_core
 		cell_t* error(unsigned32_t row, unsigned32_t col,
 					  errcode_t errorcode, xf_t* pxformat = NULL);
 
-		cell_t* note(unsigned32_t row, unsigned32_t col,
-					 const std::string& remark, const std::string& author, xf_t* pxformat = NULL);
-		cell_t* note(unsigned32_t row, unsigned32_t col,
-					 const xlslib_strings::ustring& remark, const xlslib_strings::ustring& author, xf_t* pxformat = NULL);
+		note_t* note(unsigned32_t row, unsigned32_t col,
+					 const std::string& author, const std::string& remark, xf_t* pxformat = NULL);
+		note_t* note(unsigned32_t row, unsigned32_t col,
+					const xlslib_strings::ustring& author,  const xlslib_strings::ustring& remark, xf_t* pxformat = NULL);
 
 		cell_t* formula(unsigned32_t row, unsigned32_t col,
 						bool array_formula,

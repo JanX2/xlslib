@@ -88,9 +88,13 @@ worksheet::worksheet(CGlobalRecords& gRecords, unsigned16_t idx) :
 	minRow((unsigned32_t)(-1)), minCol((unsigned32_t)(-1)),
 	maxRow(0), maxCol(0),
 	sheetIndex(idx),
+	currentSPIDidx(0),
 	m_Cells(),
 	m_CurrentCell(),
 	m_CurrentSizeCell(),
+	m_Notes(),
+	m_CurrentNote(),
+	m_CurrentNoteIdx(0),
 	m_Ranges(),
 	m_RBSizes(),
 	m_Current_RBSize(),
@@ -104,6 +108,8 @@ worksheet::worksheet(CGlobalRecords& gRecords, unsigned16_t idx) :
 	m_Starting_RBCell(),
 	cellIterHint(),
 	cellHint(NULL),
+	noteIterHint(),
+	noteHint(NULL),
 	defRowsHidden(false),
 	defRowHeight(DEFAULT_ROW_HEIGHT),   // MS default
 	defColWidth(10),    // MS default
@@ -124,6 +130,15 @@ worksheet::~worksheet()
 			delete *cell;
 		}
 		m_Cells.clear();
+	}
+
+	// Delete the dynamically created note objects (pointers)
+	if(!m_Notes.empty()) {
+		// cout<<"worksheet::~worksheet(), this = "<<this<<endl;
+		for(Cell_Set_Itor_t cell = m_Notes.begin(); cell != m_Notes.end(); cell++) {
+			delete *cell;
+		}
+		m_Notes.clear();
 	}
 
 	// Delete dynamically allocated ranges of merged cells.
@@ -220,6 +235,8 @@ CUnit* worksheet::DumpData(CDataStorage &datastore, size_t offset, size_t writeL
 			m_Current_Colinfo = m_Colinfos.begin();
 			m_CurrentSizeCell = m_Cells.begin();
 			m_CurrentCell = m_Cells.begin();
+			m_CurrentNote = m_Notes.begin();
+			m_CurrentNoteIdx = 0;
 			m_CurrentHlink = m_HyperLinks.begin();
 			m_CurrentDval = m_DataValidations.begin();
 			m_Current_Range = m_MergedRanges.begin();
@@ -249,7 +266,7 @@ CUnit* worksheet::DumpData(CDataStorage &datastore, size_t offset, size_t writeL
 				//unsigned32_t first_row, last_row;
 				//GetFirstLastRowsAndColumns(&first_row, &last_row, NULL, NULL);
 
-				unsigned32_t colInfoSize = m_Colinfos.size() * COL_INFO_SIZE;
+				unsigned32_t colInfoSize = (unsigned)m_Colinfos.size() * COL_INFO_SIZE;
 				m_pCurrentData = datastore.MakeCIndex(rbsize.first_row, rbsize.last_row);
 
 				size_t rb_size_acc = 0;
@@ -354,6 +371,64 @@ CUnit* worksheet::DumpData(CDataStorage &datastore, size_t offset, size_t writeL
 				changeDumpState = true;
 			}
 			if(changeDumpState) {
+				CHANGE_DUMPSTATE(SHEET_DRAWINGS);
+			}
+			break;
+
+		case SHEET_DRAWINGS:
+			XTRACE("\tSHEET_DRAWINGS");
+			if(!m_Notes.empty()) {
+				if(m_CurrentNote != m_Notes.end()) {
+					CRecord *data = datastore.MakeCRecord();
+					note_t *note = (note_t *)*m_CurrentNote++;
+					note->SetIndex(m_CurrentNoteIdx++);
+					note->MakeDrawing(data, currentSPIDidx, sheetIndex, (unsigned16_t)m_Notes.size());	// unsigned16_t ordinalPosition,
+					m_pCurrentData = data;
+				} else {
+					m_pCurrentData = NULL;
+					m_CurrentNote = m_Notes.begin();
+				}
+				
+				if(m_pCurrentData == NULL) {
+					repeat = true;
+					changeDumpState = true;
+				} else {
+					repeat = false;
+					changeDumpState = false;
+				}
+			} else {
+				// if the list is empty, change the dump state.
+				repeat = true;
+				changeDumpState = true;
+			}
+			if(changeDumpState) {
+				CHANGE_DUMPSTATE(SHEET_NOTES);
+			}
+			break;
+			
+		case SHEET_NOTES:
+			XTRACE("\tSHEET_NOTES");
+			if(!m_Notes.empty()) {
+				if(m_CurrentNote != m_Notes.end()) {
+					note_t *note = (note_t *)*m_CurrentNote++;
+					m_pCurrentData = note->GetData(datastore);
+				} else {
+					m_pCurrentData = NULL;
+				}
+				
+				if(m_pCurrentData == NULL) {
+					repeat = true;
+					changeDumpState = true;
+				} else {
+					repeat = false;
+					changeDumpState = false;
+				}
+			} else {
+				// if the list is empty, change the dump state.
+				repeat = true;
+				changeDumpState = true;
+			}
+			if(changeDumpState) {
 				CHANGE_DUMPSTATE(SHEET_MERGED);
 			}
 			break;
@@ -415,7 +490,7 @@ CUnit* worksheet::DumpData(CDataStorage &datastore, size_t offset, size_t writeL
 		case SHEET_VALIDITY_HEADER:
 			XTRACE("\tSHEET_VALIDITY_HEADER");
 			if(!m_DataValidations.empty()) {
-				m_pCurrentData = MakeDataValidationHeader(datastore, m_DataValidations.size());
+				m_pCurrentData = MakeDataValidationHeader(datastore, (unsigned)m_DataValidations.size());
 				changeDumpState = true;
 				repeat = false;
 			} else {
@@ -473,7 +548,6 @@ CUnit* worksheet::RowBlocksDump(CDataStorage &datastore, const size_t offset)
 			m_DumpRBState = RB_ROWS;
 			//m_CurrentRowBlock = 0;
 			m_RowCounter = 0;
-			//m_CurrentCell = m_Cells.begin(); // moved by DFH to sheet init, should be OK
 
 			// Initialize the row widths
 			m_Current_RowHeight = m_RowHeights.begin();
@@ -781,19 +855,21 @@ cell_t* worksheet::error(unsigned32_t row, unsigned32_t col,
 	return num;
 }
 
-cell_t* worksheet::note(unsigned32_t row, unsigned32_t col,
-						const std::string& remark, const std::string& author, xf_t* pxformat)
+note_t* worksheet::note(unsigned32_t row, unsigned32_t col,
+						const std::string& author, const std::string& remark, xf_t* pxformat)
 {
-	note_t* note = new note_t(m_GlobalRecords, row, col, remark, author, pxformat);
-	AddCell(note);
+	note_t* note = new note_t(m_GlobalRecords, row, col, author, remark, pxformat);
+	AddNote(note);
+	m_GlobalRecords.BumpNoteCount(sheetIndex);
 	return note;
 }
 
-cell_t* worksheet::note(unsigned32_t row, unsigned32_t col,
-						const ustring& remark, const ustring& author, xf_t* pxformat)
+note_t* worksheet::note(unsigned32_t row, unsigned32_t col,
+						const ustring& author, const ustring& remark, xf_t* pxformat)
 {
-	note_t* note = new note_t(m_GlobalRecords, row, col, remark, author, pxformat);
-	AddCell(note);
+	note_t* note = new note_t(m_GlobalRecords, row, col, author, remark, pxformat);
+	AddNote(note);
+	m_GlobalRecords.BumpNoteCount(sheetIndex);
 	return note;
 }
 
@@ -884,6 +960,53 @@ void worksheet::AddCell(cell_t* pcell)
 	/*m_CellsSorted = false; */
 	m_SizesCalculated = false;
 	m_RBSizes.clear();
+}
+
+void worksheet::AddNote(cell_t* pcell)
+{
+	unsigned32_t row, col;        // [i_a]
+
+	row = pcell->GetRow();
+	col = pcell->GetCol();
+
+	if(row < minRow) {minRow = row; }
+	if(row > maxRow) {maxRow = row; }
+	if(col < minCol) {minCol = col; }
+	if(col > maxCol) {maxCol = col; }
+
+	//SortCells(); does nothing now
+
+	bool success;
+	do {
+		Cell_Set_Itor_t	ret;
+
+		if(noteHint && pcell->row >= noteHint->row) {
+			ret		= m_Notes.insert(noteIterHint, pcell);
+			success	= (*ret == pcell);
+		} else {
+			std::pair<Cell_Set_Itor_t, bool> pr;
+
+			pr = m_Notes.insert(pcell);
+			ret		= pr.first;
+			success	= pr.second;
+		}
+
+		if(!success) {
+			cell_t* existing_cell;
+
+			// means we got a duplicate - the user is overwriting an existing cell
+			existing_cell = *(ret);
+			m_Notes.erase(existing_cell);   // Bugs item #2840227:  prevent crash: first erase, then delete
+			delete existing_cell;
+
+			noteHint = NULL;
+		} else {
+			noteIterHint = ret;
+			noteHint = pcell;
+		}
+	} while(!success);
+
+    pcell->ws = this;
 }
 
 cell_t* worksheet::FindCell(unsigned32_t row, unsigned32_t col) const
@@ -1346,8 +1469,8 @@ CUnit* worksheet::MakeHyperLink(CDataStorage& datastore, HyperLink* link)
 	bool hasMark = link->mark.length() ? true : false;
 	u16string::const_iterator cBegin, cEnd;
 
-	unsigned32_t urlLen = (link->url.length()+1) * 2;
-	unsigned32_t markLen = (link->mark.length()+1) * 2;
+	unsigned32_t urlLen = ((unsigned)link->url.length()+1) * 2;
+	unsigned32_t markLen = ((unsigned)link->mark.length()+1) * 2;
 
 	size_t newsize = 2 + 2 + 2 + 2 + 16 + 4 + 4 + 16 + 4 + urlLen;
 	if(hasMark) {
