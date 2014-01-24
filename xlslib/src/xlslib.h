@@ -48,6 +48,7 @@
 #include "xlslib/colinfo.h"
 #include "xlslib/row.h"
 #include "xlslib/formula.h"
+#include "xlslib/note.h"
 
 #include "xlslib/sheetrec.h"
 #include "xlslib/workbook.h"
@@ -1022,6 +1023,7 @@ typedef struct _worksheet worksheet;
 typedef struct _font_t font_t;
 typedef struct _format_t format_t;
 typedef struct _cell_t cell_t;
+typedef struct _note_t note_t;
 typedef struct _formula_t formula_t;
 typedef struct _xf_t xf_t;
 typedef struct _range range;
@@ -1065,8 +1067,9 @@ EXTERN_TYPE cell_t *xlsWorksheetNumberDbl(worksheet *w, unsigned32_t row, unsign
 EXTERN_TYPE cell_t *xlsWorksheetNumberInt(worksheet *w, unsigned32_t row, unsigned32_t col, signed32_t numval, xf_t *pxformat);
 EXTERN_TYPE cell_t *xlsWorksheetBoolean(worksheet *w, unsigned32_t row, unsigned32_t col, int boolval, xf_t *pxformat);
 EXTERN_TYPE cell_t *xlsWorksheetError(worksheet *w, unsigned32_t row, unsigned32_t col, errcode_t errval, xf_t *pxformat);
-EXTERN_TYPE cell_t *xlsWorksheetNote(worksheet *w, unsigned32_t row, unsigned32_t col, const char *remark, const char *author, xf_t *pxformat);
-EXTERN_TYPE cell_t *xlsWorksheetNoteW(worksheet *w, unsigned32_t row, unsigned32_t col, const unichar_t *remark, const unichar_t *author, xf_t *pxformat);
+EXTERN_TYPE note_t *xlsWorksheetNote(worksheet *w, unsigned32_t row, unsigned32_t col, const char *author, const char *remark, xf_t *pxformat);
+EXTERN_TYPE note_t *xlsWorksheetNoteW(worksheet *w, unsigned32_t row, unsigned32_t col, const unichar_t *author, const unichar_t *remark, xf_t *pxformat);
+EXTERN_TYPE void xlsNoteSetFillColor(note_t *note, unsigned8_t red, unsigned8_t green, unsigned8_t blue);
 
 EXTERN_TYPE formula_t *xlsWorksheetFormula(worksheet *w);
 EXTERN_TYPE void xlsFormulaPushBoolean(formula_t *formula, bool value);
