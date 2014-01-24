@@ -75,6 +75,7 @@ namespace xlslib_core
 		GLOBAL_BOUNDSHEETS,
         GLOBAL_LINK1,
         GLOBAL_LINK2,
+		GLOBAL_DRAWING_GRP,
 		GLOBAL_SST,
 		GLOBAL_EOF,
 		GLOBAL_FINISH
@@ -83,6 +84,8 @@ namespace xlslib_core
 	class CGlobalRecords : public CBiffSection
 	{
 		friend class cell_t;
+
+		static const unsigned32_t startingSPID = 24;	// the first drawing ID for this sheet.
 
 	public:
 		CGlobalRecords();
@@ -103,7 +106,8 @@ namespace xlslib_core
 		void		  AddLabelSST(const label_t& label);
 		size_t		  GetLabelSSTIndex(const label_t& labeldef);
 		void		  DeleteLabelSST(const label_t& label);
-
+		
+		void		  BumpNoteCount(unsigned32_t sheet_idx);
 		bool		  SetColor(unsigned8_t r, unsigned8_t g, unsigned8_t b, unsigned8_t idx);
 
 		void		  GetBoundingSheets(Boundsheet_Vect_Itor_t &bs);
@@ -132,6 +136,12 @@ namespace xlslib_core
 		static bool IsASCII(const std::string& str);
 		static bool IsASCII(const xlslib_strings::u16string& str);
 
+		static unsigned32_t		GetStartingSPID(void) { return startingSPID; }
+		static unsigned32_t		MakeSPID(unsigned32_t sheet_idx, unsigned32_t item) {
+																						unsigned32_t val = (sheet_idx+1) * 1000;
+																						val += startingSPID + item;
+																						return val;
+																					}
 	private:
 		CGlobalRecords(const CGlobalRecords& that);
 		CGlobalRecords& operator=(const CGlobalRecords& right);

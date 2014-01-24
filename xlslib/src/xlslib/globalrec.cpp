@@ -334,7 +334,7 @@ CUnit* CGlobalRecords::DumpData(CDataStorage &datastore)
 			m_DumpState = GLOBAL_BOF;
 			break;
 
-		case GLOBAL_BOF:            // ********** STATE 1A *************
+		case GLOBAL_BOF:
 			XTRACE("\tBOF");
 
 			repeat = false;
@@ -343,7 +343,7 @@ CUnit* CGlobalRecords::DumpData(CDataStorage &datastore)
 			m_DumpState = GLOBAL_CODEPAGE; // DFH GLOBAL_WINDOW1;
 			break;
 
-		case GLOBAL_CODEPAGE:       // ********** STATE 1B *************
+		case GLOBAL_CODEPAGE:
 			XTRACE("\tCODEPAGE");
 
 			repeat = false;
@@ -352,7 +352,7 @@ CUnit* CGlobalRecords::DumpData(CDataStorage &datastore)
 			m_DumpState = GLOBAL_WINDOW1;
 			break;
 
-		case GLOBAL_WINDOW1:        // ********** STATE 2A *************
+		case GLOBAL_WINDOW1:
 			XTRACE("\tWINDOW1");
 
 			repeat = false;
@@ -361,7 +361,7 @@ CUnit* CGlobalRecords::DumpData(CDataStorage &datastore)
 			m_DumpState = GLOBAL_DATEMODE; // GLOBAL_DEFAULTFONTS;
 			break;
 
-		case GLOBAL_DATEMODE:       // ********** STATE 2B *************
+		case GLOBAL_DATEMODE:
 			XTRACE("\tDATEMODE");
 
 			repeat = false;
@@ -370,7 +370,7 @@ CUnit* CGlobalRecords::DumpData(CDataStorage &datastore)
 			m_DumpState = GLOBAL_DEFAULTFONTS;
 			break;
 
-		case GLOBAL_DEFAULTFONTS:   // ********** STATE 3A *************
+		case GLOBAL_DEFAULTFONTS:
 			XTRACE("\tDEFAULTFONTS");
 
 			repeat = false;
@@ -386,7 +386,7 @@ CUnit* CGlobalRecords::DumpData(CDataStorage &datastore)
 			}
 			break;
 
-		case GLOBAL_FONTS: // ********** STATE 3B *************
+		case GLOBAL_FONTS:
 			XTRACE("\tFONTS");
 			// First check if the list of fonts is not empty...
 			if(!m_Fonts.empty()) {
@@ -408,7 +408,7 @@ CUnit* CGlobalRecords::DumpData(CDataStorage &datastore)
 			}
 			break;
 
-		case GLOBAL_FORMATS:  // ********** STATE 4 *************
+		case GLOBAL_FORMATS:
 			XTRACE("\tFORMATS");
 
 			if(!m_Formats.empty()) {
@@ -430,7 +430,7 @@ CUnit* CGlobalRecords::DumpData(CDataStorage &datastore)
 			}
 			break;
 
-		case GLOBAL_DEFAULTXFS:  // ********** STATE 5a *************
+		case GLOBAL_DEFAULTXFS:
 			XTRACE("\tXDEFAULTFS");
 			m_pCurrentData = datastore.MakeCExtFormat(*xf_dflt);
 
@@ -446,7 +446,7 @@ CUnit* CGlobalRecords::DumpData(CDataStorage &datastore)
 			}
 			break;
 
-		case GLOBAL_XFS:  // ********** STATE 5b *************
+		case GLOBAL_XFS:
 			XTRACE("\tXFS");
 			if(!m_XFs.empty()) {
 				m_pCurrentData = datastore.MakeCExtFormat(*xf);
@@ -468,7 +468,7 @@ CUnit* CGlobalRecords::DumpData(CDataStorage &datastore)
 			}
 			break;
 
-		case GLOBAL_STYLES:  // ********** STATE 6 *************
+		case GLOBAL_STYLES:
 			XTRACE("\tSTYLES");
 
 			if(!m_Styles.empty()) {
@@ -492,7 +492,7 @@ CUnit* CGlobalRecords::DumpData(CDataStorage &datastore)
 			}
 			break;
 
-		case GLOBAL_PALETTE:  // ********** STATE 7 *************
+		case GLOBAL_PALETTE:
 			XTRACE("\tPALETTE");
 
 			repeat = false;
@@ -503,7 +503,7 @@ CUnit* CGlobalRecords::DumpData(CDataStorage &datastore)
 			m_DumpState = GLOBAL_BOUNDSHEETS;
 			break;
 
-		case GLOBAL_BOUNDSHEETS:  // ********** STATE 8 *************
+		case GLOBAL_BOUNDSHEETS:
 			XTRACE("\tBOUNDSHEETS");
 			if(!m_BoundSheets.empty()) {
 				// First check if the list of sheets is not empty...
@@ -537,10 +537,18 @@ CUnit* CGlobalRecords::DumpData(CDataStorage &datastore)
 			XTRACE("\tEXTERNSHEET");
             m_pCurrentData = datastore.MakeCExternSheet(m_BoundSheets);
             repeat = false;
-			m_DumpState = GLOBAL_SST;
+			m_DumpState = GLOBAL_DRAWING_GRP;
             break;
 
-		case GLOBAL_SST:  // ********** STATE 9 *************
+		case GLOBAL_DRAWING_GRP:
+			XTRACE("\tGLOBAL_DRAWING_GRP");
+			
+			m_pCurrentData = datastore.MakeDrawingGroup(m_BoundSheets);
+			repeat = m_pCurrentData ? false : true;
+			m_DumpState = GLOBAL_SST;
+			break;
+		
+		case GLOBAL_SST:
 			XTRACE("\tBOUNDSHEETS");
 
 			if(!m_Labels.empty()) {
@@ -557,7 +565,7 @@ CUnit* CGlobalRecords::DumpData(CDataStorage &datastore)
 			}
 			break;
 
-		case GLOBAL_EOF: // ********** STATE 10 *************
+		case GLOBAL_EOF:
 			XTRACE("\tEOF");
 
 			repeat = false;
@@ -566,7 +574,7 @@ CUnit* CGlobalRecords::DumpData(CDataStorage &datastore)
 			m_DumpState = GLOBAL_FINISH;
 			break;
 
-		case GLOBAL_FINISH:  // ********** STATE 11 *************
+		case GLOBAL_FINISH:
 			XTRACE("\tFINISH");
 
 			repeat = false;
@@ -689,6 +697,13 @@ void CGlobalRecords::DeleteLabelSST(const label_t& labeldef)
 			break;
 		}
 	}
+}
+
+void CGlobalRecords::BumpNoteCount(unsigned32_t sheet_idx)
+{
+	boundsheet_t *bs = m_BoundSheets[sheet_idx];
+
+	bs->BumpNoteCount();
 }
 
 bool CGlobalRecords::SetColor(unsigned8_t r, unsigned8_t g, unsigned8_t b, unsigned8_t idx)
