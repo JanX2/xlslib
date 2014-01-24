@@ -323,6 +323,14 @@ typedef enum
     CELL_ABSOLUTE_sAs1 = 0,
 } cell_addr_mode_t;
 
+typedef enum cell_op_class_t
+{
+	CELL_DEFAULT		= 0,	// default parameter so as to not cause changes
+	CELLOP_AS_REFER     = 0x20, // [R] - reference, i.e. the cell address itself
+	CELLOP_AS_VALUE     = 0x40, //  V  - value, i.e. the value stored in the cell
+	CELLOP_AS_ARRAY     = 0x60, //  A  - array, i.e. the cell address in {...} array form
+} cell_op_class_t;
+
 typedef enum {
 		OP_EXP = 0x01,                                 // ptgExp          01h   control
 		OP_TBL = 0x02,                                 // ptgTbl          02h   control
