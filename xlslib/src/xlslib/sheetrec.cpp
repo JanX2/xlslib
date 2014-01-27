@@ -739,6 +739,7 @@ size_t worksheet::EstimateNumBiffUnitsNeeded(void)
 	ret += m_Colinfos.size();
 	ret += m_RowHeights.size();
 	ret += m_MergedRanges.size();
+	ret += m_Notes.size() * 2;		// One drawing, one note
 	/*
 	 *  and also add units for the number of rows: those DBCELL and ROW records...
 	 *
@@ -753,6 +754,8 @@ size_t worksheet::EstimateNumBiffUnitsNeeded(void)
 	size_t dbcells = GetNumRowBlocks(&sheet_total);
 	ret += dbcells + (MAX_ROWBLOCK_SIZE * MAX_COLUMNS_PER_ROW * RB_DBCELL_CELLSIZEOFFSET) / MAX_RECORD_SIZE; // worst-case: DBCELL+CONTINUEs for full-width rows
 	ret += sheet_total.rows_sofar; // 1 per ROW
+	ret += sheet_total.cells_sofar; // 1 per cell
+	
 	ret += sheet_total.cells_sofar; // 1 per cell
 
 	return ret;
@@ -1472,7 +1475,7 @@ CUnit* worksheet::MakeHyperLink(CDataStorage& datastore, HyperLink* link)
 	unsigned32_t urlLen = ((unsigned)link->url.length()+1) * 2;
 	unsigned32_t markLen = ((unsigned)link->mark.length()+1) * 2;
 
-	size_t newsize = 2 + 2 + 2 + 2 + 16 + 4 + 4 + 16 + 4 + urlLen;
+	size_t newsize = 4 + 2 + 2 + 2 + 2 + 16 + 4 + 4 + 16 + 4 + urlLen;
 	if(hasMark) {
 		newsize += 4 + markLen;
 	}

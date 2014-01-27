@@ -298,7 +298,7 @@ int workbook::Dump(const string& filename)
 
 	if(errors == NO_ERRORS)	{
 		CDataStorage biffdata(cells);
-		CUnit*				precorddata;
+		CUnit* precorddata;
 		bool keep = true;
 
 		do {

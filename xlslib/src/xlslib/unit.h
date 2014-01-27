@@ -117,9 +117,8 @@ namespace xlslib_core
 		enum XlsUnicodeStringFormat_t
 		{
 			LEN2_FLAGS_UNICODE=1,			// RECTYPE_FORMAT, RECTYPE_LABEL
-			LEN2_NOFLAGS_PADDING_UNICODE,	// RECTYPE_NOTE (RECTYPE_TXO)
 			LEN1_FLAGS_UNICODE,				// RECTYPE_BOUNDSHEET
-			NOLEN_FLAGS_UNICODE,			// RECTYPE_NAME
+			NOLEN_FLAGS_UNICODE				// RECTYPE_NAME
 		};
 
 		signed8_t AddUnicodeString(CGlobalRecords& gRecords, const std::string& str, XlsUnicodeStringFormat_t fmt /* = LEN2_FLAGS_UNICODE */ );

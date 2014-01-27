@@ -437,11 +437,6 @@ signed8_t CUnit::AddUnicodeString(CGlobalRecords& gRecords, const std::string& s
 		strSize += 1;   // flags byte
 		break;
 
-	case LEN2_NOFLAGS_PADDING_UNICODE:	// RECTYPE_NOTE (RECTYPE_TXO)
-		strSize = 2;
-		strSize += (strLen % 1);    // padding byte
-		break;
-
 	case LEN1_FLAGS_UNICODE:			// RECTYPE_BOUNDSHEET
 		strSize = 1;
 		strSize += 1;   // flags byte
@@ -481,18 +476,6 @@ signed8_t CUnit::AddUnicodeString(CGlobalRecords& gRecords, const std::string& s
 		data[datasize++] = (strLen >> 8) & 0xFF;
 		XL_ASSERT(m_Store[m_Index].GetSize() > datasize);
 		data[datasize++] = 0x00; // ASCII
-		break;
-
-	case LEN2_NOFLAGS_PADDING_UNICODE: // RECTYPE_NOTE (RECTYPE_TXO)
-		XL_ASSERT(m_Store[m_Index].GetSize() > datasize);
-		data[datasize++] = strLen & 0xFF;
-		XL_ASSERT(m_Store[m_Index].GetSize() > datasize);
-		data[datasize++] = (strLen >> 8) & 0xFF;
-		// the string is padded to be word-aligned with NUL bytes /preceding/ the text:
-		if (strLen % 1) {
-			XL_ASSERT(m_Store[m_Index].GetSize() > datasize);
-			data[datasize++] = 0x00; // padding
-		}
 		break;
 
 	case LEN1_FLAGS_UNICODE: // RECTYPE_BOUNDSHEET
@@ -559,18 +542,6 @@ signed8_t CUnit::AddUnicodeString(const u16string& str16, XlsUnicodeStringFormat
 		data[datasize++] = (isASCII ? 0x00 : 0x01); // ASCII or UTF-16
 		break;
 
-	case LEN2_NOFLAGS_PADDING_UNICODE: // RECTYPE_NOTE (RECTYPE_TXO)
-		XL_ASSERT(m_Store[m_Index].GetSize() > datasize);
-		data[datasize++] = strLen & 0xFF;
-		XL_ASSERT(m_Store[m_Index].GetSize() > datasize);
-		data[datasize++] = (strLen >> 8) & 0xFF;
-		// the string is padded to be word-aligned with NUL bytes /preceding/ the text:
-		if (isASCII && (strLen % 1)) {
-			XL_ASSERT(m_Store[m_Index].GetSize() > datasize);
-			data[datasize++] = 0x00; // padding
-		}
-		break;
-
 	case LEN1_FLAGS_UNICODE: // RECTYPE_BOUNDSHEET
 		XL_ASSERT(m_Store[m_Index].GetSize() > datasize);
 		data[datasize++] = strLen & 0xFF;
@@ -624,15 +595,6 @@ size_t CUnit::UnicodeStringLength(const u16string& str16, size_t& strLen, bool& 
 		strSize += 2;
 		strSize += 1;   // flags byte
 		if (!isASCII) {
-			strSize += strLen;  // UTF16 takes 2 bytes per char
-		}
-		break;
-
-	case LEN2_NOFLAGS_PADDING_UNICODE:	// RECTYPE_NOTE (RECTYPE_TXO)
-		strSize += 2;
-		if (isASCII) {
-			strSize += (strLen % 1);    // padding byte
-		} else { // if (!isASCII)
 			strSize += strLen;  // UTF16 takes 2 bytes per char
 		}
 		break;

@@ -162,8 +162,6 @@ static void drawDataOPID(CRecord *data, unsigned16_t opid, unsigned32_t val)
 }
 
 
-
-
 static const uint32_t drawingSize = 8 + 128;	// header, 120 is the main blob, 8 is the trailing blob
 
 void note_t::dumpDrawingContainer(CRecord *data, unsigned16_t sheetIndex, unsigned32_t& currentSPIDidx, uint32_t noteCount) const
@@ -213,14 +211,22 @@ void note_t::dumpDrawingText(CRecord *data, unsigned16_t sheetIndex, unsigned32_
 
 void note_t::MakeDrawing(CRecord *data, unsigned32_t& currentSPID, unsigned16_t sheetIndex, unsigned16_t notesInThisSheet) const
 {
+	xlslib_strings::u16string fullStr = author;
+	fullStr.append(1, (unsigned16_t)':');
+	fullStr.append(1, (unsigned16_t)'\n');
+	unsigned16_t authorLen = (unsigned16_t)fullStr.length();
+	fullStr.append(text);
+	unsigned16_t totalLen = (unsigned16_t)fullStr.length();
+	
+	// All the records below
+	data->Inflate(4 + (idx == 0 ? 90 : 0) + drawingSize +   30 + 16 + 22 +  4+2+totalLen*(CGlobalRecords::IsASCII(fullStr)?1:2) + 28);
+
 	data->SetRecordType(RECTYPE_MSODRAWING);
 	
 	if(idx == 0) {
 		dumpDrawingContainer(data, sheetIndex, currentSPID, notesInThisSheet);
-		dumpDrawingText(data, sheetIndex, currentSPID);
-	} else {
-		dumpDrawingText(data, sheetIndex, currentSPID);
 	}
+	dumpDrawingText(data, sheetIndex, currentSPID);
 
 	size_t offset = data->GetDataSize();
 	data->SetRecordLength(offset - RECORD_HEADER_SIZE);
@@ -257,14 +263,7 @@ void note_t::MakeDrawing(CRecord *data, unsigned32_t& currentSPID, unsigned16_t 
 	Size: 18
 	TXO: grbit=0x0212 rot=0x0000 chText=0x0013 cbRuns=0x0018
 #endif
-	
-	xlslib_strings::u16string fullStr = author;
-	fullStr.append(1, (unsigned16_t)':');
-	fullStr.append(1, (unsigned16_t)'\n');
-	unsigned16_t authorLen = (unsigned16_t)fullStr.length();
-	fullStr.append(text);
-	unsigned16_t totalLen = (unsigned16_t)fullStr.length();
-	
+		
 	data->AddValue16(RECTYPE_TXO);
 	data->AddValue16(18);
 
@@ -323,6 +322,7 @@ void CNote::MakeDrawingGroup(CRecord *data, unsigned32_t count, const sheet_note
 {
 	size_t curr_offset;
 	
+	data->Inflate(82 + count*8);
 	data->SetRecordType(RECTYPE_MSODRAWINGGROUP);
 
 	size_t f000_len = dumpDrawData(data, 0xf, 0x0, 0xf000, 0, 0, NULL /* len=0 */ );  // OfficeArtDggContainer
@@ -366,7 +366,6 @@ void CNote::MakeDrawingGroup(CRecord *data, unsigned32_t count, const sheet_note
 		dumpDrawData(data,  0x0, 0x4, 0xf11e, 16,  16, draw002 /* len=16 */ ) ;  // OfficeArtSplitMenuColorContainer
 	
 	curr_offset = data->GetDataSize();
-	
 	data->SetValueAt32((unsigned)(curr_offset - 8 - RECORD_HEADER_SIZE), (unsigned)f000_len);
 	data->SetRecordLength(curr_offset-RECORD_HEADER_SIZE);
 }
@@ -374,6 +373,9 @@ void CNote::MakeDrawingGroup(CRecord *data, unsigned32_t count, const sheet_note
 CNote::CNote(CDataStorage &datastore, const note_t& notedef) :
 	CRecord(datastore)
 {
+	bool isAscii = CGlobalRecords::IsASCII(notedef.GetAuthor());
+	Inflate(4 + 2 + 2 + 2 + 2 + 2 + 1 + notedef.GetAuthor().size() * (isAscii ? 1 : 2) );
+
 	SetRecordType(RECTYPE_NOTE);
 	AddValue16((unsigned16_t)notedef.GetRow());
 	AddValue16((unsigned16_t)notedef.GetCol());
