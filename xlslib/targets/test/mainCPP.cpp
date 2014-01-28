@@ -1863,20 +1863,22 @@ static const struct
 char *FormulaFunctionsTest(const char *md5_checksum)
 {
 	workbook wb;
-	worksheet* sh[4];
+	const unsigned32_t numSheets = 1;
+	worksheet* sh[numSheets];
 	
 	sh[0] = wb.sheet("2003 and before");
-	sh[1] = wb.sheet("2007");
-	sh[2] = wb.sheet("2010");
-	sh[3] = wb.sheet("Formulas_04");
+	//sh[1] = wb.sheet("2007");
+	//sh[2] = wb.sheet("2010");
+	//sh[3] = wb.sheet("Formulas_04");
 
 	const unsigned32_t number_of_builtin_functions = sizeof(function_arr) / sizeof(function_arr[0]);
-
 	unsigned32_t row = 4;
 	worksheet* cur_sh = sh[0];
 	for (unsigned32_t r = 0; r < number_of_builtin_functions; r++)
 	{
 		expr_function_code_t fn = function_arr[r].code;
+		printf("FUNC: %s\n", function_arr[r].name);
+	
 #if 0
 // These just won't work for older excel programs
 		if (FUNC_BAHTTEXT == fn)
@@ -1896,7 +1898,7 @@ char *FormulaFunctionsTest(const char *md5_checksum)
 #endif
 		expression_node_factory_t& maker = wb.GetFormulaFactory();
 
-		unsigned16_t argmask = NumberOfArgsForExcelFunction(fn);
+		unsigned32_t argmask = NumberOfArgsForExcelFunction(fn);
 		if (argmask != 0 && !(argmask & 0x80000000U) /* A_MACRO */)
 		{
 			if (argmask & 0x0001)
@@ -1915,8 +1917,8 @@ char *FormulaFunctionsTest(const char *md5_checksum)
 				cur_sh->formula(row, 3, binary_root, true); 
 			}
 
-			size_t argcnt;
-			for (argcnt = 3; argcnt < 12; argcnt++)
+			unsigned32_t argcnt;
+			for (argcnt = 3; argcnt <= 30; argcnt++)
 			{
 				if (argmask & (1U << argcnt))
 				{
@@ -1928,7 +1930,7 @@ char *FormulaFunctionsTest(const char *md5_checksum)
 						expression_node_t *num = maker.integer(a + 1);
 						n_ary_root->PushArg(num);
 					}
-					cur_sh->formula(row, argcnt + 1, n_ary_root, true); 
+					cur_sh->formula(row, argcnt + 1, n_ary_root, true);
 				}
 			}
 		}
@@ -1938,11 +1940,11 @@ char *FormulaFunctionsTest(const char *md5_checksum)
 		row++;
 	}
 
-	for (unsigned32_t i = 0; i < 4; i++)
+	for (unsigned32_t i = 0; i < numSheets; i++)
 	{
 		sh[i]->label(1, 0, "function name");
 		sh[i]->label(0, 1, "argument count");
-		for (size_t argcnt = 0; argcnt < 12; argcnt++)
+		for (size_t argcnt = 0; argcnt <= 30; argcnt++)
 		{
 			sh[i]->number(1, (unsigned32_t)(1 + argcnt), (signed32_t)argcnt);
 		}
