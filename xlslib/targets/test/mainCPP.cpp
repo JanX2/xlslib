@@ -1675,7 +1675,7 @@ static const struct
 	{ "STDEVA", FUNC_STDEVA },
 	{ "VARA", FUNC_VARA },
 #if 0
-	// These not in "old" Excel, only the new xml based excel
+	// Only added in 2007 Excel, Excel 2004 reports file corruption if you use them
 	{ "BAHTTEXT", FUNC_BAHTTEXT },
 	{ "THAIDAYOFWEEK", FUNC_THAIDAYOFWEEK },
 	{ "THAIDIGIT", FUNC_THAIDIGIT },

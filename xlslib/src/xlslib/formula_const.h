@@ -556,7 +556,6 @@ namespace xlslib_core
 #define xlfVarPA 365
 #define xlfStDevA 366
 #define xlfVarA 367
-#if 0 // these should not be provided to an older excel
 	/* [i_a] since Excel 2007: */
 #define xlfBahttext 368
 #define xlfThaidayofweek 369
@@ -675,7 +674,8 @@ namespace xlslib_core
 #define xlfSumifs 482
 #define xlfAverageif 483
 #define xlfAverageifs 484
-	// since Excel 2010:
+#if 0
+	/* [i_a] since Excel 2010: */
 #define xlfAggregate 485
 #define xlfBinom_dist 486
 #define xlfBinom_inv 487
@@ -1106,7 +1106,7 @@ namespace xlslib_core
 		FUNC_VARPA = xlfVarPA,
 		FUNC_STDEVA = xlfStDevA,
 		FUNC_VARA = xlfVarA,
-#if 0 // these should not be provided to an older excel
+		// New in 2007
 		FUNC_BAHTTEXT = xlfBahttext,
 		FUNC_THAIDAYOFWEEK = xlfThaidayofweek,
 		FUNC_THAIDIGIT = xlfThaidigit,
@@ -1224,6 +1224,8 @@ namespace xlslib_core
 		FUNC_SUMIFS = xlfSumifs,
 		FUNC_AVERAGEIF = xlfAverageif,
 		FUNC_AVERAGEIFS = xlfAverageifs,
+#if 0 
+		// Introduced in the xml Excel version, 2010
 		FUNC_AGGREGATE = xlfAggregate,
 		FUNC_BINOM_DIST = xlfBinom_dist,
 		FUNC_BINOM_INV = xlfBinom_inv,

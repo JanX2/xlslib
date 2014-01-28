@@ -340,7 +340,7 @@ void formula_t::GetResultEstimate(estimated_formula_result_t &dst) const
 }
 
 
-static const uint32_t maxProperties = 368; // 548 if you enable newer functions than were defined since BIFF8.
+static const uint32_t maxProperties = 485 ; // 368 in 2004, 484 in 2007, and 548 if you enable newer functions than were defined since BIFF8.
 
 // Notes: the function_properties table was build by combining Ger's original switch statement for the number of arguments with
 //    a second table mapping the 'FUNC_...' values to the Excel English function name (search for "function_arr"). The CELLOP_AS_
@@ -406,7 +406,7 @@ static function_property function_properties[maxProperties] = {
     /* FUNC_GROWTH=52 */                CELLOP_AS_ARRAY, A_1_TO_4,              XLNAME("GROWTH")
     /* FUNC_GOTO=53 */                  CELLOP_AS_VALUE, A_1 | A_MACRO,         XLNAME("GOTO")
     /* FUNC_HALT=54 */                  CELLOP_AS_VALUE, A_0_OR_1 | A_MACRO,    XLNAME("HALT")
-    /* UNUSED=55 */ CELLOP_AS_ARRAY, 0, XLNAME("")
+    /* UNUSED=55 */						CELLOP_AS_ARRAY, 0,						XLNAME("")
     /* FUNC_PV=56 */                    CELLOP_AS_VALUE, A_3_TO_5,              XLNAME("PV")
     /* FUNC_FV=57 */                    CELLOP_AS_VALUE, A_3_TO_5,              XLNAME("FV")
     /* FUNC_NPER=58 */                  CELLOP_AS_VALUE, A_3_TO_5,              XLNAME("NPER")
@@ -522,10 +522,10 @@ static function_property function_properties[maxProperties] = {
     /* FUNC_PPMT=168 */                 CELLOP_AS_VALUE, A_4_TO_6,              XLNAME("PPMT")
     /* FUNC_COUNTA=169 */               CELLOP_AS_VALUE, A_1_OR_MORE,           XLNAME("COUNTA")
     /* FUNC_CANCELKEY=170 */            CELLOP_AS_VALUE, A_0_TO_2 | A_MACRO,    XLNAME("CANCELKEY")
-    /* UNUSED=171 */ CELLOP_AS_ARRAY, 0, XLNAME("")
-    /* UNUSED=172 */ CELLOP_AS_ARRAY, 0, XLNAME("")
-    /* UNUSED=173 */ CELLOP_AS_ARRAY, 0, XLNAME("")
-    /* UNUSED=174 */ CELLOP_AS_ARRAY, 0, XLNAME("")
+    /* UNUSED=171 */					CELLOP_AS_ARRAY, 0,						XLNAME("")
+    /* UNUSED=172 */					CELLOP_AS_ARRAY, 0,						XLNAME("")
+    /* UNUSED=173 */					CELLOP_AS_ARRAY, 0,						XLNAME("")
+    /* UNUSED=174 */					CELLOP_AS_ARRAY, 0,						XLNAME("")
     /* FUNC_INITIATE=175 */             CELLOP_AS_VALUE, A_2 | A_MACRO,         XLNAME("INITIATE")
     /* FUNC_REQUEST=176 */              CELLOP_AS_VALUE, A_2 | A_MACRO,         XLNAME("REQUEST")
     /* FUNC_POKE=177 */                 CELLOP_AS_VALUE, A_3 | A_MACRO,         XLNAME("POKE")
@@ -553,8 +553,8 @@ static function_property function_properties[maxProperties] = {
     /* FUNC_DCOUNTA=199 */              CELLOP_AS_VALUE, A_3,                   XLNAME("DCOUNTA")
     /* FUNC_DELETEBAR=200 */            CELLOP_AS_VALUE, A_1 | A_MACRO,         XLNAME("DELETEBAR")
     /* FUNC_UNREGISTER=201 */           CELLOP_AS_VALUE, A_1 | A_MACRO,         XLNAME("UNREGISTER")
-    /* UNUSED=202 */ CELLOP_AS_ARRAY, 0, XLNAME("")
-    /* UNUSED=203 */ CELLOP_AS_ARRAY, 0, XLNAME("")
+    /* UNUSED=202 */					CELLOP_AS_ARRAY, 0,						XLNAME("")
+    /* UNUSED=203 */					CELLOP_AS_ARRAY, 0,						XLNAME("")
     /* FUNC_USDOLLAR=204 */             CELLOP_AS_VALUE, A_1_OR_2,              XLNAME("USDOLLAR")
     /* FUNC_FINDB=205 */                CELLOP_AS_VALUE, A_2_OR_3,              XLNAME("FINDB")
     /* FUNC_SEARCHB=206 */              CELLOP_AS_VALUE, A_2_OR_3,              XLNAME("SEARCHB")
@@ -568,16 +568,16 @@ static function_property function_properties[maxProperties] = {
     /* FUNC_ASC=214 */                  CELLOP_AS_VALUE, A_1,                   XLNAME("ASC")
     /* FUNC_DBCS=215 */                 CELLOP_AS_VALUE, A_1,                   XLNAME("DBCS")
     /* FUNC_RANK=216 */                 CELLOP_AS_VALUE, A_2_OR_3,              XLNAME("RANK")
-    /* UNUSED=217 */ CELLOP_AS_ARRAY, 0, XLNAME("")
-    /* UNUSED=218 */ CELLOP_AS_ARRAY, 0, XLNAME("")
+    /* UNUSED=217 */					CELLOP_AS_ARRAY, 0,						XLNAME("")
+    /* UNUSED=218 */					CELLOP_AS_ARRAY, 0,						XLNAME("")
     /* FUNC_ADDRESS=219 */              CELLOP_AS_VALUE, A_2_TO_5,              XLNAME("ADDRESS")
     /* FUNC_DAYS360=220 */              CELLOP_AS_VALUE, A_2_OR_3,              XLNAME("DAYS360")
     /* FUNC_TODAY=221 */                CELLOP_AS_VALUE, A_0,                   XLNAME("TODAY")
     /* FUNC_VDB=222 */                  CELLOP_AS_VALUE, A_5_TO_7,              XLNAME("VDB")
-    /* UNUSED=223 */ CELLOP_AS_ARRAY, 0, XLNAME("")
-    /* UNUSED=224 */ CELLOP_AS_ARRAY, 0, XLNAME("")
-    /* UNUSED=225 */ CELLOP_AS_ARRAY, 0, XLNAME("")
-    /* UNUSED=226 */ CELLOP_AS_ARRAY, 0, XLNAME("")
+    /* UNUSED=223 */					CELLOP_AS_ARRAY, 0,						XLNAME("")
+    /* UNUSED=224 */					CELLOP_AS_ARRAY, 0,						XLNAME("")
+    /* UNUSED=225 */					CELLOP_AS_ARRAY, 0,						XLNAME("")
+    /* UNUSED=226 */					CELLOP_AS_ARRAY, 0,						XLNAME("")
     /* FUNC_MEDIAN=227 */               CELLOP_AS_VALUE, A_1_OR_MORE,           XLNAME("MEDIAN")
     /* FUNC_SUMPRODUCT=228 */           CELLOP_AS_VALUE, A_1_OR_MORE,           XLNAME("SUMPRODUCT")
     /* FUNC_SINH=229 */                 CELLOP_AS_VALUE, A_1,                   XLNAME("SINH")
@@ -600,8 +600,8 @@ static function_property function_properties[maxProperties] = {
     /* FUNC_GETOBJECT=246 */            CELLOP_AS_VALUE, A_1_TO_5 | A_MACRO,    XLNAME("GETOBJECT")
     /* FUNC_DB=247 */                   CELLOP_AS_VALUE, A_4_OR_5,              XLNAME("DB")
     /* FUNC_PAUSE=248 */                CELLOP_AS_VALUE, A_0_OR_1 | A_MACRO,    XLNAME("PAUSE")
-    /* UNUSED=249 */ CELLOP_AS_ARRAY, 0, XLNAME("")
-    /* UNUSED=250 */ CELLOP_AS_ARRAY, 0, XLNAME("")
+    /* UNUSED=249 */					CELLOP_AS_ARRAY, 0,						XLNAME("")
+    /* UNUSED=250 */					CELLOP_AS_ARRAY, 0,						XLNAME("")
     /* FUNC_RESUME=251 */               CELLOP_AS_VALUE, A_0_OR_1 | A_MACRO,    XLNAME("RESUME")
     /* FUNC_FREQUENCY=252 */            CELLOP_AS_ARRAY, A_2,                   XLNAME("FREQUENCY")
     /* FUNC_ADDTOOLBAR=253 */           CELLOP_AS_VALUE, A_0_TO_2 | A_MACRO,    XLNAME("ADDTOOLBAR")
@@ -684,7 +684,7 @@ static function_property function_properties[maxProperties] = {
     /* FUNC_MODE=330 */                 CELLOP_AS_VALUE, A_1_OR_MORE,           XLNAME("MODE")
     /* FUNC_TRIMMEAN=331 */             CELLOP_AS_VALUE, A_2,                   XLNAME("TRIMMEAN")
     /* FUNC_TINV=332 */                 CELLOP_AS_VALUE, A_2,                   XLNAME("TINV")
-    /* UNUSED=333 */ CELLOP_AS_ARRAY, 0, XLNAME("")
+    /* UNUSED=333 */					CELLOP_AS_ARRAY, 0,						XLNAME("")
     /* FUNC_MOVIECOMMAND=334 */         CELLOP_AS_VALUE, A_3_OR_4 | A_MACRO,    XLNAME("MOVIECOMMAND")
     /* FUNC_GETMOVIE=335 */             CELLOP_AS_VALUE, A_3_OR_4 | A_MACRO,    XLNAME("GETMOVIE")
     /* FUNC_CONCATENATE=336 */          CELLOP_AS_VALUE, A_1_OR_MORE,           XLNAME("CONCATENATE")
@@ -719,7 +719,7 @@ static function_property function_properties[maxProperties] = {
     /* FUNC_VARPA=365 */                CELLOP_AS_VALUE, A_1_OR_MORE,           XLNAME("VARPA")
     /* FUNC_STDEVA=366 */               CELLOP_AS_VALUE, A_1_OR_MORE,           XLNAME("STDEVA")
     /* FUNC_VARA=367 */                 CELLOP_AS_VALUE, A_1_OR_MORE,           XLNAME("VARA")
-#if 0
+	// 2007 Additions
     /* FUNC_BAHTTEXT=368 */             CELLOP_AS_VALUE, A_1,                   XLNAME("BAHTTEXT")
     /* FUNC_THAIDAYOFWEEK=369 */        CELLOP_AS_VALUE, A_1,                   XLNAME("THAIDAYOFWEEK")
     /* FUNC_THAIDIGIT=370 */            CELLOP_AS_VALUE, A_1,                   XLNAME("THAIDIGIT")
@@ -837,6 +837,8 @@ static function_property function_properties[maxProperties] = {
     /* FUNC_SUMIFS=482 */               CELLOP_AS_VALUE, A_3_OR_MORE,           XLNAME("SUMIFS")
     /* FUNC_AVERAGEIF=483 */            CELLOP_AS_VALUE, A_2_OR_3,              XLNAME("AVERAGEIF")
     /* FUNC_AVERAGEIFS=484 */           CELLOP_AS_VALUE, A_3_OR_MORE,           XLNAME("AVERAGEIFS")
+#if 0
+	// Introduced in 2010 with the xml Excel version
     /* FUNC_AGGREGATE=485 */            CELLOP_AS_VALUE, A_UNKNOWN,             XLNAME("AGGREGATE")
     /* FUNC_BINOM_DIST=486 */           CELLOP_AS_VALUE, A_UNKNOWN,             XLNAME("BINOM_DIST")
     /* FUNC_BINOM_INV=487 */            CELLOP_AS_VALUE, A_UNKNOWN,             XLNAME("BINOM_INV")
@@ -876,7 +878,7 @@ static function_property function_properties[maxProperties] = {
     /* FUNC_WORKDAY_INTL=521 */         CELLOP_AS_VALUE, A_UNKNOWN,             XLNAME("WORKDAY_INTL")
     /* FUNC_ECMA_CEILING=522 */         CELLOP_AS_VALUE, A_UNKNOWN,             XLNAME("ECMA_CEILING")
     /* FUNC_ISO_CEILING=523 */          CELLOP_AS_VALUE, A_UNKNOWN,             XLNAME("ISO_CEILING")
-    /* UNUSED=524 */ CELLOP_AS_ARRAY, 0, XLNAME("")
+    /* UNUSED=524 */					CELLOP_AS_ARRAY, 0,						XLNAME("")
     /* FUNC_BETA_DIST=525 */            CELLOP_AS_VALUE, A_UNKNOWN,             XLNAME("BETA_DIST")
     /* FUNC_BETA_INV=526 */             CELLOP_AS_VALUE, A_UNKNOWN,             XLNAME("BETA_INV")
     /* FUNC_CHISQ_DIST=527 */           CELLOP_AS_VALUE, A_UNKNOWN,             XLNAME("CHISQ_DIST")
@@ -917,5 +919,3 @@ static function_property PropertyForForExcelFunction(expr_function_code_t code)
 	}
 	return function_properties[code];
 }
-
-

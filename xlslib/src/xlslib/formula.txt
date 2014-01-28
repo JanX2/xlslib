@@ -1,4 +1,7 @@
 /*
+ *  This information is extracted from the Excel97-2007 BinaryFileFormat, which can be found online (see page 300):
+ *  http://www.digitalpreservation.gov/formats/digformatspecs/Excel97-2007BinaryFileFormat%28xls%29Specification.pdf
+ *
  *  The ptgSheet and ptgEndSheet tokens are no longer used. The external sheet references are contained in the ptgNameX, ptgRef3d, and ptgArea3d tokens.
  *
  *  Name                                Ptg                             Type

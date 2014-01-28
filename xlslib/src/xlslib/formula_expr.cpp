@@ -646,7 +646,7 @@ void function_basenode_t::GetResultEstimate(estimated_formula_result_t &dst) con
 	case FUNC_ISNONTEXT:
 	case FUNC_ISLOGICAL:
 	case FUNC_ISPMT:
-	//case FUNC_ISTHAIDIGIT:
+	case FUNC_ISTHAIDIGIT:
 		dst.SetCalcOnLoad();
 		dst.SetBoolean(false);     // faked value estimate!
 		break;
@@ -666,8 +666,8 @@ void function_basenode_t::GetResultEstimate(estimated_formula_result_t &dst) con
 	case FUNC_DCOUNTA:
 	case FUNC_COUNTIF:
 	case FUNC_COUNTBLANK:
-	//case FUNC_WEEKNUM:
-	//case FUNC_COUNTIFS:
+	case FUNC_WEEKNUM:
+	case FUNC_COUNTIFS:
 		dst.SetCalcOnLoad();
 		dst.SetInteger(42);     // faked value estimate!
 		break;
@@ -736,7 +736,6 @@ void function_basenode_t::GetResultEstimate(estimated_formula_result_t &dst) con
 	case FUNC_VARPA:
 	case FUNC_STDEVA:
 	case FUNC_VARA:
-#if 0 // these should not be provided to an older excel
 	case FUNC_SERIESSUM:
 	case FUNC_ERF:
 	case FUNC_ERFC:
@@ -746,6 +745,8 @@ void function_basenode_t::GetResultEstimate(estimated_formula_result_t &dst) con
 	case FUNC_SUMIFS:
 	case FUNC_AVERAGEIF:
 	case FUNC_AVERAGEIFS:
+#if 0
+	// these should not be provided to an older excel
 	case FUNC_ERF_PRECISE:
 	case FUNC_ERFC_PRECISE:
 	case FUNC_GAMMALN_PRECISE:
@@ -768,7 +769,6 @@ void function_basenode_t::GetResultEstimate(estimated_formula_result_t &dst) con
 	case FUNC_ROMAN:
 	case FUNC_HYPERLINK:
 	case FUNC_PHONETIC:
-#if 0 // these should not be provided to an older excel
 	case FUNC_BAHTTEXT:
 	case FUNC_HEX2BIN:
 	case FUNC_HEX2DEC:
@@ -782,7 +782,6 @@ void function_basenode_t::GetResultEstimate(estimated_formula_result_t &dst) con
 	case FUNC_BIN2DEC:
 	case FUNC_BIN2OCT:
 	case FUNC_BIN2HEX:
-#endif
 		dst.SetCalcOnLoad();
 		dst.SetText("???");     // faked value estimate!
 		break;
@@ -791,7 +790,7 @@ void function_basenode_t::GetResultEstimate(estimated_formula_result_t &dst) con
 	case FUNC_TODAY:
 	case FUNC_RAND:
 	case FUNC_VOLATILE:
-	//case FUNC_RANDBETWEEN:
+	case FUNC_RANDBETWEEN:
 		dst.SetCalcAlways();
 		dst.SetCalcOnLoad();
 		dst.SetFloatingPoint(0.5);     // faked random value estimate!
