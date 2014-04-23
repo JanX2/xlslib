@@ -1063,6 +1063,7 @@ EXTERN_TYPE	int xlsWorkbookDump(workbook *w, const char *filename);
 // Worksheet
 EXTERN_TYPE void xlsWorksheetMakeActive(worksheet *w);	// Make this sheet the selected sheet
 EXTERN_TYPE cell_t *xlsWorksheetFindCell(worksheet *w, unsigned32_t row, unsigned32_t col);
+EXTERN_TYPE void xlsWorksheetSplitWindow(worksheet *w, unsigned16_t row, unsigned16_t col);
 EXTERN_TYPE void xlsWorksheetMerge(worksheet *w, unsigned32_t first_row, unsigned32_t first_col, unsigned32_t last_row, unsigned32_t last_col);
 EXTERN_TYPE void xlsWorksheetColwidth(worksheet *w, unsigned32_t col, unsigned16_t width, xf_t* pxformat);
 EXTERN_TYPE void xlsWorksheetRowheight(worksheet *w, unsigned32_t row, unsigned16_t height, xf_t* pxformat);

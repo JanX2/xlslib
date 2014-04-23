@@ -70,6 +70,7 @@ namespace xlslib_core
 		SHEET_NOTES,
 		SHEET_MERGED,
 		SHEET_WINDOW2,
+		SHEET_PANE,
 		SHEET_H_LINKS,
 		SHEET_VALIDITY_HEADER,
 		SHEET_VALIDITY_BODY,
@@ -259,6 +260,9 @@ namespace xlslib_core
 		unsigned16_t defRowHeight;
 		unsigned16_t defColWidth;
 
+        unsigned16_t rowSplit;
+        unsigned16_t colSplit;
+
         FormulaStackList_t m_FormulaStacks;
 
         DataValidationList_t m_DataValidations;
@@ -298,6 +302,7 @@ namespace xlslib_core
 		cell_t*					FindCellOrMakeBlank(unsigned32_t row, unsigned32_t col);
 
 		void					GetFirstLastRowsAndColumns(unsigned32_t* first_row, unsigned32_t* last_row, unsigned32_t* first_col, unsigned32_t* last_col); /* [i_a] */
+		void 					SplitWindow(unsigned16_t height, unsigned16_t width) { rowSplit = height; colSplit = width; }
 
 #if 0
 		static unsigned32_t		MakeSPID(unsigned32_t sheet_idx, unsigned32_t item) {

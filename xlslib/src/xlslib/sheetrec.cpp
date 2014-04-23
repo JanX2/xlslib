@@ -113,6 +113,8 @@ worksheet::worksheet(CGlobalRecords& gRecords, unsigned16_t idx) :
 	defRowsHidden(false),
 	defRowHeight(DEFAULT_ROW_HEIGHT),   // MS default
 	defColWidth(10),    // MS default
+    rowSplit(0),
+    colSplit(0),
     m_FormulaStacks(),
     m_DataValidations(),
     m_CurrentDval(),
@@ -467,6 +469,24 @@ CUnit* worksheet::DumpData(CDataStorage &datastore, size_t offset, size_t writeL
 			XTRACE("\tWINDOW2");
 			m_pCurrentData = datastore.MakeCWindow2(sheetIndex == m_GlobalRecords.GetWindow1().GetActiveSheet());
 			repeat = false;
+			CHANGE_DUMPSTATE(SHEET_PANE);
+			break;
+
+		case SHEET_PANE:
+			XTRACE("\tPANE");
+			if (rowSplit != 0 || colSplit != 0) {
+				m_pCurrentData = datastore.MakeCRecord();
+				((CRecord  *)m_pCurrentData)->SetRecordType(RECTYPE_PANE);
+				((CRecord  *)m_pCurrentData)->SetRecordLength(10);
+				((CRecord  *)m_pCurrentData)->AddValue16(colSplit);
+				((CRecord  *)m_pCurrentData)->AddValue16(rowSplit);
+				((CRecord  *)m_pCurrentData)->AddValue16(rowSplit);
+				((CRecord  *)m_pCurrentData)->AddValue16(colSplit);
+				((CRecord  *)m_pCurrentData)->AddValue16(rowSplit ? (colSplit ? 0 : 2) : 1);
+				repeat = false;
+			} else {
+				repeat = true;
+			}
 			CHANGE_DUMPSTATE(SHEET_H_LINKS);
 			break;
 

@@ -109,6 +109,8 @@ extern "C" {
 	void xlsWorksheetMakeActive(worksheet *w)					{ return w->MakeActive(); }
 	cell_t *xlsWorksheetFindCell(worksheet *w, unsigned32_t row, unsigned32_t col)
 																{ return w->FindCell(row, col); }
+	void xlsWorksheetSplitWindow(worksheet *w, unsigned16_t row, unsigned16_t col)
+																{ return w->SplitWindow(row, col); }
 	// Cell operations
 	void xlsWorksheetMerge(worksheet *w, unsigned32_t first_row, unsigned32_t first_col, unsigned32_t last_row, unsigned32_t last_col)		
 																{ return w->merge(first_row, first_col, last_row, last_col); }
