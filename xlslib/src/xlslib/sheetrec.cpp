@@ -249,7 +249,7 @@ CUnit* worksheet::DumpData(CDataStorage &datastore, size_t offset, size_t writeL
 				//unsigned32_t first_row, last_row;
 				//GetFirstLastRowsAndColumns(&first_row, &last_row, NULL, NULL);
 
-				unsigned32_t colInfoSize = m_Colinfos.size() * COL_INFO_SIZE;
+				unsigned32_t colInfoSize = (unsigned32_t)m_Colinfos.size() * COL_INFO_SIZE;
 				m_pCurrentData = datastore.MakeCIndex(rbsize.first_row, rbsize.last_row);
 
 				size_t rb_size_acc = 0;
@@ -415,7 +415,7 @@ CUnit* worksheet::DumpData(CDataStorage &datastore, size_t offset, size_t writeL
 		case SHEET_VALIDITY_HEADER:
 			XTRACE("\tSHEET_VALIDITY_HEADER");
 			if(!m_DataValidations.empty()) {
-				m_pCurrentData = MakeDataValidationHeader(datastore, m_DataValidations.size());
+				m_pCurrentData = MakeDataValidationHeader(datastore, (unsigned32_t)m_DataValidations.size());
 				changeDumpState = true;
 				repeat = false;
 			} else {
@@ -1334,8 +1334,8 @@ CUnit* worksheet::MakeHyperLink(CDataStorage& datastore, HyperLink* link)
 	bool hasMark = link->mark.length() ? true : false;
 	u16string::const_iterator cBegin, cEnd;
 
-	unsigned32_t urlLen = (link->url.length()+1) * 2;
-	unsigned32_t markLen = (link->mark.length()+1) * 2;
+	unsigned32_t urlLen = (unsigned32_t)(link->url.length()+1) * 2;
+	unsigned32_t markLen = (unsigned32_t)(link->mark.length()+1) * 2;
 
 	size_t newsize = 2 + 2 + 2 + 2 + 16 + 4 + 4 + 16 + 4 + urlLen;
 	if(hasMark) {

@@ -135,7 +135,7 @@ namespace xlslib_core
 		{
 			XL_ASSERT(m_is_in_use);
 			XL_ASSERT(len <= GetSize());
-			m_nDataSize = len;
+			m_nDataSize = (unsigned)len;
 		}
 
 		inline size_t GetSize(void) const

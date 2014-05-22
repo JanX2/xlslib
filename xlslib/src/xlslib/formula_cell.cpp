@@ -164,7 +164,8 @@ CFormula::CFormula(CDataStorage &datastore, const formula_cell_t& expr) :
 	expr.DumpData(*this); 
 
 	size_t end = GetDataSize();
-	SetValueAt16((unsigned16_t)(end - len_position - 2), len_position);
+	unsigned32_t len_position32 = (unsigned32_t)len_position;
+	SetValueAt16((unsigned16_t)(end - len_position32 - 2), len_position32);
 
 	SetRecordLength(GetDataSize()-RECORD_HEADER_SIZE);
 
@@ -183,7 +184,7 @@ CFormula::CFormula(CDataStorage &datastore, const formula_cell_t& expr) :
 		XL_ASSERT(str->length() < 256); // dbg
 		AddUnicodeString(*str, LEN2_FLAGS_UNICODE);
 
-		SetValueAt16((unsigned16_t)(GetDataSize() - basepos - 4), basepos + 2);
+		SetValueAt16((unsigned16_t)(GetDataSize() - basepos - 4), (unsigned32_t)basepos + 2);
 	}
 }
 
