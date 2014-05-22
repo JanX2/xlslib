@@ -38,7 +38,9 @@
 using namespace xlslib_core;
 using namespace xlslib_strings;
 
+#if defined(HAVE_WORKING_ICONV)
 static const unsigned16_t convFail[] = { 'i', 'c', 'o', 'n', 'v', ' ', 'f', 'a', 'i', 'l', 'e', 'd', '!', 0 };
+#endif
 
 /*
  **********************************************************************
