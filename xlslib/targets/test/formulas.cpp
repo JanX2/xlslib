@@ -10,6 +10,7 @@ using namespace xlslib_core;
 
 extern void formula_database(workbook &wb);
 extern void formula_numbers(workbook &wb);
+extern void formula_numbers_sheets(workbook &wb);
 extern void formula_text(workbook &wb);
 extern void formula_date_time(workbook &wb);
 
@@ -39,15 +40,13 @@ void formulas(void)
 {
 	workbook wb;
 	
-	//formula_text(wb);
-	//formula_numbers(wb);
-	//formula_database(wb);
-	//formula_date_time(wb);
-	//formula_date_time(wb);
+	formula_text(wb);
+	formula_numbers(wb);
+	formula_numbers_sheets(wb);
+	formula_database(wb);
+	formula_date_time(wb);
+	formula_date_time(wb);
 	
-
-
-
 	const char *fName = "/Volumes/Data/Users/dhoerl/Public/formula.xls";
 	fprintf(stderr, "%s VERSION 2 \n", fName);
 	fprintf(stderr, "Dump \n");
@@ -215,6 +214,30 @@ void formula_numbers(workbook &wb)
 		expression_node_t *f = maker.f(FUNC_SUM, 2, args, CELL_DEFAULT);
 		sh->formula(row, formula_col, f, true);
 	}
+}
+
+void formula_numbers_sheets(workbook &wb)
+{
+	worksheet* sh1 = wb.sheet("Number 1");
+	worksheet* sh2 = wb.sheet("Number 2");
+	worksheet* shT = wb.sheet("InterSheetTotal");
+	expression_node_factory_t& maker = wb.GetFormulaFactory();
+	
+	sh1->label(0, 0, "Number");
+	cell_t *c1 = sh1->number(0, 1, 10);
+	sh2->label(0, 0, "Number");
+	cell_t *c2 = sh2->number(0, 1, 22);
+
+	
+	// SUM(cell, cell, cell, cell)
+	expression_node_t *cells[2];
+	cells[0] = maker.cell(*c1, CELL_RELATIVE_A1, CELLOP_AS_VALUE);
+	cells[1] = maker.cell(*c2, CELL_RELATIVE_A1, CELLOP_AS_VALUE);
+
+	expression_node_t *f = maker.f(FUNC_SUM, 2, cells, CELL_DEFAULT); // CELL_DEFAULT CELLOP_AS_ARRAY
+	
+	shT->label(0, 0, "TOTAL");
+	shT->formula(0, 1, f, true);
 }
 
 void formula_database(workbook &wb)
