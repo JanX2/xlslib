@@ -133,7 +133,7 @@ CUnit* formula_cell_t::GetData(CDataStorage &datastore) const
 void formula_cell_t::DumpData(CUnit &dst) const
 {
     if (ast) {
-        formula_t *fs = new formula_t(m_GlobalRecords, NULL);
+        formula_t *fs = new formula_t(m_GlobalRecords, this->GetWorksheet());
         ast->DumpData(*fs, true); // rgce dump, length_of_parsed_expr
         fs->DumpData(dst);
         delete fs;
