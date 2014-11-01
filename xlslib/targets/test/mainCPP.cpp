@@ -413,7 +413,8 @@ static expression_node_t *build_formula(unsigned32_t row, unsigned32_t col, work
 	
 	cell_t *cref = sh4->FindCellOrMakeBlank(row+1, col+1);
 	assert(cref);
-	expression_node_t *root = maker.op(OP_ADD, maker.integer((signed32_t)val), maker.cell(*cref, sh4, CELL_RELATIVE_A1));
+	//expression_node_t *root = maker.op(OP_ADD, maker.integer((signed32_t)val), maker.cell(*cref, sh4, CELL_RELATIVE_A1)); Removed the worksheet reference, the value comes from the cell itself
+	expression_node_t *root = maker.op(OP_ADD, maker.integer((signed32_t)val), maker.cell(*cref, CELL_RELATIVE_A1));
 	//expression_node_t *root = maker.integer(val);
 
 	return root;
