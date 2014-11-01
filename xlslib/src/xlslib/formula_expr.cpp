@@ -309,12 +309,13 @@ cell_deref_node_t::cell_deref_node_t(CGlobalRecords& gRecords, const cell_t& v, 
 	row_(v.GetRow()),
 	col_(v.GetCol()),
 	idx_(v.GetWorksheet() ? v.GetWorksheet()->GetIndex() : invalidIndex),
-	worksheet_ref(NULL),
+	//worksheet_ref(NULL),
 	attr(opt),
 	operand_class(opclass)
 {
 }
 
+/* Ger had something in mind, but this is not needed for multi-sheet references. If we ever figure out the intent, turn it back on
 cell_deref_node_t::cell_deref_node_t(CGlobalRecords& gRecords, const cell_t& v, const worksheet* ws, cell_addr_mode_t opt, cell_op_class_t opclass) :
 	terminal_node_t(gRecords),
 	row_(v.GetRow()),
@@ -325,6 +326,7 @@ cell_deref_node_t::cell_deref_node_t(CGlobalRecords& gRecords, const cell_t& v, 
 	operand_class(opclass)
 {
 }
+*/
 
 cell_deref_node_t::~cell_deref_node_t()
 {
@@ -362,6 +364,7 @@ cellarea_deref_node_t::cellarea_deref_node_t(CGlobalRecords& gRecords, const cel
 {
 }
 
+/* See other Ger comment
 cellarea_deref_node_t::cellarea_deref_node_t(CGlobalRecords& gRecords, const cell_t& u_l_c, const cell_t& l_r_c, const worksheet* ws, cell_addr_mode_t attr,
 											 cell_op_class_t opclass) :
 	cell_deref_node_t(gRecords, u_l_c, ws, attr, opclass),
@@ -370,6 +373,7 @@ cellarea_deref_node_t::cellarea_deref_node_t(CGlobalRecords& gRecords, const cel
 	lridx_(l_r_c.GetWorksheet() ? l_r_c.GetWorksheet()->GetIndex() : invalidIndex)
 {
 }
+*/
 
 cellarea_deref_node_t::~cellarea_deref_node_t()
 {
@@ -1076,22 +1080,25 @@ cell_deref_node_t *expression_node_factory_t::cell(const cell_t& cellref, cell_a
 	return new cell_deref_node_t(m_GlobalRecords, cellref, attr, opclass);
 }
 
+/* Ger had something in mind
 cell_deref_node_t *expression_node_factory_t::cell(const cell_t& cellref, const worksheet* ws, cell_addr_mode_t attr, cell_op_class_t opclass)
 {
 	return new cell_deref_node_t(m_GlobalRecords, cellref, ws, attr, opclass);
 }
-
+*/
 cellarea_deref_node_t *expression_node_factory_t::area(const cell_t& upper_left_corner, const cell_t& lower_right_corner, cell_addr_mode_t attr,
 							  cell_op_class_t opclass)
 {
 	return new cellarea_deref_node_t(m_GlobalRecords, upper_left_corner, lower_right_corner, attr, opclass);
 }
 
+/* Ger had something in mind
 cellarea_deref_node_t *expression_node_factory_t::area(const cell_t& upper_left_corner, const cell_t& lower_right_corner, const worksheet* ws,
 							  cell_addr_mode_t attr, cell_op_class_t opclass)
 {
 	return new cellarea_deref_node_t(m_GlobalRecords, upper_left_corner, lower_right_corner, ws, attr, opclass);
 }
+*/
 
 unary_op_node_t *expression_node_factory_t::op(expr_operator_code_t op, expression_node_t* arg)
 {

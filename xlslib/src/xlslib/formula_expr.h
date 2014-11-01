@@ -179,7 +179,7 @@ namespace xlslib_core
 	{
 	public:
 		cell_deref_node_t(CGlobalRecords& gRecords, const cell_t& value, cell_addr_mode_t attr, cell_op_class_t opclass = CELLOP_AS_VALUE);
-		cell_deref_node_t(CGlobalRecords& gRecords, const cell_t& value, const worksheet* ws, cell_addr_mode_t attr, cell_op_class_t opclass = CELLOP_AS_VALUE);
+		// cell_deref_node_t(CGlobalRecords& gRecords, const cell_t& value, const worksheet* ws, cell_addr_mode_t attr, cell_op_class_t opclass = CELLOP_AS_VALUE); Ger had something in mind, not sure what
 		virtual ~cell_deref_node_t();
 
 	public:
@@ -190,7 +190,8 @@ namespace xlslib_core
 
 	protected:
 		unsigned32_t row_, col_, idx_;
-		const worksheet* worksheet_ref;
+		// const worksheet* worksheet_ref; never used, Ger probably had something in mind so leaving it
+
 		cell_addr_mode_t attr;
 		cell_op_class_t operand_class;
 	};
@@ -200,8 +201,8 @@ namespace xlslib_core
 	public:
 		cellarea_deref_node_t(CGlobalRecords& gRecords, const cell_t& upper_left_corner, const cell_t& lower_right_corner, cell_addr_mode_t attr,
 							  cell_op_class_t opclass = CELLOP_AS_VALUE);
-		cellarea_deref_node_t(CGlobalRecords& gRecords, const cell_t& upper_left_corner, const cell_t& lower_right_corner, const worksheet* ws,
-							  cell_addr_mode_t attr, cell_op_class_t opclass = CELLOP_AS_VALUE);
+		// cellarea_deref_node_t(CGlobalRecords& gRecords, const cell_t& upper_left_corner, const cell_t& lower_right_corner, const worksheet* ws, Ger had something in mind
+		//					  cell_addr_mode_t attr, cell_op_class_t opclass = CELLOP_AS_VALUE);
 		virtual ~cellarea_deref_node_t();
 
 	public:
@@ -387,9 +388,9 @@ namespace xlslib_core
 		text_value_node_t *text(const xlslib_strings::u16string& value);
 		
 		cell_deref_node_t *cell(const cell_t& value, cell_addr_mode_t attr, cell_op_class_t opclass = CELLOP_AS_VALUE);
-		cell_deref_node_t *cell(const cell_t& value, const worksheet* ws, cell_addr_mode_t attr, cell_op_class_t opclass = CELLOP_AS_VALUE);
+		// Ger cell_deref_node_t *cell(const cell_t& value, const worksheet* ws, cell_addr_mode_t attr, cell_op_class_t opclass = CELLOP_AS_VALUE);
 		cellarea_deref_node_t *area(const cell_t& upper_left_corner, const cell_t& lower_right_corner, cell_addr_mode_t attr, cell_op_class_t opclass = CELLOP_AS_VALUE);
-		cellarea_deref_node_t *area(const cell_t& upper_left_corner, const cell_t& lower_right_corner, const worksheet* ws, cell_addr_mode_t attr, cell_op_class_t opclass = CELLOP_AS_VALUE);
+		// Ger cellarea_deref_node_t *area(const cell_t& upper_left_corner, const cell_t& lower_right_corner, const worksheet* ws, cell_addr_mode_t attr, cell_op_class_t opclass = CELLOP_AS_VALUE);
 		unary_op_node_t *op(expr_operator_code_t op, expression_node_t* arg);
 		binary_op_node_t *op(expr_operator_code_t op, expression_node_t* arg1, expression_node_t* arg2);
 		z_ary_func_node_t *f(expr_function_code_t func, cell_op_class_t op_class = CELL_DEFAULT);
