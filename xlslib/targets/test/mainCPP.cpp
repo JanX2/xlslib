@@ -110,15 +110,15 @@ static void RandomFontOption(cell_t* cell, bool profile = false);
 static void SeedRndNumber(unsigned32_t seed);
 static unsigned32_t GetRndNumber(unsigned32_t max);
 
-char *StressTest(unsigned32_t a,unsigned32_t b,unsigned32_t c, const char *md5_checksum);
-char *RandomTest(unsigned32_t a,unsigned32_t b,unsigned32_t c, unsigned32_t random_seed, const char *md5_checksum);
-char *RandomCellAndFormatTest(unsigned32_t sheets_sz, unsigned32_t rows_sz, unsigned32_t cols_sz, unsigned32_t random_seed, const char *md5_checksum);
-char *RandomFormatTest(unsigned32_t sheets_sz, unsigned32_t rows_sz, unsigned32_t cols_sz, unsigned32_t random_seed, const char *md5_checksum);
-char *RandomCellAndFormatTestProf(unsigned32_t sheets_sz, unsigned32_t rows_sz, unsigned32_t cols_sz, unsigned32_t random_seed, const char *md5_checksum);
-char *StandardTest(const char *md5_checksum);
-char *StandardTest2(const char *md5_checksum);
-char *BlankTest(const char *md5_checksum);
-char *FormulaFunctionsTest(const char *md5_checksum);
+const char *StressTest(unsigned32_t a,unsigned32_t b,unsigned32_t c, const char *md5_checksum);
+const char *RandomTest(unsigned32_t a,unsigned32_t b,unsigned32_t c, unsigned32_t random_seed, const char *md5_checksum);
+const char *RandomCellAndFormatTest(unsigned32_t sheets_sz, unsigned32_t rows_sz, unsigned32_t cols_sz, unsigned32_t random_seed, const char *md5_checksum);
+const char *RandomFormatTest(unsigned32_t sheets_sz, unsigned32_t rows_sz, unsigned32_t cols_sz, unsigned32_t random_seed, const char *md5_checksum);
+const char *RandomCellAndFormatTestProf(unsigned32_t sheets_sz, unsigned32_t rows_sz, unsigned32_t cols_sz, unsigned32_t random_seed, const char *md5_checksum);
+const char *StandardTest(const char *md5_checksum);
+const char *StandardTest2(const char *md5_checksum);
+const char *BlankTest(const char *md5_checksum);
+const char *FormulaFunctionsTest(const char *md5_checksum);
 
 /*
 *********************************
@@ -163,7 +163,7 @@ int main(int argc, char *argv[])
 	{
 		int idx = 0;
 		int failed = 1;
-		char *checkP;
+		const char *checkP;
 		// comment and uncomment the below to try various tests
 #if 1
 		{
@@ -310,7 +310,7 @@ int main(int argc, char *argv[])
 	return (rv == 0 ? EXIT_SUCCESS : EXIT_FAILURE);
 }
 
-char *StandardTest(const char *md5_checksum)
+const char *StandardTest(const char *md5_checksum)
 {
    // Get the workbook handler
    workbook wb;
@@ -368,7 +368,7 @@ char *StandardTest(const char *md5_checksum)
 
    int err = wb.Dump("testCPP.xls");
 
-   char *checkP = file_err;
+   const char *checkP = file_err;
    if (err != NO_ERRORS)
    {
 	   cerr << "StandardTest failed: I/O failure: " << err << std::endl;
@@ -383,7 +383,7 @@ char *StandardTest(const char *md5_checksum)
 
 
 
-char *BlankTest(const char *md5_checksum)
+const char *BlankTest(const char *md5_checksum)
 {
 	workbook wb;
 	worksheet* sh = wb.sheet("Sheet_01");
@@ -391,7 +391,7 @@ char *BlankTest(const char *md5_checksum)
 
 	int err = wb.Dump("blank.xls");
 
-    char *checkP = file_err;
+    const char *checkP = file_err;
 	if (err != NO_ERRORS)
 	{
 		cerr << "BlankTest failed: I/O failure: " << err << std::endl;
@@ -419,7 +419,7 @@ static expression_node_t *build_formula(unsigned32_t row, unsigned32_t col, work
 	return root;
 }
 
-char *StandardTest2(const char *md5_checksum)
+const char *StandardTest2(const char *md5_checksum)
 {
 	// Get the workbook handler
 	workbook wb;
@@ -483,7 +483,7 @@ char *StandardTest2(const char *md5_checksum)
 
 	int err = wb.Dump("testCPP2.xls");
 
-	char *checkP = file_err;
+	const char *checkP = file_err;
 	if (err != NO_ERRORS)
 	{
 		cerr << "StandardTest2 failed: I/O failure: " << err << std::endl;
@@ -551,7 +551,7 @@ static errcode_t PickErrorCode(unsigned32_t value)
 }
 
 
-char *RandomCellAndFormatTest(unsigned32_t sheets_sz, unsigned32_t rows_sz, unsigned32_t cols_sz, unsigned32_t random_seed, const char *md5_checksum)
+const char *RandomCellAndFormatTest(unsigned32_t sheets_sz, unsigned32_t rows_sz, unsigned32_t cols_sz, unsigned32_t random_seed, const char *md5_checksum)
 {
    workbook wb;
    worksheet* sh;
@@ -602,7 +602,7 @@ char *RandomCellAndFormatTest(unsigned32_t sheets_sz, unsigned32_t rows_sz, unsi
    int err = wb.Dump("rndcellandformat.xls");
    TIMESPAN_END(1,"Random Cell and Format test:");
 
-   char *checkP = file_err;
+   const char *checkP = file_err;
    if (err != NO_ERRORS)
    {
 	   cerr << "RandomCellAndFormatTest failed: I/O failure: " << err << std::endl;
@@ -615,7 +615,7 @@ char *RandomCellAndFormatTest(unsigned32_t sheets_sz, unsigned32_t rows_sz, unsi
    return checkP;
 }
 
-char *RandomCellAndFormatTestProf(unsigned32_t sheets_sz, unsigned32_t rows_sz, unsigned32_t cols_sz, unsigned32_t random_seed, const char *md5_checksum)
+const char *RandomCellAndFormatTestProf(unsigned32_t sheets_sz, unsigned32_t rows_sz, unsigned32_t cols_sz, unsigned32_t random_seed, const char *md5_checksum)
 {
    workbook wb;
    worksheet* sh;
@@ -689,7 +689,7 @@ char *RandomCellAndFormatTestProf(unsigned32_t sheets_sz, unsigned32_t rows_sz, 
 
    int err = wb.Dump("rndcellandformat_prof.xls");
 
-   char *checkP = file_err;
+   const char *checkP = file_err;
    if (err != NO_ERRORS)
    {
 	   cerr << "RandomCellAndFormatTestProf failed: I/O failure: " << err << std::endl;
@@ -703,7 +703,7 @@ char *RandomCellAndFormatTestProf(unsigned32_t sheets_sz, unsigned32_t rows_sz, 
 }
 
 
-char *RandomFormatTest(unsigned32_t sheets_sz, unsigned32_t rows_sz, unsigned32_t cols_sz, unsigned32_t random_seed, const char *md5_checksum)
+const char *RandomFormatTest(unsigned32_t sheets_sz, unsigned32_t rows_sz, unsigned32_t cols_sz, unsigned32_t random_seed, const char *md5_checksum)
 {
    SeedRndNumber(random_seed);
 
@@ -751,7 +751,7 @@ char *RandomFormatTest(unsigned32_t sheets_sz, unsigned32_t rows_sz, unsigned32_
    int err = wb.Dump("rndformat.xls");
    TIMESPAN_END(1,"Random Format test:");
 
-   char *checkP = file_err;
+   const char *checkP = file_err;
    if (err != NO_ERRORS)
    {
 	   cerr << "RandomFormatTest failed: I/O failure: " << err << std::endl;
@@ -1165,7 +1165,7 @@ static void RandomFormat(cell_t* cell, bool profile)
 *********************************
 *********************************
 */
-char *StressTest(unsigned32_t sheets_sz, unsigned32_t rows_sz, unsigned32_t cols_sz, const char *md5_checksum)
+const char *StressTest(unsigned32_t sheets_sz, unsigned32_t rows_sz, unsigned32_t cols_sz, const char *md5_checksum)
 {
    // Get the workbook handler
    workbook swb;
@@ -1206,7 +1206,7 @@ char *StressTest(unsigned32_t sheets_sz, unsigned32_t rows_sz, unsigned32_t cols
    int err = swb.Dump(fnamebuf);
    TIMESPAN_END(1,"Cell-stress test:");
 
-   char *checkP = file_err;
+   const char *checkP = file_err;
    if (err != NO_ERRORS)
    {
 	   cerr << "StressTest(" << sheets_sz << ", " << rows_sz << ", " << cols_sz << ") failed: I/O failure: " << err << std::endl;
@@ -1224,7 +1224,7 @@ char *StressTest(unsigned32_t sheets_sz, unsigned32_t rows_sz, unsigned32_t cols
 *********************************
 */
 
-char *RandomTest(unsigned32_t sheets_sz, unsigned32_t rows_sz, unsigned32_t cols_sz, unsigned32_t random_seed, const char *md5_checksum)
+const char *RandomTest(unsigned32_t sheets_sz, unsigned32_t rows_sz, unsigned32_t cols_sz, unsigned32_t random_seed, const char *md5_checksum)
 {
    SeedRndNumber(random_seed);
    TIMESPAN_START(1);
@@ -1303,7 +1303,7 @@ char *RandomTest(unsigned32_t sheets_sz, unsigned32_t rows_sz, unsigned32_t cols
    TIMESPAN_END(1,"Random cell test:");
 
    // cannot MD5 the file; not a real unit test, this one...
-   char *checkP = file_err;
+   const char *checkP = file_err;
    if (err != NO_ERRORS)
    {
 	   cerr << "RandomTest failed: I/O failure: " << err << std::endl;
@@ -1860,7 +1860,7 @@ static const struct
 };
 
 
-char *FormulaFunctionsTest(const char *md5_checksum)
+const char *FormulaFunctionsTest(const char *md5_checksum)
 {
 	workbook wb;
 	const unsigned32_t numSheets = 1;
@@ -1877,7 +1877,7 @@ char *FormulaFunctionsTest(const char *md5_checksum)
 	for (unsigned32_t r = 0; r < number_of_builtin_functions; r++)
 	{
 		expr_function_code_t fn = function_arr[r].code;
-		printf("FUNC: %s\n", function_arr[r].name);
+		// printf("FUNC: %s\n", function_arr[r].name);
 	
 #if 0
 // These just won't work for older excel programs
@@ -1952,7 +1952,7 @@ char *FormulaFunctionsTest(const char *md5_checksum)
 
 	int err = wb.Dump("formulas.xls");
 
-    char *checkP = file_err;
+    const char *checkP = file_err;
 	if (err != NO_ERRORS)
 	{
 		cerr << "FormulaFunctionsTest failed: I/O failure: " << err << std::endl;

@@ -198,7 +198,7 @@ void MD5Final(unsigned char digest[16], struct MD5Context *ctx)
  */
 void MD5Transform(unsigned32_t buf[4], unsigned32_t const in[16])
 {
-    register unsigned32_t a, b, c, d;
+    unsigned32_t a, b, c, d;
 
     a = buf[0];
     b = buf[1];
@@ -365,12 +365,12 @@ int load_file(unsigned8_t **buf_ref, size_t *buflen_ref, const char *filepath)
 
 		if (!b)
 		{
-			b = malloc(bsiz);
+			b = (unsigned char *)malloc(bsiz);
 		}
 		else 
 		{
 			bsiz += 4096;
-			b = realloc(b, bsiz);
+			b = (unsigned char *)realloc(b, bsiz);
 		}
 		if (!b)
 			goto fail_dramatically;

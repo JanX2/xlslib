@@ -60,18 +60,18 @@ static char file_err[] = "00000000000000000000000000000000";
 
 char check[NUM_TESTS][40];
 
-char *test1(const char *md5_checksum);
-char *test2(const char *md5_checksum);
-char *test3(const char *md5_checksum);
+const char *test1(const char *md5_checksum);
+const char *test2(const char *md5_checksum);
+const char *test3(const char *md5_checksum);
 
-char *test1(const char *md5_checksum) 
+const char *test1(const char *md5_checksum)
 {
 	workbook book;
 	worksheet* sheet = book.sheet("test1");
 	sheet->number(0, 1, 40065.0, FMT_DATE1, 0)->format(book.format("yyyy-mm-dd"));
 	int err = book.Dump("PR2859188-1.xls");
 
-	char *checkP = file_err;
+	const char *checkP = file_err;
 	if (err != NO_ERRORS)
 	{
 		cerr << "test1 failed: I/O failure: " << err << std::endl;
@@ -85,7 +85,7 @@ char *test1(const char *md5_checksum)
 	return checkP;
 }
 
-char *test2(const char *md5_checksum) 
+const char *test2(const char *md5_checksum)
 {
 	/* both cells formatted as date ??? */
 	workbook book;
@@ -94,7 +94,7 @@ char *test2(const char *md5_checksum)
 	sheet->number(0, 1, 40065.0, FMT_DATE1, 0)->format(book.format("yyyy-mm-dd"));
 	int err = book.Dump("PR2859188-2.xls");
 
-	char *checkP = file_err;
+	const char *checkP = file_err;
 	if (err != NO_ERRORS)
 	{
 		cerr << "test2 failed: I/O failure: " << err << std::endl;
@@ -107,7 +107,7 @@ char *test2(const char *md5_checksum)
 	return checkP;
 }
 
-char *test3(const char *md5_checksum) 
+const char *test3(const char *md5_checksum)
 {
 	workbook book;
 	worksheet* sheet = book.sheet("test2");
@@ -123,7 +123,7 @@ char *test3(const char *md5_checksum)
 
 	int err = book.Dump("PR2859188-3.xls");
 
-	char *checkP = file_err;
+	const char *checkP = file_err;
 	if (err != NO_ERRORS)
 	{
 		cerr << "test3 failed: I/O failure: " << err << std::endl;
@@ -171,7 +171,7 @@ int main(int argc, char *argv[])
 	{
 		int idx = 0;
 		int failed = 1;
-		char *checkP;
+		const char *checkP;
 		// comment and uncomment the below to try various tests
 #if 1
 		{
@@ -219,7 +219,7 @@ int main(int argc, char *argv[])
 		FILE *fp = fopen(fileName, "w");
 		if(fp) {
 			for(int i=0; i<NUM_TESTS; ++i) {
-				char *checkP = check[i];
+				const char *checkP = check[i];
 				if(fp) {
 					fprintf(fp, "%s\n", checkP);
 				}

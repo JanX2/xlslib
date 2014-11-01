@@ -25,10 +25,10 @@ Code adapted from citadel (www.citadel.org ???)
 #include "common/xlsys.h"
 #include "common/systype.h"
 
-#if defined(__cplusplus)
-extern "C" 
-{
-#endif
+//#if defined(__cplusplus)
+//extern "C" 
+//{
+//#endif
 
 
 
@@ -84,12 +84,12 @@ lowercase text in the @a md5_checksum parameter).
 value "File Not Found" indicates that a load/memory failure occurred, while other non-zero
 return values are due to an MD5 mismatch.
 */
-char * check_file(const char *filepath, const char *md5_checksum);
+const char * check_file(const char *filepath, const char *md5_checksum);
 
 
 
-#if defined(__cplusplus)
-}
-#endif
+//#if defined(__cplusplus)
+//}
+//#endif
 
 #endif /* !MD5_H */

@@ -144,7 +144,8 @@ int main(int argc, char *argv[])
 	workbook *w;
 	worksheet *ws;
 	int ret;
-	char check[40], *checkP = check;
+	char check[40];
+	const char *checkP = check;
 	char fileName[128];
 	
 	fileName[0] = 0;
@@ -162,10 +163,10 @@ int main(int argc, char *argv[])
 	{
 		FILE *fp = fopen(fileName, "r");
 		if(fp) {
-			fscanf(fp, "%s", checkP);
+			fscanf(fp, "%s", check);
 			fclose(fp);
 		} else {
-			strcpy(checkP, "00000000000000000000000000000000");
+			strcpy(check, "00000000000000000000000000000000");
 		}
 		//printf("MD5 = %s\n", checkP);
 	}

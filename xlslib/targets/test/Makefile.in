@@ -61,13 +61,13 @@ CONFIG_HEADER = $(top_builddir)/src/common/xlconfig.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 PROGRAMS = $(noinst_PROGRAMS)
-am_PR2859188_OBJECTS = PR2859188.$(OBJEXT) md5.$(OBJEXT)
+am_PR2859188_OBJECTS = PR2859188.$(OBJEXT) md5cpp.$(OBJEXT)
 PR2859188_OBJECTS = $(am_PR2859188_OBJECTS)
 PR2859188_DEPENDENCIES = $(top_builddir)/src/libxls.la
 PR2859188_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) $(AM_CXXFLAGS) \
 	$(CXXFLAGS) $(PR2859188_LDFLAGS) $(LDFLAGS) -o $@
-am_PR3076678_OBJECTS = PR3076678.$(OBJEXT) md5.$(OBJEXT)
+am_PR3076678_OBJECTS = PR3076678.$(OBJEXT) md5cpp.$(OBJEXT)
 PR3076678_OBJECTS = $(am_PR3076678_OBJECTS)
 PR3076678_DEPENDENCIES = $(top_builddir)/src/libxls.la
 PR3076678_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
@@ -79,7 +79,7 @@ testC_DEPENDENCIES = $(top_builddir)/src/libxls.la
 testC_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(testC_LDFLAGS) \
 	$(LDFLAGS) -o $@
-am_testCPP_OBJECTS = mainCPP.$(OBJEXT) md5.$(OBJEXT)
+am_testCPP_OBJECTS = mainCPP.$(OBJEXT) md5cpp.$(OBJEXT)
 testCPP_OBJECTS = $(am_testCPP_OBJECTS)
 testCPP_DEPENDENCIES = $(top_builddir)/src/libxls.la
 testCPP_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
@@ -252,16 +252,16 @@ top_srcdir = @top_srcdir@
 AM_CPPFLAGS = \
 -I$(top_srcdir)/src
 
-testCPP_SOURCES = mainCPP.cpp md5.c
+testCPP_SOURCES = mainCPP.cpp md5cpp.cpp
 testCPP_LDADD = $(top_builddir)/src/libxls.la 
 testCPP_LDFLAGS = -static -lstdc++
 testC_SOURCES = mainC.c md5.c
 testC_LDADD = $(top_builddir)/src/libxls.la 
 testC_LDFLAGS = -static -lstdc++
-PR2859188_SOURCES = PR2859188.cpp md5.c
+PR2859188_SOURCES = PR2859188.cpp md5cpp.cpp
 PR2859188_LDADD = $(top_builddir)/src/libxls.la 
 PR2859188_LDFLAGS = -static -lstdc++
-PR3076678_SOURCES = PR3076678.cpp md5.c
+PR3076678_SOURCES = PR3076678.cpp md5cpp.cpp
 PR3076678_LDADD = $(top_builddir)/src/libxls.la 
 PR3076678_LDFLAGS = -static -lstdc++
 all: all-am
@@ -340,6 +340,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mainC.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mainCPP.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/md5.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/md5cpp.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<

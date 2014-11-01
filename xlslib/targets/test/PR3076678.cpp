@@ -33,9 +33,9 @@ cell. Is this a bug in Excel, in xlslib or is there something special I have
 to take care of? I observed that behaviour in Excel 2002, 2003 and 2010. The
 problem does not occur in Calc.
 */
-extern char *BorderTest(const char *md5_checksum);
+extern const char *BorderTest(const char *md5_checksum);
 
-char *BorderTest(const char *md5_checksum)
+const char *BorderTest(const char *md5_checksum)
 {
 	workbook wb;
 
@@ -57,7 +57,7 @@ char *BorderTest(const char *md5_checksum)
 	// test multiple Dump() calls: PR3083160
 	err |= wb.Dump("PR3083003-2.xls");
 
-	char *checkP = file_err;
+	const char *checkP = file_err;
 	if (err != NO_ERRORS)
 	{
 		cerr << "BorderTest failed: I/O failure: " << err << std::endl;
@@ -111,7 +111,7 @@ int main(int argc, char *argv[])
 	{
 		int idx = 0;
 		int failed = 1;
-		char *checkP;
+		const char *checkP;
 		// comment and uncomment the below to try various tests
 #if 1
 		{
@@ -136,7 +136,7 @@ int main(int argc, char *argv[])
 		FILE *fp = fopen(fileName, "w");
 		if(fp) {
 			for(int i=0; i<NUM_TESTS; ++i) {
-				char *checkP = check[i];
+				const char *checkP = check[i];
 				if(fp) {
 					fprintf(fp, "%s\n", checkP);
 				}
