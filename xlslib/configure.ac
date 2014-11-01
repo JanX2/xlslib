@@ -3,7 +3,7 @@
 
 
 dnl Initialize autoconf/automake
-AC_INIT([xlslib], [2.4.0], [dhoerl@users.sourceforge.net])
+AC_INIT([xlslib], [2.5.0], [dhoerl@users.sourceforge.net])
 
 AC_CONFIG_AUX_DIR([config])
 # Minimum Autoconf version required.
