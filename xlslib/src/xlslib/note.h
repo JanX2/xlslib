@@ -65,9 +65,9 @@ namespace xlslib_core
 
 	private:
 		note_t(CGlobalRecords& gRecords, unsigned32_t rowval, unsigned32_t colval, const std::string& author, const std::string& text, xf_t* pxfval = NULL);
-		note_t(CGlobalRecords& gRecords, unsigned32_t rowval, unsigned32_t colval, const xlslib_strings::ustring& author, const xlslib_strings::ustring& text, xf_t* pxfval = NULL);
-#ifndef __FRAMEWORK__
 		note_t(CGlobalRecords& gRecords, unsigned32_t rowval, unsigned32_t colval, const xlslib_strings::u16string& author, const xlslib_strings::u16string& text, xf_t* pxfval = NULL);
+#ifndef __FRAMEWORK__
+		note_t(CGlobalRecords& gRecords, unsigned32_t rowval, unsigned32_t colval, const xlslib_strings::ustring& author, const xlslib_strings::ustring& text, xf_t* pxfval = NULL);
 #endif
 		void MakeDrawing(CRecord *data, unsigned32_t& currentSPID, unsigned16_t sheetIndex, unsigned16_t notesInThisSheet) const;
 		void Finalize(unsigned16_t rowval, unsigned16_t colval);

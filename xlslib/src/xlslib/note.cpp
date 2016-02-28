@@ -68,6 +68,18 @@ note_t::note_t(CGlobalRecords& gRecords, unsigned32_t rowval, unsigned32_t colva
 	Finalize((unsigned16_t)rowval, (unsigned16_t)colval);
 }
 
+note_t::note_t(CGlobalRecords& gRecords, unsigned32_t rowval, unsigned32_t colval, const u16string& auth, const u16string& msg, xf_t* pxfval) :
+	cell_t(gRecords, rowval, colval, pxfval),
+	author(auth),
+	text(msg),
+	noteRec(),
+	fillColor(0x08000050),
+	idx(0)
+{
+	Finalize((unsigned16_t)rowval, (unsigned16_t)colval);
+}
+
+#ifndef __FRAMEWORK__
 note_t::note_t(CGlobalRecords& gRecords, unsigned32_t rowval, unsigned32_t colval, const ustring& auth, const ustring& msg, xf_t* pxfval) :
 	cell_t(gRecords, rowval, colval, pxfval),
 	author(),
@@ -78,18 +90,6 @@ note_t::note_t(CGlobalRecords& gRecords, unsigned32_t rowval, unsigned32_t colva
 {
 	gRecords.wide2str16(auth, this->author);
 	gRecords.wide2str16(msg, this->text);
-	Finalize((unsigned16_t)rowval, (unsigned16_t)colval);
-}
-
-#ifndef __FRAMEWORK__
-note_t::note_t(CGlobalRecords& gRecords, unsigned32_t rowval, unsigned32_t colval, const u16string& auth, const u16string& msg, xf_t* pxfval) :
-	cell_t(gRecords, rowval, colval, pxfval),
-	author(auth),
-	text(msg),
-	noteRec(),
-	fillColor(0x08000050),
-	idx(0)
-{
 	Finalize((unsigned16_t)rowval, (unsigned16_t)colval);
 }
 #endif
@@ -293,8 +293,8 @@ void note_t::MakeDrawing(CRecord *data, unsigned32_t& currentSPID, unsigned16_t 
 	data->AddValue16(0x0);					// text font
 	data->AddValue32(0);					// unknown
 	
-	data->AddValue16(totalLen);					// text index
-	data->AddValue16(0);					// text font
+	data->AddValue16(totalLen);				// text index
+	data->AddValue16(0x0);					// text font
 	data->AddValue32(0);					// unknown
 }
 
