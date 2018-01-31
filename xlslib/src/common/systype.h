@@ -333,7 +333,7 @@ override the default (C++ exception throwing) assertion failure reporting functi
 void xlslib_register_assert_reporter(xlslib_userdef_assertion_reporter *user_func);
 
 #if defined(__cplusplus)
-};
+}
 #endif
 
 #endif
