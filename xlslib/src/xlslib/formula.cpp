@@ -914,7 +914,7 @@ unsigned32_t xlslib_core::NumberOfArgsForExcelFunction(expr_function_code_t code
 static function_property PropertyForForExcelFunction(expr_function_code_t code)
 {
 	if(code >= maxProperties) {
-		function_property p = (function_property) {CELLOP_AS_VALUE, A_UNKNOWN};
+		function_property p = function_property {CELLOP_AS_VALUE, A_UNKNOWN};
 		return p;
 	}
 	return function_properties[code];
