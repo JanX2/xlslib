@@ -59,7 +59,9 @@ using namespace xlslib_core;
 
 #else
 
+#if !defined(__FRAMEWORK__)
 #include "common/xlstypes.h"
+#endif
 
 // Summary options
 typedef enum {
