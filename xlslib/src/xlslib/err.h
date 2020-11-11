@@ -68,7 +68,7 @@ namespace xlslib_core
 		errcode_t ecode;
 
 	public:
-		unsigned8_t GetErr(void) const {return ecode; }
+		unsigned8_t GetErr(void) const {return static_cast<unsigned8_t>(ecode); }
 	};
 
 
