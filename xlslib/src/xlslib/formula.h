@@ -80,9 +80,7 @@ namespace xlslib_core
         signed8_t PushFunction(expr_function_code_t func, size_t argcount, cell_op_class_t op_class);
         signed8_t PushText(const std::string& v);
         signed8_t PushText(const xlslib_strings::ustring& v);
-#if !defined(__FRAMEWORK__)
-        signed8_t PushText(const xlslib_strings::u16string& value);
-#endif
+        signed8_t PushTextStr16(const xlslib_strings::u16string& value);
         signed8_t PushTextArray(const std::vector<std::string>& vec);
         signed8_t PushTextArray(const std::vector<xlslib_strings::ustring>& vec);
         signed8_t PushFloatingPointArray(const std::vector<double>& vec);

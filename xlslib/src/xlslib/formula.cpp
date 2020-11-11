@@ -254,18 +254,17 @@ signed8_t formula_t::PushText(const std::string& v) {
     u16string value;
 	m_GlobalRecords.char2str16(v, value);
 
-    return PushText(value);
+    return PushTextStr16(value);
 }
 
 signed8_t formula_t::PushText(const ustring& v) {
     u16string value;
 	m_GlobalRecords.wide2str16(v, value);
 
-    return PushText(value);
+    return PushTextStr16(value);
 }
 
-#if !defined(__FRAMEWORK__)
-signed8_t formula_t::PushText(const u16string& value) {
+signed8_t formula_t::PushTextStr16(const u16string& value) {
 	signed8_t errcode = NO_ERRORS;
 
 	errcode |= main_data->AddValue8(OP_STR);
@@ -274,7 +273,6 @@ signed8_t formula_t::PushText(const u16string& value) {
 
 	return errcode;
 }
-#endif
 
 signed8_t formula_t::PushTextArray(const std::vector<std::string>& vec) {
 	signed8_t errcode = NO_ERRORS;

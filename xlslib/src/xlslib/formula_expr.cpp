@@ -301,7 +301,7 @@ size_t text_value_node_t::GetSize(bool include_subtree) const
 signed8_t text_value_node_t::DumpData(formula_t &stack, bool include_subtree) const
 {
 	(void)include_subtree;
-    return stack.PushText(value);
+    return stack.PushTextStr16(value);
 }
 
 cell_deref_node_t::cell_deref_node_t(CGlobalRecords& gRecords, const cell_t& v, cell_addr_mode_t opt, cell_op_class_t opclass) :
